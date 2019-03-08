@@ -67,7 +67,7 @@ bool wxOsgApp::OnInit()
 	loadedModel->addDrawable( box );
 	
     viewer->setSceneData(loadedModel.get());
-    viewer->setCameraManipulator(new osgGA::FirstPersonManipulator);
+    viewer->setCameraManipulator(new EditorManipulator);
     frame->SetViewer(viewer);
 
     /* Show the frame */
@@ -210,10 +210,7 @@ OSGCanvas::~OSGCanvas()
 {
 }
 
-void OSGCanvas::SetContextCurrent()
-{
-	_context.SetCurrent(*this);
-}
+void OSGCanvas::SetContextCurrent(){_context.SetCurrent(*this);}
 
 void OSGCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
 {

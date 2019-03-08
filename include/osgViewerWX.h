@@ -11,11 +11,7 @@
 #include <wx/filedlg.h> //for file dialog
 #include <wx/listctrl.h> //for popup menu
 
-#include <osg/ShapeDrawable>
-#include <osg/Geode>
-#include <iostream>
 
-#include "openalsoftaudioengine.h"
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -33,12 +29,17 @@
 //#include "wx/msw/wx.rc"
 //#endif
 
-
-#include <osgViewer/ViewerEventHandlers>
-#include <osgGA/FirstPersonManipulator>
-#include <osgDB/ReadFile>
 #include <wx/image.h>
 #include <wx/menu.h>
+
+#include <osgViewer/ViewerEventHandlers>
+#include <osgDB/ReadFile>
+
+#include <osg/ShapeDrawable>
+#include <osg/Geode>
+
+#include "openalsoftaudioengine.h"
+#include "EditorManipulator.h"
 
 #include <iostream>
 
@@ -50,7 +51,7 @@ public:
     OSGCanvas(wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = 0,
-        const wxString& name = wxT("TestGLCanvas"),
+        const wxString& name = wxT("Binaural Audio Editor Canvas"),
         int *attributes = 0);
 
     virtual ~OSGCanvas();
