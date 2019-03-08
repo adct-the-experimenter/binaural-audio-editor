@@ -4,15 +4,43 @@
 #include "wx/defs.h"
 #include "wx/app.h"
 #include "wx/cursor.h"
-#include "wx/glcanvas.h"
+#include "wx/glcanvas.h" //to work with openscenegraph opengl
+
 #include <osgViewer/Viewer>
 #include <string>
+#include <wx/filedlg.h> //for file dialog
+#include <wx/listctrl.h> //for popup menu
 
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
 #include <iostream>
 
 #include "openalsoftaudioengine.h"
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+// For wxCURSOR_BLANK below, but isn't used a.t.m.
+//#ifdef WIN32
+//#include "wx/msw/wx.rc"
+//#endif
+
+
+#include <osgViewer/ViewerEventHandlers>
+#include <osgGA/FirstPersonManipulator>
+#include <osgDB/ReadFile>
+#include <wx/image.h>
+#include <wx/menu.h>
+
+#include <iostream>
 
 class GraphicsWindowWX;
 
@@ -92,10 +120,14 @@ public:
         const wxSize& size, long style = wxDEFAULT_FRAME_STYLE);
 
     void SetViewer(osgViewer::Viewer *viewer);
+    
+    void OnOpen(wxCommandEvent& WXUNUSED(event));
     void OnIdle(wxIdleEvent& event);
 	void OnExit(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
-	void OnHello(wxCommandEvent& event);
+	
+	void OnListRightClick(wxListEvent &evt);
+	void OnPopupClick(wxCommandEvent &evt);
 	
 private:
     osg::ref_ptr<osgViewer::Viewer> _viewer;

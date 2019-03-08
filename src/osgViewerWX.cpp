@@ -1,29 +1,4 @@
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
-// For wxCURSOR_BLANK below, but isn't used a.t.m.
-//#ifdef WIN32
-//#include "wx/msw/wx.rc"
-//#endif
-
 #include "osgViewerWX.h"
-
-
-#include <osgViewer/ViewerEventHandlers>
-#include <osgGA/TrackballManipulator>
-#include <osgDB/ReadFile>
-#include <wx/image.h>
-#include <wx/menu.h>
-
-#include <iostream>
 
 // `Main program' equivalent, creating windows and returning main app frame
 bool wxOsgApp::OnInit()
@@ -41,7 +16,7 @@ bool wxOsgApp::OnInit()
 
     // Create the main frame window
 
-    MainFrame *frame = new MainFrame(NULL, wxT("wxWidgets OSG Sample"),
+    MainFrame *frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
         wxDefaultPosition, wxSize(width, height));
 
     // create osg canvas
@@ -75,24 +50,24 @@ bool wxOsgApp::OnInit()
     viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
     
-    //make sphere
+    //make box
 	//create ShapeDrawable object
-	osg::ref_ptr<osg::ShapeDrawable> sphere = new osg::ShapeDrawable;
+	osg::ref_ptr<osg::ShapeDrawable> box = new osg::ShapeDrawable;
 
-	//make ShapeDrawable ob2ject a sphere, 
-	//initialize sphere at certain position 
-	sphere->setShape( new osg::Box(osg::Vec3(3.0f, 0.0f, 0.0f),1.0f) );
-	//set color of ShapeDrawable object with sphere
-	sphere->setColor( osg::Vec4(0.0f, 0.0f, 1.0f, 1.0f) );
+	//make ShapeDrawable object a box 
+	//initialize box at certain position 
+	box->setShape( new osg::Box(osg::Vec3(3.0f, 0.0f, 0.0f),1.0f) );
+	//set color of ShapeDrawable object with box
+	box->setColor( osg::Vec4(0.0f, 0.0f, 1.0f, 1.0f) );
 
 	//make geommetry node which is a leaf node of scenegraph 
 	//containing geometry information
 	osg::ref_ptr<osg::Geode> loadedModel = new osg::Geode;
 	//add ShapeDrawable sphere to geode
-	loadedModel->addDrawable( sphere );
+	loadedModel->addDrawable( box );
 	
     viewer->setSceneData(loadedModel.get());
-    viewer->setCameraManipulator(new osgGA::TrackballManipulator);
+    viewer->setCameraManipulator(new osgGA::FirstPersonManipulator);
     frame->SetViewer(viewer);
 
     /* Show the frame */
@@ -106,9 +81,10 @@ IMPLEMENT_APP(wxOsgApp)
 //Event table for main frame specific events
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_IDLE					(MainFrame::OnIdle)
-    EVT_MENU				(ID_Hello,   MainFrame::OnHello)
     EVT_MENU				(wxID_EXIT,  MainFrame::OnExit)
     EVT_MENU				(wxID_ABOUT, MainFrame::OnAbout)
+    EVT_MENU				(wxID_OPEN, MainFrame::OnOpen)
+    EVT_BUTTON				(wxEVT_CONTEXT_MENU, MainFrame::OnPopupClick)
 END_EVENT_TABLE()
 
 
@@ -119,8 +95,9 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 {
 	//create file menu item
     wxMenu *menuFile = new wxMenu;
-    menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
-                     "Help string shown in status bar for this menu item");
+    menuFile->Append(wxID_OPEN,"&Open Audio");
+    //menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
+    //                 "Help string shown in status bar for this menu item");
     menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT);
     
@@ -128,20 +105,17 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     wxMenu *menuHelp = new wxMenu;
     menuHelp->Append(wxID_ABOUT);
     
-    //create and  set menu bar with items file and help
+    //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append( menuFile, "&File" ); //connect file menu item to file
-    menuBar->Append( menuHelp, "&Help" ); //connect help menu item to help
+    menuBar->Append( menuHelp, "&Help" ); //connect help menu item to open audio
     SetMenuBar( menuBar );
     
     CreateStatusBar();
-    SetStatusText( "Welcome to wxWidgets!" );
+    SetStatusText( "Welcome to Binaural Audio Editor!" );
 }
 
-void MainFrame::SetViewer(osgViewer::Viewer *viewer)
-{
-    _viewer = viewer;
-}
+void MainFrame::SetViewer(osgViewer::Viewer *viewer){_viewer = viewer;}
 
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
@@ -167,12 +141,41 @@ void MainFrame::OnAbout(wxCommandEvent& event)
                   "About Binaural Audio Editor", wxOK | wxICON_INFORMATION );
 }
 
-void MainFrame::OnHello(wxCommandEvent& event)
+void MainFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 {
-	//show message
-    wxLogMessage("Hello world from wxWidgets!");
+	
+	wxFileDialog fileDlg(this, _("Choose the WAV file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|All files|*.*"));
+	if (fileDlg.ShowModal() == wxID_OK)
+	{
+		wxString path = fileDlg.GetPath();
+		//use this path in your app
+	}   
+
 }
 
+#define ID_SOMETHING		2001
+#define ID_SOMETHING_ELSE	2002
+ 
+void MainFrame::OnPopupClick(wxCommandEvent& evt)
+{
+	void *data=static_cast<wxMenu *>( evt.GetEventObject() )->GetClientData();
+	switch(evt.GetId()) 
+	{
+		case ID_SOMETHING:{break;}
+		case ID_SOMETHING_ELSE:{break;}
+	}
+}
+ 
+void MainFrame::OnListRightClick(wxListEvent& evt)
+{
+	void *data = reinterpret_cast<void *>(evt.GetItem().GetData());
+	wxMenu menu;
+	menu.SetClientData( data );
+	menu.Append(ID_SOMETHING, 	"Do something");
+	menu.Append(ID_SOMETHING_ELSE, 	"Do something else");
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnPopupClick), NULL, this);
+	PopupMenu(&menu);
+}
 
 //OSGCanvas event table for openscenegraph specific events
 BEGIN_EVENT_TABLE(OSGCanvas, wxGLCanvas)
@@ -180,8 +183,8 @@ BEGIN_EVENT_TABLE(OSGCanvas, wxGLCanvas)
     EVT_PAINT               (OSGCanvas::OnPaint)
     EVT_ERASE_BACKGROUND    (OSGCanvas::OnEraseBackground)
 
-    EVT_CHAR                (OSGCanvas::OnChar)
-    EVT_KEY_UP              (OSGCanvas::OnKeyUp)
+    //EVT_CHAR                (OSGCanvas::OnChar)
+    //EVT_KEY_UP              (OSGCanvas::OnKeyUp)
 
     EVT_ENTER_WINDOW        (OSGCanvas::OnMouseEnter)
     EVT_LEFT_DOWN           (OSGCanvas::OnMouseDown)
@@ -220,7 +223,6 @@ void OSGCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
 
 void OSGCanvas::OnSize(wxSizeEvent& event)
 {
-
     // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
     int width, height;
     GetClientSize(&width, &height);
@@ -246,8 +248,8 @@ void OSGCanvas::OnChar(wxKeyEvent &event)
     int key = event.GetKeyCode();
 #endif
 
-    if (_graphics_window.valid())
-        _graphics_window->getEventQueue()->keyPress(key);
+    //if (_graphics_window.valid())
+    //    _graphics_window->getEventQueue()->keyPress(key);
 
     // If this key event is not processed here, we should call
     // event.Skip() to allow processing to continue.
