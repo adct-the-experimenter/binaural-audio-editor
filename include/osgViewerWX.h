@@ -62,9 +62,13 @@ public:
     void OnSize(wxSizeEvent& event);
     void OnEraseBackground(wxEraseEvent& event);
 
+	//where camera viewer gets manipulated by mouse movements
+	
     void OnChar(wxKeyEvent &event);
     void OnKeyUp(wxKeyEvent &event);
-
+    
+    void OnKeyDown(wxKeyEvent& event); 
+	
     void OnMouseEnter(wxMouseEvent &event);
     void OnMouseDown(wxMouseEvent &event);
     void OnMouseUp(wxMouseEvent &event);
@@ -74,6 +78,8 @@ public:
     void UseCursor(bool value);
 
 	void SetContextCurrent();
+	
+	
 private:
     DECLARE_EVENT_TABLE()
 
@@ -81,6 +87,7 @@ private:
 
     wxCursor _oldCursor;
     wxGLContext _context;
+    
 };
 
 class GraphicsWindowWX : public osgViewer::GraphicsWindow
@@ -130,9 +137,11 @@ public:
 	void OnListRightClick(wxListEvent &evt);
 	void OnPopupClick(wxCommandEvent &evt);
 	
+	void OnKeyDown(wxKeyEvent& event); //where camera viewer gets manipulated
+	
 private:
     osg::ref_ptr<osgViewer::Viewer> _viewer;
-
+	
 	enum
 	{
 		ID_Hello = 1
@@ -142,10 +151,13 @@ private:
 };
 
 /* Define a new application type */
+//the main of the application
 class wxOsgApp : public wxApp
 {
 public:
     bool OnInit();
+    
+private:
 };
 
 #endif // _WXSIMPLEVIEWERWX_H_

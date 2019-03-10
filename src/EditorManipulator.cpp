@@ -304,7 +304,7 @@ bool EditorManipulator::performMovementRightMouseButton( const double eventTimeD
 {
     // zoom model
     //zoomModel( dy * getThrowScale( eventTimeDelta ), true );
-    //EditorManipulator::moveForward(dy * getThrowScale( eventTimeDelta ));
+    EditorManipulator::moveForward(dy * getThrowScale( eventTimeDelta ));
     return true;
 }
 
@@ -624,6 +624,7 @@ double EditorManipulator::getMinimumDistance( bool *relativeToModelSize ) const
 /// Move camera forward by distance parameter.
 void EditorManipulator::moveForward( const double distance )
 {
+	//std::cout << "moveForward called! \n";
    // get current transformation
 	osg::Vec3d prevCenter, prevEye, prevUp;
 	EditorManipulator::getTransformation( prevEye, prevCenter, prevUp );

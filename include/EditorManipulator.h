@@ -20,7 +20,7 @@
 #define EDITOR_MANIPULATOR
 
 #include <osgGA/OrbitManipulator>
-
+#include <iostream>
 
 /** OrbitManipulator is base class for camera control based on focal center,
     distance from the center, and orientation of distance vector to the eye.
@@ -28,7 +28,7 @@
 class EditorManipulator : public osgGA::OrbitManipulator
 {
         typedef OrbitManipulator inherited;
-
+		
     public:
 
         EditorManipulator( int flags = DEFAULT_SETTINGS );
@@ -36,7 +36,7 @@ class EditorManipulator : public osgGA::OrbitManipulator
                           const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
 
         META_Object( osgGA, EditorManipulator );
-
+		
         virtual void setByMatrix( const osg::Matrixd& matrix );
         virtual void setByInverseMatrix( const osg::Matrixd& matrix );
         virtual osg::Matrixd getMatrix() const;

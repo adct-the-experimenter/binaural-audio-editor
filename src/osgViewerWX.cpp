@@ -46,7 +46,7 @@ bool wxOsgApp::OnInit()
     viewer->getCamera()->setDrawBuffer(GL_BACK);
     viewer->getCamera()->setReadBuffer(GL_BACK);
 
-    viewer->addEventHandler(new osgViewer::StatsHandler);
+    //viewer->addEventHandler(new osgViewer::StatsHandler);
     viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
     
@@ -85,6 +85,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(wxID_ABOUT, MainFrame::OnAbout)
     EVT_MENU				(wxID_OPEN, MainFrame::OnOpen)
     EVT_BUTTON				(wxEVT_CONTEXT_MENU, MainFrame::OnPopupClick)
+    //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
 
@@ -177,15 +178,27 @@ void MainFrame::OnListRightClick(wxListEvent& evt)
 	PopupMenu(&menu);
 }
 
+void MainFrame::OnKeyDown(wxKeyEvent &event)
+{
+#if wxUSE_UNICODE
+    int key = event.GetUnicodeKey();
+#else
+    int key = event.GetKeyCode();
+#endif
+	
+	std::cout << "KeyDown:" << key << std::endl;
+	
+}
+
 //OSGCanvas event table for openscenegraph specific events
 BEGIN_EVENT_TABLE(OSGCanvas, wxGLCanvas)
     EVT_SIZE                (OSGCanvas::OnSize)
     EVT_PAINT               (OSGCanvas::OnPaint)
     EVT_ERASE_BACKGROUND    (OSGCanvas::OnEraseBackground)
 
-    //EVT_CHAR                (OSGCanvas::OnChar)
-    //EVT_KEY_UP              (OSGCanvas::OnKeyUp)
-
+    EVT_CHAR                (OSGCanvas::OnChar)
+    EVT_KEY_UP              (OSGCanvas::OnKeyUp)
+    EVT_KEY_DOWN			(OSGCanvas::OnKeyDown)
     EVT_ENTER_WINDOW        (OSGCanvas::OnMouseEnter)
     EVT_LEFT_DOWN           (OSGCanvas::OnMouseDown)
     EVT_MIDDLE_DOWN         (OSGCanvas::OnMouseDown)
@@ -260,11 +273,31 @@ void OSGCanvas::OnKeyUp(wxKeyEvent &event)
     int key = event.GetKeyCode();
 #endif
 
+
     if (_graphics_window.valid())
         _graphics_window->getEventQueue()->keyRelease(key);
 
     // If this key event is not processed here, we should call
     // event.Skip() to allow processing to continue.
+}
+
+void OSGCanvas::OnKeyDown(wxKeyEvent &event)
+{
+#if wxUSE_UNICODE
+    int key = event.GetUnicodeKey();
+#else
+    int key = event.GetKeyCode();
+#endif
+	
+	std::cout << "keydown in OSGCanvas\n";
+	
+    if (_graphics_window.valid())
+        _graphics_window->getEventQueue()->keyRelease(key);
+	
+	
+	
+    // If this key event is not processed here, we should call event.skip to allow processing to continue
+     event.Skip(); 
 }
 
 void OSGCanvas::OnMouseEnter(wxMouseEvent & /*event*/)
