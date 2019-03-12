@@ -84,6 +84,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(wxID_EXIT,  MainFrame::OnExit)
     EVT_MENU				(wxID_ABOUT, MainFrame::OnAbout)
     EVT_MENU				(wxID_OPEN, MainFrame::OnOpen)
+    EVT_MENU				(MainFrame::ID_CREATE_SOUND_PRODUCER, MainFrame::onCreateSoundProducer)
     EVT_BUTTON				(wxEVT_CONTEXT_MENU, MainFrame::OnPopupClick)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
@@ -97,8 +98,6 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	//create file menu item
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(wxID_OPEN,"&Open Audio");
-    //menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
-    //                 "Help string shown in status bar for this menu item");
     menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT);
     
@@ -106,10 +105,16 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     wxMenu *menuHelp = new wxMenu;
     menuHelp->Append(wxID_ABOUT);
     
+    //create sound producers menu item
+    wxMenu* menuSoundProducers = new wxMenu;
+    menuSoundProducers->Append(MainFrame::ID_CREATE_SOUND_PRODUCER,"&Create Sound Producer");
+    
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append( menuFile, "&File" ); //connect file menu item to file
+    menuBar->Append( menuSoundProducers, "&Sound Producers"); //connect Sound Producers menu item
     menuBar->Append( menuHelp, "&Help" ); //connect help menu item to open audio
+
     SetMenuBar( menuBar );
     
     CreateStatusBar();
@@ -136,8 +141,8 @@ void MainFrame::OnExit(wxCommandEvent& event)
 void MainFrame::OnAbout(wxCommandEvent& event)
 {
 	//show message box with ok icon, 
-	//window title:about hello world
-	//message: This is a wxWidgets Helo world sample
+	//window title:About Binaural Audio Editor
+	//message: 
     wxMessageBox( "Version 0.0 of Binaural Audio Editor. \n This program is for producing and editing binaural audio from mono or stereo samples of audio.",
                   "About Binaural Audio Editor", wxOK | wxICON_INFORMATION );
 }
@@ -152,6 +157,14 @@ void MainFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 		//use this path in your app
 	}   
 
+}
+
+void MainFrame::onCreateSoundProducer(wxCommandEvent& event)
+{
+	//show message box with ok icon, 
+	//window title:about hello world
+	//message: This is a wxWidgets Helo world sample
+    wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
 }
 
 #define ID_SOMETHING		2001

@@ -144,8 +144,10 @@ private:
 	
 	enum
 	{
-		ID_Hello = 1
+		ID_CREATE_SOUND_PRODUCER = 1
 	};
+	
+	void onCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 
     DECLARE_EVENT_TABLE()
 };
