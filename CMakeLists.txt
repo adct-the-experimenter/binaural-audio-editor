@@ -26,8 +26,9 @@ set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIR
 #for where to find header files for source and library
 include_directories(/usr/include /usr/local/include ./include ${PROJECT_INCLUDE_DIR})
 
-set(SOURCES src/osgViewerWX.cpp src/openalsoftaudioengine.cpp src/soundproducer.cpp  
-			src/EditorManipulator.cpp)
+set(SOURCES src/osgViewerWX.cpp   
+			src/EditorManipulator.cpp
+			src/openalsoftaudioengine.cpp src/soundproducer.cpp src/CreateSoundProducerDialog.cpp)
 
 #get_cmake_property(_variableNames VARIABLES)
 #list (SORT _variableNames)

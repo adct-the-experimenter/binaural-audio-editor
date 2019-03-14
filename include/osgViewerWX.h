@@ -41,6 +41,8 @@
 #include "openalsoftaudioengine.h"
 #include "EditorManipulator.h"
 
+#include "CreateSoundProducerDialog.h"
+
 #include <iostream>
 
 class GraphicsWindowWX;

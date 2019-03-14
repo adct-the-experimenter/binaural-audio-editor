@@ -164,7 +164,10 @@ void MainFrame::onCreateSoundProducer(wxCommandEvent& event)
 	//show message box with ok icon, 
 	//window title:about hello world
 	//message: This is a wxWidgets Helo world sample
-    wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
+    //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
+    
+    CreateSoundProducerDialog *soundProducerNewDialog = new CreateSoundProducerDialog(wxT("Create New Sound Producer"));
+    soundProducerNewDialog->Show(true);
 }
 
 #define ID_SOMETHING		2001
