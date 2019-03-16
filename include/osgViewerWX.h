@@ -43,6 +43,7 @@
 
 #include "soundproducer.h"
 #include "CreateSoundProducerDialog.h"
+#include "EditMultipleSoundProducersDialog.h"
 
 #include <iostream>
 #include <memory> //for unique_ptr use
@@ -156,15 +157,16 @@ private:
 	
 	enum
 	{
-		ID_CREATE_SOUND_PRODUCER = 1
+		ID_CREATE_SOUND_PRODUCER = 1,
+		ID_EDIT_MULTIPLE_SOUND_PRODUCERS = 2
 	};
 	
 	std::vector <SoundProducer*> *sound_producer_vector_ref;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
-	void CreateSoundProducer(double& x, double& y, double& z);
+	void CreateSoundProducer(std::string& name,double& x, double& y, double& z);
 	
-	void OnEditSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
+	void OnEditMultipleSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
 	
     DECLARE_EVENT_TABLE()
 };

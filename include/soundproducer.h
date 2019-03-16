@@ -25,6 +25,9 @@ class SoundProducer
 		SoundProducer();
 		~SoundProducer();
 		
+		void SetNameString(std::string& thisName);
+		std::string GetNameString();
+		
 		void setPositionX(double& x); //set x position of sound producer
 		float getPositionX(); //get x position of sound producer
 		void setPositionY(double& y); //set y position of sound producer
@@ -32,7 +35,7 @@ class SoundProducer
 		void setPositionZ(double& z); //set z position of sound producer
 		float getPositionZ(); //get z position of sound producer
 		
-		void InitSoundProducer(double& x, double& y, double& z);
+		void InitSoundProducer(std::string& thisName, double& x, double& y, double& z);
 		
 		void setFilepathToSound(std::string& filepath);
 		std::string& getFilepathToSound();
@@ -43,7 +46,10 @@ class SoundProducer
 		osg::ShapeDrawable* getRenderObject();
 		
 	private:
-		//position of Listener
+		//Name of Sound Producer
+		std::string name;
+		
+		//position of Sound Producer
 		std::vector <double> producer_position_vector;
 		enum POSITION_INDEX { X=0,Y=1,Z=2 };
 		

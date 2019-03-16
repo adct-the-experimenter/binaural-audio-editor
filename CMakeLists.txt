@@ -28,7 +28,9 @@ include_directories(/usr/include /usr/local/include ./include ${PROJECT_INCLUDE_
 
 set(SOURCES src/osgViewerWX.cpp   
 			src/EditorManipulator.cpp
-			src/openalsoftaudioengine.cpp src/soundproducer.cpp src/CreateSoundProducerDialog.cpp)
+			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp
+			 src/openalsoftaudioengine.cpp src/soundproducer.cpp
+			 )
 
 #get_cmake_property(_variableNames VARIABLES)
 #list (SORT _variableNames)

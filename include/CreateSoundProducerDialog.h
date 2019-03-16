@@ -28,6 +28,8 @@ public:
 	//function to return position of new sound producer object
 	void getNewPosition(double& x, double& y, double& z);
 	
+	std::string getNewName();
+	
 	bool OkClickedOn();
 	
 private:
@@ -35,12 +37,13 @@ private:
 	wxButton* cancelButton;
 	
 	
-	
+	wxTextCtrl* textFieldName;
 	wxTextCtrl* textFieldX;
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
 	
 	//Position of New SoundProducer object to be made
+	std::string name;
 	double xPosition;
 	double yPosition;
 	double zPosition;

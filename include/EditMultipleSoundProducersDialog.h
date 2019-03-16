@@ -5,12 +5,15 @@
 
 #include <wx/valnum.h> //for wxFloatingPointValidator
 #include <wx/textctrl.h> //for wxTextCtrl
+#include <wx/listbox.h> //for list box
+
+#include "soundproducer.h"
 
 class EditMultipleSoundProducersDialog : public wxDialog
 {
 
 public:
-	EditMultipleSoundProducersDialog(const wxString& title);
+	EditMultipleSoundProducersDialog(const wxString& title,std::vector <SoundProducer*> *sound_producer_vector);
 	
 	
 	void OnOk(wxCommandEvent& event );
@@ -22,32 +25,30 @@ public:
 	enum 
 	{
 		ID_OK = wxID_HIGHEST + 1,
-		ID_CANCEL
+		ID_CANCEL,
+		ID_RENAME,
+		ID_LISTBOX
 	};
 	
 	//function to return position of new sound producer object
-	void setNewPosition(double& x, double& y, double& z);
+	void getNewPosition(double& x, double& y, double& z);
 	
 	bool OkClickedOn();
 	
 private:
+
+	std::vector <SoundProducer*> *sound_producer_vector_ref; //pointer to vector of sound producers to edit
+
 	wxButton* okButton;
-	wxButton* cancelButton;
-	
-	
+	wxButton* cancelButton;	
 	
 	wxTextCtrl* textFieldX;
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
 	
-	//Position of New SoundProducer object to be made
-	double xPosition;
-	double yPosition;
-	double zPosition;
 	
 	bool okClicked; //bool to indicate if ok button was clicked on
 	
-	void initPrivateVariables();
 	
 	DECLARE_EVENT_TABLE()
 	

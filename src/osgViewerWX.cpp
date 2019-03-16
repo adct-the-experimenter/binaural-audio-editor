@@ -97,6 +97,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(wxID_ABOUT, MainFrame::OnAbout)
     EVT_MENU				(wxID_OPEN, MainFrame::OnOpen)
     EVT_MENU				(MainFrame::ID_CREATE_SOUND_PRODUCER, MainFrame::OnCreateSoundProducer)
+    EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_SOUND_PRODUCERS, MainFrame::OnEditMultipleSoundProducers)
     EVT_BUTTON				(wxEVT_CONTEXT_MENU, MainFrame::OnPopupClick)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
@@ -120,6 +121,9 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     //create sound producers menu item
     wxMenu* menuSoundProducers = new wxMenu;
     menuSoundProducers->Append(MainFrame::ID_CREATE_SOUND_PRODUCER,"&Create Sound Producer");
+    
+    //create edit multiple sound producers menu item
+    menuSoundProducers->Append(MainFrame::ID_EDIT_MULTIPLE_SOUND_PRODUCERS,"&Edit Sound Producers");
     
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
@@ -193,16 +197,17 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 		double x,y,z;
 		
 		soundProducerNewDialog->getNewPosition(x,y,z);
-		MainFrame::CreateSoundProducer(x,y,z);
+		std::string name = soundProducerNewDialog->getNewName();
+		MainFrame::CreateSoundProducer(name,x,y,z);
 	}
 	
 }
 
-void MainFrame::CreateSoundProducer(double& x, double& y, double& z)
+void MainFrame::CreateSoundProducer(std::string& name, double& x, double& y, double& z)
 {
 	std::unique_ptr <SoundProducer> thisSoundProducer( new SoundProducer() );
 	
-	thisSoundProducer->InitSoundProducer(x,y,z);
+	thisSoundProducer->InitSoundProducer(name,x,y,z);
 	
 	sound_producer_vector_ref->push_back(thisSoundProducer.get());
 	
@@ -210,9 +215,17 @@ void MainFrame::CreateSoundProducer(double& x, double& y, double& z)
 	_rootNode->addDrawable( thisSoundProducer->getRenderObject() );
 }
 
-void MainFrame::OnEditSoundProducers(wxCommandEvent& event)
+void MainFrame::OnEditMultipleSoundProducers(wxCommandEvent& event)
 {
-	
+	std::unique_ptr <EditMultipleSoundProducersDialog> soundProducerEditDialog(new EditMultipleSoundProducersDialog( wxT("Edit Sound Producers"),
+																													sound_producer_vector_ref) 
+																				);
+    soundProducerEditDialog->Show(true);
+    
+    if(soundProducerEditDialog->OkClickedOn())
+    {
+		
+	}
 }
 
 #define ID_SOMETHING		2001

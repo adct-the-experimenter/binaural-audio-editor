@@ -24,8 +24,11 @@ SoundProducer::~SoundProducer()
 	}
 }
 
-void SoundProducer::InitSoundProducer(double& x, double& y, double& z)
+void SoundProducer::InitSoundProducer(std::string& thisName,double& x, double& y, double& z)
 {
+	name = thisName;
+	
+	//set position
 	producer_position_vector[POSITION_INDEX::X] = x;
 	producer_position_vector[POSITION_INDEX::Y] = y;
 	producer_position_vector[POSITION_INDEX::Z] = z; 
@@ -42,6 +45,9 @@ void SoundProducer::InitSoundProducer(double& x, double& y, double& z)
 	renderObject->setColor( osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f) );
 	
 }
+
+void SoundProducer::SetNameString(std::string& thisName){ name = thisName;}
+std::string SoundProducer::GetNameString(){ return name;}
 
 void SoundProducer::setPositionX(double& x)
 {
