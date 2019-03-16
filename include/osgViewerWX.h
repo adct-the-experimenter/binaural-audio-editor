@@ -125,6 +125,7 @@ private:
     OSGCanvas*  _canvas;
 };
 
+
 class MainFrame : public wxFrame
 {
 public:
@@ -162,6 +163,8 @@ private:
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(double& x, double& y, double& z);
+	
+	void OnEditSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
 	
     DECLARE_EVENT_TABLE()
 };

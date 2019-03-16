@@ -192,7 +192,7 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
     {
 		double x,y,z;
 		
-		soundProducerNewDialog->setNewPosition(x,y,z);
+		soundProducerNewDialog->getNewPosition(x,y,z);
 		MainFrame::CreateSoundProducer(x,y,z);
 	}
 	
@@ -208,6 +208,11 @@ void MainFrame::CreateSoundProducer(double& x, double& y, double& z)
 	
 	//add ShapeDrawable box to geometry root node 
 	_rootNode->addDrawable( thisSoundProducer->getRenderObject() );
+}
+
+void MainFrame::OnEditSoundProducers(wxCommandEvent& event)
+{
+	
 }
 
 #define ID_SOMETHING		2001
@@ -349,8 +354,6 @@ void OSGCanvas::OnKeyDown(wxKeyEvent &event)
 	
     if (_graphics_window.valid())
         _graphics_window->getEventQueue()->keyRelease(key);
-	
-	
 	
     // If this key event is not processed here, we should call event.skip to allow processing to continue
      event.Skip(); 

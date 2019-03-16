@@ -103,7 +103,7 @@ void CreateSoundProducerDialog::Exit()
     Close( true ); //close window
 }
 
-void CreateSoundProducerDialog::setNewPosition(double& x, double& y, double& z)
+void CreateSoundProducerDialog::getNewPosition(double& x, double& y, double& z)
 {
 	x = xPosition;
 	y = yPosition;

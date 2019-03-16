@@ -1,16 +1,16 @@
-#ifndef _CREATE_SOUND_PRODUCER_H
-#define _CREATE_SOUND_PRODUCER_H
+#ifndef _EDIT_MULTIPLE_SOUND_PRODUCERS_H
+#define _EDIT_MULTIPLE_SOUND_PRODUCERS_H
 
 #include <wx/wx.h>
 
 #include <wx/valnum.h> //for wxFloatingPointValidator
 #include <wx/textctrl.h> //for wxTextCtrl
 
-class CreateSoundProducerDialog : public wxDialog
+class EditMultipleSoundProducersDialog : public wxDialog
 {
 
 public:
-	CreateSoundProducerDialog(const wxString& title);
+	EditMultipleSoundProducersDialog(const wxString& title);
 	
 	
 	void OnOk(wxCommandEvent& event );
@@ -26,7 +26,7 @@ public:
 	};
 	
 	//function to return position of new sound producer object
-	void getNewPosition(double& x, double& y, double& z);
+	void setNewPosition(double& x, double& y, double& z);
 	
 	bool OkClickedOn();
 	
