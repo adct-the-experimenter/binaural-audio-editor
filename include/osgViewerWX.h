@@ -41,9 +41,11 @@
 #include "openalsoftaudioengine.h"
 #include "EditorManipulator.h"
 
+#include "soundproducer.h"
 #include "CreateSoundProducerDialog.h"
 
 #include <iostream>
+#include <memory> //for unique_ptr use
 
 class GraphicsWindowWX;
 
@@ -128,8 +130,14 @@ class MainFrame : public wxFrame
 public:
     MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
         const wxSize& size, long style = wxDEFAULT_FRAME_STYLE);
-
+	
+	//for connecting mainframe to wxOsgApp
+	
     void SetViewer(osgViewer::Viewer *viewer);
+    void SetRootNode(osg::Geode* root); 
+    void SetSoundProducerVectorRef(std::vector <SoundProducer*> *sound_producer_vector);
+    
+    // Mainframe menu operations
     
     void OnOpen(wxCommandEvent& WXUNUSED(event));
     void OnIdle(wxIdleEvent& event);
@@ -143,14 +151,18 @@ public:
 	
 private:
     osg::ref_ptr<osgViewer::Viewer> _viewer;
+	osg::ref_ptr<osg::Geode> _rootNode;
 	
 	enum
 	{
 		ID_CREATE_SOUND_PRODUCER = 1
 	};
 	
-	void onCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
-
+	std::vector <SoundProducer*> *sound_producer_vector_ref;
+	
+	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
+	void CreateSoundProducer(double& x, double& y, double& z);
+	
     DECLARE_EVENT_TABLE()
 };
 
@@ -161,7 +173,14 @@ class wxOsgApp : public wxApp
 public:
     bool OnInit();
     
+    
 private:
+	osg::ref_ptr<osg::Geode> rootNode; //geometry node to hold ShapeDrawable objects
+	
+	std::vector <SoundProducer*> sound_producer_vector;
+	
+	void initListener();
+	
 };
 
 #endif // _WXSIMPLEVIEWERWX_H_

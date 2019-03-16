@@ -58,12 +58,20 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title)
 
 	SetSizer(vbox);
 
+	CreateSoundProducerDialog::initPrivateVariables();
+	
 	//center and show elements in dialog
 	Centre();
 	ShowModal();
 
 	//destroy when done showing
 	Destroy(); 
+}
+
+void CreateSoundProducerDialog::initPrivateVariables()
+{
+	okClicked = false;
+	xPosition = 0.0; yPosition = 0.0; zPosition = 0.0;
 }
 
 void CreateSoundProducerDialog::OnOk(wxCommandEvent& event )
@@ -73,11 +81,14 @@ void CreateSoundProducerDialog::OnOk(wxCommandEvent& event )
 	( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
 	( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
 	
+	okClicked = true;
+	
 	CreateSoundProducerDialog::Exit();
 }
 
 void CreateSoundProducerDialog::OnCancel(wxCommandEvent& event)
 {
+	okClicked = false;
 	CreateSoundProducerDialog::Exit();
 }
 
@@ -92,6 +103,14 @@ void CreateSoundProducerDialog::Exit()
     Close( true ); //close window
 }
 
+void CreateSoundProducerDialog::setNewPosition(double& x, double& y, double& z)
+{
+	x = xPosition;
+	y = yPosition;
+	z = zPosition;
+}
+
+bool CreateSoundProducerDialog::OkClickedOn(){ return okClicked;}
 //Event table for main frame specific events
 BEGIN_EVENT_TABLE(CreateSoundProducerDialog, wxDialog)
     EVT_BUTTON				(ID_OK, CreateSoundProducerDialog::OnOk)

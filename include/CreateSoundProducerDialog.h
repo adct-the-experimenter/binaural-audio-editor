@@ -25,17 +25,29 @@ public:
 		ID_CANCEL
 	};
 	
+	//function to return position of new sound producer object
+	void setNewPosition(double& x, double& y, double& z);
+	
+	bool OkClickedOn();
+	
 private:
 	wxButton* okButton;
 	wxButton* cancelButton;
+	
+	
 	
 	wxTextCtrl* textFieldX;
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
 	
+	//Position of New SoundProducer object to be made
 	double xPosition;
 	double yPosition;
 	double zPosition;
+	
+	bool okClicked; //bool to indicate if ok button was clicked on
+	
+	void initPrivateVariables();
 	
 	DECLARE_EVENT_TABLE()
 	

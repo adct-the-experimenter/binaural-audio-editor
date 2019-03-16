@@ -49,24 +49,20 @@ bool wxOsgApp::OnInit()
     //viewer->addEventHandler(new osgViewer::StatsHandler);
     viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
-    
-    //make box
-	//create ShapeDrawable object
-	osg::ref_ptr<osg::ShapeDrawable> box = new osg::ShapeDrawable;
 
-	//make ShapeDrawable object a box 
-	//initialize box at certain position 
-	box->setShape( new osg::Box(osg::Vec3(3.0f, 0.0f, 0.0f),1.0f) );
-	//set color of ShapeDrawable object with box
-	box->setColor( osg::Vec4(0.0f, 0.0f, 1.0f, 1.0f) );
-
-	//make geommetry node which is a leaf node of scenegraph 
+	//init geommetry node which is a leaf node of scenegraph 
 	//containing geometry information
-	osg::ref_ptr<osg::Geode> loadedModel = new osg::Geode;
-	//add ShapeDrawable sphere to geode
-	loadedModel->addDrawable( box );
+	rootNode = new osg::Geode;
+	frame->SetRootNode(rootNode);
 	
-    viewer->setSceneData(loadedModel.get());
+	//initialize listener
+	initListener();
+	
+	//connect mainframe to soundproducer vector
+	frame->SetSoundProducerVectorRef(&sound_producer_vector);
+	
+	//initialize viewer
+    viewer->setSceneData(rootNode.get());
     viewer->setCameraManipulator(new EditorManipulator);
     frame->SetViewer(viewer);
 
@@ -74,6 +70,22 @@ bool wxOsgApp::OnInit()
     frame->Show(true);
 
     return true;
+}
+
+void wxOsgApp::initListener()
+{
+	//make box
+	//create ShapeDrawable object
+	osg::ref_ptr<osg::ShapeDrawable> box = new osg::ShapeDrawable;
+
+	//make ShapeDrawable object a box 
+	//initialize box at certain position 
+	box->setShape( new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f),1.0f) );
+	//set color of ShapeDrawable object with box
+	box->setColor( osg::Vec4(0.0f, 0.0f, 1.0f, 1.0f) );
+	
+	//add ShapeDrawable box to geometry root node 
+	rootNode->addDrawable( box );
 }
 
 IMPLEMENT_APP(wxOsgApp)
@@ -84,7 +96,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(wxID_EXIT,  MainFrame::OnExit)
     EVT_MENU				(wxID_ABOUT, MainFrame::OnAbout)
     EVT_MENU				(wxID_OPEN, MainFrame::OnOpen)
-    EVT_MENU				(MainFrame::ID_CREATE_SOUND_PRODUCER, MainFrame::onCreateSoundProducer)
+    EVT_MENU				(MainFrame::ID_CREATE_SOUND_PRODUCER, MainFrame::OnCreateSoundProducer)
     EVT_BUTTON				(wxEVT_CONTEXT_MENU, MainFrame::OnPopupClick)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
@@ -123,6 +135,13 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
 void MainFrame::SetViewer(osgViewer::Viewer *viewer){_viewer = viewer;}
 
+void MainFrame::SetRootNode(osg::Geode *root){_rootNode = root;}
+
+void MainFrame::SetSoundProducerVectorRef(std::vector <SoundProducer*> *sound_producer_vector)
+{
+	sound_producer_vector_ref = sound_producer_vector;
+}
+
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
     if (!_viewer->isRealized())
@@ -159,15 +178,36 @@ void MainFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 
 }
 
-void MainFrame::onCreateSoundProducer(wxCommandEvent& event)
+void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 {
 	//show message box with ok icon, 
 	//window title:about hello world
 	//message: This is a wxWidgets Helo world sample
     //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
     
-    CreateSoundProducerDialog *soundProducerNewDialog = new CreateSoundProducerDialog(wxT("Create New Sound Producer"));
+    std::unique_ptr <CreateSoundProducerDialog> soundProducerNewDialog(new CreateSoundProducerDialog(wxT("Create New Sound Producer")) );
     soundProducerNewDialog->Show(true);
+    
+    if(soundProducerNewDialog->OkClickedOn())
+    {
+		double x,y,z;
+		
+		soundProducerNewDialog->setNewPosition(x,y,z);
+		MainFrame::CreateSoundProducer(x,y,z);
+	}
+	
+}
+
+void MainFrame::CreateSoundProducer(double& x, double& y, double& z)
+{
+	std::unique_ptr <SoundProducer> thisSoundProducer( new SoundProducer() );
+	
+	thisSoundProducer->InitSoundProducer(x,y,z);
+	
+	sound_producer_vector_ref->push_back(thisSoundProducer.get());
+	
+	//add ShapeDrawable box to geometry root node 
+	_rootNode->addDrawable( thisSoundProducer->getRenderObject() );
 }
 
 #define ID_SOMETHING		2001
@@ -305,7 +345,7 @@ void OSGCanvas::OnKeyDown(wxKeyEvent &event)
     int key = event.GetKeyCode();
 #endif
 	
-	std::cout << "keydown in OSGCanvas\n";
+	//std::cout << "keydown in OSGCanvas\n";
 	
     if (_graphics_window.valid())
         _graphics_window->getEventQueue()->keyRelease(key);
