@@ -137,7 +137,7 @@ public:
 	
     void SetViewer(osgViewer::Viewer *viewer);
     void SetRootNode(osg::Geode* root); 
-    void SetSoundProducerVectorRef(std::vector <SoundProducer*> *sound_producer_vector);
+    void SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector);
     
     // Mainframe menu operations
     
@@ -161,7 +161,7 @@ private:
 		ID_EDIT_MULTIPLE_SOUND_PRODUCERS = 2
 	};
 	
-	std::vector <SoundProducer*> *sound_producer_vector_ref;
+	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(std::string& name,double& x, double& y, double& z);
@@ -182,7 +182,7 @@ public:
 private:
 	osg::ref_ptr<osg::Geode> rootNode; //geometry node to hold ShapeDrawable objects
 	
-	std::vector <SoundProducer*> sound_producer_vector;
+	std::vector < std::unique_ptr <SoundProducer> > sound_producer_vector;
 	
 	void initListener();
 	

@@ -141,7 +141,7 @@ void MainFrame::SetViewer(osgViewer::Viewer *viewer){_viewer = viewer;}
 
 void MainFrame::SetRootNode(osg::Geode *root){_rootNode = root;}
 
-void MainFrame::SetSoundProducerVectorRef(std::vector <SoundProducer*> *sound_producer_vector)
+void MainFrame::SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector)
 {
 	sound_producer_vector_ref = sound_producer_vector;
 }
@@ -209,10 +209,11 @@ void MainFrame::CreateSoundProducer(std::string& name, double& x, double& y, dou
 	
 	thisSoundProducer->InitSoundProducer(name,x,y,z);
 	
-	sound_producer_vector_ref->push_back(thisSoundProducer.get());
-	
 	//add ShapeDrawable box to geometry root node 
-	_rootNode->addDrawable( thisSoundProducer->getRenderObject() );
+	_rootNode->addDrawable( thisSoundProducer.get()->getRenderObject() );
+	
+	//move sound producer unique pointer to sound producer vector of unique pointers
+	sound_producer_vector_ref->push_back(std::move(thisSoundProducer));
 }
 
 void MainFrame::OnEditMultipleSoundProducers(wxCommandEvent& event)
@@ -220,6 +221,7 @@ void MainFrame::OnEditMultipleSoundProducers(wxCommandEvent& event)
 	std::unique_ptr <EditMultipleSoundProducersDialog> soundProducerEditDialog(new EditMultipleSoundProducersDialog( wxT("Edit Sound Producers"),
 																													sound_producer_vector_ref) 
 																				);
+																				
     soundProducerEditDialog->Show(true);
     
     if(soundProducerEditDialog->OkClickedOn())

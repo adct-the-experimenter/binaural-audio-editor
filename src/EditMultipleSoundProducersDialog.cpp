@@ -1,6 +1,7 @@
 #include "EditMultipleSoundProducersDialog.h"
 
-EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxString & title,std::vector <SoundProducer*> *sound_producer_vector)
+EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxString & title,
+																	std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector)
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(250, 230))
 {
 	
@@ -11,18 +12,18 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
 	wxListBox* listbox = new wxListBox(panel, ID_LISTBOX, 
-									wxPoint(0, 0), wxSize(20, 20)); 
+									wxPoint(0, 0), wxSize(100, 20)); 
 	
-	
+
 	
 	//add contents to listbox
-	/*for(size_t i = 0; i < sound_producer_vector_ref->size(); i++)
+	for(size_t i = 0; i < sound_producer_vector_ref->size(); i++)
 	{
-		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(i);
+		SoundProducer* thisSoundProducer = sound_producer_vector->at(i).get();
 		wxString mystring( thisSoundProducer->GetNameString() );
 		listbox->Append(mystring);
 	}
-	*/
+	
 	
 	hbox->Add(listbox, 3, wxEXPAND | wxALL, 20);
 
@@ -113,19 +114,13 @@ void EditMultipleSoundProducersDialog::Exit()
 {
 	if(okButton != nullptr){ delete okButton;}
 	if(cancelButton != nullptr){delete cancelButton;}
-	if(textFieldX != nullptr){ delete textFieldX;}
-	if(textFieldY != nullptr){ delete textFieldY;}
-	if(textFieldZ != nullptr){ delete textFieldZ;}
+	//if(textFieldX != nullptr){ delete textFieldX;}
+	//if(textFieldY != nullptr){ delete textFieldY;}
+	//if(textFieldZ != nullptr){ delete textFieldZ;}
     
     Close( true ); //close window
 }
 
-void EditMultipleSoundProducersDialog::getNewPosition(double& x, double& y, double& z)
-{
-	//x = xPosition;
-	//y = yPosition;
-	//z = zPosition;
-}
 
 bool EditMultipleSoundProducersDialog::OkClickedOn(){ return okClicked;}
 //Event table for main frame specific events
