@@ -11,18 +11,18 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
 	wxListBox* listbox = new wxListBox(panel, ID_LISTBOX, 
-									wxPoint(-1, -1), wxSize(-1, -1)); 
+									wxPoint(0, 0), wxSize(20, 20)); 
 	
 	
 	
 	//add contents to listbox
-	for(size_t i = 0; i < sound_producer_vector_ref->size(); i++)
+	/*for(size_t i = 0; i < sound_producer_vector_ref->size(); i++)
 	{
 		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(i);
 		wxString mystring( thisSoundProducer->GetNameString() );
 		listbox->Append(mystring);
 	}
-	
+	*/
 	
 	hbox->Add(listbox, 3, wxEXPAND | wxALL, 20);
 
@@ -59,7 +59,6 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	wxStaticText* xPositionText = new wxStaticText(this, -1, wxT("X :"), wxPoint(40, 60));
 	wxStaticText* yPositionText = new wxStaticText(this, -1, wxT("Y :"), wxPoint(40, 80));
 	wxStaticText* zPositionText = new wxStaticText(this, -1, wxT("Z :"), wxPoint(40, 100));
-    
     
 	*/
 	//initialize Ok and Cancel buttons 
