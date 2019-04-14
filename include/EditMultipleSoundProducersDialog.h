@@ -42,13 +42,15 @@ private:
 	wxButton* okButton;
 	wxButton* cancelButton;	
 	
-	//wxTextCtrl* textFieldX;
-	//wxTextCtrl* textFieldY;
-	//wxTextCtrl* textFieldZ;
+	wxTextCtrl* textFieldX;
+	wxTextCtrl* textFieldY;
+	wxTextCtrl* textFieldZ;
 	
+	wxListBox* listbox;
 	
 	bool okClicked; //bool to indicate if ok button was clicked on
 	
+	void SoundProducerSelectedInListBox(wxCommandEvent& event );
 	
 	DECLARE_EVENT_TABLE()
 	

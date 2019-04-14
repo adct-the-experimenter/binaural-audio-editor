@@ -118,6 +118,7 @@ void CreateSoundProducerDialog::getNewPosition(double& x, double& y, double& z)
 }
 
 bool CreateSoundProducerDialog::OkClickedOn(){ return okClicked;}
+
 //Event table for main frame specific events
 BEGIN_EVENT_TABLE(CreateSoundProducerDialog, wxDialog)
     EVT_BUTTON				(ID_OK, CreateSoundProducerDialog::OnOk)
