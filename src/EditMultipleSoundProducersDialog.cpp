@@ -5,6 +5,8 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
 {
 	
+	EditMultipleSoundProducersDialog::initPrivateVariables();
+	
 	sound_producer_vector_ref = sound_producer_vector;
 
 	//make horizontal box to put names in
@@ -33,23 +35,23 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	
 	//initialize text fields
 	wxFloatingPointValidator <double> validator(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator.SetRange(0.00,10.00);     // set allowable range
+    validator.SetRange(-0.01,10.00);     // set allowable range
     
     
     
-	textFieldX = new wxTextCtrl(this,-1, "0.00", 
+	textFieldX = new wxTextCtrl(this,-1, "", 
 								wxPoint(150, 60), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator,          // associate the text box with the desired validator
 								wxT(""));
 								
-	textFieldY = new wxTextCtrl(this,-1, "0.00", 
+	textFieldY = new wxTextCtrl(this,-1, "", 
 								wxPoint(150, 80), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator,          // associate the text box with the desired validator
 								wxT(""));
 								
-	textFieldZ = new wxTextCtrl(this,-1, "0.00", 
+	textFieldZ = new wxTextCtrl(this,-1, "", 
 								wxPoint(150, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator,          // associate the text box with the desired validator
@@ -81,9 +83,14 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	wxDefaultPosition, wxSize(70, 30)
 								);
 	
+	applyButton = new wxButton(this, EditMultipleSoundProducersDialog::ID_APPLY, wxT("Apply"), 
+	wxDefaultPosition, wxSize(70, 30)
+								);
+	
 	//make horizontal box to put ok and cancel buttons in
 	wxBoxSizer *hboxBottom = new wxBoxSizer(wxHORIZONTAL);
 
+	hboxBottom->Add(applyButton, 0, wxRIGHT, 5);
 	hboxBottom->Add(okButton, 0);
 	hboxBottom->Add(cancelButton, 0, wxLEFT, 5);
 	
@@ -102,6 +109,36 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 
 	//destroy when done showing
 	Destroy(); 
+}
+
+void EditMultipleSoundProducersDialog::initPrivateVariables()
+{
+	sound_producer_vector_ref = nullptr;
+	textFieldX = nullptr; textFieldY = nullptr; textFieldZ = nullptr;
+	listbox = nullptr;
+	
+	applyButton = nullptr; okButton = nullptr; cancelButton = nullptr;
+}
+
+void EditMultipleSoundProducersDialog::onApply(wxCommandEvent& event)
+{
+	std::cout << "Apply button pressed! \n";
+	int selection_index = listbox->GetSelection();
+	
+	if(sound_producer_vector_ref != nullptr)
+	{
+		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(selection_index).get();
+		
+		//change position of selected sound producer based on what is in textfields
+		double xPosition, yPosition, zPosition;
+		( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
+		( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
+		( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+		thisSoundProducer->setPositionX(xPosition);
+		thisSoundProducer->setPositionY(yPosition);
+		thisSoundProducer->setPositionZ(zPosition);
+	}
+	
 }
 
 void EditMultipleSoundProducersDialog::OnOk(wxCommandEvent& event )
@@ -136,7 +173,20 @@ void EditMultipleSoundProducersDialog::Exit()
 
 void EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox(wxCommandEvent& event )
 {
-	std::cout << "Selected sound producer! " <<  listbox->GetSelection() << " item on the list.\n";
+	//std::cout << "\nSelected sound producer! " <<  listbox->GetSelection() << " item on the list.\n";
+	int selection_index = listbox->GetSelection();
+	
+	if(sound_producer_vector_ref != nullptr)
+	{
+		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(selection_index).get();
+		//wxString mystring( thisSoundProducer->GetNameString() );
+		//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;
+		
+		//update position text fields to have current position of sound producer selected
+		 (*textFieldX) << thisSoundProducer->getPositionX();
+		 (*textFieldY) << thisSoundProducer->getPositionY();
+		 (*textFieldZ) << thisSoundProducer->getPositionZ();
+	}
 }
 
 bool EditMultipleSoundProducersDialog::OkClickedOn(){ return okClicked;}
@@ -145,5 +195,6 @@ bool EditMultipleSoundProducersDialog::OkClickedOn(){ return okClicked;}
 BEGIN_EVENT_TABLE(EditMultipleSoundProducersDialog, wxDialog)
     EVT_BUTTON				(ID_OK, EditMultipleSoundProducersDialog::OnOk)
     EVT_BUTTON				(ID_CANCEL, EditMultipleSoundProducersDialog::OnCancel)
+    EVT_BUTTON				(ID_APPLY, EditMultipleSoundProducersDialog::onApply)
     EVT_LISTBOX				(ID_LISTBOX,  EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox)
 END_EVENT_TABLE()

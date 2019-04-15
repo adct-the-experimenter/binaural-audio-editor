@@ -210,7 +210,7 @@ void MainFrame::CreateSoundProducer(std::string& name, double& x, double& y, dou
 	thisSoundProducer->InitSoundProducer(name,x,y,z);
 	
 	//add ShapeDrawable box to geometry root node 
-	_rootNode->addDrawable( thisSoundProducer.get()->getRenderObject() );
+	_rootNode->addChild( thisSoundProducer.get()->getRootGeodeNode() );
 	
 	//move sound producer unique pointer to sound producer vector of unique pointers
 	sound_producer_vector_ref->push_back(std::move(thisSoundProducer));

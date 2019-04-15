@@ -21,12 +21,15 @@ public:
 	void OnOk(wxCommandEvent& event );
 
 	void OnCancel(wxCommandEvent& event);
+	
+	void onApply(wxCommandEvent& event);
 
 	void Exit();
 	
 	enum 
 	{
 		ID_OK = wxID_HIGHEST + 1,
+		ID_APPLY,
 		ID_CANCEL,
 		ID_RENAME,
 		ID_LISTBOX
@@ -38,15 +41,18 @@ public:
 private:
 
 	std::vector <std::unique_ptr <SoundProducer> > *sound_producer_vector_ref; //pointer to vector of sound producers to edit
-
+	
 	wxButton* okButton;
 	wxButton* cancelButton;	
+	wxButton* applyButton;
 	
 	wxTextCtrl* textFieldX;
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
 	
 	wxListBox* listbox;
+	
+	void initPrivateVariables(); 
 	
 	bool okClicked; //bool to indicate if ok button was clicked on
 	

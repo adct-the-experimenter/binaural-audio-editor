@@ -10,7 +10,7 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title)
 	//initialize text fields
 	
 	wxFloatingPointValidator <double> validator(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator.SetRange(0.00,10.00);     // set allowable range
+    validator.SetRange(-0.01,10.00);     // set allowable range
     
     textFieldName = new wxTextCtrl(panel,-1, "Name", 
 								wxPoint(95, 20), wxSize(80,20),
