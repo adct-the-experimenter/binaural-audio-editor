@@ -122,7 +122,6 @@ void EditMultipleSoundProducersDialog::initPrivateVariables()
 
 void EditMultipleSoundProducersDialog::onApply(wxCommandEvent& event)
 {
-	std::cout << "Apply button pressed! \n";
 	int selection_index = listbox->GetSelection();
 	
 	if(sound_producer_vector_ref != nullptr)
@@ -143,10 +142,21 @@ void EditMultipleSoundProducersDialog::onApply(wxCommandEvent& event)
 
 void EditMultipleSoundProducersDialog::OnOk(wxCommandEvent& event )
 {
-	//assign value in text field for X position to xPosition
-	//( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
-	//( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
-	//( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+	int selection_index = listbox->GetSelection();
+	
+	if(sound_producer_vector_ref != nullptr)
+	{
+		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(selection_index).get();
+		
+		//change position of selected sound producer based on what is in textfields
+		double xPosition, yPosition, zPosition;
+		( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
+		( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
+		( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+		thisSoundProducer->setPositionX(xPosition);
+		thisSoundProducer->setPositionY(yPosition);
+		thisSoundProducer->setPositionZ(zPosition);
+	}
 	
 	okClicked = true;
 	

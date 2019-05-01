@@ -12,8 +12,8 @@
 #include <iostream>
 
 #include <osg/ShapeDrawable> //for object to render on screen
-#include <osg/PositionAttitudeTransform>
-#include <osg/Geode> //for object to be moved on screen by matrix transform
+#include <osg/PositionAttitudeTransform> //for matrix transform that moves object rendered
+#include <osg/Geode> //for object rendered to be moved on screen by matrix transform
 
 //This is a class that hold positional info on object
 //as well as source and buffer components for use with OpenALSoftAudioEngine
@@ -47,9 +47,10 @@ class SoundProducer
 		
 		osg::ShapeDrawable* getRenderObject();
 		
-		osg::Geode* getRootGeodeNode();
+		osg::Geode* getGeodeNode();
 		
 		osg::PositionAttitudeTransform* getTransformNode();
+		
 	private:
 		//Name of Sound Producer
 		std::string name;
@@ -68,14 +69,15 @@ class SoundProducer
 		ALuint m_source;
 		
 		//ShapeDrawable object to render
-		osg::ref_ptr<osg::ShapeDrawable> renderObject;
+		osg::ref_ptr<osg::ShapeDrawable> m_renderObject;
 		
-		osg::ref_ptr<osg::Box> box; 
+		osg::ref_ptr<osg::Box> m_box; 
 		
 		//holds geometry information for rendering, moved by transform of matrix
-		osg::ref_ptr<osg::Geode> rootGeode;
+		osg::ref_ptr<osg::Geode> m_geode;
 		
-		osg::ref_ptr<osg::PositionAttitudeTransform> myPat;
+		//moves the geode
+		osg::ref_ptr<osg::PositionAttitudeTransform> m_paTransform;
 };
 
 #endif

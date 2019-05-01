@@ -52,7 +52,7 @@ bool wxOsgApp::OnInit()
 
 	//init geommetry node which is a leaf node of scenegraph 
 	//containing geometry information
-	rootNode = new osg::Geode;
+	rootNode = new osg::Group;
 	frame->SetRootNode(rootNode);
 	
 	//initialize listener
@@ -84,8 +84,16 @@ void wxOsgApp::initListener()
 	//set color of ShapeDrawable object with box
 	box->setColor( osg::Vec4(0.0f, 0.0f, 1.0f, 1.0f) );
 	
-	//add ShapeDrawable box to geometry root node 
-	rootNode->addDrawable( box );
+	//add ShapeDrawable box to geometry root node
+	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+	geode->addDrawable( box );
+	
+	//add geode to position attitude transform
+	osg::ref_ptr<osg::PositionAttitudeTransform> pat = new osg::PositionAttitudeTransform;
+	pat->addChild(geode);
+	
+	//add position attitude transform to root node group
+	rootNode->addChild(pat);
 }
 
 IMPLEMENT_APP(wxOsgApp)
@@ -139,7 +147,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
 void MainFrame::SetViewer(osgViewer::Viewer *viewer){_viewer = viewer;}
 
-void MainFrame::SetRootNode(osg::Geode *root){_rootNode = root;}
+void MainFrame::SetRootNode(osg::Group *root){_rootNode = root;}
 
 void MainFrame::SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector)
 {
@@ -209,8 +217,8 @@ void MainFrame::CreateSoundProducer(std::string& name, double& x, double& y, dou
 	
 	thisSoundProducer->InitSoundProducer(name,x,y,z);
 	
-	//add ShapeDrawable box to geometry root node 
-	_rootNode->addChild( thisSoundProducer.get()->getRootGeodeNode() );
+	//add position attitude transform to root group of nodes
+	_rootNode->addChild( thisSoundProducer.get()->getTransformNode() );
 	
 	//move sound producer unique pointer to sound producer vector of unique pointers
 	sound_producer_vector_ref->push_back(std::move(thisSoundProducer));
