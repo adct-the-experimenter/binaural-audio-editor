@@ -47,6 +47,10 @@
 #include "CreateSoundProducerDialog.h"
 #include "EditMultipleSoundProducersDialog.h"
 
+
+#include "openalsoftaudioengine.h"
+
+
 #include <iostream>
 #include <memory> //for unique_ptr use
 
@@ -140,6 +144,7 @@ public:
     void SetViewer(osgViewer::Viewer *viewer);
     void SetRootNode(osg::Group* root); 
     void SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector);
+    void SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine);
     
     // Mainframe menu operations
     
@@ -156,6 +161,8 @@ public:
 private:
     osg::ref_ptr<osgViewer::Viewer> _viewer;
 	osg::ref_ptr<osg::Group> _rootNode;
+
+	OpenAlSoftAudioEngine* audioEnginePtr;
 	
 	enum
 	{
@@ -185,6 +192,8 @@ private:
 	osg::ref_ptr<osg::Group> rootNode; //geometry node to hold ShapeDrawable objects
 	
 	std::vector < std::unique_ptr <SoundProducer> > sound_producer_vector;
+	
+	OpenAlSoftAudioEngine audio_engine; //class abstraction to handle playing binaural 3D audio
 	
 	void initListener();
 	

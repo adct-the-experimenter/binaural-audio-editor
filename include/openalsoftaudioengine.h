@@ -5,9 +5,19 @@
 #include <math.h>
 
 #include "time.h"
-#include "AL/al.h" //header for OpenAL Soft
-#include "AL/alc.h" //header for OpenAL Soft
-#include "AL/alext.h" //header for OpenAL Soft
+
+
+#ifdef _cplusplus
+extern "C":
+{
+#endif
+	#include "AL/al.h" //header for OpenAL Soft
+	#include "AL/alc.h" //header for OpenAL Soft
+	#include "AL/alext.h" //header for OpenAL Soft
+
+#ifdef _cplusplus
+}
+#endif
 
 #include "sndfile.h"
 
@@ -25,15 +35,20 @@
 #define		MAX_CHANNELS	2
 
 
+
+
 //class inherits from QQMLPropertValue
 class OpenAlSoftAudioEngine 
 {
+	
+    
 public:
 
     OpenAlSoftAudioEngine();
     ~OpenAlSoftAudioEngine();
 
     //function to initialize openAl Soft
+    
     bool initOpenALSoft();
 
     //function to clean up openAL Soft initialization
@@ -69,21 +84,17 @@ public:
     std::string getHRTFTestResult();
     void clear_testHRTFResults();
 
-
 //Sound Playback Related Functions
 
 	//loading buffer
-    
-    void loadSound(ALuint* buffer,const std::string& filename); //function to take in file path to sound file and load buffer info to ALuint buffer
-    std::string getLoadSoundResult();//function to return load sound results string
-    void clear_LoadSoundResults();
+	void loadSound(ALuint* buffer,const std::string& filename); //function to take in file path to sound file and load buffer info to ALuint buffer
+	std::string getLoadSoundResult();//function to return load sound results string
+	void clear_LoadSoundResults();
 
 	//Creating source to play sound
-	void createSource(ALuint* buffer,ALuint* source);
+	void createSource(ALuint* buffer,ALuint* source);	
 	
-	// playing sound
-    void playSound(ALuint* source);
-
+	void playSound(ALuint* source);
 
 private:
 
@@ -94,14 +105,15 @@ private:
     //position of Listener
     std::vector <float> listener_position_vector;
     enum POSITION_INDEX { X=0,Y=1,Z=2 };
-
+	void setListenerPosition(); //function to set listener position based on listener position vector coordinates
+	
     //orientation of Listener
     std::vector<float> listener_orientation_vector; //vector to hold values of listener orientation
     //first 3 values are forward vector xyz , last 3 values are up vector xyz
     //enum to help set orientation vector
     enum ORIENTATION_INDEX { FORWARD_X=0,FORWARD_Y=1,FORWARD_Z=2,
                                                  UP_X=3, UP_Y=4, UP_Z=5 };
-
+	void setListenerOrientation(); //function to set listener orientation based on listener orientation vector coordinates
 
 //********************************************************
 //******************** Testing ***************************

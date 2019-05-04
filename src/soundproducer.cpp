@@ -17,12 +17,24 @@ SoundProducer::~SoundProducer()
 {
 	if(m_source != 0)
 	{
-		alDeleteSources(1, &m_source);
+		#ifdef _cplusplus
+		//being compiled by a c++ compulter, inhibit mangling
+		extern "C" 
+		{
+			alDeleteSources(1, &m_source);
+		}
+		#endif
 	}
 	
 	if(m_buffer != 0)
 	{
-		alDeleteBuffers(1, &m_buffer);
+		#ifdef _cplusplus
+		//being compiled by a c++ compulter, inhibit mangling
+		extern "C" 
+		{
+			alDeleteBuffers(1, &m_buffer);
+		}
+		#endif
 	}
 }
 
@@ -56,10 +68,31 @@ void SoundProducer::InitSoundProducer(std::string& thisName,double& x, double& y
 	//initialize transform and add geode to it
 	m_paTransform->setPosition( osg::Vec3(x,y,z));
 	m_paTransform->addChild(m_geode);
+	
+	moveSource();
 }
 
 void SoundProducer::SetNameString(std::string& thisName){ name = thisName;}
 std::string SoundProducer::GetNameString(){ return name;}
+
+void SoundProducer::moveSource()
+{
+	//if source is defined
+	if(m_source != 0)
+	{
+		#ifdef _cplusplus
+		//being compiled by a c++ compulter, inhibit mangling
+		extern "C" 
+		{
+			//move source 
+			alSource3f(m_source, AL_POSITION, 
+					(ALfloat)producer_position_vector[POSITION_INDEX::X], 
+					(ALfloat)producer_position_vector[POSITION_INDEX::Y], 
+					(ALfloat)producer_position_vector[POSITION_INDEX::Z]);
+		}
+		#endif
+	}
+}
 
 void SoundProducer::setPositionX(double& x)
 {		
@@ -68,7 +101,7 @@ void SoundProducer::setPositionX(double& x)
 	m_paTransform->setPosition(osg::Vec3(x, 
 								producer_position_vector[POSITION_INDEX::Y], 
 								producer_position_vector[POSITION_INDEX::Z]));
-	
+	moveSource();
 } 
 
 float SoundProducer::getPositionX(){return producer_position_vector[POSITION_INDEX::X];} 
@@ -80,6 +113,7 @@ void SoundProducer::setPositionY(double& y)
 	m_paTransform->setPosition(osg::Vec3(producer_position_vector[POSITION_INDEX::X], 
 								y, 
 								producer_position_vector[POSITION_INDEX::Z]));
+	moveSource();
 } 
 
 float SoundProducer::getPositionY(){return producer_position_vector[POSITION_INDEX::Y];}
@@ -91,15 +125,19 @@ void SoundProducer::setPositionZ(double& z)
 	m_paTransform->setPosition(osg::Vec3(producer_position_vector[POSITION_INDEX::X], 
 								producer_position_vector[POSITION_INDEX::Y], 
 								z));
-} 
+	moveSource();
+}
+ 
 float SoundProducer::getPositionZ(){return producer_position_vector[POSITION_INDEX::Z];}
 
 void SoundProducer::setFilepathToSound(std::string& filepath){m_filepath = filepath;}
 
 std::string& SoundProducer::getFilepathToSound(){return m_filepath;}
 
+void SoundProducer::setBuffer(ALuint& thisBuffer){m_buffer = thisBuffer;}
 ALuint* SoundProducer::getBuffer(){return &m_buffer;}
 
+void SoundProducer::setSource(ALuint& thisSource){m_source = thisSource;}
 ALuint* SoundProducer::getSource(){return &m_source;}
 
 osg::ShapeDrawable* SoundProducer::getRenderObject(){return m_renderObject;}

@@ -6,23 +6,28 @@
 #include <wx/valnum.h> //for wxFloatingPointValidator
 #include <wx/textctrl.h> //for wxTextCtrl
 
+#include <openalsoftaudioengine.h> //for loading buffer and creating source of sound producer
+
 class CreateSoundProducerDialog : public wxDialog
 {
 
 public:
-	CreateSoundProducerDialog(const wxString& title);
+	CreateSoundProducerDialog(const wxString& title, OpenAlSoftAudioEngine* audioEngine);
 	
 	
 	void OnOk(wxCommandEvent& event );
 
 	void OnCancel(wxCommandEvent& event);
+	
+	void OnBrowse(wxCommandEvent& event);
 
 	void Exit();
 	
 	enum 
 	{
 		ID_OK = wxID_HIGHEST + 1,
-		ID_CANCEL
+		ID_CANCEL,
+		ID_BROWSE
 	};
 	
 	//function to return position of new sound producer object
@@ -35,18 +40,26 @@ public:
 private:
 	wxButton* okButton;
 	wxButton* cancelButton;
-	
+	wxButton* browseButton;
 	
 	wxTextCtrl* textFieldName;
+	
 	wxTextCtrl* textFieldX;
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
 	
-	//Position of New SoundProducer object to be made
+	wxTextCtrl* textFieldSoundFilePath;
+	
+	OpenAlSoftAudioEngine* ptrAudioEngine;
+	
 	std::string name;
 	double xPosition;
 	double yPosition;
 	double zPosition;
+	
+	std::string soundFilePath;
+	ALuint buffer;
+	
 	
 	bool okClicked; //bool to indicate if ok button was clicked on
 	

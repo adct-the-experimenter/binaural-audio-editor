@@ -15,7 +15,7 @@
 #include <osg/PositionAttitudeTransform> //for matrix transform that moves object rendered
 #include <osg/Geode> //for object rendered to be moved on screen by matrix transform
 
-//This is a class that hold positional info on object
+//This is a class that holds positional info on object
 //as well as source and buffer components for use with OpenALSoftAudioEngine
 
 //DOES NOT PLAY SOUND. OpenALSoftAudioEngine plays the sound.
@@ -42,7 +42,10 @@ class SoundProducer
 		void setFilepathToSound(std::string& filepath);
 		std::string& getFilepathToSound();
 		
+		void setBuffer(ALuint& thisBuffer);
 		ALuint* getBuffer();
+		
+		void setSource(ALuint& thisBuffer);
 		ALuint* getSource();
 		
 		osg::ShapeDrawable* getRenderObject();
@@ -67,6 +70,8 @@ class SoundProducer
     
 		//source to play buffer
 		ALuint m_source;
+		
+		void moveSource(); //function to move source to producer position vector coordinates
 		
 		//ShapeDrawable object to render
 		osg::ref_ptr<osg::ShapeDrawable> m_renderObject;

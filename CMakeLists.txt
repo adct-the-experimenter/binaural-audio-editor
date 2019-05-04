@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 set(PROJECT_NAME binaural-audio-editor)
-project (${PROJECT_NAME})
+project (${PROJECT_NAME} LANGUAGES C CXX)
 
 #wxWidget specific stuff
 SET(wxWidgets_USE_LIBS)
@@ -42,7 +42,3 @@ set(SOURCES src/osgViewerWX.cpp
 add_executable(${PROJECT_NAME} ${SOURCES})
 #link libraries
 target_link_libraries(${PROJECT_NAME} ${PROJECT_LINK_LIBS})
-
-
-
-

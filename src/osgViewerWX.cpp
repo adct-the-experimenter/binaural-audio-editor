@@ -10,64 +10,77 @@ bool wxOsgApp::OnInit()
         return false;
     }
 	*/
-
-    int width = 800;
-    int height = 600;
-
-    // Create the main frame window
-
-    MainFrame *frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
-        wxDefaultPosition, wxSize(width, height));
-
-    // create osg canvas
-    //    - initialize
-
-    int attributes[7];
-    attributes[0] = int(WX_GL_DOUBLEBUFFER);
-    attributes[1] = WX_GL_RGBA;
-    attributes[2] = WX_GL_DEPTH_SIZE;
-    attributes[3] = 8;
-    attributes[4] = WX_GL_STENCIL_SIZE;
-    attributes[5] = 8;
-    attributes[6] = 0;
-
-    OSGCanvas *canvas = new OSGCanvas(frame, wxID_ANY, wxDefaultPosition,
-        wxSize(width, height), wxSUNKEN_BORDER, wxT("osgviewerWX"), attributes);
-
-    GraphicsWindowWX* gw = new GraphicsWindowWX(canvas);
-
-    canvas->SetGraphicsWindow(gw);
-
-    osgViewer::Viewer *viewer = new osgViewer::Viewer;
-    viewer->getCamera()->setGraphicsContext(gw);
-    viewer->getCamera()->setViewport(0,0,width,height);
-
-    // set the draw and read buffers up for a double buffered window with rendering going to back buffer
-    viewer->getCamera()->setDrawBuffer(GL_BACK);
-    viewer->getCamera()->setReadBuffer(GL_BACK);
-
-    //viewer->addEventHandler(new osgViewer::StatsHandler);
-    viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
-
-
-	//init geommetry node which is a leaf node of scenegraph 
-	//containing geometry information
-	rootNode = new osg::Group;
-	frame->SetRootNode(rootNode);
 	
-	//initialize listener
-	initListener();
-	
-	//connect mainframe to soundproducer vector
-	frame->SetSoundProducerVectorRef(&sound_producer_vector);
-	
-	//initialize viewer
-    viewer->setSceneData(rootNode.get());
-    viewer->setCameraManipulator(new EditorManipulator);
-    frame->SetViewer(viewer);
+    //initialize openalsoft audio engine class
+    if(!audio_engine.initOpenALSoft())
+    {
+		std::cout << "Fatal error. Failed to initialize OpenAL Soft! \n";
+		return false;
+	}
+	else
+	{
+		int width = 800;
+		int height = 600;
 
-    /* Show the frame */
-    frame->Show(true);
+		// Create the main frame window
+
+		MainFrame *frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
+			wxDefaultPosition, wxSize(width, height));
+
+		// create osg canvas
+		//    - initialize
+
+		int attributes[7];
+		attributes[0] = int(WX_GL_DOUBLEBUFFER);
+		attributes[1] = WX_GL_RGBA;
+		attributes[2] = WX_GL_DEPTH_SIZE;
+		attributes[3] = 8;
+		attributes[4] = WX_GL_STENCIL_SIZE;
+		attributes[5] = 8;
+		attributes[6] = 0;
+
+		OSGCanvas *canvas = new OSGCanvas(frame, wxID_ANY, wxDefaultPosition,
+			wxSize(width, height), wxSUNKEN_BORDER, wxT("osgviewerWX"), attributes);
+
+		GraphicsWindowWX* gw = new GraphicsWindowWX(canvas);
+
+		canvas->SetGraphicsWindow(gw);
+
+		osgViewer::Viewer *viewer = new osgViewer::Viewer;
+		viewer->getCamera()->setGraphicsContext(gw);
+		viewer->getCamera()->setViewport(0,0,width,height);
+
+		// set the draw and read buffers up for a double buffered window with rendering going to back buffer
+		viewer->getCamera()->setDrawBuffer(GL_BACK);
+		viewer->getCamera()->setReadBuffer(GL_BACK);
+
+		//viewer->addEventHandler(new osgViewer::StatsHandler);
+		viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
+
+
+		//init geommetry node which is a leaf node of scenegraph 
+		//containing geometry information
+		rootNode = new osg::Group;
+		frame->SetRootNode(rootNode);
+		
+		//initialize listener
+		initListener();
+		
+		//connect mainframe to soundproducer vector
+		frame->SetSoundProducerVectorRef(&sound_producer_vector);
+		
+		//connect mainframe to openal soft audio engine 
+		frame->SetAudioEngineReference(&audio_engine);
+		
+		//initialize viewer
+		viewer->setSceneData(rootNode.get());
+		viewer->setCameraManipulator(new EditorManipulator);
+		frame->SetViewer(viewer);
+		
+		/* Show the frame */
+		frame->Show(true);
+	}
+    
 
     return true;
 }
@@ -154,6 +167,8 @@ void MainFrame::SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundPr
 	sound_producer_vector_ref = sound_producer_vector;
 }
 
+void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}
+
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
     if (!_viewer->isRealized())
@@ -197,7 +212,7 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 	//message: This is a wxWidgets Helo world sample
     //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
     
-    std::unique_ptr <CreateSoundProducerDialog> soundProducerNewDialog(new CreateSoundProducerDialog(wxT("Create New Sound Producer")) );
+    std::unique_ptr <CreateSoundProducerDialog> soundProducerNewDialog(new CreateSoundProducerDialog(wxT("Create New Sound Producer"),audioEnginePtr) );
     soundProducerNewDialog->Show(true);
     
     if(soundProducerNewDialog->OkClickedOn())
