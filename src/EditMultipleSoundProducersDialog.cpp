@@ -174,7 +174,7 @@ void EditMultipleSoundProducersDialog::OnBrowse(wxCommandEvent& event)
 	}   
 }
 
-void EditMultipleSoundProducersDialog::onApply(wxCommandEvent& event)
+void EditMultipleSoundProducersDialog::ChangeSoundProducerAttributes()
 {
 	int selection_index = listbox->GetSelection();
 	
@@ -190,30 +190,22 @@ void EditMultipleSoundProducersDialog::onApply(wxCommandEvent& event)
 		thisSoundProducer->setPositionX(xPosition);
 		thisSoundProducer->setPositionY(yPosition);
 		thisSoundProducer->setPositionZ(zPosition);
+		//change sound attributes
 		thisSoundProducer->setBuffer(buffer);
+		thisSoundProducer->CreateSourceFromBuffer();
 		thisSoundProducer->setFilepathToSound(soundFilePath);
 	}
 	
 }
 
+void EditMultipleSoundProducersDialog::onApply(wxCommandEvent& event)
+{
+	EditMultipleSoundProducersDialog::ChangeSoundProducerAttributes();	
+}
+
 void EditMultipleSoundProducersDialog::OnOk(wxCommandEvent& event )
 {
-	int selection_index = listbox->GetSelection();
-	
-	if(sound_producer_vector_ref != nullptr)
-	{
-		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(selection_index).get();
-		
-		//change position of selected sound producer based on what is in textfields
-		double xPosition, yPosition, zPosition;
-		( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
-		( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
-		( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
-		thisSoundProducer->setPositionX(xPosition);
-		thisSoundProducer->setPositionY(yPosition);
-		thisSoundProducer->setPositionZ(zPosition);
-		thisSoundProducer->setFilepathToSound(soundFilePath);
-	}
+	EditMultipleSoundProducersDialog::ChangeSoundProducerAttributes();
 	
 	okClicked = true;
 	
@@ -230,10 +222,11 @@ void EditMultipleSoundProducersDialog::Exit()
 {
 	if(okButton != nullptr){ delete okButton;}
 	if(cancelButton != nullptr){delete cancelButton;}
+	if(browseButton != nullptr){delete browseButton;}
 	if(textFieldX != nullptr){ delete textFieldX;}
 	if(textFieldY != nullptr){ delete textFieldY;}
 	if(textFieldZ != nullptr){ delete textFieldZ;}
-    
+    if(textFieldSoundFilePath != nullptr){delete textFieldSoundFilePath;}
     if(listbox != nullptr){delete listbox;}
     Close( true ); //close window
 }

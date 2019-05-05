@@ -5,7 +5,7 @@
 #include "AL/alc.h" //header for OpenAL Soft
 #include "AL/alext.h" //header for OpenAL Soft
 
-
+#include <cassert>
 #include <string>
 #include <cstdint>
 #include <vector>
@@ -43,8 +43,10 @@ class SoundProducer
 		void setFilepathToSound(std::string& filepath);
 		std::string& getFilepathToSound();
 		
-		void setBuffer(ALuint& thisBuffer);
+		void setBuffer(ALuint& thisSource);
 		ALuint* getBuffer();
+		
+		void CreateSourceFromBuffer(); //function to use openal soft audio engine to create source from buffer
 		
 		void setSource(ALuint& thisBuffer);
 		ALuint* getSource();

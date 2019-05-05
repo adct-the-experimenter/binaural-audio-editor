@@ -45,6 +45,7 @@ void SoundProducer::InitSoundProducer(std::string& thisName,std::string& filepat
 	m_filepath = filepath;
 	
 	m_buffer = buffer;
+	SoundProducer::CreateSourceFromBuffer();
 	
 	//set position
 	producer_position_vector[POSITION_INDEX::X] = x;
@@ -84,17 +85,12 @@ void SoundProducer::moveSource()
 	//if source is defined
 	if(m_source != 0)
 	{
-		#ifdef _cplusplus
-		//being compiled by a c++ compulter, inhibit mangling
-		extern "C" 
-		{
-			//move source 
-			alSource3f(m_source, AL_POSITION, 
-					(ALfloat)producer_position_vector[POSITION_INDEX::X], 
-					(ALfloat)producer_position_vector[POSITION_INDEX::Y], 
-					(ALfloat)producer_position_vector[POSITION_INDEX::Z]);
-		}
-		#endif
+	
+		//move source 
+		alSource3f(m_source, AL_POSITION, 
+				(ALfloat)producer_position_vector[POSITION_INDEX::X], 
+				(ALfloat)producer_position_vector[POSITION_INDEX::Y], 
+				(ALfloat)producer_position_vector[POSITION_INDEX::Z]);
 	}
 }
 
@@ -140,6 +136,16 @@ std::string& SoundProducer::getFilepathToSound(){return m_filepath;}
 
 void SoundProducer::setBuffer(ALuint& thisBuffer){m_buffer = thisBuffer;}
 ALuint* SoundProducer::getBuffer(){return &m_buffer;}
+
+void SoundProducer::CreateSourceFromBuffer()
+{
+	alGenSources(1, &m_source);
+	alSourcei(m_source, AL_SOURCE_RELATIVE, AL_TRUE);
+	alSourcei(m_source, AL_BUFFER, m_buffer);
+	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source.");
+
+	moveSource(); //move source to proper location based on current position vector
+}
 
 void SoundProducer::setSource(ALuint& thisSource){m_source = thisSource;}
 ALuint* SoundProducer::getSource(){return &m_source;}

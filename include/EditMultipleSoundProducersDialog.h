@@ -68,6 +68,8 @@ private:
 	
 	bool okClicked; //bool to indicate if ok button was clicked on
 	
+	void ChangeSoundProducerAttributes();
+	
 	void SoundProducerSelectedInListBox(wxCommandEvent& event );
 	
 	DECLARE_EVENT_TABLE()
