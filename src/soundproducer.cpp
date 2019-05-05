@@ -134,7 +134,17 @@ void SoundProducer::setFilepathToSound(std::string& filepath){m_filepath = filep
 
 std::string& SoundProducer::getFilepathToSound(){return m_filepath;}
 
-void SoundProducer::setBuffer(ALuint& thisBuffer){m_buffer = thisBuffer;}
+void SoundProducer::setBuffer(ALuint& thisBuffer)
+{
+	m_buffer = thisBuffer;
+	
+	//attach new buffer to source if source is defined
+	if(m_source != 0)
+	{
+		alSourcei(m_source, AL_SOURCE_RELATIVE, AL_TRUE);
+		alSourcei(m_source, AL_BUFFER, m_buffer);
+	}
+}
 ALuint* SoundProducer::getBuffer(){return &m_buffer;}
 
 void SoundProducer::CreateSourceFromBuffer()

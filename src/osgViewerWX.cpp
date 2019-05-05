@@ -120,6 +120,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_CREATE_SOUND_PRODUCER, MainFrame::OnCreateSoundProducer)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_SOUND_PRODUCERS, MainFrame::OnEditMultipleSoundProducers)
     EVT_BUTTON				(wxEVT_CONTEXT_MENU, MainFrame::OnPopupClick)
+    EVT_MENU				(MainFrame::ID_PLAY_AUDIO, MainFrame::OnPlayAudio)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -143,14 +144,20 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     wxMenu* menuSoundProducers = new wxMenu;
     menuSoundProducers->Append(MainFrame::ID_CREATE_SOUND_PRODUCER,"&Create Sound Producer");
     
-    //create edit multiple sound producers menu item
+    //create the edit multiple sound producers menu item
     menuSoundProducers->Append(MainFrame::ID_EDIT_MULTIPLE_SOUND_PRODUCERS,"&Edit Sound Producers");
+    
+   
+    //create playback menu item
+    wxMenu* menuPlayback = new wxMenu;
+    menuPlayback->Append(MainFrame::ID_PLAY_AUDIO,"&Play Audio");
     
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append( menuFile, "&File" ); //connect file menu item to file
-    menuBar->Append( menuSoundProducers, "&Sound Producers"); //connect Sound Producers menu item
-    menuBar->Append( menuHelp, "&Help" ); //connect help menu item to open audio
+    menuBar->Append( menuFile, "&File" ); //connect file menu item to file to bar
+    menuBar->Append( menuSoundProducers, "&Sound Producers"); //connect Sound Producers menu item to bar
+    menuBar->Append( menuPlayback, "&Playback"); //connect Playback menu item to bar
+    menuBar->Append( menuHelp, "&Help" ); //connect help menu item  to bar
 
     SetMenuBar( menuBar );
     
@@ -203,6 +210,17 @@ void MainFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 		//use this path in your app
 	}   
 
+}
+
+void MainFrame::OnPlayAudio(wxCommandEvent& event)
+{
+	if(sound_producer_vector_ref != nullptr)
+	{
+		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(0).get();
+		audioEnginePtr->playSound(thisSoundProducer->getSource());
+	}
+	
+	
 }
 
 void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)

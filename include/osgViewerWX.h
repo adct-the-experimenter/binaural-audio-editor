@@ -152,9 +152,12 @@ public:
     void OnIdle(wxIdleEvent& event);
 	void OnExit(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
+	void OnPlayAudio(wxCommandEvent& event);
 	
 	void OnListRightClick(wxListEvent &evt);
 	void OnPopupClick(wxCommandEvent &evt);
+	
+	
 	
 	void OnKeyDown(wxKeyEvent& event); //where camera viewer gets manipulated
 	
@@ -167,7 +170,8 @@ private:
 	enum
 	{
 		ID_CREATE_SOUND_PRODUCER = 1,
-		ID_EDIT_MULTIPLE_SOUND_PRODUCERS = 2
+		ID_EDIT_MULTIPLE_SOUND_PRODUCERS = 2,
+		ID_PLAY_AUDIO,
 	};
 	
 	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;

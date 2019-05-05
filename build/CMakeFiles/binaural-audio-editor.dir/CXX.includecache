@@ -6,16 +6,6 @@
 
 #IncludeRegexTransform: 
 
-.././include/CreateSoundProducerDialog.h
-wx/wx.h
--
-wx/valnum.h
--
-wx/textctrl.h
--
-openalsoftaudioengine.h
--
-
 .././include/EditMultipleSoundProducersDialog.h
 memory
 -
@@ -30,12 +20,6 @@ wx/listbox.h
 soundproducer.h
 .././include/soundproducer.h
 openalsoftaudioengine.h
--
-
-.././include/EditorManipulator.h
-osgGA/OrbitManipulator
--
-iostream
 -
 
 .././include/openalsoftaudioengine.h
@@ -62,60 +46,6 @@ cstdint
 vector
 -
 iostream
--
-
-.././include/osgViewerWX.h
-wx/defs.h
-.././include/wx/defs.h
-wx/app.h
-.././include/wx/app.h
-wx/cursor.h
-.././include/wx/cursor.h
-wx/glcanvas.h
-.././include/wx/glcanvas.h
-osgViewer/Viewer
--
-string
--
-wx/filedlg.h
--
-wx/listctrl.h
--
-wx/wxprec.h
-.././include/wx/wxprec.h
-wx/wx.h
-.././include/wx/wx.h
-wx/image.h
--
-wx/menu.h
--
-osgViewer/ViewerEventHandlers
--
-osgDB/ReadFile
--
-osg/ShapeDrawable
--
-osg/Geode
--
-osg/PositionAttitudeTransform
--
-osg/Group
--
-openalsoftaudioengine.h
-.././include/openalsoftaudioengine.h
-EditorManipulator.h
-.././include/EditorManipulator.h
-soundproducer.h
-.././include/soundproducer.h
-CreateSoundProducerDialog.h
-.././include/CreateSoundProducerDialog.h
-EditMultipleSoundProducersDialog.h
-.././include/EditMultipleSoundProducersDialog.h
-openalsoftaudioengine.h
-.././include/openalsoftaudioengine.h
-iostream
--
-memory
 -
 
 .././include/soundproducer.h
@@ -145,10 +75,6 @@ osg/Geode
 /home/archman/CodeProj/cpp_projects/binaural-audio-editor/src/EditMultipleSoundProducersDialog.cpp
 EditMultipleSoundProducersDialog.h
 /home/archman/CodeProj/cpp_projects/binaural-audio-editor/src/EditMultipleSoundProducersDialog.h
-
-/home/archman/CodeProj/cpp_projects/binaural-audio-editor/src/osgViewerWX.cpp
-osgViewerWX.h
-/home/archman/CodeProj/cpp_projects/binaural-audio-editor/src/osgViewerWX.h
 
 /usr/include/wx-3.0/wx/accel.h
 wx/defs.h
@@ -1248,28 +1174,6 @@ wx/gdicmn.h
 wx/math.h
 /usr/include/wx-3.0/wx/wx/math.h
 
-/usr/include/wx-3.0/wx/glcanvas.h
-wx/defs.h
-/usr/include/wx-3.0/wx/wx/defs.h
-wx/app.h
-/usr/include/wx-3.0/wx/wx/app.h
-wx/palette.h
-/usr/include/wx-3.0/wx/wx/palette.h
-wx/window.h
-/usr/include/wx-3.0/wx/wx/window.h
-wx/msw/glcanvas.h
-/usr/include/wx-3.0/wx/wx/msw/glcanvas.h
-wx/x11/glcanvas.h
-/usr/include/wx-3.0/wx/wx/x11/glcanvas.h
-wx/gtk/glcanvas.h
-/usr/include/wx-3.0/wx/wx/gtk/glcanvas.h
-wx/gtk1/glcanvas.h
-/usr/include/wx-3.0/wx/wx/gtk1/glcanvas.h
-wx/osx/glcanvas.h
-/usr/include/wx-3.0/wx/wx/osx/glcanvas.h
-wx/cocoa/glcanvas.h
-/usr/include/wx-3.0/wx/wx/cocoa/glcanvas.h
-
 /usr/include/wx-3.0/wx/gtk/accel.h
 wx/generic/accel.h
 /usr/include/wx-3.0/wx/gtk/wx/generic/accel.h
@@ -1333,10 +1237,6 @@ wx/gtk/filectrl.h
 /usr/include/wx-3.0/wx/gtk/frame.h
 
 /usr/include/wx-3.0/wx/gtk/gauge.h
-
-/usr/include/wx-3.0/wx/gtk/glcanvas.h
-wx/unix/glx11.h
-/usr/include/wx-3.0/wx/gtk/wx/unix/glx11.h
 
 /usr/include/wx-3.0/wx/gtk/listbox.h
 
@@ -2552,10 +2452,6 @@ signal.h
 
 /usr/include/wx-3.0/wx/unix/chkconf.h
 
-/usr/include/wx-3.0/wx/unix/glx11.h
-GL/glx.h
--
-
 /usr/include/wx-3.0/wx/unix/tls.h
 pthread.h
 -
@@ -2911,26 +2807,6 @@ wx/string.h
 /usr/include/wx-3.0/wx/wx/string.h
 stdarg.h
 -
-
-/usr/include/wx-3.0/wx/wxprec.h
-wx/defs.h
-/usr/include/wx-3.0/wx/wx/defs.h
-wx/chartype.h
-/usr/include/wx-3.0/wx/wx/chartype.h
-wx/msw/wrapwin.h
-/usr/include/wx-3.0/wx/wx/msw/wrapwin.h
-wx/msw/private.h
-/usr/include/wx-3.0/wx/wx/msw/private.h
-wx/msw/wrapcctl.h
-/usr/include/wx-3.0/wx/wx/msw/wrapcctl.h
-wx/msw/wrapcdlg.h
-/usr/include/wx-3.0/wx/wx/msw/wrapcdlg.h
-wx/msw/missing.h
-/usr/include/wx-3.0/wx/wx/msw/missing.h
-wx/os2/private.h
-/usr/include/wx-3.0/wx/wx/os2/private.h
-wx/wx.h
-/usr/include/wx-3.0/wx/wx/wx.h
 
 /usr/include/wx-3.0/wx/xti.h
 wx/defs.h

@@ -38,7 +38,7 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	
 	//initialize text fields
 	wxFloatingPointValidator <double> validator(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator.SetRange(-0.01,10.00);     // set allowable range
+    validator.SetRange(-10.00,10.00);     // set allowable range
     
     
     
@@ -139,6 +139,8 @@ void EditMultipleSoundProducersDialog::initPrivateVariables()
 	listbox = nullptr;
 	
 	applyButton = nullptr; okButton = nullptr; cancelButton = nullptr;
+	soundFilePath = " ";
+	buffer = 0;
 }
 
 void EditMultipleSoundProducersDialog::OnBrowse(wxCommandEvent& event)
@@ -190,10 +192,9 @@ void EditMultipleSoundProducersDialog::ChangeSoundProducerAttributes()
 		thisSoundProducer->setPositionX(xPosition);
 		thisSoundProducer->setPositionY(yPosition);
 		thisSoundProducer->setPositionZ(zPosition);
-		//change sound attributes
-		thisSoundProducer->setBuffer(buffer);
-		thisSoundProducer->CreateSourceFromBuffer();
-		thisSoundProducer->setFilepathToSound(soundFilePath);
+		//change sound attributes, if they have been changed in menu
+		if(buffer != 0){thisSoundProducer->setBuffer(buffer);}
+		if(soundFilePath != " "){thisSoundProducer->setFilepathToSound(soundFilePath);}
 	}
 	
 }
