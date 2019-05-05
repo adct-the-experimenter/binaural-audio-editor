@@ -20,7 +20,8 @@ wxwidgets https://www.wxwidgets.org/
 5. cd build
 6. cmake .. -DwxWidgets_CONFIG_EXECUTABLE=path-to-wxconfig-executable
     
-    FreeBSD and Linux: /usr/local/bin/wxgtk3u-3.1-config
+    FreeBSD: /usr/local/bin/wxgtk3u-3.1-config
+    Linux: /usr/bin/wx-config-gtk3
 7. make
 8. ./binaural-audio-editor
 
