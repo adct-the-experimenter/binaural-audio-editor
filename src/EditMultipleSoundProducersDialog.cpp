@@ -1,9 +1,12 @@
 #include "EditMultipleSoundProducersDialog.h"
 
 EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxString & title,
-																	std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector)
+																	std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector,
+																	OpenAlSoftAudioEngine* audioEngine)
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
 {
+	
+	ptrAudioEngine = audioEngine;
 	
 	EditMultipleSoundProducersDialog::initPrivateVariables();
 	
@@ -74,6 +77,24 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	
 	hbox->Add(vboxEdit, 1, wxEXPAND | wxALL, 10);
 	
+	//make horizontal box to display info for browse and sound file text field
+	wxBoxSizer *hBoxSound = new wxBoxSizer(wxHORIZONTAL);
+	
+	//initialize browse button
+    browseButton = new wxButton(this, EditMultipleSoundProducersDialog::ID_BROWSE, wxT("Browse"), 
+							wxPoint(110,140), wxSize(70, 30));
+	//initialize text field for sound
+	textFieldSoundFilePath = new wxTextCtrl(this,-1, "", 
+		wxPoint(95, 140), wxSize(80,20),
+		wxTE_READONLY, wxDefaultValidator,       
+		wxT("Sound")); 
+	
+	hBoxSound->Add(textFieldSoundFilePath);						
+	hBoxSound->Add(browseButton); //add browse button to 
+	
+	hbox->Add(hBoxSound, 1, wxEXPAND | wxALL, 10);
+	
+	
 	//initialize Ok and Cancel buttons 
 	okButton = new wxButton(this, EditMultipleSoundProducersDialog::ID_OK, wxT("Ok"), 
 	wxDefaultPosition, wxSize(70, 30)
@@ -120,6 +141,39 @@ void EditMultipleSoundProducersDialog::initPrivateVariables()
 	applyButton = nullptr; okButton = nullptr; cancelButton = nullptr;
 }
 
+void EditMultipleSoundProducersDialog::OnBrowse(wxCommandEvent& event)
+{
+	wxFileDialog fileDlg(this, _("Choose the WAV file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|All files|*.*"));
+	if (fileDlg.ShowModal() == wxID_OK)
+	{
+		wxString path = fileDlg.GetPath();
+		//use this path in your app
+		soundFilePath = std::string(path.mb_str());
+		std::cout << "Sound file path:" << soundFilePath << std::endl;
+		
+		ALuint tempBuffer;
+		//load sound file
+		ptrAudioEngine->loadSound(&tempBuffer,soundFilePath);
+		
+		//if error in loading, show a message box 
+		if( tempBuffer == 0)
+		{
+			std::cout << soundFilePath << "did not load successfully! \n";
+		}
+		//if successfuly
+		else
+		{
+			//put sound file path string into textfieldSoundFilePath
+			wxString thisPath(soundFilePath);
+			textFieldSoundFilePath->WriteText(thisPath) ;
+			//save to buffer
+			buffer = tempBuffer;
+		} 
+			
+		
+	}   
+}
+
 void EditMultipleSoundProducersDialog::onApply(wxCommandEvent& event)
 {
 	int selection_index = listbox->GetSelection();
@@ -136,6 +190,8 @@ void EditMultipleSoundProducersDialog::onApply(wxCommandEvent& event)
 		thisSoundProducer->setPositionX(xPosition);
 		thisSoundProducer->setPositionY(yPosition);
 		thisSoundProducer->setPositionZ(zPosition);
+		thisSoundProducer->setBuffer(buffer);
+		thisSoundProducer->setFilepathToSound(soundFilePath);
 	}
 	
 }
@@ -156,6 +212,7 @@ void EditMultipleSoundProducersDialog::OnOk(wxCommandEvent& event )
 		thisSoundProducer->setPositionX(xPosition);
 		thisSoundProducer->setPositionY(yPosition);
 		thisSoundProducer->setPositionZ(zPosition);
+		thisSoundProducer->setFilepathToSound(soundFilePath);
 	}
 	
 	okClicked = true;
@@ -196,6 +253,8 @@ void EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox(wxCommandE
 		 (*textFieldX) << thisSoundProducer->getPositionX();
 		 (*textFieldY) << thisSoundProducer->getPositionY();
 		 (*textFieldZ) << thisSoundProducer->getPositionZ();
+		 wxString thisPath(thisSoundProducer->getFilepathToSound());
+		 textFieldSoundFilePath->WriteText(thisPath);
 	}
 }
 
@@ -207,4 +266,6 @@ BEGIN_EVENT_TABLE(EditMultipleSoundProducersDialog, wxDialog)
     EVT_BUTTON				(ID_CANCEL, EditMultipleSoundProducersDialog::OnCancel)
     EVT_BUTTON				(ID_APPLY, EditMultipleSoundProducersDialog::onApply)
     EVT_LISTBOX				(ID_LISTBOX,  EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox)
+    
+    EVT_BUTTON				(ID_BROWSE, EditMultipleSoundProducersDialog::OnBrowse)
 END_EVENT_TABLE()

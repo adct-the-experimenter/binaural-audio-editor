@@ -6,21 +6,14 @@
 
 #include "time.h"
 
+#include "AL/al.h" //header for OpenAL Soft
+#include "AL/alc.h" //header for OpenAL Soft
+#include "AL/alext.h" //header for OpenAL Soft
 
-#ifdef _cplusplus
-extern "C":
-{
-#endif
-	#include "AL/al.h" //header for OpenAL Soft
-	#include "AL/alc.h" //header for OpenAL Soft
-	#include "AL/alext.h" //header for OpenAL Soft
-
-#ifdef _cplusplus
-}
-#endif
 
 #include "sndfile.h"
 
+#include <cstring> //for memset
 #include <string>
 #include <cstdint>
 #include <vector>

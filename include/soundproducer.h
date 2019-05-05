@@ -37,7 +37,8 @@ class SoundProducer
 		void setPositionZ(double& z); //set z position of sound producer
 		float getPositionZ(); //get z position of sound producer
 		
-		void InitSoundProducer(std::string& thisName, double& x, double& y, double& z);
+		void InitSoundProducer(std::string& thisName, std::string& filepath, ALuint& buffer,
+								double& x, double& y, double& z);
 		
 		void setFilepathToSound(std::string& filepath);
 		std::string& getFilepathToSound();

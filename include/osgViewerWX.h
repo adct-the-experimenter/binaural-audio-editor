@@ -173,7 +173,7 @@ private:
 	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
-	void CreateSoundProducer(std::string& name,double& x, double& y, double& z);
+	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
 	
 	void OnEditMultipleSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
 	

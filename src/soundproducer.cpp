@@ -38,9 +38,13 @@ SoundProducer::~SoundProducer()
 	}
 }
 
-void SoundProducer::InitSoundProducer(std::string& thisName,double& x, double& y, double& z)
+void SoundProducer::InitSoundProducer(std::string& thisName,std::string& filepath, ALuint& buffer,
+									double& x, double& y, double& z)
 {
 	name = thisName;
+	m_filepath = filepath;
+	
+	m_buffer = buffer;
 	
 	//set position
 	producer_position_vector[POSITION_INDEX::X] = x;

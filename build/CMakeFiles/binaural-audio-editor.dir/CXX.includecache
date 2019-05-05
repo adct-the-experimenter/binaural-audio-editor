@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+.././include/soundproducer.h
+AL/al.h
+.././include/AL/al.h
+AL/alc.h
+.././include/AL/alc.h
+AL/alext.h
+.././include/AL/alext.h
+string
+-
+cstdint
+-
+vector
+-
+iostream
+-
+osg/ShapeDrawable
+-
+osg/PositionAttitudeTransform
+-
+osg/Geode
+-
+
+/home/archman/CodeProj/cpp_projects/binaural-audio-editor/src/soundproducer.cpp
+soundproducer.h
+/home/archman/CodeProj/cpp_projects/binaural-audio-editor/src/soundproducer.h
+

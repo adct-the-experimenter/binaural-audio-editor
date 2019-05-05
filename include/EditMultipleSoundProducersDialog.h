@@ -10,12 +10,15 @@
 
 #include "soundproducer.h"
 
+#include <openalsoftaudioengine.h> //for loading buffer and creating source of sound producer
 
 class EditMultipleSoundProducersDialog : public wxDialog
 {
 
 public:
-	EditMultipleSoundProducersDialog(const wxString& title,std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector);
+	EditMultipleSoundProducersDialog(const wxString& title,
+									std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector,
+									OpenAlSoftAudioEngine* audioEngine);
 	
 	
 	void OnOk(wxCommandEvent& event );
@@ -23,6 +26,8 @@ public:
 	void OnCancel(wxCommandEvent& event);
 	
 	void onApply(wxCommandEvent& event);
+	
+	void OnBrowse(wxCommandEvent& event);
 
 	void Exit();
 	
@@ -32,7 +37,8 @@ public:
 		ID_APPLY,
 		ID_CANCEL,
 		ID_RENAME,
-		ID_LISTBOX
+		ID_LISTBOX,
+		ID_BROWSE
 	};
 	
 	
@@ -51,6 +57,12 @@ private:
 	wxTextCtrl* textFieldZ;
 	
 	wxListBox* listbox;
+	
+	OpenAlSoftAudioEngine* ptrAudioEngine;
+	wxTextCtrl* textFieldSoundFilePath;
+	wxButton* browseButton;
+	std::string soundFilePath;
+	ALuint buffer;
 	
 	void initPrivateVariables(); 
 	

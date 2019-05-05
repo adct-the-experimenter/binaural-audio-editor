@@ -212,7 +212,8 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 	//message: This is a wxWidgets Helo world sample
     //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
     
-    std::unique_ptr <CreateSoundProducerDialog> soundProducerNewDialog(new CreateSoundProducerDialog(wxT("Create New Sound Producer"),audioEnginePtr) );
+    std::unique_ptr <CreateSoundProducerDialog> soundProducerNewDialog(new CreateSoundProducerDialog(wxT("Create New Sound Producer"),
+																									audioEnginePtr) );
     soundProducerNewDialog->Show(true);
     
     if(soundProducerNewDialog->OkClickedOn())
@@ -221,16 +222,18 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 		
 		soundProducerNewDialog->getNewPosition(x,y,z);
 		std::string name = soundProducerNewDialog->getNewName();
-		MainFrame::CreateSoundProducer(name,x,y,z);
+		std::string filePath = soundProducerNewDialog->getSoundFilePath();
+		ALuint buffer = soundProducerNewDialog->getBuffer();
+		MainFrame::CreateSoundProducer(name,filePath,buffer,x,y,z);
 	}
 	
 }
 
-void MainFrame::CreateSoundProducer(std::string& name, double& x, double& y, double& z)
+void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z)
 {
 	std::unique_ptr <SoundProducer> thisSoundProducer( new SoundProducer() );
 	
-	thisSoundProducer->InitSoundProducer(name,x,y,z);
+	thisSoundProducer->InitSoundProducer(name,filePath,buffer,x,y,z);
 	
 	//add position attitude transform to root group of nodes
 	_rootNode->addChild( thisSoundProducer.get()->getTransformNode() );
@@ -242,7 +245,8 @@ void MainFrame::CreateSoundProducer(std::string& name, double& x, double& y, dou
 void MainFrame::OnEditMultipleSoundProducers(wxCommandEvent& event)
 {
 	std::unique_ptr <EditMultipleSoundProducersDialog> soundProducerEditDialog(new EditMultipleSoundProducersDialog( wxT("Edit Sound Producers"),
-																													sound_producer_vector_ref) 
+																													sound_producer_vector_ref,
+																													audioEnginePtr) 
 																				);
 																				
     soundProducerEditDialog->Show(true);

@@ -33,7 +33,7 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title, Ope
 								validator,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	textFieldSoundFilePath = new wxTextCtrl(this,-1, "0.00", 
+	textFieldSoundFilePath = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 140), wxSize(80,20),
 								wxTE_READONLY, wxDefaultValidator,       
 								wxT("")); 
@@ -72,7 +72,7 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title, Ope
 	hboxName->Add(NameText);
 	hboxName->Add(textFieldName);
 	
-	vbox->Add(hboxName);
+	vbox->Add(hboxName, 1, wxEXPAND | wxALL, 10);
 	
 	vbox->Add(positionText);
 	
@@ -80,30 +80,30 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title, Ope
 	hboxX->Add(xPositionText);
 	hboxX->Add(textFieldX);
 	
-	vbox->Add(hboxX);
+	vbox->Add(hboxX,1, wxEXPAND | wxALL, 10);
 	
 	wxBoxSizer *hboxY = new wxBoxSizer(wxHORIZONTAL);
 	hboxY->Add(yPositionText);
 	hboxY->Add(textFieldY);
 	
-	vbox->Add(hboxY);
+	vbox->Add(hboxY,1, wxEXPAND | wxALL, 10);
 	
 	wxBoxSizer *hboxZ = new wxBoxSizer(wxHORIZONTAL);
 	hboxZ->Add(zPositionText);
 	hboxZ->Add(textFieldZ);
 	
-	vbox->Add(hboxZ);
+	vbox->Add(hboxZ,1, wxEXPAND | wxALL, 10);
 	
 	wxBoxSizer *hboxSoundFile = new wxBoxSizer(wxHORIZONTAL);
 	hboxSoundFile->Add(SoundText);
 	hboxSoundFile->Add(textFieldSoundFilePath);
 	hboxSoundFile->Add(browseButton);
 	
-	vbox->Add(hboxSoundFile);
+	vbox->Add(hboxSoundFile,1, wxEXPAND | wxALL, 10);
 	
 	vbox->Add(hbox5, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
 
-	SetSizer(vbox);
+	SetSizerAndFit(vbox);
 
 	CreateSoundProducerDialog::initPrivateVariables();
 	
@@ -145,11 +145,12 @@ void CreateSoundProducerDialog::OnBrowse(wxCommandEvent& event)
 		soundFilePath = std::string(path.mb_str());
 		std::cout << "Sound file path:" << soundFilePath << std::endl;
 		
+		ALuint tempBuffer;
 		//load sound file
-		ptrAudioEngine->loadSound(&buffer,soundFilePath);
+		ptrAudioEngine->loadSound(&tempBuffer,soundFilePath);
 		
 		//if error in loading, show a message box 
-		if( buffer == 0)
+		if( tempBuffer == 0)
 		{
 			std::cout << soundFilePath << "did not load successfully! \n";
 		}
@@ -157,7 +158,10 @@ void CreateSoundProducerDialog::OnBrowse(wxCommandEvent& event)
 		else
 		{
 			//put sound file path string into textfieldSoundFilePath
+			wxString thisPath(soundFilePath);
+			textFieldSoundFilePath->WriteText(thisPath) ;
 			//save to buffer
+			buffer = tempBuffer;
 		} 
 			
 		
@@ -183,12 +187,16 @@ void CreateSoundProducerDialog::Exit()
 
 std::string CreateSoundProducerDialog::getNewName(){return name;}
 
+std::string& CreateSoundProducerDialog::getSoundFilePath(){return soundFilePath;}
+
 void CreateSoundProducerDialog::getNewPosition(double& x, double& y, double& z)
 {
 	x = xPosition;
 	y = yPosition;
 	z = zPosition;
 }
+
+ALuint& CreateSoundProducerDialog::getBuffer(){return buffer;}
 
 bool CreateSoundProducerDialog::OkClickedOn(){ return okClicked;}
 

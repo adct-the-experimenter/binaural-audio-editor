@@ -35,6 +35,10 @@ public:
 	
 	std::string getNewName();
 	
+	std::string& getSoundFilePath();
+	
+	ALuint& getBuffer();
+	
 	bool OkClickedOn();
 	
 private:
