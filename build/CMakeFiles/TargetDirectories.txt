@@ -1,3 +1,0 @@
-/home/archman/CodeProj/cpp_projects/binaural-audio-editor/build/CMakeFiles/rebuild_cache.dir
-/home/archman/CodeProj/cpp_projects/binaural-audio-editor/build/CMakeFiles/binaural-audio-editor.dir
-/home/archman/CodeProj/cpp_projects/binaural-audio-editor/build/CMakeFiles/edit_cache.dir
