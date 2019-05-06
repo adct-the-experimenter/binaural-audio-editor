@@ -21,10 +21,15 @@ wxwidgets https://www.wxwidgets.org/
 6. cmake .. -DwxWidgets_CONFIG_EXECUTABLE=path-to-wxconfig-executable
     
     FreeBSD: /usr/local/bin/wxgtk3u-3.1-config
+    
     Linux: /usr/bin/wx-config-gtk3
 7. make
 8. ./binaural-audio-editor
 
 # Controls
-  *Left Click and mouse movement to move orientation of camera i.e. the direction the camera is facing.
-  *Right Click and mouse movement to move position of camera.
+
+  *Left Click and mouse movement to move orientation of the camera i.e. the direction the camera is facing.
+  
+  *Right Click and mouse movement to move the camera forward or backward.
+  
+  *Left Click + Right Click and mouse movement to move the camera up, down, left, or right.
