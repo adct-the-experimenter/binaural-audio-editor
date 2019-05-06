@@ -216,11 +216,13 @@ void MainFrame::OnPlayAudio(wxCommandEvent& event)
 {
 	if(sound_producer_vector_ref != nullptr)
 	{
-		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(0).get();
-		audioEnginePtr->playSound(thisSoundProducer->getSource());
+		//play all sounds of sound producers at same time for now
+		for(size_t i = 0; i < sound_producer_vector_ref->size(); i++)
+		{
+			SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(i).get();
+			audioEnginePtr->playSound( thisSoundProducer->getSource() );
+		}	
 	}
-	
-	
 }
 
 void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)

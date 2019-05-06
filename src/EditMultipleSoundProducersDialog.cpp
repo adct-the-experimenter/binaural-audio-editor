@@ -24,7 +24,7 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	//add contents of soundproducers to listbox
 	for(size_t i = 0; i < sound_producer_vector_ref->size(); i++)
 	{
-		SoundProducer* thisSoundProducer = sound_producer_vector->at(i).get();
+		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(i).get();
 		wxString mystring( thisSoundProducer->GetNameString() );
 		listbox->Append(mystring);
 	}
@@ -243,12 +243,17 @@ void EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox(wxCommandE
 		//wxString mystring( thisSoundProducer->GetNameString() );
 		//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;
 		
+		//reset text fields
+		textFieldX->Clear();
+		textFieldY->Clear();
+		textFieldZ->Clear();
+		
 		//update position text fields to have current position of sound producer selected
-		 (*textFieldX) << thisSoundProducer->getPositionX();
-		 (*textFieldY) << thisSoundProducer->getPositionY();
-		 (*textFieldZ) << thisSoundProducer->getPositionZ();
-		 wxString thisPath(thisSoundProducer->getFilepathToSound());
-		 textFieldSoundFilePath->WriteText(thisPath);
+		(*textFieldX) << thisSoundProducer->getPositionX();
+		(*textFieldY) << thisSoundProducer->getPositionY();
+		(*textFieldZ) << thisSoundProducer->getPositionZ();
+		wxString thisPath(thisSoundProducer->getFilepathToSound());
+		textFieldSoundFilePath->WriteText(thisPath);
 	}
 }
 

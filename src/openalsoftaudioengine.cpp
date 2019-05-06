@@ -519,12 +519,15 @@ void OpenAlSoftAudioEngine::playSound(ALuint* source)
 	
 	/* Play the sound until it finishes. */
 	
-	alSourcePlay(*source);
-	do {
-		al_nssleep(10000000);
+	alGetSourcei(*source, AL_SOURCE_STATE, &state);
+	if (state == AL_STOPPED || state == AL_INITIAL){ alSourcePlay(*source);}
+	
+	//alSourcePlay(*source);
+	//do {
+	//	al_nssleep(10000000);
 
-		alGetSourcei(*source, AL_SOURCE_STATE, &state);
-	} while(alGetError() == AL_NO_ERROR && state == AL_PLAYING);
+	//	alGetSourcei(*source, AL_SOURCE_STATE, &state);
+	//} while(alGetError() == AL_NO_ERROR && state == AL_PLAYING);
 
 }
 

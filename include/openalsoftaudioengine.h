@@ -88,7 +88,7 @@ public:
 	void createSource(ALuint* buffer,ALuint* source);	
 	
 	void playSound(ALuint* source);
-
+	
 private:
 
     //OpenAL Soft sound setup variables
