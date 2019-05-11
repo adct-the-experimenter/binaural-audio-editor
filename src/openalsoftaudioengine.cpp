@@ -236,7 +236,7 @@ static LPALCGETSTRINGISOFT alcGetStringiSOFT;
 static LPALCRESETDEVICESOFT alcResetDeviceSOFT;
 
 
-void OpenAlSoftAudioEngine::testHRTF()
+void OpenAlSoftAudioEngine::TestHRTF()
 {
 
     //call after initOpenALSoft
@@ -307,7 +307,6 @@ void OpenAlSoftAudioEngine::testHRTF()
 		alcGetIntegerv(gAudioDevice, ALC_HRTF_SOFT, 1, &hrtf_state);
 		if(!hrtf_state)
 		{
-			
 			testHRTF_Results.append("HRTF not enabled!\n");
 		}
 		else

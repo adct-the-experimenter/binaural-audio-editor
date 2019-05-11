@@ -28,8 +28,6 @@
 #define		MAX_CHANNELS	2
 
 
-
-
 //class inherits from QQMLPropertValue
 class OpenAlSoftAudioEngine 
 {
@@ -73,7 +71,7 @@ public:
     
 //HRTF
     //function to perform tests for HRTF support
-    void testHRTF();
+    void TestHRTF();
     std::string getHRTFTestResult();
     void clear_testHRTFResults();
 

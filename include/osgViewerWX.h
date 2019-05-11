@@ -46,7 +46,7 @@
 #include "soundproducer.h"
 #include "CreateSoundProducerDialog.h"
 #include "EditMultipleSoundProducersDialog.h"
-
+#include "HRTF-Test-Dialog.h"
 
 #include "openalsoftaudioengine.h"
 
@@ -170,8 +170,9 @@ private:
 	enum
 	{
 		ID_CREATE_SOUND_PRODUCER = 1,
-		ID_EDIT_MULTIPLE_SOUND_PRODUCERS = 2,
+		ID_EDIT_MULTIPLE_SOUND_PRODUCERS,
 		ID_PLAY_AUDIO,
+		ID_TEST_HRTF
 	};
 	
 	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;
@@ -180,7 +181,8 @@ private:
 	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
 	
 	void OnEditMultipleSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
-	
+	void OnTestHRTF(wxCommandEvent& event); //function for menu to test HRTF and get results
+    
     DECLARE_EVENT_TABLE()
 };
 

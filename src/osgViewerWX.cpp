@@ -121,6 +121,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_SOUND_PRODUCERS, MainFrame::OnEditMultipleSoundProducers)
     EVT_BUTTON				(wxEVT_CONTEXT_MENU, MainFrame::OnPopupClick)
     EVT_MENU				(MainFrame::ID_PLAY_AUDIO, MainFrame::OnPlayAudio)
+    EVT_MENU				(MainFrame::ID_TEST_HRTF, MainFrame::OnTestHRTF)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -152,10 +153,15 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     wxMenu* menuPlayback = new wxMenu;
     menuPlayback->Append(MainFrame::ID_PLAY_AUDIO,"&Play Audio");
     
+    //Create hrtf menu item
+    wxMenu* menuHRTF = new wxMenu;
+    menuHRTF->Append(MainFrame::ID_TEST_HRTF,"&Test HRTF");
+    
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append( menuFile, "&File" ); //connect file menu item to file to bar
     menuBar->Append( menuSoundProducers, "&Sound Producers"); //connect Sound Producers menu item to bar
+    menuBar->Append( menuHRTF, "&HRTF"); //connect HRTF menu item to bar
     menuBar->Append( menuPlayback, "&Playback"); //connect Playback menu item to bar
     menuBar->Append( menuHelp, "&Help" ); //connect help menu item  to bar
 
@@ -271,23 +277,26 @@ void MainFrame::OnEditMultipleSoundProducers(wxCommandEvent& event)
 																				
     soundProducerEditDialog->Show(true);
     
-    if(soundProducerEditDialog->OkClickedOn())
-    {
-		
-	}
 }
 
-#define ID_SOMETHING		2001
-#define ID_SOMETHING_ELSE	2002
+void MainFrame::OnTestHRTF(wxCommandEvent& event)
+{
+	std::unique_ptr <HRTFTestDialog> hrtfTestDialog(new HRTFTestDialog( wxT("Test HRTF"),
+																		audioEnginePtr) 
+													);
+																				
+    hrtfTestDialog->Show(true);
+    
+}
  
 void MainFrame::OnPopupClick(wxCommandEvent& evt)
 {
 	void *data=static_cast<wxMenu *>( evt.GetEventObject() )->GetClientData();
-	switch(evt.GetId()) 
-	{
-		case ID_SOMETHING:{break;}
-		case ID_SOMETHING_ELSE:{break;}
-	}
+	//switch(evt.GetId()) 
+	//{
+	//	case ID_SOMETHING:{break;}
+	//	case ID_SOMETHING_ELSE:{break;}
+	//}
 }
  
 void MainFrame::OnListRightClick(wxListEvent& evt)
@@ -295,8 +304,6 @@ void MainFrame::OnListRightClick(wxListEvent& evt)
 	void *data = reinterpret_cast<void *>(evt.GetItem().GetData());
 	wxMenu menu;
 	menu.SetClientData( data );
-	menu.Append(ID_SOMETHING, 	"Do something");
-	menu.Append(ID_SOMETHING_ELSE, 	"Do something else");
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnPopupClick), NULL, this);
 	PopupMenu(&menu);
 }

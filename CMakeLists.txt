@@ -28,7 +28,7 @@ include_directories(/usr/include /usr/local/include ./include ${PROJECT_INCLUDE_
 
 set(SOURCES src/osgViewerWX.cpp   
 			src/EditorManipulator.cpp
-			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp
+			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp src/HRTF-Test-Dialog.cpp 
 			 src/openalsoftaudioengine.cpp src/soundproducer.cpp
 			 )
 
