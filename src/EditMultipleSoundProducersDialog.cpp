@@ -248,6 +248,8 @@ void EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox(wxCommandE
 		textFieldY->Clear();
 		textFieldZ->Clear();
 		
+		textFieldSoundFilePath->Clear();
+		
 		//update position text fields to have current position of sound producer selected
 		(*textFieldX) << thisSoundProducer->getPositionX();
 		(*textFieldY) << thisSoundProducer->getPositionY();

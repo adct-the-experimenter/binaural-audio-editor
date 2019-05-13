@@ -33,3 +33,13 @@ wxwidgets https://www.wxwidgets.org/
   *Right Click and mouse movement to move the camera forward or backward.
   
   *Left Click + Right Click and mouse movement to move the camera up, down, left, or right.
+
+# Instructions
+  
+  Dark blue cube is you the listener. 
+  
+  Negative position is the left side from the center.
+  
+  Positive position is the right side from the center.
+  
+  Light blue cubes are the sound producers.

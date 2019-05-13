@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 2.8.9)
 set(PROJECT_NAME binaural-audio-editor)
 project (${PROJECT_NAME} LANGUAGES C CXX)
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+
 #wxWidget specific stuff
 SET(wxWidgets_USE_LIBS)
 FIND_PACKAGE(wxWidgets COMPONENTS core base gl REQUIRED)
@@ -29,7 +32,8 @@ include_directories(/usr/include /usr/local/include ./include ${PROJECT_INCLUDE_
 set(SOURCES src/osgViewerWX.cpp   
 			src/EditorManipulator.cpp
 			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp src/HRTF-Test-Dialog.cpp 
-			 src/openalsoftaudioengine.cpp src/soundproducer.cpp
+			 src/EditListenerDialog.cpp
+			 src/openalsoftaudioengine.cpp src/soundproducer.cpp src/listener.cpp
 			 )
 
 #get_cmake_property(_variableNames VARIABLES)

@@ -13,11 +13,13 @@
 
 #include "sndfile.h"
 
-#include <cstring> //for memset
+#include <cassert>
 #include <string>
 #include <cstdint>
 #include <vector>
 #include <iostream>
+
+#include "listener.h"
 
 /*	This will be the length of the buffer used to hold frames while
 **	we process them.
@@ -45,29 +47,6 @@ public:
     //function to clean up openAL Soft initialization
     void close_openALSoft();
 
-//Listener Position Functions
-
-    void setListenerPositionX(float x); //set x position of listener
-    float getListenerPositionX(); //get x position of listener
-    void setListenerPositionY(float y); //set y position of listener
-    float getListenerPositionY(); //get y position of listener
-    void setListenerPositionZ(float z); //set z position of listener
-    float getListenerPositionZ(); //get z position of listener
-
-//Listener Orientation Functions
-    void setListenerForwardX(float x); //set x of forward of listener
-    float getListenerForwardX(); //get x of forward of listener
-    void setListenerForwardY(float y); //set y of forward of listener
-    float getListenerForwardY(); //get y of forward of listener
-    void setListenerForwardZ(float z); //set z of forward of listener
-    float getListenerForwardZ(); //get z of forward listener
-
-    void setListenerUpX(float x); //set x of up of listener
-    float getListenerUpX(); //get x of up of listener
-    void setListenerUpY(float y); //set y of up of listener
-    float getListenerUpY(); //get y of up of listener
-    void setListenerUpZ(float z); //set z of up of listener
-    float getListenerUpZ(); //get z of up of listener
     
 //HRTF
     //function to perform tests for HRTF support
@@ -93,19 +72,7 @@ private:
     ALCdevice* gAudioDevice; //audio device to be used
     ALCcontext* alContext; //context of where audio is played
 
-    //position of Listener
-    std::vector <float> listener_position_vector;
-    enum POSITION_INDEX { X=0,Y=1,Z=2 };
-	void setListenerPosition(); //function to set listener position based on listener position vector coordinates
 	
-    //orientation of Listener
-    std::vector<float> listener_orientation_vector; //vector to hold values of listener orientation
-    //first 3 values are forward vector xyz , last 3 values are up vector xyz
-    //enum to help set orientation vector
-    enum ORIENTATION_INDEX { FORWARD_X=0,FORWARD_Y=1,FORWARD_Z=2,
-                                                 UP_X=3, UP_Y=4, UP_Z=5 };
-	void setListenerOrientation(); //function to set listener orientation based on listener orientation vector coordinates
-
 //********************************************************
 //******************** Testing ***************************
 //********************************************************

@@ -104,7 +104,7 @@ void SoundProducer::setPositionX(double& x)
 	moveSource();
 } 
 
-float SoundProducer::getPositionX(){return producer_position_vector[POSITION_INDEX::X];} 
+double SoundProducer::getPositionX(){return producer_position_vector[POSITION_INDEX::X];} 
 
 void SoundProducer::setPositionY(double& y)
 {
@@ -116,7 +116,7 @@ void SoundProducer::setPositionY(double& y)
 	moveSource();
 } 
 
-float SoundProducer::getPositionY(){return producer_position_vector[POSITION_INDEX::Y];}
+double SoundProducer::getPositionY(){return producer_position_vector[POSITION_INDEX::Y];}
 
 void SoundProducer::setPositionZ(double& z)
 {
@@ -128,7 +128,7 @@ void SoundProducer::setPositionZ(double& z)
 	moveSource();
 }
  
-float SoundProducer::getPositionZ(){return producer_position_vector[POSITION_INDEX::Z];}
+double SoundProducer::getPositionZ(){return producer_position_vector[POSITION_INDEX::Z];}
 
 void SoundProducer::setFilepathToSound(std::string& filepath){m_filepath = filepath;}
 

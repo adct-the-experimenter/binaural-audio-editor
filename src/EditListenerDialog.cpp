@@ -1,0 +1,173 @@
+#include "EditListenerDialog.h"
+
+EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listener)
+       : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
+{
+	
+	ptrListener = listener;
+	
+	EditListenerDialog::initPrivateVariables();
+
+	//make horizontal box to put names in
+	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
+	
+	//make vertical box to put display info to edit
+	wxBoxSizer *vboxEdit = new wxBoxSizer(wxVERTICAL);
+	
+	//initialize text fields
+	wxFloatingPointValidator <double> validator(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    validator.SetRange(-10.00,10.00);     // set allowable range
+    
+    
+    
+	textFieldX = new wxTextCtrl(this,-1, "", 
+								wxPoint(150, 60), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validator,          // associate the text box with the desired validator
+								wxT(""));
+								
+	textFieldY = new wxTextCtrl(this,-1, "", 
+								wxPoint(150, 80), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validator,          // associate the text box with the desired validator
+								wxT(""));
+								
+	textFieldZ = new wxTextCtrl(this,-1, "", 
+								wxPoint(150, 100), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validator,          // associate the text box with the desired validator
+								wxT("")); 
+	
+	//reset text fields
+	textFieldX->Clear();
+	textFieldY->Clear();
+	textFieldZ->Clear();
+	
+	//update position text fields to have current position of sound producer selected
+	
+	if(ptrListener == nullptr){std::cout << "listener pointer is nullptr! \n";}
+	else
+	{
+		(*textFieldX) << ptrListener->getPositionX();
+		(*textFieldY) << ptrListener->getPositionY();
+		(*textFieldZ) << ptrListener->getPositionZ();
+	}
+	
+	
+	//initialize text to the left of fields
+	wxStaticText* positionText = new wxStaticText(this, -1, wxT("Position :"), wxPoint(20, 40));
+	wxStaticText* xPositionText = new wxStaticText(this, -1, wxT("X :"), wxPoint(40, 60));
+	wxStaticText* yPositionText = new wxStaticText(this, -1, wxT("Y :"), wxPoint(40, 80));
+	wxStaticText* zPositionText = new wxStaticText(this, -1, wxT("Z :"), wxPoint(40, 100));
+    
+    //add textfields to edit box
+    vboxEdit->Add(positionText, 0,  wxALL, 1);
+    vboxEdit->Add(xPositionText, 0,  wxALL, 1);
+	vboxEdit->Add(textFieldX, 0, wxALL, 5);
+    vboxEdit->Add(yPositionText, 0,  wxALL, 1);
+    vboxEdit->Add(textFieldY, 0, wxALL, 5);
+    vboxEdit->Add(zPositionText, 0, wxALL, 1);
+    vboxEdit->Add(textFieldZ, 0, wxALL, 5);
+	
+	hbox->Add(vboxEdit, 1, wxEXPAND | wxALL, 10);
+	
+	
+	//initialize Ok and Cancel buttons 
+	okButton = new wxButton(this, EditListenerDialog::ID_OK, wxT("Ok"), 
+	wxDefaultPosition, wxSize(70, 30)
+							);
+
+	cancelButton = new wxButton(this, EditListenerDialog::ID_CANCEL, wxT("Cancel"), 
+	wxDefaultPosition, wxSize(70, 30)
+								);
+	
+	applyButton = new wxButton(this, EditListenerDialog::ID_APPLY, wxT("Apply"), 
+	wxDefaultPosition, wxSize(70, 30)
+								);
+	
+	//make horizontal box to put ok and cancel buttons in
+	wxBoxSizer *hboxBottom = new wxBoxSizer(wxHORIZONTAL);
+
+	hboxBottom->Add(applyButton, 0, wxRIGHT, 5);
+	hboxBottom->Add(okButton, 0);
+	hboxBottom->Add(cancelButton, 0, wxLEFT, 5);
+	
+	//Make vertical box to put everything in
+	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+	
+	//add panel of text fields in vertical box
+	vbox->Add(hbox, 1, wxEXPAND | wxALL, 10);
+	vbox->Add(hboxBottom, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
+	
+	SetSizerAndFit(vbox);
+
+	//center and show elements in dialog
+	Centre();
+	ShowModal();
+
+	//destroy when done showing
+	Destroy(); 
+}
+
+void EditListenerDialog::initPrivateVariables()
+{
+	ptrListener = nullptr;
+	textFieldX = nullptr; textFieldY = nullptr; textFieldZ = nullptr;
+	
+	applyButton = nullptr; okButton = nullptr; cancelButton = nullptr;
+}
+
+void EditListenerDialog::ChangeListenerAttributes()
+{	
+	if(ptrListener != nullptr)
+	{
+		
+		//change position of selected sound producer based on what is in textfields
+		double xPosition, yPosition, zPosition;
+		( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
+		( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
+		( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+		float x = xPosition;
+		float y = yPosition;
+		float z = zPosition;
+		ptrListener->setPositionX(x);
+		ptrListener->setPositionY(y);
+		ptrListener->setPositionZ(z);
+	}
+	
+}
+
+void EditListenerDialog::onApply(wxCommandEvent& event)
+{
+	EditListenerDialog::ChangeListenerAttributes();	
+}
+
+void EditListenerDialog::OnOk(wxCommandEvent& event )
+{
+	EditListenerDialog::ChangeListenerAttributes();
+	
+	EditListenerDialog::Exit();
+}
+
+void EditListenerDialog::OnCancel(wxCommandEvent& event)
+{
+	EditListenerDialog::Exit();
+}
+
+void EditListenerDialog::Exit()
+{
+	if(okButton != nullptr){ delete okButton;}
+	if(applyButton != nullptr){delete applyButton;}
+	if(cancelButton != nullptr){delete cancelButton;}
+	if(textFieldX != nullptr){ delete textFieldX;}
+	if(textFieldY != nullptr){ delete textFieldY;}
+	if(textFieldZ != nullptr){ delete textFieldZ;}
+    Close( true ); //close window
+}
+
+//Event table for main frame specific events
+BEGIN_EVENT_TABLE(EditListenerDialog, wxDialog)
+    EVT_BUTTON				(ID_OK, EditListenerDialog::OnOk)
+    EVT_BUTTON				(ID_CANCEL, EditListenerDialog::OnCancel)
+    EVT_BUTTON				(ID_APPLY, EditListenerDialog::onApply)
+END_EVENT_TABLE()

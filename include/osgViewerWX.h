@@ -41,12 +41,17 @@
 #include <osg/Group>
 
 #include "openalsoftaudioengine.h"
+
+
 #include "EditorManipulator.h"
 
 #include "soundproducer.h"
+#include "listener.h"
+
 #include "CreateSoundProducerDialog.h"
 #include "EditMultipleSoundProducersDialog.h"
 #include "HRTF-Test-Dialog.h"
+#include "EditListenerDialog.h"
 
 #include "openalsoftaudioengine.h"
 
@@ -145,6 +150,7 @@ public:
     void SetRootNode(osg::Group* root); 
     void SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector);
     void SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine);
+    void SetListenerReference(Listener* listener);
     
     // Mainframe menu operations
     
@@ -162,26 +168,31 @@ public:
 	void OnKeyDown(wxKeyEvent& event); //where camera viewer gets manipulated
 	
 private:
+    
+    enum
+	{
+		ID_CREATE_SOUND_PRODUCER = 1,
+		ID_EDIT_MULTIPLE_SOUND_PRODUCERS,
+		ID_PLAY_AUDIO,
+		ID_TEST_HRTF,
+		ID_LISTENER_EDIT
+	};
+    
     osg::ref_ptr<osgViewer::Viewer> _viewer;
 	osg::ref_ptr<osg::Group> _rootNode;
 
 	OpenAlSoftAudioEngine* audioEnginePtr;
 	
-	enum
-	{
-		ID_CREATE_SOUND_PRODUCER = 1,
-		ID_EDIT_MULTIPLE_SOUND_PRODUCERS,
-		ID_PLAY_AUDIO,
-		ID_TEST_HRTF
-	};
-	
 	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;
+	
+	Listener* listenerPtr;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
 	
 	void OnEditMultipleSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
 	void OnTestHRTF(wxCommandEvent& event); //function for menu to test HRTF and get results
+    void OnEditListener(wxCommandEvent& event); //function for menu to edit listener position and orientation
     
     DECLARE_EVENT_TABLE()
 };
@@ -197,11 +208,11 @@ public:
 private:
 	osg::ref_ptr<osg::Group> rootNode; //geometry node to hold ShapeDrawable objects
 	
-	std::vector < std::unique_ptr <SoundProducer> > sound_producer_vector;
+	std::vector < std::unique_ptr <SoundProducer> > sound_producer_vector; //vector to hold sound producers
 	
 	OpenAlSoftAudioEngine audio_engine; //class abstraction to handle playing binaural 3D audio
 	
-	void initListener();
+	std::unique_ptr <Listener> listener;
 	
 };
 

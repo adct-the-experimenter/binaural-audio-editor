@@ -7,12 +7,6 @@ OpenAlSoftAudioEngine::OpenAlSoftAudioEngine()
 	//Initialize sound setup variables to point to nullptr
 	gAudioDevice = nullptr;
 	alContext = nullptr;
-	
-	//initialize listener position
-    listener_position_vector.resize(3);
-
-    //initialize listener orientation
-    listener_orientation_vector.resize(6);
 
     //clear testHRTF Results string
     testHRTF_Results.clear();
@@ -23,8 +17,6 @@ OpenAlSoftAudioEngine::~OpenAlSoftAudioEngine()
 {
     OpenAlSoftAudioEngine::close_openALSoft();
 }
-
-
 
 
 bool OpenAlSoftAudioEngine::initOpenALSoft()
@@ -61,29 +53,6 @@ bool OpenAlSoftAudioEngine::initOpenALSoft()
 		std::cout << "\n";
 		return false;
 	}
-
-	//define listener, what is hearing the sound, with initial values
-
-	//Initialize Listener position	
-	alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);//is at the origin
-	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f);//is not moving in 3d space
-		
-
-	//Set Listener orientation
-	float vec[6];
-	//set to just facing the screen
-
-	//set where head is facing
-	vec[0] = 0.0f; //forward vector x value
-	vec[1] = 0.0f; //forward vector y value
-	vec[2] = -1.0f; //forward vector z value
-	//set direction of top of head surface vector
-	vec[3] = 0.0f; //up vector x value
-	vec[4] = 1.0f; //up vector y value
-	vec[5] = 0.0f; //up vector z value
-
-	//set current listener orientation
-	alListenerfv(AL_ORIENTATION, vec);
 	
 	std::cout << " Open AL Soft Initialized! \n";
 	return true;
@@ -98,137 +67,6 @@ void OpenAlSoftAudioEngine::close_openALSoft()
 }
 
 
-//Listener Position Functions
-
-void OpenAlSoftAudioEngine::setListenerPosition()
-{
-
-	alListener3f(AL_POSITION, 
-					listener_position_vector[POSITION_INDEX::X], 
-					listener_position_vector[POSITION_INDEX::Y], 
-					listener_position_vector[POSITION_INDEX::Z]);
-	
-}
-
-void OpenAlSoftAudioEngine::setListenerPositionX(float x)
-{
-    //if x is different from listener position x
-    if(listener_position_vector[POSITION_INDEX::X] != x)
-    {
-        listener_position_vector[POSITION_INDEX::X] = x; //assign z to listener position z
-        //change OpenAL Soft internal listener position
-        
-		OpenAlSoftAudioEngine::setListenerPosition();
-		
-    }
-}
-
-float OpenAlSoftAudioEngine::getListenerPositionX(){return listener_position_vector[POSITION_INDEX::X];}
-
-void OpenAlSoftAudioEngine::setListenerPositionY(float y)
-{
-    //if y is different from listener position y
-    if(listener_position_vector[POSITION_INDEX::Y] != y)
-    {
-        listener_position_vector[POSITION_INDEX::Y] = y; //assign z to listener position y
-       
-    }
-}
-
-float OpenAlSoftAudioEngine::getListenerPositionY(){return listener_position_vector[POSITION_INDEX::Y];}
-
-void OpenAlSoftAudioEngine::setListenerPositionZ(float z)
-{
-    //if z is different from listener position z
-    if(listener_position_vector[POSITION_INDEX::Z] != z)
-    {
-        listener_position_vector[POSITION_INDEX::Z] = z; //assign z to listener position z
-       
-		OpenAlSoftAudioEngine::setListenerPosition();
-		
-    }
-}
-
-float OpenAlSoftAudioEngine::getListenerPositionZ(){return listener_position_vector[POSITION_INDEX::Z];}
-
-//Listener Orientation Functions
-
-void OpenAlSoftAudioEngine::setListenerOrientation()
-{
-	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());//change OpenAL Soft internal listener orientation
-}
-
-void OpenAlSoftAudioEngine::setListenerForwardX(float x)
-{
-    //if x is different from listener Forward x
-    if(listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] != x)
-    {
-        listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = x;
-        OpenAlSoftAudioEngine::setListenerOrientation();
-    }
-}
-
-float OpenAlSoftAudioEngine::getListenerForwardX(){return listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X];}
-
-void OpenAlSoftAudioEngine::setListenerForwardY(float y)
-{
-    //if y is different from listener Forward x
-    if(listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] != y)
-    {
-        listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = y;
-        OpenAlSoftAudioEngine::setListenerOrientation();
-    }
-}
-
-float OpenAlSoftAudioEngine::getListenerForwardY(){return listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y];}
-
-void OpenAlSoftAudioEngine::setListenerForwardZ(float z)
-{
-    //if z is different from listener Forward z
-    if(listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] != z)
-    {
-        listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = z;
-        OpenAlSoftAudioEngine::setListenerOrientation();
-    }
-}
-
-float OpenAlSoftAudioEngine::getListenerForwardZ(){return listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z];}
-
-void OpenAlSoftAudioEngine::setListenerUpX(float x)
-{
-    //if x is different from listener Forward x
-    if(listener_orientation_vector[ORIENTATION_INDEX::UP_X] != x)
-    {
-        listener_orientation_vector[ORIENTATION_INDEX::UP_X] = x;
-        OpenAlSoftAudioEngine::setListenerOrientation();
-    }
-}
-
-float OpenAlSoftAudioEngine::getListenerUpX(){return listener_orientation_vector[ORIENTATION_INDEX::UP_X];}
-
-void OpenAlSoftAudioEngine::setListenerUpY(float y)
-{
-    //if y is different from listener Forward x
-    if(listener_orientation_vector[ORIENTATION_INDEX::UP_Y] != y)
-    {
-        listener_orientation_vector[ORIENTATION_INDEX::UP_Y] = y;
-        OpenAlSoftAudioEngine::setListenerOrientation();
-    }
-}
-
-float OpenAlSoftAudioEngine::getListenerUpY(){return listener_orientation_vector[ORIENTATION_INDEX::UP_Y];}
-
-void OpenAlSoftAudioEngine::setListenerUpZ(float z)
-{
-    //if z is different from listener Forward z
-    if(listener_orientation_vector[ORIENTATION_INDEX::UP_Z] != z)
-    {
-        listener_orientation_vector[ORIENTATION_INDEX::UP_Z] = z;
-        OpenAlSoftAudioEngine::setListenerOrientation();
-    }
-}
-
-float OpenAlSoftAudioEngine::getListenerUpZ(){return listener_orientation_vector[ORIENTATION_INDEX::UP_Z];}
 
 //HRTF
 //define functions for hrtf

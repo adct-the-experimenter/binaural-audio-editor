@@ -63,8 +63,27 @@ bool wxOsgApp::OnInit()
 		rootNode = new osg::Group;
 		frame->SetRootNode(rootNode);
 		
+		//std::cout << "Hi\n";
+		
 		//initialize listener
-		initListener();
+		
+		std::unique_ptr <Listener> thisListener( new Listener() );
+		listener = std::move(thisListener);
+		
+		//std::cout << "\nListener initialized. Listener x:" << listener->getPositionX() << std::endl;
+		
+		//if(listener.get() == nullptr){std::cout << "listener raw pointer is null in osgViewerWxApp init! \n";}
+		//else{std::cout << "\nListener raw pointer:" << listener.get() << std::endl;}
+		
+		//std::cout << "\nAttaching listener transform node to root.\n";
+		//add position attitude transform to root node group
+		rootNode->addChild(listener->getTransformNode());
+		
+		Listener* ptrToListener = listener.get();
+		//connect mainframe to listener
+		frame->SetListenerReference(ptrToListener);
+		
+		//std::cout << "\nReferences set!\n";
 		
 		//connect mainframe to soundproducer vector
 		frame->SetSoundProducerVectorRef(&sound_producer_vector);
@@ -85,29 +104,6 @@ bool wxOsgApp::OnInit()
     return true;
 }
 
-void wxOsgApp::initListener()
-{
-	//make box
-	//create ShapeDrawable object
-	osg::ref_ptr<osg::ShapeDrawable> box = new osg::ShapeDrawable;
-
-	//make ShapeDrawable object a box 
-	//initialize box at certain position 
-	box->setShape( new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f),1.0f) );
-	//set color of ShapeDrawable object with box
-	box->setColor( osg::Vec4(0.0f, 0.0f, 1.0f, 1.0f) );
-	
-	//add ShapeDrawable box to geometry root node
-	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-	geode->addDrawable( box );
-	
-	//add geode to position attitude transform
-	osg::ref_ptr<osg::PositionAttitudeTransform> pat = new osg::PositionAttitudeTransform;
-	pat->addChild(geode);
-	
-	//add position attitude transform to root node group
-	rootNode->addChild(pat);
-}
 
 IMPLEMENT_APP(wxOsgApp)
 
@@ -122,6 +118,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_BUTTON				(wxEVT_CONTEXT_MENU, MainFrame::OnPopupClick)
     EVT_MENU				(MainFrame::ID_PLAY_AUDIO, MainFrame::OnPlayAudio)
     EVT_MENU				(MainFrame::ID_TEST_HRTF, MainFrame::OnTestHRTF)
+    EVT_MENU				(MainFrame::ID_LISTENER_EDIT, MainFrame::OnEditListener)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -133,8 +130,6 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 {
 	//create file menu item
     wxMenu *menuFile = new wxMenu;
-    menuFile->Append(wxID_OPEN,"&Open Audio");
-    menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT);
     
     //create help menu item
@@ -148,7 +143,6 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     //create the edit multiple sound producers menu item
     menuSoundProducers->Append(MainFrame::ID_EDIT_MULTIPLE_SOUND_PRODUCERS,"&Edit Sound Producers");
     
-   
     //create playback menu item
     wxMenu* menuPlayback = new wxMenu;
     menuPlayback->Append(MainFrame::ID_PLAY_AUDIO,"&Play Audio");
@@ -157,9 +151,14 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     wxMenu* menuHRTF = new wxMenu;
     menuHRTF->Append(MainFrame::ID_TEST_HRTF,"&Test HRTF");
     
+    //create listener menu item
+    wxMenu* menuListener = new wxMenu;
+    menuListener->Append(MainFrame::ID_LISTENER_EDIT,"&Edit Listener");
+    
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append( menuFile, "&File" ); //connect file menu item to file to bar
+    menuBar->Append( menuFile, "&File" ); //connect file menu item to bar
+    //menuBar->Append(menuListener, "&Listener"); //connecte listener menu item to bar
     menuBar->Append( menuSoundProducers, "&Sound Producers"); //connect Sound Producers menu item to bar
     menuBar->Append( menuHRTF, "&HRTF"); //connect HRTF menu item to bar
     menuBar->Append( menuPlayback, "&Playback"); //connect Playback menu item to bar
@@ -179,6 +178,8 @@ void MainFrame::SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundPr
 {
 	sound_producer_vector_ref = sound_producer_vector;
 }
+
+void MainFrame::SetListenerReference(Listener* thisListener){ listenerPtr = thisListener; /*std::cout << "listenerPtr in Mainframe:" << listenerPtr << std::endl;*/}
 
 void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}
 
@@ -287,6 +288,17 @@ void MainFrame::OnTestHRTF(wxCommandEvent& event)
 																				
     hrtfTestDialog->Show(true);
     
+}
+
+void MainFrame::OnEditListener(wxCommandEvent& event)
+{
+	if(listenerPtr == nullptr){std::cout << "Listener Raw Pointer is null in OnEditListener. \n";}
+	
+	std::unique_ptr <EditListenerDialog> editListenerDialog(new EditListenerDialog( wxT("Edit Listener"),
+																		listenerPtr)
+															);
+																				
+    editListenerDialog->Show(true);
 }
  
 void MainFrame::OnPopupClick(wxCommandEvent& evt)
