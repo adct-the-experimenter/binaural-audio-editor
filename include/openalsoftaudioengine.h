@@ -83,6 +83,7 @@ private:
     
     std::string loadSound_Results; //string variable to write results of loadSound to
     std::string testHRTF_Results; //string variable to write results of HRTF test to
+
 };
 
 #endif // OPENALSOFTAUDIOENGINE_H

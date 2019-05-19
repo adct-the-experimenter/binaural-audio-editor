@@ -9,7 +9,6 @@
 #include <wx/listbox.h> //for list box
 
 
-#include <openalsoftaudioengine.h> //for loading buffer and creating source of sound producer
 #include "listener.h"
 
 class EditListenerDialog : public wxDialog

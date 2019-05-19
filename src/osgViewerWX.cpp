@@ -1,5 +1,7 @@
 #include "osgViewerWX.h"
 
+bool init_listener_once = false;
+
 // `Main program' equivalent, creating windows and returning main app frame
 bool wxOsgApp::OnInit()
 {
@@ -21,7 +23,7 @@ bool wxOsgApp::OnInit()
 	{
 		int width = 800;
 		int height = 600;
-
+		
 		// Create the main frame window
 
 		MainFrame *frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
@@ -57,33 +59,15 @@ bool wxOsgApp::OnInit()
 		//viewer->addEventHandler(new osgViewer::StatsHandler);
 		viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
-
 		//init geommetry node which is a leaf node of scenegraph 
 		//containing geometry information
 		rootNode = new osg::Group;
-		frame->SetRootNode(rootNode);
+		frame->SetRootNode(rootNode);	
 		
-		//std::cout << "Hi\n";
+		wxOsgApp::initListener();
 		
-		//initialize listener
-		
-		std::unique_ptr <Listener> thisListener( new Listener() );
-		listener = std::move(thisListener);
-		
-		//std::cout << "\nListener initialized. Listener x:" << listener->getPositionX() << std::endl;
-		
-		//if(listener.get() == nullptr){std::cout << "listener raw pointer is null in osgViewerWxApp init! \n";}
-		//else{std::cout << "\nListener raw pointer:" << listener.get() << std::endl;}
-		
-		//std::cout << "\nAttaching listener transform node to root.\n";
-		//add position attitude transform to root node group
-		rootNode->addChild(listener->getTransformNode());
-		
-		Listener* ptrToListener = listener.get();
 		//connect mainframe to listener
-		frame->SetListenerReference(ptrToListener);
-		
-		//std::cout << "\nReferences set!\n";
+		frame->SetListenerReference(listener.get());
 		
 		//connect mainframe to soundproducer vector
 		frame->SetSoundProducerVectorRef(&sound_producer_vector);
@@ -104,6 +88,24 @@ bool wxOsgApp::OnInit()
     return true;
 }
 
+void wxOsgApp::initListener()
+{
+	if(!init_listener_once)
+	{
+		std::unique_ptr <Listener> thisListener( new Listener() );
+		listener = std::move(thisListener);
+		
+		//std::cout << "\nListener initialized. Listener x:" << listener->getPositionX() << std::endl;
+		
+		if(listener.get() == nullptr){std::cout << "listener raw pointer is null in osgViewerWxApp init! \n";}
+		else{std::cout << "\nListener raw pointer:" << listener.get() << std::endl;}
+		
+		//add position attitude transform to root node group
+		rootNode->addChild(listener->getTransformNode());
+		
+		init_listener_once = true;		
+	}
+}
 
 IMPLEMENT_APP(wxOsgApp)
 
@@ -119,6 +121,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_PLAY_AUDIO, MainFrame::OnPlayAudio)
     EVT_MENU				(MainFrame::ID_TEST_HRTF, MainFrame::OnTestHRTF)
     EVT_MENU				(MainFrame::ID_LISTENER_EDIT, MainFrame::OnEditListener)
+    EVT_MENU				(MainFrame::ID_CHANGE_HRTF, MainFrame::OnChangeHRTF)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -150,7 +153,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     //Create hrtf menu item
     wxMenu* menuHRTF = new wxMenu;
     menuHRTF->Append(MainFrame::ID_TEST_HRTF,"&Test HRTF");
-    
+    menuHRTF->Append(MainFrame::ID_CHANGE_HRTF, "&Change HRTF");
     //create listener menu item
     wxMenu* menuListener = new wxMenu;
     menuListener->Append(MainFrame::ID_LISTENER_EDIT,"&Edit Listener");
@@ -288,6 +291,12 @@ void MainFrame::OnTestHRTF(wxCommandEvent& event)
 																				
     hrtfTestDialog->Show(true);
     
+}
+
+void MainFrame::OnChangeHRTF(wxCommandEvent& event)
+{
+	wxMessageBox( "To change HRTF, \n 1. Open a terminal/console. \n 2. Type alsoft-config into the terminal/console and hit the Enter key.\n 3. Click on the HRTF tab in the OpenAL Soft Configuration window. \n 4. Select the HRTF in Preferred HRTF box.\n 5. Close Binaural Audio Editor and reopen it.",
+                  "Change HRTF", wxOK | wxICON_INFORMATION );
 }
 
 void MainFrame::OnEditListener(wxCommandEvent& event)

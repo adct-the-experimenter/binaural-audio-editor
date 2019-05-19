@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.9)
 set(PROJECT_NAME binaural-audio-editor)
 project (${PROJECT_NAME} LANGUAGES C CXX)
 
+#-DCMAKE_BUILD_TYPE=Release
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 

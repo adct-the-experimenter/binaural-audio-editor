@@ -378,3 +378,4 @@ void OpenAlSoftAudioEngine::error_check(std::string location_str)
 		return;
 	}	
 }
+

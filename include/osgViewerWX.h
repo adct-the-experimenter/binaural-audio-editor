@@ -6,6 +6,7 @@
 #include "wx/cursor.h"
 #include "wx/glcanvas.h" //to work with openscenegraph opengl
 
+
 #include <osgViewer/Viewer>
 #include <string>
 #include <wx/filedlg.h> //for file dialog
@@ -31,6 +32,8 @@
 
 #include <wx/image.h>
 #include <wx/menu.h>
+
+#include <wx/thread.h> //for wxIsMainThread function
 
 #include <osgViewer/ViewerEventHandlers>
 #include <osgDB/ReadFile>
@@ -175,6 +178,7 @@ private:
 		ID_EDIT_MULTIPLE_SOUND_PRODUCERS,
 		ID_PLAY_AUDIO,
 		ID_TEST_HRTF,
+		ID_CHANGE_HRTF,
 		ID_LISTENER_EDIT
 	};
     
@@ -192,6 +196,7 @@ private:
 	
 	void OnEditMultipleSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
 	void OnTestHRTF(wxCommandEvent& event); //function for menu to test HRTF and get results
+	void OnChangeHRTF(wxCommandEvent& event); //function for menu to instruct how to change HRTF with alsoft-config
     void OnEditListener(wxCommandEvent& event); //function for menu to edit listener position and orientation
     
     DECLARE_EVENT_TABLE()
@@ -213,7 +218,7 @@ private:
 	OpenAlSoftAudioEngine audio_engine; //class abstraction to handle playing binaural 3D audio
 	
 	std::unique_ptr <Listener> listener;
-	
+	void initListener();
 };
 
 #endif // _WXSIMPLEVIEWERWX_H_

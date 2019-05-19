@@ -14,7 +14,7 @@ Listener::Listener()
 
 Listener::~Listener()
 {
-	//std::cout << "Listener destructor called! \n";
+	std::cout << "Listener destructor called! \n";
 }
 
 void Listener::initListener()

@@ -27,7 +27,6 @@ class Listener
 		Listener();
 		~Listener();
 
-		void initListener();
 		
 		//Listener Position Functions
 
@@ -61,6 +60,8 @@ class Listener
 		osg::PositionAttitudeTransform* getTransformNode();
 		
 	private:
+		
+		void initListener();
 		
 		//position of Listener
 		std::vector <float> listener_position_vector;
