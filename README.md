@@ -1,5 +1,5 @@
 # binaural-audio-editor
-This is an audio application that produces binaural audio from 2D mono/stereo audio samples. Listen to 3D audio through stereo headphones.
+This is an audio application that produces binaural audio from 2D mono/stereo audio samples and positional information given through the graphical user interface. Listen to 3D audio through stereo headphones.
 
 # Required Libraries
 OpenAL Soft https://github.com/kcat/openal-soft
@@ -37,9 +37,5 @@ wxwidgets https://www.wxwidgets.org/
 # Instructions
   
   Dark blue cube is you the listener. 
-  
-  Negative position is the left side from the center.
-  
-  Positive position is the right side from the center.
   
   Light blue cubes are the sound producers.
