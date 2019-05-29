@@ -189,9 +189,9 @@ void EditMultipleSoundProducersDialog::ChangeSoundProducerAttributes()
 		( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
 		( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
 		( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
-		thisSoundProducer->setPositionX(xPosition);
-		thisSoundProducer->setPositionY(yPosition);
-		thisSoundProducer->setPositionZ(zPosition);
+		thisSoundProducer->SetPositionX(xPosition);
+		thisSoundProducer->SetPositionY(yPosition);
+		thisSoundProducer->SetPositionZ(zPosition);
 		//change sound attributes, if they have been changed in menu
 		if(buffer != 0){thisSoundProducer->setBuffer(buffer);}
 		if(soundFilePath != " "){thisSoundProducer->setFilepathToSound(soundFilePath);}
@@ -251,9 +251,9 @@ void EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox(wxCommandE
 		textFieldSoundFilePath->Clear();
 		
 		//update position text fields to have current position of sound producer selected
-		(*textFieldX) << thisSoundProducer->getPositionX();
-		(*textFieldY) << thisSoundProducer->getPositionY();
-		(*textFieldZ) << thisSoundProducer->getPositionZ();
+		(*textFieldX) << thisSoundProducer->GetPositionX();
+		(*textFieldY) << thisSoundProducer->GetPositionY();
+		(*textFieldZ) << thisSoundProducer->GetPositionZ();
 		wxString thisPath(thisSoundProducer->getFilepathToSound());
 		textFieldSoundFilePath->WriteText(thisPath);
 	}

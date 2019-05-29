@@ -171,6 +171,31 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     
     CreateStatusBar();
     SetStatusText( "Welcome to Binaural Audio Editor!" );
+    
+    //Code to initialize timeline track editor part of GUI
+
+	TimelineFrame *timeFrame = new TimelineFrame(this); 
+
+	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
+	SoundProducerTrack* track1 = new SoundProducerTrack("SoundProducer Track");
+
+	double start = -10.0f; //lowest value
+	double end = 10.0f; //highest value
+	int numTicks = 11; //number of ticks between lowest value and highest value including zero
+	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
+
+	track1->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axis
+
+	//Put in the variable to change with the timeline.
+	// IMPORTANT NOTE: someVarToChange must be declared outside of scope of MyFrame constructor 
+	//and not go out of scope or else a segmentation fault happens
+	//track1->SetReferenceToVarToManipulate(&someVarToChange); 
+
+	//add track to time frame
+	timeFrame->AddTrack(track1,space);
+
+	track1->Show(); //show the track
+	timeFrame->Show(true); //show the timeframe
 }
 
 void MainFrame::SetViewer(osgViewer::Viewer *viewer){_viewer = viewer;}
@@ -194,6 +219,8 @@ void MainFrame::OnIdle(wxIdleEvent &event)
     _viewer->frame();
 
     event.RequestMore();
+    
+    //std::cout << "App is Idle." << std::endl;
 }
 
 void MainFrame::OnExit(wxCommandEvent& event)

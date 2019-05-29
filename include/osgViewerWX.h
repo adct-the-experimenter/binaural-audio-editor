@@ -58,6 +58,8 @@
 
 #include "openalsoftaudioengine.h"
 
+#include "timeline-frame.h"
+#include "soundproducer-track.h"
 
 #include <iostream>
 #include <memory> //for unique_ptr use
