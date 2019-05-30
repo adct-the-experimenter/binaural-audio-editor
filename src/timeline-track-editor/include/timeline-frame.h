@@ -4,6 +4,8 @@
 #include "playback-controls.h"
 #include "timeline-window.h"
 
+#include <functional>   // std::function, std::negate
+
 // Frame that contains Timeline scrolling window and playback controls
 class TimelineFrame : public wxFrame
 {
@@ -14,6 +16,8 @@ public:
     TimelineWindow* GetTimelineWindow();
     
     void AddTrack(Track* thisTrack, int& space);
+    
+    void AddTrackFunctionToCallInTimerLoop(Track* thisTrack);
     
     void OnClose(wxCloseEvent& evt);
     

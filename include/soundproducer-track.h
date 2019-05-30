@@ -13,7 +13,11 @@ public:
 	SoundProducerTrack(const wxString& title);
 	
 	void SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer);
+	DoubleTrack* GetReferenceToXTrack();
+	DoubleTrack* GetReferenceToYTrack();
+	DoubleTrack* GetReferenceToZTrack();
 	
+	//Double Track related functions
 	void SetupAxisForVariable(double& start, double& end, double& resolution, int& numTick);
 	
 	void OnLeftMouseClick(wxMouseEvent& event);

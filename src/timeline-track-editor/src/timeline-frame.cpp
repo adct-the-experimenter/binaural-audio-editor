@@ -45,7 +45,10 @@ TimelineWindow* TimelineFrame::GetTimelineWindow(){return timelineWindowPtr;}
 void TimelineFrame::AddTrack(Track* thisTrack, int& space)
 {
 	GetTimelineWindow()->AddTrack(thisTrack,space);
-	
+}
+
+void TimelineFrame::AddTrackFunctionToCallInTimerLoop(Track* thisTrack)
+{
 	std::function< void() > func = std::bind(&Track::FunctionToCallEveryTimeInTimerLoop, thisTrack);
 	timer->AddFunctionToTimerLoop(func );
 }

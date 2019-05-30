@@ -178,13 +178,18 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
 	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
 	SoundProducerTrack* track1 = new SoundProducerTrack("SoundProducer Track");
-
+	//DoubleTrack* track1 = new DoubleTrack("X Track");
+	//DoubleTrack* track2 = new DoubleTrack("Y Track");
+	//DoubleTrack* track3 = new DoubleTrack("Z Track");
+	
 	double start = -10.0f; //lowest value
 	double end = 10.0f; //highest value
 	int numTicks = 11; //number of ticks between lowest value and highest value including zero
 	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
 
 	track1->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axis
+	//track2->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axis
+	//track3->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axis
 
 	//Put in the variable to change with the timeline.
 	// IMPORTANT NOTE: someVarToChange must be declared outside of scope of MyFrame constructor 
@@ -192,8 +197,19 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	//track1->SetReferenceToVarToManipulate(&someVarToChange); 
 
 	//add track to time frame
-	timeFrame->AddTrack(track1,space);
-
+	timeFrame->AddTrack(track1->GetReferenceToXTrack(),space);
+	//timeFrame->AddTrackFunctionToCallInTimerLoop(track1->GetReferenceToXTrack());
+	
+	timeFrame->AddTrack(track1->GetReferenceToYTrack(),space);
+	//timeFrame->AddTrackFunctionToCallInTimerLoop(track1->GetReferenceToYTrack());
+	
+	timeFrame->AddTrack(track1->GetReferenceToZTrack(),space);
+	//timeFrame->AddTrackFunctionToCallInTimerLoop(track1->GetReferenceToZTrack());
+	
+	//add special soundproducertrack function to call during playback
+	//it will also call x,y,z track playback functions
+	timeFrame->AddTrackFunctionToCallInTimerLoop(track1); 
+	
 	track1->Show(); //show the track
 	timeFrame->Show(true); //show the timeframe
 }

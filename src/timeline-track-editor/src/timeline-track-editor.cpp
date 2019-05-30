@@ -34,10 +34,14 @@ void MyApp::OnIdle(wxIdleEvent &event)
     
 }
 
+//declare variable to change
+double someVarToChange;
+
 //declare a function to use if variable changes
 void FunctionForSomeVarAfterChange()
 {
-	std::cout << "function for some var called! Do something now that double-type SomeVarToChange has changed\n";
+	std::cout << "someVarToChange:" << someVarToChange << std::endl;
+	std::cout << "function for some var change called! Do something now that double-type SomeVarToChange has changed\n";
 }
 
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -83,15 +87,22 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	track1->SetReferenceToVarToManipulate(&someVarToChange); 
 	
 	//set function to call after variable to manipulate has changed
+	//optional
 	track1->SetFunctionToCallAfterVariableChange(FunctionForSomeVarAfterChange);
 	
 	//add track to time frame
 	timeFrame->AddTrack(track1,space);
+	//add function to call during playback to timeframe 
+	//so that someVarToChange can be changed according to Track FunctionToCallEveryTimeInTimerLoop
+	timeFrame->AddTrackFunctionToCallInTimerLoop(track1);
 	
 	track1->Show(); //show the track
 	timeFrame->Show(true); //show the timeframe
 		
 }
+
+
+
 
 void MyFrame::OnExit(wxCommandEvent& event)
 {

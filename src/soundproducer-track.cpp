@@ -20,55 +20,37 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title) : Track(title)
 	Connect(wxEVT_SIZE, wxSizeEventHandler(Track::OnSize));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(DoubleTrack::OnLeftMouseClick));
 	Connect(wxEVT_CONTEXT_MENU, wxCommandEventHandler(DoubleTrack::OnRightMouseClick));
+	
+	//Add a combo box to select soundproducers
 }
 
 
 void SoundProducerTrack::FunctionToCallEveryTimeInTimerLoop()
 {
-	/*
+	//std::cout << "FunctionToCall called in SoundProducerTrack \n";
+	
 	xTrack->FunctionToCallEveryTimeInTimerLoop();
 	yTrack->FunctionToCallEveryTimeInTimerLoop();
 	zTrack->FunctionToCallEveryTimeInTimerLoop();
-	
-	soundProducerToManipulatePtr->SetPositionX(tempX);
-	soundProducerToManipulatePtr->SetPositionY(tempY);
-	soundProducerToManipulatePtr->SetPositionZ(tempZ);
-	*/
+		
+	if(soundProducerToManipulatePtr != nullptr)
+	{
+		soundProducerToManipulatePtr->SetPositionX(tempX);
+		soundProducerToManipulatePtr->SetPositionY(tempY);
+		soundProducerToManipulatePtr->SetPositionZ(tempZ);
+	}
 }
 
 void SoundProducerTrack::SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer){soundProducerToManipulatePtr = thisSoundProducer;}
 
+DoubleTrack* SoundProducerTrack::GetReferenceToXTrack(){return xTrack;}
+DoubleTrack* SoundProducerTrack::GetReferenceToYTrack(){return yTrack;}
+DoubleTrack* SoundProducerTrack::GetReferenceToZTrack(){return zTrack;}
+
 void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
 {
-	Track::InitTrack(parent,timeTickVector);
+	//Do nothing
 	
-	xTrack->InitTrack(this,timeTickVector);
-	yTrack->InitTrack(this,timeTickVector);
-	zTrack->InitTrack(this,timeTickVector);
-	
-	//arrange tracks
-	main_v_box = new wxBoxSizer(wxVERTICAL);
-	
-	//make horizontal boxes to put tracks in
-	wxBoxSizer *hboxTrackX = new wxBoxSizer(wxHORIZONTAL);
-	wxBoxSizer *hboxTrackY = new wxBoxSizer(wxHORIZONTAL);
-	wxBoxSizer *hboxTrackZ = new wxBoxSizer(wxHORIZONTAL);
-	
-	int slider_start_x_pos = TRACK_WIDTH / (TIME_TICK_NUM - 1);
-	
-	//add tracks to their respective boxes
-	//keep track at slider start position
-	hboxTrackX->Add(xTrack, 0, wxLEFT | wxRIGHT | wxEXPAND, slider_start_x_pos); 
-	hboxTrackY->Add(yTrack, 0, wxLEFT | wxRIGHT | wxEXPAND, slider_start_x_pos); 
-	hboxTrackZ->Add(zTrack, 0, wxLEFT | wxRIGHT | wxEXPAND, slider_start_x_pos); 
-	
-	//add horizontal box containing track
-	//keep horizontal box containing slider 20 pixels from the top 
-	main_v_box->Add(hboxTrackX, 0, wxTOP | wxALIGN_TOP, 50); 
-	main_v_box->Add(hboxTrackY, 0, wxTOP | wxALIGN_TOP, 50); 
-	main_v_box->Add(hboxTrackZ, 0, wxTOP | wxALIGN_TOP, 50); 
-	
-	SetSizerAndFit(main_v_box);
 }
 
 void SoundProducerTrack::SetupAxisForVariable(double& start, double& end,double& resolution, int& numTick)
