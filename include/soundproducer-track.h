@@ -6,16 +6,27 @@
 #include "soundproducer.h"
 #include "double-track.h"
 
+#include <memory>
+#include <wx/combobox.h>
+#include <wx/arrstr.h>
+
 //class to manipulate x,y z position of sound producer
 class SoundProducerTrack : public Track
 {
 public:
 	SoundProducerTrack(const wxString& title);
 	
-	void SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer);
+	
 	DoubleTrack* GetReferenceToXTrack();
 	DoubleTrack* GetReferenceToYTrack();
 	DoubleTrack* GetReferenceToZTrack();
+	
+	//SoundProducer Editing
+	void SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer);
+	void SetReferenceToSoundProducerVector(std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector);
+	
+	void AddRecentSoundProducerMadeToTrack();
+	void RemoveSoundProducerFromTrack(SoundProducer* thisSoundProducer);
 	
 	//Double Track related functions
 	void SetupAxisForVariable(double& start, double& end, double& resolution, int& numTick);
@@ -42,6 +53,7 @@ public:
 	
 private:
 	SoundProducer* soundProducerToManipulatePtr;
+	
 	DoubleTrack* xTrack;
 	DoubleTrack* yTrack;
 	DoubleTrack* zTrack;
@@ -49,8 +61,11 @@ private:
 	//variables to hold temporary values for sound producer position
 	double tempX,tempY,tempZ;
 	
-	wxBoxSizer* main_v_box;
+	wxComboBox* m_combo_box;
 	
+	std::vector <std::unique_ptr <SoundProducer> > *sound_producer_vector_ref; //pointer to vector of sound producers to edit
+	//list of names for combo box
+	wxArrayString soundproducers_to_edit_wxstring;
 };
 
 #endif

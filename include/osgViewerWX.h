@@ -193,6 +193,8 @@ private:
 	
 	Listener* listenerPtr;
 	
+	SoundProducerTrack* m_soundproducer_track;
+	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
 	

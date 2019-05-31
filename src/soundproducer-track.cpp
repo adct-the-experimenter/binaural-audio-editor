@@ -3,6 +3,7 @@
 SoundProducerTrack::SoundProducerTrack(const wxString& title) : Track(title)
 {
 	soundProducerToManipulatePtr = nullptr;
+	m_combo_box = nullptr;
 	
 	//initialize tracks
 	xTrack = new DoubleTrack("X Track");
@@ -21,7 +22,7 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title) : Track(title)
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(DoubleTrack::OnLeftMouseClick));
 	Connect(wxEVT_CONTEXT_MENU, wxCommandEventHandler(DoubleTrack::OnRightMouseClick));
 	
-	//Add a combo box to select soundproducers
+	
 }
 
 
@@ -47,11 +48,57 @@ DoubleTrack* SoundProducerTrack::GetReferenceToXTrack(){return xTrack;}
 DoubleTrack* SoundProducerTrack::GetReferenceToYTrack(){return yTrack;}
 DoubleTrack* SoundProducerTrack::GetReferenceToZTrack(){return zTrack;}
 
-void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
+void SoundProducerTrack::SetReferenceToSoundProducerVector(std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector)
 {
-	//Do nothing
+	sound_producer_vector_ref = sound_producer_vector;
+}
+
+void SoundProducerTrack::AddRecentSoundProducerMadeToTrack()
+{
+	if(sound_producer_vector_ref != nullptr)
+	{
+		std::cout << "Add recent sound producer made to track called! \n";
+		
+		SoundProducer* thisSoundProducer = nullptr;
+		
+		if(sound_producer_vector_ref->size() == 1)
+		{
+			thisSoundProducer = sound_producer_vector_ref->at(0).get();
+		}
+		else if(sound_producer_vector_ref->size() > 1)
+		{
+			thisSoundProducer = sound_producer_vector_ref->at(sound_producer_vector_ref->size() - 1).get();
+		}
+		
+		if(thisSoundProducer != nullptr)
+		{
+			wxString thisString(thisSoundProducer->GetNameString());
+			soundproducers_to_edit_wxstring.Add(thisString);
+			
+			m_combo_box->Clear();
+			m_combo_box->Append(soundproducers_to_edit_wxstring);
+		}
+		
+	}
 	
 }
+
+void SoundProducerTrack::RemoveSoundProducerFromTrack(SoundProducer* thisSoundProducer)
+{
+	wxString thisString(thisSoundProducer->GetNameString());
+	soundproducers_to_edit_wxstring.Remove(thisString);
+	m_combo_box->Clear();
+	m_combo_box->Append(soundproducers_to_edit_wxstring);
+	
+}
+
+void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
+{
+		
+	//Add a combo box to select soundproducers
+	m_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(0,70),wxSize(100,30));
+	m_combo_box->Append(soundproducers_to_edit_wxstring);
+}	
 
 void SoundProducerTrack::SetupAxisForVariable(double& start, double& end,double& resolution, int& numTick)
 {

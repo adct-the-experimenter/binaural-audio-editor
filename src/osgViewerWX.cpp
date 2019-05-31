@@ -175,43 +175,33 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     //Code to initialize timeline track editor part of GUI
 
 	TimelineFrame *timeFrame = new TimelineFrame(this); 
+	
 
 	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
-	SoundProducerTrack* track1 = new SoundProducerTrack("SoundProducer Track");
-	//DoubleTrack* track1 = new DoubleTrack("X Track");
-	//DoubleTrack* track2 = new DoubleTrack("Y Track");
-	//DoubleTrack* track3 = new DoubleTrack("Z Track");
+	m_soundproducer_track = new SoundProducerTrack("SoundProducer Track");
 	
 	double start = -10.0f; //lowest value
 	double end = 10.0f; //highest value
 	int numTicks = 11; //number of ticks between lowest value and highest value including zero
 	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
-
-	track1->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axis
-	//track2->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axis
-	//track3->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axis
-
-	//Put in the variable to change with the timeline.
-	// IMPORTANT NOTE: someVarToChange must be declared outside of scope of MyFrame constructor 
-	//and not go out of scope or else a segmentation fault happens
-	//track1->SetReferenceToVarToManipulate(&someVarToChange); 
-
-	//add track to time frame
-	timeFrame->AddTrack(track1->GetReferenceToXTrack(),space);
-	//timeFrame->AddTrackFunctionToCallInTimerLoop(track1->GetReferenceToXTrack());
 	
-	timeFrame->AddTrack(track1->GetReferenceToYTrack(),space);
-	//timeFrame->AddTrackFunctionToCallInTimerLoop(track1->GetReferenceToYTrack());
+	//initialize sound producer track stuff
+	m_soundproducer_track->InitTrack(timeFrame,nullptr);
 	
-	timeFrame->AddTrack(track1->GetReferenceToZTrack(),space);
-	//timeFrame->AddTrackFunctionToCallInTimerLoop(track1->GetReferenceToZTrack());
+	m_soundproducer_track->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
+ 
+	//add x,y,z tracks of SoundProducerTrack to time frame
+	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToXTrack(),space);
+	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToYTrack(),space);
+	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToZTrack(),space);
 	
 	//add special soundproducertrack function to call during playback
 	//it will also call x,y,z track playback functions
-	timeFrame->AddTrackFunctionToCallInTimerLoop(track1); 
+	timeFrame->AddTrackFunctionToCallInTimerLoop(m_soundproducer_track); 
 	
-	track1->Show(); //show the track
+	m_soundproducer_track->Show(); //show the track
 	timeFrame->Show(true); //show the timeframe
+	
 }
 
 void MainFrame::SetViewer(osgViewer::Viewer *viewer){_viewer = viewer;}
@@ -221,6 +211,7 @@ void MainFrame::SetRootNode(osg::Group *root){_rootNode = root;}
 void MainFrame::SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector)
 {
 	sound_producer_vector_ref = sound_producer_vector;
+	m_soundproducer_track->SetReferenceToSoundProducerVector(sound_producer_vector);
 }
 
 void MainFrame::SetListenerReference(Listener* thisListener){ listenerPtr = thisListener; /*std::cout << "listenerPtr in Mainframe:" << listenerPtr << std::endl;*/}
@@ -313,6 +304,8 @@ void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, AL
 	
 	//move sound producer unique pointer to sound producer vector of unique pointers
 	sound_producer_vector_ref->push_back(std::move(thisSoundProducer));
+	
+	m_soundproducer_track->AddRecentSoundProducerMadeToTrack(); 
 }
 
 void MainFrame::OnEditMultipleSoundProducers(wxCommandEvent& event)
