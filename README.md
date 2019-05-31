@@ -39,3 +39,10 @@ wxwidgets https://www.wxwidgets.org/
   Dark blue cube is you the listener. 
   
   Light blue cubes are the sound producers.
+
+  Use the Sound Producer Track to change position of a certain sound producer. 
+  Add points to the graph by left clicking on the graph. Remove points from the graph by right clicking.
+  First graph controls the x position, second graph is for y position, third graph is for z position.
+  
+  Currently, only 1 sound producer can be moved during playback and play audio needs to be clicked 
+  to hear the sound during playback of timeline.
