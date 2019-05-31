@@ -30,12 +30,12 @@ class SoundProducer
 		void SetNameString(std::string& thisName);
 		std::string GetNameString();
 		
-		void setPositionX(double& x); //set x position of sound producer
-		double getPositionX(); //get x position of sound producer
-		void setPositionY(double& y); //set y position of sound producer
-		double getPositionY(); //get y position of sound producer
-		void setPositionZ(double& z); //set z position of sound producer
-		double getPositionZ(); //get z position of sound producer
+		void SetPositionX(double& x); //set x position of sound producer
+		double GetPositionX(); //get x position of sound producer
+		void SetPositionY(double& y); //set y position of sound producer
+		double GetPositionY(); //get y position of sound producer
+		void SetPositionZ(double& z); //set z position of sound producer
+		double GetPositionZ(); //get z position of sound producer
 		
 		void InitSoundProducer(std::string& thisName, std::string& filepath, ALuint& buffer,
 								double& x, double& y, double& z);

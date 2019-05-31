@@ -28,13 +28,22 @@ link_directories( /usr/lib /usr/local/lib )
 set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} )
 
 #for where to find header files for source and library
-include_directories(/usr/include /usr/local/include ./include ${PROJECT_INCLUDE_DIR})
+include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
 
-set(SOURCES src/osgViewerWX.cpp   
-			src/EditorManipulator.cpp
+set(SOURCES src/osgViewerWX.cpp
+			 src/soundproducer-track.cpp
+			 src/EditorManipulator.cpp
 			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp src/HRTF-Test-Dialog.cpp 
 			 src/EditListenerDialog.cpp
 			 src/openalsoftaudioengine.cpp src/soundproducer.cpp src/listener.cpp
+			 
+			 
+			 src/timeline-track-editor/src/timeline-frame.cpp
+			 src/timeline-track-editor/src/timeline-window.cpp
+			 src/timeline-track-editor/src/playback-controls.cpp
+			 src/timeline-track-editor/src/double-track.cpp
+			 src/timeline-track-editor/src/editor-graph.cpp
+			 src/timeline-track-editor/src/track.cpp
 			 )
 
 #get_cmake_property(_variableNames VARIABLES)

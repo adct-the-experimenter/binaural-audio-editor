@@ -58,6 +58,8 @@
 
 #include "openalsoftaudioengine.h"
 
+#include "timeline-frame.h"
+#include "soundproducer-track.h"
 
 #include <iostream>
 #include <memory> //for unique_ptr use
@@ -190,6 +192,8 @@ private:
 	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;
 	
 	Listener* listenerPtr;
+	
+	SoundProducerTrack* m_soundproducer_track;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
