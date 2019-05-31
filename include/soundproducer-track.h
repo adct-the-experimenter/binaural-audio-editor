@@ -66,6 +66,10 @@ private:
 	std::vector <std::unique_ptr <SoundProducer> > *sound_producer_vector_ref; //pointer to vector of sound producers to edit
 	//list of names for combo box
 	wxArrayString soundproducers_to_edit_wxstring;
+	
+	std::unordered_map <std::string, std::vector <std::unique_ptr <SoundProducer> >::iterator> map_soundproducer; //dictionary to keep track of which wxstring associated with index
+	
+	void OnSelectedSoundProducerInComboBox(wxCommandEvent& event);
 };
 
 #endif
