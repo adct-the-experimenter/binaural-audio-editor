@@ -15,9 +15,14 @@ public:
     
     TimelineWindow* GetTimelineWindow();
     
+    //Track related functions
     void AddTrack(Track* thisTrack, int& space);
     
     void AddTrackFunctionToCallInTimerLoop(Track* thisTrack);
+    
+    //Display related functions
+    void AddSpacerBlock(int space); //function to add space between boxes containing Tracks or panels
+    void AddText(wxString thisText, wxPoint thisPoint);//function to add text anywhere in the window
     
     void OnClose(wxCloseEvent& evt);
     

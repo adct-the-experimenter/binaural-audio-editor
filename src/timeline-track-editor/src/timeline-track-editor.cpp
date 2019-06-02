@@ -90,11 +90,22 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	//optional
 	track1->SetFunctionToCallAfterVariableChange(FunctionForSomeVarAfterChange);
 	
+	//add block of space between timeline and track
+	int spaceBlockSize = 100;
+	timeFrame->AddSpacerBlock(spaceBlockSize);
+	
+	//add text to the timeline window at certain point
+	wxPoint textPoint; textPoint.x = 100; textPoint.y = 100;
+	timeFrame->AddText("Track for someVarToChange",textPoint);
+	
 	//add track to time frame
 	timeFrame->AddTrack(track1,space);
 	//add function to call during playback to timeframe 
 	//so that someVarToChange can be changed according to Track FunctionToCallEveryTimeInTimerLoop
 	timeFrame->AddTrackFunctionToCallInTimerLoop(track1);
+	
+	
+	
 	
 	track1->Show(); //show the track
 	timeFrame->Show(true); //show the timeframe

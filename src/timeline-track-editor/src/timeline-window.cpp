@@ -148,14 +148,27 @@ void TimelineWindow::AddTrack(Track* thisTrack, int& space)
 	thisTrack->InitTrack(this,&m_time_num);
 	thisTrack->SetReferenceToCurrentTimeVariable(&current_time_pos);
 	
+	//make horizontal box to put track in
 	wxBoxSizer *hboxTrack = new wxBoxSizer(wxHORIZONTAL);
 	
+	//put track in horizontal box
 	hboxTrack->Add(thisTrack, 0, wxRIGHT | wxLEFT, slider_start_x_pos);
 	
 	//add track to timeline window
 	main_v_box->Add(hboxTrack, 1, wxTOP | wxALIGN_TOP,space);
 	
 	SetSizerAndFit(main_v_box);
+}
+
+void TimelineWindow::AddSpacerBlock(int space)
+{
+	main_v_box->AddSpacer(space);
+	SetSizerAndFit(main_v_box);
+}
+
+void TimelineWindow::AddText(wxString thisText, wxPoint thisPoint)
+{
+	wxStaticText *st1 = new wxStaticText(this, wxID_ANY, thisText,thisPoint );
 }
 
 wxSlider* TimelineWindow::getSliderReference(){return m_slider;}

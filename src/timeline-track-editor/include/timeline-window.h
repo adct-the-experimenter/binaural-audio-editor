@@ -35,6 +35,11 @@ public:
     
     std::vector <int> *GetTimeTickVector(); //use to draw time ticks in tracks
     
+    //Display related functions
+    
+    void AddSpacerBlock(int space); //function to add space between boxes containing Tracks or panels
+    void AddText(wxString thisText, wxPoint thisPoint);//function to add text anywhere in the window
+    
 private:
 
 	wxWindow* m_parent;

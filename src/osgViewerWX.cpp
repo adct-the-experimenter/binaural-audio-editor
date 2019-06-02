@@ -195,15 +195,33 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	m_listener_track->InitTrack(timeFrame,nullptr);
 	m_listener_track->SetupAxisForVariable(start,end,resolution,numTicks);
 	
+	//add block of space between Timeline Ruler and Sound Producer Track
+	timeFrame->AddSpacerBlock(40);
+	
+	//add text to indicate it is a Sound Producer Track
+	timeFrame->AddText("Sound Producer Track",wxPoint(40,90));
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToXTrack(),space);
+	timeFrame->AddText("X:",wxPoint(20,200));
 	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToYTrack(),space);
+	timeFrame->AddText("Y:",wxPoint(20,350));
 	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToZTrack(),space);
+	timeFrame->AddText("Z:",wxPoint(20,500));
 	
+	//add block of space between Sound Producer Track and Listener Track
+	timeFrame->AddSpacerBlock(40);
+	
+	//add text to indicate it is a Listener Track
+	timeFrame->AddText("Listener Track",wxPoint(40,600));
+	
+	//add x,y,z tracks of ListenerTrack to time frame
 	timeFrame->AddTrack(m_listener_track->GetReferenceToXTrack(),space);
+	timeFrame->AddText("X:",wxPoint(20,700));
 	timeFrame->AddTrack(m_listener_track->GetReferenceToYTrack(),space);
+	timeFrame->AddText("Y:",wxPoint(20,850));
 	timeFrame->AddTrack(m_listener_track->GetReferenceToZTrack(),space);
+	timeFrame->AddText("Z:",wxPoint(20,1000));
 	
 	//add special soundproducertrack function to call during playback
 	//it will also call x,y,z track playback functions
