@@ -82,7 +82,7 @@ void Listener::setListenerPosition()
 					listener_position_vector[POSITION_INDEX::Z]);
 
 	m_paTransform->setPosition(osg::Vec3(
-								listener_position_vector[POSITION_INDEX::Y], 
+								listener_position_vector[POSITION_INDEX::X], 
 								listener_position_vector[POSITION_INDEX::Y], 
 								listener_position_vector[POSITION_INDEX::Z])
 								);

@@ -158,7 +158,12 @@ void PlaybackTimer::Notify()
 {
     m_controls->RunPlaybackState(); 
     
-    for (auto& x: functionsNotify) {x();}
+    if(m_controls->GetCurrentState() == PlaybackControls::STATE_PLAY)
+    {
+		std::cout << "Functions called for playback in play state! \n";
+		for (auto& x: functionsNotify) {x();}
+	}
+    
 }
 
 void PlaybackTimer::start()

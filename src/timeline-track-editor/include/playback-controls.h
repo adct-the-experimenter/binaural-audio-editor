@@ -21,12 +21,6 @@ public:
 	int GetCurrentState();
 	void SetReferenceToTimelineWindow(TimelineWindow* thisTimeline);
 	
-private:
-	
-	TimelineWindow* timelineWindowPtr;
-	
-	int current_state;
-	
 	enum 
 	{
 		STATE_NULL = 0,
@@ -40,6 +34,14 @@ private:
 		ID_FAST_FORWARD_BUTON_HIT,
 		ID_REWIND_BUTTON_HIT
 	};
+	
+private:
+	
+	TimelineWindow* timelineWindowPtr;
+	
+	int current_state;
+	
+	
 	
 	wxButton *m_play_button;
     wxButton *m_pause_button;

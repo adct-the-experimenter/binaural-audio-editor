@@ -4,8 +4,6 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
 {
 	
-	ptrListener = listener;
-	
 	EditListenerDialog::initPrivateVariables();
 
 	//make horizontal box to put names in
@@ -44,7 +42,7 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
 	textFieldZ->Clear();
 	
 	//update position text fields to have current position of sound producer selected
-	
+	ptrListener = listener;
 	if(ptrListener == nullptr){std::cout << "listener pointer is nullptr! \n";}
 	else
 	{
@@ -73,17 +71,17 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
 	
 	
 	//initialize Ok and Cancel buttons 
-	okButton = new wxButton(this, EditListenerDialog::ID_OK, wxT("Ok"), 
-	wxDefaultPosition, wxSize(70, 30)
+	okButton = new wxButton(this, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxSize(70, 30)
 							);
-
-	cancelButton = new wxButton(this, EditListenerDialog::ID_CANCEL, wxT("Cancel"), 
-	wxDefaultPosition, wxSize(70, 30)
-								);
+	okButton->Bind(wxEVT_BUTTON, &EditListenerDialog::OnOk,this);
 	
-	applyButton = new wxButton(this, EditListenerDialog::ID_APPLY, wxT("Apply"), 
-	wxDefaultPosition, wxSize(70, 30)
+	cancelButton = new wxButton(this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxSize(70, 30)
 								);
+	cancelButton->Bind(wxEVT_BUTTON, &EditListenerDialog::OnCancel,this);
+	
+	applyButton = new wxButton(this, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxSize(70, 30)
+								);
+	applyButton->Bind(wxEVT_BUTTON, &EditListenerDialog::OnApply,this);
 	
 	//make horizontal box to put ok and cancel buttons in
 	wxBoxSizer *hboxBottom = new wxBoxSizer(wxHORIZONTAL);
@@ -137,7 +135,7 @@ void EditListenerDialog::ChangeListenerAttributes()
 	
 }
 
-void EditListenerDialog::onApply(wxCommandEvent& event)
+void EditListenerDialog::OnApply(wxCommandEvent& event)
 {
 	EditListenerDialog::ChangeListenerAttributes();	
 }
@@ -164,10 +162,3 @@ void EditListenerDialog::Exit()
 	if(textFieldZ != nullptr){ delete textFieldZ;}
     Close( true ); //close window
 }
-
-//Event table for main frame specific events
-BEGIN_EVENT_TABLE(EditListenerDialog, wxDialog)
-    EVT_BUTTON				(ID_OK, EditListenerDialog::OnOk)
-    EVT_BUTTON				(ID_CANCEL, EditListenerDialog::OnCancel)
-    EVT_BUTTON				(ID_APPLY, EditListenerDialog::onApply)
-END_EVENT_TABLE()

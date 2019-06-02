@@ -22,7 +22,7 @@ public:
 
 	void OnCancel(wxCommandEvent& event);
 	
-	void onApply(wxCommandEvent& event);
+	void OnApply(wxCommandEvent& event);
 	
 	void OnBrowse(wxCommandEvent& event);
 
@@ -51,8 +51,6 @@ private:
 	void initPrivateVariables(); 
 	
 	void ChangeListenerAttributes();
-	
-	DECLARE_EVENT_TABLE()
 	
 };
 

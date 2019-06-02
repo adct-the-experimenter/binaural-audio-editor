@@ -161,7 +161,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append( menuFile, "&File" ); //connect file menu item to bar
-    //menuBar->Append(menuListener, "&Listener"); //connecte listener menu item to bar
+    menuBar->Append(menuListener, "&Listener"); //connecte listener menu item to bar
     menuBar->Append( menuSoundProducers, "&Sound Producers"); //connect Sound Producers menu item to bar
     menuBar->Append( menuHRTF, "&HRTF"); //connect HRTF menu item to bar
     menuBar->Append( menuPlayback, "&Playback"); //connect Playback menu item to bar
