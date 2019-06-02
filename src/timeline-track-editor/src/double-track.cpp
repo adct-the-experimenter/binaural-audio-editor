@@ -59,6 +59,9 @@ void DoubleTrack::SetReferenceToVarToManipulate(double* thisVar){varToManipulate
 
 double DoubleTrack::GetCurrentTime(){return Track::GetCurrentTime();}
 
+void DoubleTrack::SetTitle(wxString thisTitle){Track::SetTitle(thisTitle);}
+wxString DoubleTrack::GetTitle(){return Track::GetTitle();}
+
 void DoubleTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
 {
 	Track::InitTrack(parent,timeTickVector);
@@ -67,6 +70,7 @@ void DoubleTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
 	graphEditor = new EditorGraph(this);
 	graphEditor->SetReferenceToTimeTickVector(timeTickVector);
 	
+	//wxStaticText *st1 = new wxStaticText(parent, wxID_ANY, DoubleTrack::GetTitle(), wxPoint(this->GetScreenPosition().x,this->GetScreenPosition().y) );
 }
 
 void DoubleTrack::SetupAxisForVariable(double& start, double& end,double& resolution, int& numTick)

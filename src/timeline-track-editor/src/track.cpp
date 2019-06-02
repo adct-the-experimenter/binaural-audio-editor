@@ -14,15 +14,17 @@ void Track::SetReferenceToTimeTickVector(std::vector <int> *thisVector){ptrToTim
 
 std::vector <int> *Track::GetReferenceToTimeTickVector(){return ptrToTimeTickVector;}
 
+void Track::SetTitle(wxString thisTitle){m_title = thisTitle;}
+wxString Track::GetTitle(){return m_title;}
+
 void Track::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
 {
 	m_parent = parent;
 	
 	ptrToTimeTickVector = timeTickVector;
-	this->Create(parent, wxID_ANY, wxDefaultPosition, wxSize(TRACK_WIDTH, TRACK_HEIGHT),wxTAB_TRAVERSAL,m_title);
+	this->Create(parent, wxID_ANY, wxPoint(wxDefaultPosition.x,wxDefaultPosition.y + 50), wxSize(TRACK_WIDTH, TRACK_HEIGHT),wxTAB_TRAVERSAL,m_title);
 	this->SetBackgroundColour( *wxLIGHT_GREY );
 	this->Show();
-	//wxStaticText *st1 = new wxStaticText(this, wxID_ANY, wxT("This is a track."), wxPoint(25, 80) );
 }
 
 void Track::OnSize(wxSizeEvent& event)

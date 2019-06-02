@@ -60,6 +60,7 @@
 
 #include "timeline-frame.h"
 #include "soundproducer-track.h"
+#include "listener-track.h"
 
 #include <iostream>
 #include <memory> //for unique_ptr use
@@ -192,6 +193,7 @@ private:
 	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;
 	
 	Listener* listenerPtr;
+	ListenerTrack* m_listener_track;
 	
 	SoundProducerTrack* m_soundproducer_track;
 	

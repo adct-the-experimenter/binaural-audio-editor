@@ -177,9 +177,11 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	TimelineFrame *timeFrame = new TimelineFrame(this); 
 	
 
-	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
-	m_soundproducer_track = new SoundProducerTrack("SoundProducer Track");
 	
+	m_soundproducer_track = new SoundProducerTrack("SoundProducer Track");
+	m_listener_track = new ListenerTrack("Listener Track");
+	
+	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
 	double start = -10.0f; //lowest value
 	double end = 10.0f; //highest value
 	int numTicks = 11; //number of ticks between lowest value and highest value including zero
@@ -187,19 +189,29 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	
 	//initialize sound producer track stuff
 	m_soundproducer_track->InitTrack(timeFrame,nullptr);
-	
 	m_soundproducer_track->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
- 
+	
+	//initialize listener track
+	m_listener_track->InitTrack(timeFrame,nullptr);
+	m_listener_track->SetupAxisForVariable(start,end,resolution,numTicks);
+	
+	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToXTrack(),space);
 	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToYTrack(),space);
 	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToZTrack(),space);
 	
+	timeFrame->AddTrack(m_listener_track->GetReferenceToXTrack(),space);
+	timeFrame->AddTrack(m_listener_track->GetReferenceToYTrack(),space);
+	timeFrame->AddTrack(m_listener_track->GetReferenceToZTrack(),space);
+	
 	//add special soundproducertrack function to call during playback
 	//it will also call x,y,z track playback functions
 	timeFrame->AddTrackFunctionToCallInTimerLoop(m_soundproducer_track); 
+	timeFrame->AddTrackFunctionToCallInTimerLoop(m_listener_track); 
 	
 	m_soundproducer_track->Show(); //show the track
+	m_listener_track->Show();
 	timeFrame->Show(true); //show the timeframe
 	
 }
@@ -214,7 +226,11 @@ void MainFrame::SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundPr
 	m_soundproducer_track->SetReferenceToSoundProducerVector(sound_producer_vector);
 }
 
-void MainFrame::SetListenerReference(Listener* thisListener){ listenerPtr = thisListener; /*std::cout << "listenerPtr in Mainframe:" << listenerPtr << std::endl;*/}
+void MainFrame::SetListenerReference(Listener* thisListener)
+{ 
+	listenerPtr = thisListener;
+	m_listener_track->SetReferenceToListenerToManipulate(listenerPtr);
+}
 
 void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}
 

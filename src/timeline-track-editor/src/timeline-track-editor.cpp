@@ -72,7 +72,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     TimelineFrame *timeFrame = new TimelineFrame(this); 
     
     int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
-	DoubleTrack* track1 = new DoubleTrack("Variable Track");
+	DoubleTrack* track1 = new DoubleTrack("Variable");
 	
 	double start = -10.0f; //lowest value
 	double end = 10.0f; //highest value

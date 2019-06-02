@@ -31,6 +31,9 @@ public:
     void SetReferenceToTimeTickVector(std::vector <int> *thisVector);
     std::vector <int> *GetReferenceToTimeTickVector();
     
+    void SetTitle(wxString thisTitle);
+    wxString GetTitle();
+    
     double GetCurrentTime();
     
     void SetReferenceToVarToManipulate(double* thisVar);

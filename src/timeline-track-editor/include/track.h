@@ -26,6 +26,9 @@ public:
     void SetReferenceToCurrentTimeVariable(double* thisTimeVariable);
     void SetReferenceToTimeTickVector(std::vector <int> *thisVector);
     
+	void SetTitle(wxString thisTitle);
+    wxString GetTitle();
+    
     std::vector <int> *GetReferenceToTimeTickVector();
     
     double GetCurrentTime();
