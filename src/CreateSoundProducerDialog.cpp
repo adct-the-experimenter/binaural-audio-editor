@@ -163,8 +163,6 @@ void CreateSoundProducerDialog::OnBrowse(wxCommandEvent& event)
 			//save to buffer
 			buffer = tempBuffer;
 		} 
-			
-		
 	}   
 }
 

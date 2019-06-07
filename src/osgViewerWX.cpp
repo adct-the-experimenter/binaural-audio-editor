@@ -58,6 +58,8 @@ bool wxOsgApp::OnInit()
 
 		//viewer->addEventHandler(new osgViewer::StatsHandler);
 		viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
+		
+		
 
 		//init geommetry node which is a leaf node of scenegraph 
 		//containing geometry information
@@ -77,7 +79,21 @@ bool wxOsgApp::OnInit()
 		
 		//initialize viewer
 		viewer->setSceneData(rootNode.get());
-		viewer->setCameraManipulator(new EditorManipulator);
+		
+		//Initialize and set camera manipulator
+		cameraManipulator = new osgGA::OrbitManipulator();
+		viewer->setCameraManipulator(cameraManipulator);
+		
+		//Set camera to look at listener 10 units above origin and behind origin
+		osg::Vec3d eye( 10.0, 0.0, 10.0 ); //The position of your camera -can be used to set its height position.
+		osg::Vec3d center( 0.0, 0.0, 0.0 ); // The point your camera is looking at - set this to the center of the observed object.
+		// The up-vector of your camera - 
+		//this controls how your viewport will be rotated about its center 
+		//and should be equal to [0, 1, 0] in a conventional graphics coordinate system
+		osg::Vec3d up( 0.0, 1.0, 0.0 ); 
+
+		cameraManipulator->setTransformation(eye,center,up);
+		
 		frame->SetViewer(viewer);
 		
 		/* Show the frame */

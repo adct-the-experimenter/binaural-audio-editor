@@ -45,9 +45,7 @@
 
 #include "openalsoftaudioengine.h"
 
-
-#include "EditorManipulator.h"
-
+#include <osgGA/OrbitManipulator>
 #include "soundproducer.h"
 #include "listener.h"
 
@@ -225,6 +223,8 @@ private:
 	
 	std::unique_ptr <Listener> listener;
 	void initListener();
+	
+	osg::ref_ptr<osgGA::OrbitManipulator> cameraManipulator; //pointer to camera manipulator
 };
 
 #endif // _WXSIMPLEVIEWERWX_H_

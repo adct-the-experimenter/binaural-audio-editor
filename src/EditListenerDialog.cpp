@@ -71,16 +71,13 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
 	
 	
 	//initialize Ok and Cancel buttons 
-	okButton = new wxButton(this, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxSize(70, 30)
-							);
+	okButton = new wxButton(this, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxSize(70, 30) );
 	okButton->Bind(wxEVT_BUTTON, &EditListenerDialog::OnOk,this);
 	
-	cancelButton = new wxButton(this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxSize(70, 30)
-								);
+	cancelButton = new wxButton(this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxSize(70, 30) );
 	cancelButton->Bind(wxEVT_BUTTON, &EditListenerDialog::OnCancel,this);
 	
-	applyButton = new wxButton(this, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxSize(70, 30)
-								);
+	applyButton = new wxButton(this, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxSize(70, 30) );
 	applyButton->Bind(wxEVT_BUTTON, &EditListenerDialog::OnApply,this);
 	
 	//make horizontal box to put ok and cancel buttons in
