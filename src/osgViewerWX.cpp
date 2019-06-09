@@ -81,7 +81,7 @@ bool wxOsgApp::OnInit()
 		viewer->setSceneData(rootNode.get());
 		
 		//Initialize and set camera manipulator
-		cameraManipulator = new osgGA::OrbitManipulator();
+		cameraManipulator = new osgGA::TrackballManipulator();
 		viewer->setCameraManipulator(cameraManipulator);
 		
 		//Set camera to look at listener 10 units above origin and behind origin
@@ -89,8 +89,8 @@ bool wxOsgApp::OnInit()
 		osg::Vec3d center( 0.0, 0.0, 0.0 ); // The point your camera is looking at - set this to the center of the observed object.
 		// The up-vector of your camera - 
 		//this controls how your viewport will be rotated about its center 
-		//and should be equal to [0, 1, 0] in a conventional graphics coordinate system
-		osg::Vec3d up( 0.0, 1.0, 0.0 ); 
+		//and should be equal to [0, 0, 1] in a conventional graphics coordinate system
+		osg::Vec3d up( 0.0, 0.0, 1.0 ); 
 
 		cameraManipulator->setTransformation(eye,center,up);
 		
