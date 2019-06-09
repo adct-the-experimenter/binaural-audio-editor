@@ -48,3 +48,11 @@ wxwidgets https://www.wxwidgets.org/
   
   Currently, only 1 sound producer can be moved during playback and play audio needs to be clicked 
   to hear the sound during playback of timeline.
+  
+  The application uses standard Cartesian coordinate system to move sound producers and listener.
+  
+  Up is positive z. Down is negative z.
+  
+  Back is positive x. Forward is negative x.
+  
+  Right is positive y. Left is negative y.
