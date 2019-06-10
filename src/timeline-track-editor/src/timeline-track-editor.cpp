@@ -102,10 +102,20 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	timeFrame->AddTrack(track1,space);
 	//add function to call during playback to timeframe 
 	//so that someVarToChange can be changed according to Track FunctionToCallEveryTimeInTimerLoop
-	timeFrame->AddTrackFunctionToCallInTimerLoop(track1);
 	
+	//FunctionToCallInXState can be changed to do whatever you want. Functions must be void and take in no parameters.
+	//Can add members to DoubleTrack and reference them to get around no parameters or make own class with custom members.
 	
-	
+	//makes DoubleTrack::FunctionToCallInPlayState() be called during play
+	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(track1); 
+	//makes DoubleTrack::FunctionToCallInPauseState() be called during pause
+    timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(track1); 
+    //makes DoubleTrack::FunctionToCallInRewindState() be called during rewind
+    timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(track1); 
+    //makes DoubleTrack::FunctionToCallInFastForwardState() be called during fast forward
+    timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(track1); 
+    //makes DoubleTrack::FunctionToCallInNullState() be called when nothing is happening after stop button pressed
+    timeFrame->AddTrackFunctionToCallInTimerLoopNullState(track1); 
 	
 	track1->Show(); //show the track
 	timeFrame->Show(true); //show the timeframe

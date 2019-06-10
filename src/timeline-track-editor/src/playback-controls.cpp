@@ -158,10 +158,37 @@ void PlaybackTimer::Notify()
 {
     m_controls->RunPlaybackState(); 
     
-    if(m_controls->GetCurrentState() == PlaybackControls::STATE_PLAY)
+    switch(m_controls->GetCurrentState())
     {
-		//std::cout << "Functions called for playback in play state! \n";
-		for (auto& x: functionsNotify) {x();}
+		case PlaybackControls::STATE_PLAY:
+		{
+			for (auto& x: functionsPlayState) {x();} 
+			break;
+		}
+		
+		case PlaybackControls::STATE_PAUSE:
+		{
+			for (auto& x: functionsPauseState) {x();} 
+			break;
+		}
+		
+		case PlaybackControls::STATE_REWIND:
+		{
+			for (auto& x: functionsRewindState) {x();} 
+			break;
+		}
+		
+		case PlaybackControls::STATE_FAST_FORWARD:
+		{
+			for (auto& x: functionsFastForwardState) {x();} 
+			break;
+		}
+		
+		case PlaybackControls::STATE_NULL:
+		{
+			for (auto& x: functionsNullState) {x();} 
+			break;
+		}
 	}
     
 }
@@ -171,7 +198,27 @@ void PlaybackTimer::start()
     wxTimer::Start(TIME_RESOLUTION,wxTIMER_CONTINUOUS); //the timer calls Notify every TIMER_INTERVAL milliseconds
 }
 
-void PlaybackTimer::AddFunctionToTimerLoop( std::function < void() > thisFunction)
+void PlaybackTimer::AddFunctionToTimerLoopPlayState( std::function < void() > thisFunction)
 {
-	functionsNotify.push_back(thisFunction);
+	functionsPlayState.push_back(thisFunction);
+}
+
+void PlaybackTimer::AddFunctionToTimerLoopPauseState( std::function < void() > thisFunction)
+{
+	functionsPauseState.push_back(thisFunction);
+}
+
+void PlaybackTimer::AddFunctionToTimerLoopRewindState( std::function < void() > thisFunction)
+{
+	functionsRewindState.push_back(thisFunction);
+}
+
+void PlaybackTimer::AddFunctionToTimerLoopFastForwardState( std::function < void() > thisFunction)
+{
+	functionsFastForwardState.push_back(thisFunction);
+}
+
+void PlaybackTimer::AddFunctionToTimerLoopNullState( std::function < void() > thisFunction)
+{
+	functionsNullState.push_back(thisFunction);
 }

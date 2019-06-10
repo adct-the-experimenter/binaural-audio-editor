@@ -68,12 +68,21 @@ public:
     void Notify(); //action to take periodically after certain amount of time defined
     void start();
 
-	void AddFunctionToTimerLoop( std::function < void() > thisFunction);
+	void AddFunctionToTimerLoopPlayState( std::function < void() > thisFunction);
+	void AddFunctionToTimerLoopPauseState( std::function < void() > thisFunction);
+	void AddFunctionToTimerLoopRewindState( std::function < void() > thisFunction);
+	void AddFunctionToTimerLoopFastForwardState( std::function < void() > thisFunction);
+	void AddFunctionToTimerLoopNullState( std::function < void() > thisFunction);
 	
 private:
 	PlaybackControls* m_controls;
 	//vector of functions to call everytim Notify is called
-	std::vector < std::function < void() > > functionsNotify;
+	std::vector < std::function < void() > > functionsPlayState;
+	std::vector < std::function < void() > > functionsPauseState;
+	std::vector < std::function < void() > > functionsRewindState;
+	std::vector < std::function < void() > > functionsFastForwardState;
+	std::vector < std::function < void() > > functionsNullState;
+	
 	
 };
 

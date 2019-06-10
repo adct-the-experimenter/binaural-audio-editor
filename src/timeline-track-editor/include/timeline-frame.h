@@ -18,7 +18,11 @@ public:
     //Track related functions
     void AddTrack(Track* thisTrack, int& space);
     
-    void AddTrackFunctionToCallInTimerLoop(Track* thisTrack);
+    void AddTrackFunctionToCallInTimerLoopPlayState(Track* thisTrack);
+    void AddTrackFunctionToCallInTimerLoopPauseState(Track* thisTrack);
+    void AddTrackFunctionToCallInTimerLoopRewindState(Track* thisTrack);
+    void AddTrackFunctionToCallInTimerLoopFastForwardState(Track* thisTrack);
+    void AddTrackFunctionToCallInTimerLoopNullState(Track* thisTrack);
     
     //Display related functions
     void AddSpacerBlock(int space); //function to add space between boxes containing Tracks or panels

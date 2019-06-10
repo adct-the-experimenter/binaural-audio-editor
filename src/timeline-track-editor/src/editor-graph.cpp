@@ -1,8 +1,7 @@
 #include "editor-graph.h"
 
  
-EditorGraph::EditorGraph(wxWindow* parent) :
-wxPanel(parent)
+EditorGraph::EditorGraph(wxWindow* parent) : wxPanel(parent)
 {
 	
 }

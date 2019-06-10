@@ -204,7 +204,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
 	
 	//initialize sound producer track stuff
-	m_soundproducer_track->InitTrack(timeFrame,nullptr);
+	m_soundproducer_track->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
 	m_soundproducer_track->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	
 	//initialize listener track
@@ -214,22 +214,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	//add block of space between Timeline Ruler and Sound Producer Track
 	timeFrame->AddSpacerBlock(40);
 	
-	//add text to indicate it is a Sound Producer Track
-	timeFrame->AddText("Sound Producer Track",wxPoint(40,90));
-	
-	//add x,y,z tracks of SoundProducerTrack to time frame
-	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToXTrack(),space);
-	timeFrame->AddText("X:",wxPoint(20,200));
-	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToYTrack(),space);
-	timeFrame->AddText("Y:",wxPoint(20,350));
-	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToZTrack(),space);
-	timeFrame->AddText("Z:",wxPoint(20,500));
-	
-	//add block of space between Sound Producer Track and Listener Track
-	timeFrame->AddSpacerBlock(40);
-	
 	//add text to indicate it is a Listener Track
-	timeFrame->AddText("Listener Track",wxPoint(40,600));
+	timeFrame->AddText("Listener Track",wxPoint(40,90));
 	
 	//add x,y,z tracks of ListenerTrack to time frame
 	timeFrame->AddTrack(m_listener_track->GetReferenceToXTrack(),space);
@@ -241,8 +227,29 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	
 	//add special soundproducertrack function to call during playback
 	//it will also call x,y,z track playback functions
-	timeFrame->AddTrackFunctionToCallInTimerLoop(m_soundproducer_track); 
-	timeFrame->AddTrackFunctionToCallInTimerLoop(m_listener_track); 
+	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track); 
+	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_listener_track); 
+	
+	//add block of space between Sound Producer Track and Listener Track
+	timeFrame->AddSpacerBlock(40);
+	
+	//add text to indicate it is a Sound Producer Track
+	timeFrame->AddText("Sound Producer Track",wxPoint(40,600));
+	
+	//add x,y,z tracks of SoundProducerTrack to time frame
+	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToXTrack(),space);
+	timeFrame->AddText("X:",wxPoint(20,200));
+	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToYTrack(),space);
+	timeFrame->AddText("Y:",wxPoint(20,350));
+	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToZTrack(),space);
+	timeFrame->AddText("Z:",wxPoint(20,500));
+	
+	//initialize button that adds soundproducer track
+	//m_add_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Add SoundProducer Track"), wxPoint(20,100), wxSize(110, 30) );
+	//m_add_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnAddSoundProducerTrack,this);
+	
+	//m_remove_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Remove SoundProducer Track"), wxPoint(20,200), wxSize(110, 30) );
+	//m_remove_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnRemoveSoundProducerTrack,this);
 	
 	m_soundproducer_track->Show(); //show the track
 	m_listener_track->Show();
@@ -395,7 +402,17 @@ void MainFrame::OnEditListener(wxCommandEvent& event)
 																				
     editListenerDialog->Show(true);
 }
- 
+
+void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
+{
+	
+}
+
+void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
+{
+	
+}
+
 void MainFrame::OnPopupClick(wxCommandEvent& evt)
 {
 	void *data=static_cast<wxMenu *>( evt.GetEventObject() )->GetClientData();

@@ -23,14 +23,11 @@ ListenerTrack::ListenerTrack(const wxString& title) : Track(title)
 	
 }
 
-
-void ListenerTrack::FunctionToCallEveryTimeInTimerLoop()
+void ListenerTrack::FunctionToCallInPlayState()
 {
-	//std::cout << "FunctionToCall called in ListenerTrack \n";
-	
-	xTrack->FunctionToCallEveryTimeInTimerLoop();
-	yTrack->FunctionToCallEveryTimeInTimerLoop();
-	zTrack->FunctionToCallEveryTimeInTimerLoop();
+	xTrack->FunctionToCallInPlayState();
+	yTrack->FunctionToCallInPlayState();
+	zTrack->FunctionToCallInPlayState();
 	
 	float thisX = float(tempX);
 	float thisY = float(tempY);
@@ -43,6 +40,11 @@ void ListenerTrack::FunctionToCallEveryTimeInTimerLoop()
 		listenerToManipulatePtr->setPositionZ(thisZ);
 	}
 }
+
+void ListenerTrack::FunctionToCallInPauseState(){}
+void ListenerTrack::FunctionToCallInRewindState(){}
+void ListenerTrack::FunctionToCallInFastForwardState(){}
+void ListenerTrack::FunctionToCallInNullState(){}
 
 void ListenerTrack::SetReferenceToListenerToManipulate(Listener* thisListener){listenerToManipulatePtr = thisListener;}
 

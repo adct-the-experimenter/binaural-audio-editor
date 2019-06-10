@@ -46,7 +46,11 @@ public:
 	double GetCurrentTime();
 	
 	//function to call in timer loop, variable to manipulate gets changed here
-	virtual void FunctionToCallEveryTimeInTimerLoop();
+	virtual void FunctionToCallInPlayState();
+    virtual void FunctionToCallInPauseState();
+    virtual void FunctionToCallInRewindState();
+    virtual void FunctionToCallInFastForwardState();
+    virtual void FunctionToCallInNullState();
 	
 private:
 	Listener* listenerToManipulatePtr;

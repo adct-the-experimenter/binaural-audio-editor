@@ -206,6 +206,12 @@ private:
 	void OnChangeHRTF(wxCommandEvent& event); //function for menu to instruct how to change HRTF with alsoft-config
     void OnEditListener(wxCommandEvent& event); //function for menu to edit listener position and orientation
     
+    wxButton* m_add_soundproducertrack_button;
+    void OnAddSoundProducerTrack(wxCommandEvent& event);
+    
+    wxButton* m_remove_soundproducertrack_button;
+    void OnRemoveSoundProducerTrack(wxCommandEvent& event);
+    
     DECLARE_EVENT_TABLE()
 };
 

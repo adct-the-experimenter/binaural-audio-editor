@@ -38,7 +38,11 @@ public:
     
     void SetReferenceToVarToManipulate(double* thisVar);
     
-    virtual void FunctionToCallEveryTimeInTimerLoop();
+    virtual void FunctionToCallInPlayState();
+    virtual void FunctionToCallInPauseState();
+    virtual void FunctionToCallInRewindState();
+    virtual void FunctionToCallInFastForwardState();
+    virtual void FunctionToCallInNullState();
     
     void SetFunctionToCallAfterVariableChange(std::function < void() > thisFunction); 
     

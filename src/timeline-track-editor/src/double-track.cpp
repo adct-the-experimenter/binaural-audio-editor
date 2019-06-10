@@ -12,7 +12,7 @@ DoubleTrack::DoubleTrack(const wxString& title)  : Track (title)
 		
 }
 
-void DoubleTrack::FunctionToCallEveryTimeInTimerLoop()
+void DoubleTrack::FunctionToCallInPlayState()
 {
 	if(varToManipulatePtr != nullptr)
 	{
@@ -20,6 +20,7 @@ void DoubleTrack::FunctionToCallEveryTimeInTimerLoop()
 		if(graphEditor != nullptr)
 		{
 			double thisTime = DoubleTrack::GetCurrentTime();
+			
 			
 			//check if there is  a point at that time value
 			if ( map_time_output.find(thisTime) == map_time_output.end() ) 
@@ -37,6 +38,7 @@ void DoubleTrack::FunctionToCallEveryTimeInTimerLoop()
 				if(*varToManipulatePtr != got->second)
 				{
 					*varToManipulatePtr = got->second;
+					
 					//call this void function after variable change
 					//if it has a callable function target
 					if(func_after_var_change)
@@ -48,6 +50,14 @@ void DoubleTrack::FunctionToCallEveryTimeInTimerLoop()
 		}
 	}
 }
+
+void DoubleTrack::FunctionToCallInPauseState(){}
+
+void DoubleTrack::FunctionToCallInRewindState(){}
+
+void DoubleTrack::FunctionToCallInFastForwardState(){}
+
+void DoubleTrack::FunctionToCallInNullState(){}
 
 void DoubleTrack::SetReferenceToCurrentTimeVariable(double* thisTimeVariable){Track::SetReferenceToCurrentTimeVariable(thisTimeVariable);}
 
@@ -70,6 +80,8 @@ void DoubleTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
 	graphEditor = new EditorGraph(this);
 	graphEditor->SetReferenceToTimeTickVector(timeTickVector);
 	
+	//wxStaticText *st1 = new wxStaticText(parent, wxID_ANY, DoubleTrack::GetTitle(), 
+	//									wxPoint(this->GetScreenPosition().x,this->GetScreenPosition().y) );
 }
 
 void DoubleTrack::SetupAxisForVariable(double& start, double& end,double& resolution, int& numTick)

@@ -24,14 +24,13 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title) : Track(title)
 	
 }
 
-
-void SoundProducerTrack::FunctionToCallEveryTimeInTimerLoop()
+void SoundProducerTrack::FunctionToCallInPlayState()
 {
 	//std::cout << "FunctionToCall called in SoundProducerTrack \n";
 	
-	xTrack->FunctionToCallEveryTimeInTimerLoop();
-	yTrack->FunctionToCallEveryTimeInTimerLoop();
-	zTrack->FunctionToCallEveryTimeInTimerLoop();
+	xTrack->FunctionToCallInPlayState();
+	yTrack->FunctionToCallInPlayState();
+	zTrack->FunctionToCallInPlayState();
 		
 	if(soundProducerToManipulatePtr != nullptr)
 	{
@@ -40,6 +39,11 @@ void SoundProducerTrack::FunctionToCallEveryTimeInTimerLoop()
 		soundProducerToManipulatePtr->SetPositionZ(tempZ);
 	}
 }
+
+void SoundProducerTrack::FunctionToCallInPauseState(){}
+void SoundProducerTrack::FunctionToCallInRewindState(){}
+void SoundProducerTrack::FunctionToCallInFastForwardState(){}
+void SoundProducerTrack::FunctionToCallInNullState(){}
 
 void SoundProducerTrack::SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer){soundProducerToManipulatePtr = thisSoundProducer;}
 
@@ -65,7 +69,6 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 		std::vector <std::unique_ptr <SoundProducer> >::iterator it = got->second;
 		
 		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(it->get());
-		
 	}
 	
 }
@@ -117,14 +120,11 @@ void SoundProducerTrack::RemoveSoundProducerFromTrack(SoundProducer* thisSoundPr
 }
 
 void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
-{
-		
+{	
 	//Add a combo box to select soundproducers
-	m_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(0,70),wxSize(100,30));
+	m_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(0,630),wxSize(100,30));
 	
 	m_combo_box->Append(soundproducers_to_edit_wxstring);
-	
-	//m_combo_box->Connect(wxEVT_COMBOBOX,wxCommandEventHandler(SoundProducerTrack::OnSelectedSoundProducerInComboBox) );
 	m_combo_box->Bind (wxEVT_COMBOBOX, &SoundProducerTrack::OnSelectedSoundProducerInComboBox,this);
 }	
 
