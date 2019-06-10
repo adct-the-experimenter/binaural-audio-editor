@@ -40,11 +40,11 @@ wxwidgets https://www.wxwidgets.org/
   
   Light blue cubes are the sound producers.
 
-  Use the Sound Producer Track(Group of first 3 tracks with graph) to change position of a certain sound producer. 
+  Use the Listener Track(Group of first 3 tracks with graph) to change position of the listener(you). 
   Add points to the graph by left clicking on the graph. Remove points from the graph by right clicking.
   First graph controls the x position, second graph is for y position, third graph is for z position.
   
-  The bottom 3 tracks are for changing position of the listener.
+  The bottom 3 tracks are for changing position of the sound producer.
   
   Currently, only 1 sound producer can be moved during playback and play audio needs to be clicked 
   to hear the sound during playback of timeline.
