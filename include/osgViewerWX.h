@@ -52,6 +52,8 @@
 #include "soundproducer.h"
 #include "listener.h"
 
+#include "soundproducer-registry.h"
+
 #include "CreateSoundProducerDialog.h"
 #include "EditMultipleSoundProducersDialog.h"
 #include "HRTF-Test-Dialog.h"
@@ -196,7 +198,9 @@ private:
 	Listener* listenerPtr;
 	ListenerTrack* m_listener_track;
 	
-	SoundProducerTrack* m_soundproducer_track;
+	TimelineFrame *timeFrame;
+	
+	std::vector <SoundProducerTrack*> m_soundproducer_track_vec;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
@@ -206,11 +210,20 @@ private:
 	void OnChangeHRTF(wxCommandEvent& event); //function for menu to instruct how to change HRTF with alsoft-config
     void OnEditListener(wxCommandEvent& event); //function for menu to edit listener position and orientation
     
+    SoundProducerRegistry soundproducer_registry;
+    
     wxButton* m_add_soundproducertrack_button;
     void OnAddSoundProducerTrack(wxCommandEvent& event);
+    wxPoint initialAddSPTrackPosition;
+    wxPoint prevAddSPTrackPosition;
+    wxPoint currentAddSPTrackPosition;
+    void CreateNewSoundProducerTrack();
     
     wxButton* m_remove_soundproducertrack_button;
     void OnRemoveSoundProducerTrack(wxCommandEvent& event);
+    wxPoint initialRmSPTrackPosition;
+    wxPoint prevRmSPTrackPosition;
+    wxPoint currentRmSPTrackPosition;
     
     DECLARE_EVENT_TABLE()
 };

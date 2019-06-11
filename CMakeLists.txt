@@ -33,6 +33,7 @@ include_directories(/usr/include /usr/local/include ./include ./src/timeline-tra
 set(SOURCES src/osgViewerWX.cpp
 			 src/soundproducer-track.cpp
 			 src/listener-track.cpp
+			 src/soundproducer-registry.cpp
 			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp src/HRTF-Test-Dialog.cpp 
 			 src/EditListenerDialog.cpp
 			 src/openalsoftaudioengine.cpp src/soundproducer.cpp src/listener.cpp

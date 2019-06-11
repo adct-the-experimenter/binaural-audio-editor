@@ -8,7 +8,10 @@
 
 #include <memory>
 #include <wx/combobox.h>
+
 #include <wx/arrstr.h>
+
+#include "soundproducer-registry.h"
 
 //class to manipulate x,y z position of sound producer
 class SoundProducerTrack : public Track
@@ -16,17 +19,18 @@ class SoundProducerTrack : public Track
 public:
 	SoundProducerTrack(const wxString& title);
 	
-	
 	DoubleTrack* GetReferenceToXTrack();
 	DoubleTrack* GetReferenceToYTrack();
 	DoubleTrack* GetReferenceToZTrack();
 	
+	
 	//SoundProducer Editing
 	void SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer);
-	void SetReferenceToSoundProducerVector(std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector);
+	void SetReferenceToSoundProducerRegistry(SoundProducerRegistry* thisRegistry);
 	
-	void AddRecentSoundProducerMadeToTrack();
-	void RemoveSoundProducerFromTrack(SoundProducer* thisSoundProducer);
+	void UpdateComboBoxListFromSoundProducerRegistry();
+	
+	void SetComboBoxAtThisPoint(wxPoint thisPoint);
 	
 	//Double Track related functions
 	void SetupAxisForVariable(double& start, double& end, double& resolution, int& numTick);
@@ -67,11 +71,7 @@ private:
 	
 	wxComboBox* m_combo_box;
 	
-	std::vector <std::unique_ptr <SoundProducer> > *sound_producer_vector_ref; //pointer to vector of sound producers to edit
-	//list of names for combo box
-	wxArrayString soundproducers_to_edit_wxstring;
-	
-	std::unordered_map <std::string, std::vector <std::unique_ptr <SoundProducer> >::iterator> map_soundproducer; //dictionary to keep track of which wxstring associated with index
+	SoundProducerRegistry* soundproducer_registry_ptr;
 	
 	void OnSelectedSoundProducerInComboBox(wxCommandEvent& event);
 };
