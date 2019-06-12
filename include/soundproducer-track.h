@@ -30,7 +30,7 @@ public:
 	
 	void UpdateComboBoxListFromSoundProducerRegistry();
 	
-	void SetComboBoxAtThisPoint(wxPoint thisPoint);
+	wxComboBox* GetReferenceToComboBox();
 	
 	//Double Track related functions
 	void SetupAxisForVariable(double& start, double& end, double& resolution, int& numTick);

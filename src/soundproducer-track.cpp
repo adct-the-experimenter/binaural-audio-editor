@@ -10,7 +10,7 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title) : Track(title)
 	yTrack = new DoubleTrack("Y Track");
 	zTrack = new DoubleTrack("Z Track");
 	
-	tempX = 0.0; tempY=0.0; tempZ=0.0;
+	tempX=0.0; tempY=0.0; tempZ=0.0;
 	
 	xTrack->SetReferenceToVarToManipulate(&tempX);
 	yTrack->SetReferenceToVarToManipulate(&tempY);
@@ -60,10 +60,7 @@ void SoundProducerTrack::UpdateComboBoxListFromSoundProducerRegistry()
 	m_combo_box->Append(soundproducer_registry_ptr->GetSoundProducersToEditList());
 }
 
-void SoundProducerTrack::SetComboBoxAtThisPoint(wxPoint thisPoint)
-{
-	m_combo_box->SetPosition(thisPoint);
-}
+wxComboBox* SoundProducerTrack::GetReferenceToComboBox(){return m_combo_box;}
 
 void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event)
 {
@@ -83,7 +80,7 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
 {	
 	//Add a combo box to select soundproducers
-	m_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(0,630),wxSize(100,30));
+	m_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(20,50),wxSize(100,30));
 	
 	m_combo_box->Bind (wxEVT_COMBOBOX, &SoundProducerTrack::OnSelectedSoundProducerInComboBox,this);
 }	

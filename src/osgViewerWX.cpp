@@ -203,7 +203,6 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	
 	//initialize sound producer track stuff
 	m_soundproducer_track_vec[0]->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
-	m_soundproducer_track_vec[0]->SetComboBoxAtThisPoint(wxPoint(0,630));
 	m_soundproducer_track_vec[0]->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	m_soundproducer_track_vec[0]->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
 	m_soundproducer_track_vec[0]->UpdateComboBoxListFromSoundProducerRegistry();
@@ -216,7 +215,10 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	timeFrame->AddSpacerBlock(40);
 	
 	//add text to indicate it is a Listener Track
-	timeFrame->AddText("Listener Track",wxPoint(40,90));
+	wxBoxSizer* hboxTextListener = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textListener = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Listener Track"),wxDefaultPosition );
+	hboxTextListener->Add(textListener);
+	timeFrame->AddBoxSizer(hboxTextListener);
 	
 	//add x,y,z tracks of ListenerTrack to time frame
 	timeFrame->AddTrack(m_listener_track->GetReferenceToXTrack(),space);
@@ -235,7 +237,11 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	timeFrame->AddSpacerBlock(40);
 	
 	//add text to indicate it is a Sound Producer Track
-	timeFrame->AddText("Sound Producer Track 1",wxPoint(40,600));
+	wxBoxSizer* hboxTextSPTrack = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track"),wxDefaultPosition );
+	hboxTextSPTrack->Add(textSPTrack);
+	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
+	timeFrame->AddBoxSizer(hboxTextSPTrack);
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToXTrack(),space);
@@ -264,8 +270,6 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	m_remove_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Remove SoundProducer Track"), currentRmSPTrackPosition, wxSize(200, 30) );
 	m_remove_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnRemoveSoundProducerTrack,this);
 	
-	m_soundproducer_track_vec[0]->Show(); //show the track
-	m_listener_track->Show();
 	timeFrame->Show(true); //show the timeframe
 	
 }
@@ -447,7 +451,6 @@ void MainFrame::CreateNewSoundProducerTrack()
 	
 	//initialize sound producer track stuff
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
-	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetComboBoxAtThisPoint(wxPoint(0,currentRmSPTrackPosition.y + 10));
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->UpdateComboBoxListFromSoundProducerRegistry();
@@ -456,7 +459,17 @@ void MainFrame::CreateNewSoundProducerTrack()
 	//it will also call x,y,z track playback functions
 	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)); 
 	
-	timeFrame->AddText("SoundProducerTrack 2",wxPoint(0,currentRmSPTrackPosition.y - 20));
+	
+	//add block of space between previous sound producer track and new sound producer track
+	timeFrame->AddSpacerBlock(40);
+	
+	//add text to indicate it is a Sound Producer Track
+	wxBoxSizer* hboxTextSPTrack = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track"),wxDefaultPosition );
+	hboxTextSPTrack->Add(textSPTrack);
+	hboxTextSPTrack->Add(m_soundproducer_track_vec[m_soundproducer_track_vec.size()-1]->GetReferenceToComboBox());
+	timeFrame->AddBoxSizer(hboxTextSPTrack);
+	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToXTrack(),space);
 	timeFrame->AddText("X:",wxPoint(20,currentRmSPTrackPosition.y + 100) );
@@ -464,15 +477,15 @@ void MainFrame::CreateNewSoundProducerTrack()
 	timeFrame->AddText("Y:",wxPoint(20,currentRmSPTrackPosition.y + 250));
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToZTrack(),space);
 	timeFrame->AddText("Z:",wxPoint(20,currentRmSPTrackPosition.y + 500));
-	
+
 }
 
 void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 {
 	
-		
+	
 	//remove new sound producer track from vector of sound producer tracks in MainFrame
-		
+	
 	//if not the first sound producer track
 		//move remove sound producer track button to top of previous sound producer track
 		//button.SetPosition(wxPoint());

@@ -39,6 +39,7 @@ public:
     
     void AddSpacerBlock(int space); //function to add space between boxes containing Tracks or panels
     void AddText(wxString thisText, wxPoint thisPoint);//function to add text anywhere in the window
+    void AddBoxSizer(wxSizer *sizer, int proportion=0, int flag=0, int border=0, wxObject *userData=nullptr);
     
 private:
 

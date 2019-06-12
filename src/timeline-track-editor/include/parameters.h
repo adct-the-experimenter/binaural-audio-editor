@@ -9,7 +9,7 @@ enum
         TRACK_HEIGHT = 140, //height,in pixels, of the track
         
         INITIAL_TIMELINE_WINDOW_WIDTH = 500, //width in pixels of timeline window
-        INITIAL_TIMELINE_WINDOW_HEIGHT = 700, //height in pixels of timeline window
+        INITIAL_TIMELINE_WINDOW_HEIGHT = 400, //height in pixels of timeline window
          
         
         TIME_START_VALUE = 0, //start value, in seconds, of ruler and track time
