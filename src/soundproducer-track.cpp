@@ -72,10 +72,13 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 		SoundProducer* thisSoundProducer = soundproducer_registry_ptr->GetPointerToSoundProducerWithThisName(thisStringName);
 		
 		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
+		
+		//remove name from list of sound producers to edit and update combobox list
+		soundproducer_registry_ptr->RemoveThisNameFromAllComboBoxesExceptThisOne(thisStringName,m_combo_box);
+		
 	}
 	
 }
-
 
 void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
 {	

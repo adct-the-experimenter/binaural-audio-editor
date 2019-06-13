@@ -6,6 +6,8 @@
 #include <wx/arrstr.h>
 #include <unordered_map>
 
+#include <wx/combobox.h>
+
 //class to contain map of sound producer pointers and their keys
 
 class SoundProducerRegistry
@@ -16,6 +18,7 @@ public:
 	
 	SoundProducer* GetPointerToSoundProducerWithThisName(std::string thisName);
 	
+	//Add or remove sound producer from registry
 	void AddRecentSoundProducerMadeToRegistry();
 	void RemoveSoundProducerFromRegistry(SoundProducer* thisSoundProducer);
 	
@@ -30,6 +33,19 @@ public:
 	//use if a name was removed for editing because it was being edited and then it stopped being edited
 	void AddThisNameToEditingList(std::string thisName);
 	
+	//function to add all names of soundproducers in map to editor list
+	//use with RemoveThisNameFromEditingList to get back a soundproducer to editing list after it is not edited in soundproducer track
+	void AddAllSoundProducersToEditingList(); 
+	
+	//function to add reference to combo box to combo_box_ptr_vec
+	void AddReferenceToComboBox(wxComboBox* thisComboBox);
+	
+	//function to update all comboboxes list, used for updating list after removal of a selection that is being edited by a soundproducer track
+	void UpdateAllComboBoxesList();
+	
+	//function to remove a string name from all combo boxes except for one
+	void RemoveThisNameFromAllComboBoxesExceptThisOne(std::string thisName, wxComboBox* thisCombobox);
+	
 private:
 
 	//list of names for combo box
@@ -37,6 +53,10 @@ private:
 	
 	//pointer to vector of sound producers to edit
 	std::vector <std::unique_ptr <SoundProducer> > *sound_producer_vector_ref; 
+	
+	//vector of pointers to combo boxes
+	//used to update all combo boxes
+	std::vector <wxComboBox*> combo_box_ptr_vec;
 	
 	//dictionary to keep track of which wxstring associated with index
 	std::unordered_map <std::string, std::vector <std::unique_ptr <SoundProducer> >::iterator> map_soundproducer; 

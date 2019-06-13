@@ -206,7 +206,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	m_soundproducer_track_vec[0]->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	m_soundproducer_track_vec[0]->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
 	m_soundproducer_track_vec[0]->UpdateComboBoxListFromSoundProducerRegistry();
-	
+	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
+	 
 	//initialize listener track
 	m_listener_track->InitTrack(timeFrame,nullptr);
 	m_listener_track->SetupAxisForVariable(start,end,resolution,numTicks);
@@ -454,6 +455,7 @@ void MainFrame::CreateNewSoundProducerTrack()
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->UpdateComboBoxListFromSoundProducerRegistry();
+	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToComboBox());
 	
 	//add special soundproducertrack function to call during playback
 	//it will also call x,y,z track playback functions

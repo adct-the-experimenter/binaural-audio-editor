@@ -58,3 +58,67 @@ void SoundProducerRegistry::RemoveSoundProducerFromRegistry(SoundProducer* thisS
 	
 	map_soundproducer.erase(thisSoundProducer->GetNameString());
 }
+
+
+void SoundProducerRegistry::RemoveThisNameFromEditingList(std::string thisName)
+{
+	soundproducers_to_edit_wxstring.Remove(thisName);
+}
+	
+	
+void SoundProducerRegistry::AddThisNameToEditingList(std::string thisName)
+{
+	soundproducers_to_edit_wxstring.Add(thisName);
+}
+
+void SoundProducerRegistry::AddAllSoundProducersToEditingList()
+{
+	if(sound_producer_vector_ref != nullptr)
+	{
+		soundproducers_to_edit_wxstring.Clear();
+		for(size_t i=0; i < sound_producer_vector_ref->size(); i++)
+		{
+			wxString thisString(sound_producer_vector_ref->at(i)->GetNameString());
+			
+			soundproducers_to_edit_wxstring.Add(thisString);
+		}
+	}
+	
+}
+
+void SoundProducerRegistry::AddReferenceToComboBox(wxComboBox* thisComboBox)
+{
+	combo_box_ptr_vec.push_back(thisComboBox);
+}
+
+void SoundProducerRegistry::UpdateAllComboBoxesList()
+{
+	for(size_t i=0; i < combo_box_ptr_vec.size(); i++)
+	{
+		wxString currentNameSelected = combo_box_ptr_vec[i]->GetStringSelection();
+		
+		combo_box_ptr_vec[i]->Clear();
+		combo_box_ptr_vec[i]->Append(soundproducers_to_edit_wxstring);
+		combo_box_ptr_vec[i]->Append(currentNameSelected);
+		combo_box_ptr_vec[i]->SetValue(currentNameSelected);
+	}
+}
+
+void SoundProducerRegistry::RemoveThisNameFromAllComboBoxesExceptThisOne(std::string thisName, wxComboBox* thisComboBox)
+{
+	SoundProducerRegistry::AddAllSoundProducersToEditingList();
+	
+	SoundProducerRegistry::RemoveThisNameFromEditingList(thisName);
+	
+	for(size_t i=0; i < combo_box_ptr_vec.size(); i++)
+	{
+		if(combo_box_ptr_vec[i] != thisComboBox)
+		{
+			wxString currentSelectionString = combo_box_ptr_vec[i]->GetStringSelection();
+			
+			combo_box_ptr_vec[i]->Clear();
+			combo_box_ptr_vec[i]->Append(soundproducers_to_edit_wxstring);
+			
+		}
+	}
+}
