@@ -75,7 +75,6 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 		
 		//remove name from list of sound producers to edit and update combobox list
 		soundproducer_registry_ptr->RemoveThisNameFromAllComboBoxesExceptThisOne(thisStringName,m_combo_box);
-		
 	}
 	
 }

@@ -223,11 +223,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	
 	//add x,y,z tracks of ListenerTrack to time frame
 	timeFrame->AddTrack(m_listener_track->GetReferenceToXTrack(),space);
-	timeFrame->AddText("X:",wxPoint(20,200));
 	timeFrame->AddTrack(m_listener_track->GetReferenceToYTrack(),space);
-	timeFrame->AddText("Y:",wxPoint(20,350));
 	timeFrame->AddTrack(m_listener_track->GetReferenceToZTrack(),space);
-	timeFrame->AddText("Z:",wxPoint(20,500));
 	
 	//add special soundproducertrack function to call during playback
 	//it will also call x,y,z track playback functions
@@ -246,11 +243,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToXTrack(),space);
-	timeFrame->AddText("X:",wxPoint(20,700));
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToYTrack(),space);
-	timeFrame->AddText("Y:",wxPoint(20,850));
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToZTrack(),space);
-	timeFrame->AddText("Z:",wxPoint(20,1000));
 	
 	//add block of space between Sound Producer Track and bottom of window, also extends height of window
 	timeFrame->AddSpacerBlock(100);
@@ -474,12 +468,8 @@ void MainFrame::CreateNewSoundProducerTrack()
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToXTrack(),space);
-	timeFrame->AddText("X:",wxPoint(20,currentRmSPTrackPosition.y + 100) );
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToYTrack(),space);
-	timeFrame->AddText("Y:",wxPoint(20,currentRmSPTrackPosition.y + 250));
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToZTrack(),space);
-	timeFrame->AddText("Z:",wxPoint(20,currentRmSPTrackPosition.y + 500));
-
 }
 
 void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
