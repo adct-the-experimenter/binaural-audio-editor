@@ -457,7 +457,7 @@ void MainFrame::CreateNewSoundProducerTrack()
 	
 	
 	//add block of space between previous sound producer track and new sound producer track
-	timeFrame->AddSpacerBlock(40);
+	timeFrame->AddSpacerBlock(20);
 	
 	//add text to indicate it is a Sound Producer Track
 	wxBoxSizer* hboxTextSPTrack = new wxBoxSizer(wxHORIZONTAL);
