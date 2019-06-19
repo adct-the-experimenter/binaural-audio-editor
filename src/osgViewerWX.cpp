@@ -249,21 +249,20 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	//add block of space between Sound Producer Track and bottom of window, also extends height of window
 	timeFrame->AddSpacerBlock(100);
 	
-	//initialize button that adds soundproducer track
-	initialAddSPTrackPosition.x = 20; initialAddSPTrackPosition.y = 1100;
-	prevAddSPTrackPosition.x = initialAddSPTrackPosition.x; prevAddSPTrackPosition.y = initialAddSPTrackPosition.y;
-	currentAddSPTrackPosition.x = prevAddSPTrackPosition.x; currentAddSPTrackPosition.y = prevAddSPTrackPosition.y;
-	
-	m_add_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Add SoundProducer Track"), currentAddSPTrackPosition, wxSize(200, 30) );
+	//intialize add and remove buttons for new soundproducer tracks
+	m_add_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Add SoundProducer Track"), wxDefaultPosition, wxSize(200, 30) );
 	m_add_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnAddSoundProducerTrack,this);
 	
-	//initialize button that removes soundproducer track
-	initialRmSPTrackPosition.x = 20; initialRmSPTrackPosition.y = 1150;
-	prevRmSPTrackPosition.x = initialRmSPTrackPosition.x; prevRmSPTrackPosition.y = initialRmSPTrackPosition.y;
-	currentRmSPTrackPosition.x = prevRmSPTrackPosition.x; currentRmSPTrackPosition.y = prevRmSPTrackPosition.y;
-	
-	m_remove_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Remove SoundProducer Track"), currentRmSPTrackPosition, wxSize(200, 30) );
+	m_remove_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Remove SoundProducer Track"), wxDefaultPosition, wxSize(200, 30) );
 	m_remove_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnRemoveSoundProducerTrack,this);
+	
+	m_add_rm_box_sizer = new wxBoxSizer(wxVERTICAL);
+	
+	m_add_rm_box_sizer->Add(m_remove_soundproducertrack_button);
+	m_add_rm_box_sizer->AddSpacer(25);
+	m_add_rm_box_sizer->Add(m_add_soundproducertrack_button);
+	
+	timeFrame->AddBoxSizer(m_add_rm_box_sizer);
 	
 	timeFrame->Show(true); //show the timeframe
 	
@@ -426,11 +425,18 @@ void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
 {
 	//move remove sound producer track button to top of new sound producer track
 	
-	//m_remove_soundproducertrack_button.SetPosition();
+	//detach sizer containing add/rm soundproducertrack buttons from window, add it back later
+	timeFrame->GetTimelineWindow()->GetSizer()->Detach(m_add_rm_box_sizer);
 	
 	//create new sound producer track and add it to vector of sound producer tracks in MainFrame
 	MainFrame::CreateNewSoundProducerTrack();
+	
 	//move add sound producer track button to bottom of new sound producer track
+	
+	//add sizer containing add/rm soundproducer track buttons to bottom of window
+	timeFrame->GetTimelineWindow()->GetSizer()->Add(m_add_rm_box_sizer);
+	
+	timeFrame->GetTimelineWindow()->GetSizer()->Layout();
 	
 }
 
@@ -470,21 +476,19 @@ void MainFrame::CreateNewSoundProducerTrack()
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToXTrack(),space);
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToYTrack(),space);
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToZTrack(),space);
+	
+	timeFrame->AddSpacerBlock(40);
 }
 
 void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
-{
+{	
+	int itemCount = timeFrame->GetTimelineWindow()->GetSizer()->GetItemCount();
 	
+	//detach soundproducer track
 	
-	//remove new sound producer track from vector of sound producer tracks in MainFrame
+	//detach soundproducer text label and combo box
 	
-	//if not the first sound producer track
-		//move remove sound producer track button to top of previous sound producer track
-		//button.SetPosition(wxPoint());
-	//else
-		//move remove sound producer track button next to add sound producer track button
-		
-	//move add sound producer track button to bottom of previous sound producer track
+	//destroy last soundproducertrack from vector containing soundproducertracks
 	
 }
 

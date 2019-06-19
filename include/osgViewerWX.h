@@ -212,18 +212,15 @@ private:
     
     SoundProducerRegistry soundproducer_registry;
     
+    wxBoxSizer* m_add_rm_box_sizer;
+    
     wxButton* m_add_soundproducertrack_button;
     void OnAddSoundProducerTrack(wxCommandEvent& event);
-    wxPoint initialAddSPTrackPosition;
-    wxPoint prevAddSPTrackPosition;
-    wxPoint currentAddSPTrackPosition;
+   
     void CreateNewSoundProducerTrack();
     
     wxButton* m_remove_soundproducertrack_button;
     void OnRemoveSoundProducerTrack(wxCommandEvent& event);
-    wxPoint initialRmSPTrackPosition;
-    wxPoint prevRmSPTrackPosition;
-    wxPoint currentRmSPTrackPosition;
     
     DECLARE_EVENT_TABLE()
 };
