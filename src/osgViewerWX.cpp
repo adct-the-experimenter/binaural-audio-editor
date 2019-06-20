@@ -36,6 +36,9 @@ bool wxOsgApp::OnInit()
 
 		MainFrame *frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
 			wxDefaultPosition, wxSize(width, height));
+			
+		//set reference to audio player. IMPORTANT
+		frame->SetAudioPlayerReference(audioPlayer);
 
 		// create osg canvas
 		//    - initialize

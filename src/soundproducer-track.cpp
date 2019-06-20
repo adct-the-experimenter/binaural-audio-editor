@@ -11,6 +11,9 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title) : Track(title)
 	zTrack = new DoubleTrack("Z Track");
 	audioTrack = new StereoAudioTrack("Track");
 	
+	std::string filepath_stream = "../src/timeline-track-editor/resources/" + title.ToStdString() + ".wav";
+	audioTrack->SetStreamAudioFilePath(filepath_stream);
+	
 	tempX=0.0; tempY=0.0; tempZ=0.0;
 	
 	xTrack->SetReferenceToVarToManipulate(&tempX);
@@ -36,9 +39,12 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 		
 	if(soundProducerToManipulatePtr != nullptr)
 	{
-		soundProducerToManipulatePtr->SetPositionX(tempX);
-		soundProducerToManipulatePtr->SetPositionY(tempY);
-		soundProducerToManipulatePtr->SetPositionZ(tempZ);
+		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		{
+			soundProducerToManipulatePtr->SetPositionX(tempX);
+			soundProducerToManipulatePtr->SetPositionY(tempY);
+			soundProducerToManipulatePtr->SetPositionZ(tempZ);
+		}
 	}
 }
 
@@ -46,7 +52,11 @@ void SoundProducerTrack::FunctionToCallInPauseState()
 {
 	if(soundProducerToManipulatePtr != nullptr)
 	{
-		audioTrack->FunctionToCallInPauseState();
+		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		{
+			audioTrack->FunctionToCallInPauseState();
+		}
+		
 	}
 }
 
@@ -54,7 +64,10 @@ void SoundProducerTrack::FunctionToCallInRewindState()
 {
 	if(soundProducerToManipulatePtr != nullptr)
 	{
-		audioTrack->FunctionToCallInRewindState();
+		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		{
+			audioTrack->FunctionToCallInRewindState();
+		}
 	}
 }
 
@@ -62,7 +75,10 @@ void SoundProducerTrack::FunctionToCallInFastForwardState()
 {
 	if(soundProducerToManipulatePtr!= nullptr)
 	{
-		audioTrack->FunctionToCallInFastForwardState();
+		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		{
+			audioTrack->FunctionToCallInFastForwardState();
+		}
 	}
 }
 
@@ -70,7 +86,10 @@ void SoundProducerTrack::FunctionToCallInNullState()
 {
 	if(soundProducerToManipulatePtr != nullptr)
 	{
-		audioTrack->FunctionToCallInNullState();
+		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		{
+			audioTrack->FunctionToCallInNullState();
+		}
 	}
 	
 }
