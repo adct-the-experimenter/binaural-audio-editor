@@ -436,9 +436,7 @@ void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
 	//add sizer containing add/rm soundproducer track buttons to bottom of window
 	timeFrame->GetTimelineWindow()->GetSizer()->Add(m_add_rm_box_sizer);
 	
-	timeFrame->GetTimelineWindow()->GetSizer()->Layout();
-	timeFrame->GetTimelineWindow()->Refresh();
-	timeFrame->GetTimelineWindow()->FitInside();
+	timeFrame->Layout();
 }
 
 void MainFrame::CreateNewSoundProducerTrack()
@@ -488,18 +486,17 @@ void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 	//if item count is more than 13, which means the initial items to not be deleted are in the timeline window.
 	if(itemCount > 13)
 	{
-		//detach x,y,z tracks of soundproducer track added to timelinewindow
+		//remove x,y,z tracks of soundproducer track added to timelinewindow
+		//and remove the combo box and text label
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-2);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-3);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-4);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-5);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-6);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-7);
-		//detach soundproducer text label and combo box
 		
-		//timeFrame->GetTimelineWindow()->GetSizer()->Layout();
-		//timeFrame->GetTimelineWindow()->Refresh();
-		//timeFrame->GetTimelineWindow()->FitInside();
+		//resize frame properly
+		timeFrame->Layout();
 		
 		//destroy last soundproducertrack from vector containing soundproducertracks
 		m_soundproducer_track_vec.pop_back();
