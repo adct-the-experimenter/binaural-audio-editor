@@ -46,8 +46,9 @@ wxwidgets https://www.wxwidgets.org/
   
   The bottom 3 tracks are for changing position of the sound producer.
   
-  Currently, only 1 sound producer can be moved during playback and play audio needs to be clicked 
-  to hear the sound during playback of timeline.
+  Click on the Add Sound Producer Track button to add a new track to control another sound producer.
+  
+  Click on the Remove Sound Producer Track button to remove a sound producer track.
   
   The application uses standard Cartesian coordinate system to move sound producers and listener.
   
