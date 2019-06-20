@@ -6,6 +6,8 @@
 #include "soundproducer.h"
 #include "double-track.h"
 
+#include "stereo-audio-track.h"
+
 #include <memory>
 #include <wx/combobox.h>
 
@@ -19,10 +21,12 @@ class SoundProducerTrack : public Track
 public:
 	SoundProducerTrack(const wxString& title);
 	
+	StereoAudioTrack* GetReferenceToStereoAudioTrack();
 	DoubleTrack* GetReferenceToXTrack();
 	DoubleTrack* GetReferenceToYTrack();
 	DoubleTrack* GetReferenceToZTrack();
 	
+	void SetReferenceToAudioPlayer(OpenALSoftPlayer* audioPlayer);
 	
 	//SoundProducer Editing
 	void SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer);
@@ -31,6 +35,8 @@ public:
 	void UpdateComboBoxListFromSoundProducerRegistry();
 	
 	wxComboBox* GetReferenceToComboBox();
+	
+	void SetupAxisForAudio(double& start, double& end,double& resolution, int& numTick);
 	
 	//Double Track related functions
 	void SetupAxisForVariable(double& start, double& end, double& resolution, int& numTick);
@@ -62,6 +68,9 @@ public:
 private:
 	SoundProducer* soundProducerToManipulatePtr;
 	
+	OpenALSoftPlayer* audioPlayerPtr;
+	
+	StereoAudioTrack* audioTrack;
 	DoubleTrack* xTrack;
 	DoubleTrack* yTrack;
 	DoubleTrack* zTrack;
@@ -74,6 +83,7 @@ private:
 	SoundProducerRegistry* soundproducer_registry_ptr;
 	
 	void OnSelectedSoundProducerInComboBox(wxCommandEvent& event);
+	
 };
 
 #endif

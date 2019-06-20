@@ -8,6 +8,8 @@
 
 #include <wx/dcbuffer.h>
 
+#include "audio-stream-container.h"
+
 //Class used to only plot audio waveforms
 
 class AudioGraph : public wxPanel
@@ -28,14 +30,18 @@ public:
 	//if no value is at that time, then legitValue is false and 0 is returned
 	int GetVerticalGraphValueAtThisTime(double& thisTime,bool& legitValue);
 	
-	void PlotAudioDataToGraph(std::vector <double> *audio_data, int sample_rate,
-										double& verticalStart, double& verticalEnd, double& verticalResolution);
+	void PlotOneChannelStreamAudioDataToGraph(AudioStreamContainer* audio_data,int sample_rate, double& verticalStart, double& verticalEnd, double& verticalResolution);
+	void PlotLeftChannelStreamAudioDataToGraph(AudioStreamContainer* audio_data,int sample_rate, double& verticalStart, double& verticalEnd, double& verticalResolution);
+	void PlotRightChannelStreamAudioDataToGraph(AudioStreamContainer* audio_data,int sample_rate, double& verticalStart, double& verticalEnd, double& verticalResolution);
+	
+	void PlotAudioDataToGraph(std::vector <double> *audio_data, int sample_rate, double& verticalStart, double& verticalEnd, double& verticalResolution);
 	
 private:
 
 	std::vector <int> *timeTickVectorPtr;
 	 
-	std::vector <wxPoint> graph_points; //holds points drawn on graph
+	std::vector <wxPoint> max_graph_points; //holds points drawn on graph
+	std::vector <wxPoint> min_graph_points;
 	
 	//std::unordered_map <double, std::vector<wxPoint>::iterator> map_time; //dictionary to keep track of which time values are occupied
 	

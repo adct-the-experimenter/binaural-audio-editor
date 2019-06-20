@@ -47,7 +47,9 @@ public:
     //function to clean up openAL Soft initialization
     void close_openALSoft();
 
-    
+	ALCdevice* GetReferenceToAudioDevice();
+	ALCcontext* GetReferenceToAudioContext();
+	
 //HRTF
     //function to perform tests for HRTF support
     void TestHRTF();

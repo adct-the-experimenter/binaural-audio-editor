@@ -10,11 +10,14 @@
 
 #include <functional>   // std::function, std::negate
 
+#include "audio-stream-container.h"
+
 #define	BUFFER_LEN	1024
 
 #define	MAX_CHANNELS	2
 
 //Class used to manipulate placement of audio samples in timeline.
+//Use as helper class for StereoAudioTrack and MonoAudioTrack
 
 class AudioTrack : public Track
 {
@@ -25,6 +28,17 @@ public:
 //Audio related functions
 	void SetReferenceToSourceToManipulate(ALuint* thisSource);
 	void SetReferenceToAudioPlayer(OpenALSoftPlayer* thisPlayer);
+	
+	int GetNumberOfChannelsInAudioFile(std::string path,SF_INFO& input_sfinfo);
+    
+    
+    void ReadAndCopyDataFromInputFile(std::vector<double> *audio_data_input_copy_ptr,std::string inputSoundFilePath,SF_INFO& input_sfinfo);
+    
+    void CopyInputDataIntoAudioDataStream(std::vector<double> *audio_data_input_copy_ptr, AudioStreamContainer* audio_data_stream_ptr,std::string streamSoundFilePath,SF_INFO& input_sfinfo);
+    
+    void PlotOneChannelStreamAudioDataToGraph(AudioStreamContainer* audio_data_stream_ptr,SF_INFO& input_sfinfo);
+    void PlotLeftChannelStreamAudioDataToGraph(AudioStreamContainer* audio_data_stream_ptr,SF_INFO& input_sfinfo);
+    void PlotRightChannelStreamAudioDataToGraph(AudioStreamContainer* audio_data_stream_ptr,SF_INFO& input_sfinfo);
     
 //Track related Functions
     virtual void InitTrack(wxWindow* parent, std::vector <int> *timeTickVector);
@@ -49,8 +63,6 @@ public:
     
     double GetCurrentTime();
     
-    void SetReferenceToVarToManipulate(double* thisVar);
-    
     virtual void FunctionToCallInPlayState();
     virtual void FunctionToCallInPauseState();
     virtual void FunctionToCallInRewindState();
@@ -70,14 +82,16 @@ public:
 		PLAYER_PAUSED,
 		PLAYER_REWINDING
 	};
+	
+	void SetAudioTrackState(int thisState);
+    int GetAudioTrackState();
     
-    void PlotStreamAudioDataToGraph();
 private:
 	
 	//Audio Processes and Operations
 	
 	//state of audio track
-	int state;
+	int track_state;
 
 	//source to manipulate
 	ALuint* sourceToManipulatePtr;
@@ -85,23 +99,10 @@ private:
 	//pointer to audio player to use
 	OpenALSoftPlayer* audioPlayerPtr;
 	
-    std::string inputSoundFilePath;
-	
-	//array to hold copy of audio data input
-	double audio_data_input_copy [BUFFER_LEN]; 
-	
-	//vector to contain audio track data for streaming
-	std::vector <double> audio_data_track_stream;
 	
 	//File handlers for input file and file to stream
-	SNDFILE *inputFile, *streamFile ;
+	SNDFILE *inputFile;
 	
-	std::string streamSoundFilePath;
-	
-	//holds information on audio data 
-	SF_INFO input_sfinfo;
-	
-	void ReadAndCopyDataFromInputFile();
 	
 	//GUI
 	
@@ -116,13 +117,9 @@ private:
     
     AudioGraph* m_audio_graph;
     
-    //2d map to hold output at certain time, for quick reading
-    std::unordered_map <double, double> map_time_output;
-    
     std::function < void() > func_after_var_change;
     
-    wxButton* browseButton;
-    void OnBrowse(wxCommandEvent& event);
+    void al_nssleep(unsigned long nsec);
 };
 
 #endif

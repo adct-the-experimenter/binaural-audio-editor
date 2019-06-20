@@ -1,0 +1,1 @@
+This is a directory with which to put inside stream.wav . stream.wav is a file created by the program to contain data that is to be edited and played.

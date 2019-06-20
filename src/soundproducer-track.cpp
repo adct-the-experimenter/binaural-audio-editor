@@ -9,6 +9,7 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title) : Track(title)
 	xTrack = new DoubleTrack("X Track");
 	yTrack = new DoubleTrack("Y Track");
 	zTrack = new DoubleTrack("Z Track");
+	audioTrack = new StereoAudioTrack("Track");
 	
 	tempX=0.0; tempY=0.0; tempZ=0.0;
 	
@@ -28,6 +29,7 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 {
 	//std::cout << "FunctionToCall called in SoundProducerTrack \n";
 	
+	audioTrack->FunctionToCallInPlayState();
 	xTrack->FunctionToCallInPlayState();
 	yTrack->FunctionToCallInPlayState();
 	zTrack->FunctionToCallInPlayState();
@@ -40,13 +42,52 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 	}
 }
 
-void SoundProducerTrack::FunctionToCallInPauseState(){}
-void SoundProducerTrack::FunctionToCallInRewindState(){}
-void SoundProducerTrack::FunctionToCallInFastForwardState(){}
-void SoundProducerTrack::FunctionToCallInNullState(){}
+void SoundProducerTrack::FunctionToCallInPauseState()
+{
+	if(soundProducerToManipulatePtr != nullptr)
+	{
+		audioTrack->FunctionToCallInPauseState();
+	}
+}
 
-void SoundProducerTrack::SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer){soundProducerToManipulatePtr = thisSoundProducer;}
+void SoundProducerTrack::FunctionToCallInRewindState()
+{
+	if(soundProducerToManipulatePtr != nullptr)
+	{
+		audioTrack->FunctionToCallInRewindState();
+	}
+}
 
+void SoundProducerTrack::FunctionToCallInFastForwardState()
+{
+	if(soundProducerToManipulatePtr!= nullptr)
+	{
+		audioTrack->FunctionToCallInFastForwardState();
+	}
+}
+
+void SoundProducerTrack::FunctionToCallInNullState()
+{
+	if(soundProducerToManipulatePtr != nullptr)
+	{
+		audioTrack->FunctionToCallInNullState();
+	}
+	
+}
+
+void SoundProducerTrack::SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer)
+{
+	soundProducerToManipulatePtr = thisSoundProducer;
+	audioTrack->SetReferenceToSourceToManipulate(soundProducerToManipulatePtr->getSource());
+}
+
+void SoundProducerTrack::SetReferenceToAudioPlayer(OpenALSoftPlayer* audioPlayer)
+{
+	audioPlayerPtr = audioPlayer;
+	audioTrack->SetReferenceToAudioPlayer(audioPlayer);
+}
+
+StereoAudioTrack* SoundProducerTrack::GetReferenceToStereoAudioTrack(){return audioTrack;}
 DoubleTrack* SoundProducerTrack::GetReferenceToXTrack(){return xTrack;}
 DoubleTrack* SoundProducerTrack::GetReferenceToYTrack(){return yTrack;}
 DoubleTrack* SoundProducerTrack::GetReferenceToZTrack(){return zTrack;}
@@ -80,7 +121,7 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 }
 
 void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
-{	
+{		
 	//Add a combo box to select soundproducers
 	m_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(20,50),wxSize(100,30));
 	
@@ -93,6 +134,11 @@ void SoundProducerTrack::SetupAxisForVariable(double& start, double& end,double&
 	yTrack->SetupAxisForVariable(start,end,resolution,numTick);
 	zTrack->SetupAxisForVariable(start,end,resolution,numTick);
 	
+}
+
+void SoundProducerTrack::SetupAxisForAudio(double& start, double& end,double& resolution, int& numTick)
+{
+	audioTrack->SetupAxisForVariable(start,end,resolution,numTick);
 }
 
 void SoundProducerTrack::OnPaint(wxPaintEvent& event)

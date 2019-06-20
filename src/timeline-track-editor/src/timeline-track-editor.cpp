@@ -71,29 +71,20 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     
     TimelineFrame *timeFrame = new TimelineFrame(this); 
 
-//Initialize Double Track
-    
-    int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
+	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
+	DoubleTrack* track1 = new DoubleTrack("Variable Track");
 
-    
-	DoubleTrack* track1 = new DoubleTrack("Variable");
-	
 	double start = -10.0f; //lowest value
 	double end = 10.0f; //highest value
 	int numTicks = 11; //number of ticks between lowest value and highest value including zero
 	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
-	
-	//setup bounds for vertical axis
-	track1->SetupAxisForVariable(start,end,resolution,numTicks); 
-	
+
+	track1->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axis
+
 	//Put in the variable to change with the timeline.
 	// IMPORTANT NOTE: someVarToChange must be declared outside of scope of MyFrame constructor 
 	//and not go out of scope or else a segmentation fault happens
 	track1->SetReferenceToVarToManipulate(&someVarToChange); 
-	
-	//set function to call after variable to manipulate has changed
-	//optional
-	track1->SetFunctionToCallAfterVariableChange(FunctionForSomeVarAfterChange);
 	
 	//add block of space between timeline and track
 	int spaceBlockSize = 100;
@@ -104,13 +95,29 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	wxStaticText *text = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Track for someVarToChange"),wxDefaultPosition );
 	hboxText->Add(text);
 	timeFrame->AddBoxSizer(hboxText);
+
+	//set function to call after variable to manipulate has changed
+	//optional
+	track1->SetFunctionToCallAfterVariableChange(FunctionForSomeVarAfterChange);
 	
 	//add track to time frame
 	timeFrame->AddTrack(track1,space);
-	//add function to call during playback to timeframe 
-	//so that someVarToChange can be changed according to Track FunctionToCallEveryTimeInTimerLoop
-	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(track1);
 	
+	
+	//FunctionToCallInXState can be changed to do whatever you want. Functions must be void and take in no parameters.
+	//Can add members to DoubleTrack and reference them to get around no parameters or make own class with custom members.
+
+	//makes DoubleTrack::FunctionToCallInPlayState() be called during play
+	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(track1); 
+	//makes DoubleTrack::FunctionToCallInPauseState() be called during pause
+	timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(track1); 
+	//makes DoubleTrack::FunctionToCallInRewindState() be called during rewind
+	timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(track1); 
+	//makes DoubleTrack::FunctionToCallInFastForwardState() be called during fast forward
+	timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(track1); 
+	//makes DoubleTrack::FunctionToCallInNullState() be called when nothing is happening after stop button pressed
+	timeFrame->AddTrackFunctionToCallInTimerLoopNullState(track1); 
+
 //Initialize Audio Track
 
 	//Initialize OpenAL Soft
@@ -128,18 +135,44 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 		
 		audioPlayer->InitBuffersForStreaming();
 		
-		AudioTrack* track2 = new AudioTrack("Audio");
-	
-		start = -1.0f; //lowest value
-		end = 1.0f; //highest value
-		numTicks = 11; //number of ticks between lowest value and highest value including zero
-		resolution = 0.1; //the fineness of how much variable can be incremented/decremented by
+		audioPlayer->InitSource(&source);
+		
+		StereoAudioTrack* track2 = new StereoAudioTrack("Audio");
+		track2->SetReferenceToSourceToManipulate(&source);
+		track2->SetReferenceToAudioPlayer(audioPlayer);
+		
+		wxButton* browseButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Browse"), wxDefaultPosition, wxSize(70, 30) );
+		track2->SetReferenceToBrowseButton(browseButton);
+		
+		track2->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
+		
+		double start = 0.0f; //lowest value
+		double end = 10.0f; //highest value
+		int numTicks = 11; //number of ticks between lowest value and highest value including zero
+		double resolution = 0.1; //the fineness of how much variable can be incremented/decremented by
 
 		//setup bounds for vertical axis
 		track2->SetupAxisForVariable(start,end,resolution,numTicks);
 		
-		//add track to time frame
-		timeFrame->AddTrack(track2,space);
+		timeFrame->AddSpacerBlock(50);
+		
+		int space = 20;
+		
+		
+		//setup browse button and text label for stereo audio track
+		wxBoxSizer* hboxButtonText = new wxBoxSizer(wxHORIZONTAL);
+		wxStaticText *textButtonText = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Stereo Audio Track"),wxDefaultPosition );
+		hboxButtonText->Add(textButtonText);
+		hboxButtonText->Add(browseButton);
+		timeFrame->AddBoxSizer(hboxButtonText);
+		
+		//add left channel track and right channel track to time frame
+		timeFrame->AddTrack(track2->GetReferenceToLeftChannelTrack(),space);
+		timeFrame->AddTrack(track2->GetReferenceToRightChannelTrack(),space);
+		
+		timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(track2);
+		timeFrame->AddTrackFunctionToCallInTimerLoopNullState(track2);
+		timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(track2);
 		
 		track2->Show();
 	}
@@ -147,7 +180,6 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	
 	
 //Show Tracks and Time Frame
-	track1->Show(); //show the track
 
 	timeFrame->Show(true); //show the timeframe
 		

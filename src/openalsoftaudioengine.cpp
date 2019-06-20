@@ -90,6 +90,8 @@ void OpenAlSoftAudioEngine::close_openALSoft()
 	alcCloseDevice(gAudioDevice);	//close device
 }
 
+ALCdevice* OpenAlSoftAudioEngine::GetReferenceToAudioDevice(){return gAudioDevice;}
+ALCcontext* OpenAlSoftAudioEngine::GetReferenceToAudioContext(){return alContext;}
 
 
 //HRTF

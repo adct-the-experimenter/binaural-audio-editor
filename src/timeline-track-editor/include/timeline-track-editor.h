@@ -8,7 +8,7 @@
 #include "timeline-frame.h"
 
 #include "double-track.h"
-#include "audio-track.h"
+#include "stereo-audio-track.h"
 
 //override wxApp to initialize program 
 class MyApp: public wxApp
