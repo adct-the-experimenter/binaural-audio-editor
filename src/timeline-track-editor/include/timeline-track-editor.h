@@ -8,6 +8,7 @@
 #include "timeline-frame.h"
 
 #include "double-track.h"
+#include "audio-track.h"
 
 //override wxApp to initialize program 
 class MyApp: public wxApp
@@ -29,6 +30,13 @@ private:
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     wxDECLARE_EVENT_TABLE();
+    
+    //OpenAL Soft related parameters to play audio
+    ALCdevice* audioDevice; 
+    ALCcontext* alContext;
+    
+    ALuint source;
+    OpenALSoftPlayer* audioPlayer;
 };
 
 //unique identifier to use to react to menu command

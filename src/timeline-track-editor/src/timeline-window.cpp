@@ -166,6 +166,14 @@ void TimelineWindow::AddSpacerBlock(int space)
 	SetSizerAndFit(main_v_box);
 }
 
+void TimelineWindow::AddBoxSizer(wxSizer *sizer,int proportion,int flag,int border,wxObject *userData)
+{
+	//	flags = OR-combination of flags affecting sizer's behaviour. See wxSizer flags list for details. 
+	main_v_box->Add(sizer,proportion,flag,border,userData);
+	
+	SetSizerAndFit(main_v_box);
+}
+
 void TimelineWindow::AddText(wxString thisText, wxPoint thisPoint)
 {
 	wxStaticText *st1 = new wxStaticText(this, wxID_ANY, thisText,thisPoint );

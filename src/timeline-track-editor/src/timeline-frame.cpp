@@ -87,6 +87,11 @@ void TimelineFrame::AddText(wxString thisText, wxPoint thisPoint)
 	TimelineFrame::GetTimelineWindow()->AddText(thisText,thisPoint);
 }
 
+void TimelineFrame::AddBoxSizer(wxSizer *sizer,int proportion,int flag,int border,wxObject *userData)
+{
+	TimelineFrame::GetTimelineWindow()->AddBoxSizer(sizer,proportion,flag,border,userData);
+}
+
 void TimelineFrame::OnClose(wxCloseEvent& evt)
 {
 	timer->Stop();

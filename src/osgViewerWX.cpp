@@ -190,11 +190,9 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     
     //Code to initialize timeline track editor part of GUI
 
-	TimelineFrame *timeFrame = new TimelineFrame(this); 
+	timeFrame = new TimelineFrame(this); 
 	
-
-	
-	m_soundproducer_track = new SoundProducerTrack("SoundProducer Track");
+	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track"));
 	m_listener_track = new ListenerTrack("Listener Track");
 	
 	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
@@ -204,9 +202,12 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
 	
 	//initialize sound producer track stuff
-	m_soundproducer_track->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
-	m_soundproducer_track->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
-	
+	m_soundproducer_track_vec[0]->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
+	m_soundproducer_track_vec[0]->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
+	m_soundproducer_track_vec[0]->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
+	m_soundproducer_track_vec[0]->UpdateComboBoxListFromSoundProducerRegistry();
+	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
+	 
 	//initialize listener track
 	m_listener_track->InitTrack(timeFrame,nullptr);
 	m_listener_track->SetupAxisForVariable(start,end,resolution,numTicks);
@@ -215,44 +216,54 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	timeFrame->AddSpacerBlock(40);
 	
 	//add text to indicate it is a Listener Track
-	timeFrame->AddText("Listener Track",wxPoint(40,90));
+	wxBoxSizer* hboxTextListener = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textListener = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Listener Track"),wxDefaultPosition );
+	hboxTextListener->Add(textListener);
+	timeFrame->AddBoxSizer(hboxTextListener);
 	
 	//add x,y,z tracks of ListenerTrack to time frame
 	timeFrame->AddTrack(m_listener_track->GetReferenceToXTrack(),space);
-	timeFrame->AddText("X:",wxPoint(20,700));
 	timeFrame->AddTrack(m_listener_track->GetReferenceToYTrack(),space);
-	timeFrame->AddText("Y:",wxPoint(20,850));
 	timeFrame->AddTrack(m_listener_track->GetReferenceToZTrack(),space);
-	timeFrame->AddText("Z:",wxPoint(20,1000));
 	
 	//add special soundproducertrack function to call during playback
 	//it will also call x,y,z track playback functions
-	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track); 
+	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec[0]); 
 	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_listener_track); 
 	
 	//add block of space between Sound Producer Track and Listener Track
 	timeFrame->AddSpacerBlock(40);
 	
 	//add text to indicate it is a Sound Producer Track
-	timeFrame->AddText("Sound Producer Track",wxPoint(40,600));
+	wxBoxSizer* hboxTextSPTrack = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track"),wxDefaultPosition );
+	hboxTextSPTrack->Add(textSPTrack);
+	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
+	timeFrame->AddBoxSizer(hboxTextSPTrack);
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
-	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToXTrack(),space);
-	timeFrame->AddText("X:",wxPoint(20,200));
-	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToYTrack(),space);
-	timeFrame->AddText("Y:",wxPoint(20,350));
-	timeFrame->AddTrack(m_soundproducer_track->GetReferenceToZTrack(),space);
-	timeFrame->AddText("Z:",wxPoint(20,500));
+	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToXTrack(),space);
+	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToYTrack(),space);
+	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToZTrack(),space);
 	
-	//initialize button that adds soundproducer track
-	//m_add_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Add SoundProducer Track"), wxPoint(20,100), wxSize(110, 30) );
-	//m_add_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnAddSoundProducerTrack,this);
+	//add block of space between Sound Producer Track and bottom of window, also extends height of window
+	timeFrame->AddSpacerBlock(100);
 	
-	//m_remove_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Remove SoundProducer Track"), wxPoint(20,200), wxSize(110, 30) );
-	//m_remove_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnRemoveSoundProducerTrack,this);
+	//intialize add and remove buttons for new soundproducer tracks
+	m_add_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Add SoundProducer Track"), wxDefaultPosition, wxSize(200, 30) );
+	m_add_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnAddSoundProducerTrack,this);
 	
-	m_soundproducer_track->Show(); //show the track
-	m_listener_track->Show();
+	m_remove_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Remove SoundProducer Track"), wxDefaultPosition, wxSize(200, 30) );
+	m_remove_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnRemoveSoundProducerTrack,this);
+	
+	m_add_rm_box_sizer = new wxBoxSizer(wxVERTICAL);
+	
+	m_add_rm_box_sizer->Add(m_remove_soundproducertrack_button);
+	m_add_rm_box_sizer->AddSpacer(25);
+	m_add_rm_box_sizer->Add(m_add_soundproducertrack_button);
+	
+	timeFrame->AddBoxSizer(m_add_rm_box_sizer);
+	
 	timeFrame->Show(true); //show the timeframe
 	
 }
@@ -264,7 +275,8 @@ void MainFrame::SetRootNode(osg::Group *root){_rootNode = root;}
 void MainFrame::SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector)
 {
 	sound_producer_vector_ref = sound_producer_vector;
-	m_soundproducer_track->SetReferenceToSoundProducerVector(sound_producer_vector);
+	
+	soundproducer_registry.SetReferenceToSoundProducerVector(sound_producer_vector_ref);
 }
 
 void MainFrame::SetListenerReference(Listener* thisListener)
@@ -362,7 +374,13 @@ void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, AL
 	//move sound producer unique pointer to sound producer vector of unique pointers
 	sound_producer_vector_ref->push_back(std::move(thisSoundProducer));
 	
-	m_soundproducer_track->AddRecentSoundProducerMadeToTrack(); 
+	soundproducer_registry.AddRecentSoundProducerMadeToRegistry();
+	
+	//update lists of all sound producer tracks
+	for(size_t i=0; i < m_soundproducer_track_vec.size(); i++)
+	{
+		m_soundproducer_track_vec[i]->UpdateComboBoxListFromSoundProducerRegistry();
+	}
 }
 
 void MainFrame::OnEditMultipleSoundProducers(wxCommandEvent& event)
@@ -405,17 +423,91 @@ void MainFrame::OnEditListener(wxCommandEvent& event)
 
 void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
 {
+	//move remove sound producer track button to top of new sound producer track
 	
+	//detach sizer containing add/rm soundproducertrack buttons from window, add it back later
+	timeFrame->GetTimelineWindow()->GetSizer()->Detach(m_add_rm_box_sizer);
+	
+	//create new sound producer track and add it to vector of sound producer tracks in MainFrame
+	MainFrame::CreateNewSoundProducerTrack();
+	
+	//move add sound producer track button to bottom of new sound producer track
+	
+	//add sizer containing add/rm soundproducer track buttons to bottom of window
+	timeFrame->GetTimelineWindow()->GetSizer()->Add(m_add_rm_box_sizer);
+	
+	timeFrame->Layout();
+}
+
+void MainFrame::CreateNewSoundProducerTrack()
+{
+	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track"));
+	
+	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
+	double start = -10.0f; //lowest value
+	double end = 10.0f; //highest value
+	int numTicks = 11; //number of ticks between lowest value and highest value including zero
+	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
+	
+	//initialize sound producer track stuff
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->UpdateComboBoxListFromSoundProducerRegistry();
+	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToComboBox());
+	
+	//add special soundproducertrack function to call during playback
+	//it will also call x,y,z track playback functions
+	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)); 
+	
+	
+	//add block of space between previous sound producer track and new sound producer track
+	timeFrame->AddSpacerBlock(20);
+	
+	//add text to indicate it is a Sound Producer Track
+	wxBoxSizer* hboxTextSPTrack = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track"),wxDefaultPosition );
+	hboxTextSPTrack->Add(textSPTrack);
+	hboxTextSPTrack->Add(m_soundproducer_track_vec[m_soundproducer_track_vec.size()-1]->GetReferenceToComboBox());
+	timeFrame->AddBoxSizer(hboxTextSPTrack);
+	
+	//add x,y,z tracks of SoundProducerTrack to time frame
+	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToXTrack(),space);
+	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToYTrack(),space);
+	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToZTrack(),space);
+	
+	timeFrame->AddSpacerBlock(40);
 }
 
 void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
-{
+{	
+	int itemCount = timeFrame->GetTimelineWindow()->GetSizer()->GetItemCount();
+	std::cout << "Item Count: " << itemCount << std::endl;
+	//if item count is more than 13, which means the initial items to not be deleted are in the timeline window.
+	if(itemCount > 13)
+	{
+		//remove x,y,z tracks of soundproducer track added to timelinewindow
+		//and remove the combo box and text label
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-2);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-3);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-4);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-5);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-6);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-7);
+		
+		//resize frame properly
+		timeFrame->Layout();
+		
+		//destroy last soundproducertrack from vector containing soundproducertracks
+		m_soundproducer_track_vec.pop_back();
+		
+	}
 	
 }
 
 void MainFrame::OnPopupClick(wxCommandEvent& evt)
 {
-	void *data=static_cast<wxMenu *>( evt.GetEventObject() )->GetClientData();
+	//void *data=static_cast<wxMenu *>( evt.GetEventObject() )->GetClientData();
 	//switch(evt.GetId()) 
 	//{
 	//	case ID_SOMETHING:{break;}
@@ -443,6 +535,14 @@ void MainFrame::OnKeyDown(wxKeyEvent &event)
 	std::cout << "KeyDown:" << key << std::endl;
 	
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////			///////////////////////////////////////////////////////////////////
+///////////////////////OSGCanvas///////////////////////////////////////////////////////////////////
+///////////////////////			///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 //OSGCanvas event table for openscenegraph specific events
 BEGIN_EVENT_TABLE(OSGCanvas, wxGLCanvas)
@@ -619,6 +719,14 @@ void OSGCanvas::UseCursor(bool value)
         // SetCursor( wxStockCursor( wxCURSOR_BLANK ) );
     }
 }
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////					/////////////////////////////////////////////////////////////
+///////////////////////GraphicsWindowX///////////////////////////////////////////////////////////////////
+///////////////////////					////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 GraphicsWindowWX::GraphicsWindowWX(OSGCanvas *canvas)
 {
