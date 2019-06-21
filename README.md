@@ -46,7 +46,9 @@ wxwidgets https://www.wxwidgets.org/
   Add points to the graph by left clicking on the graph. Remove points from the graph by right clicking.
   First graph controls the x position, second graph is for y position, third graph is for z position.
   
-  The bottom 3 tracks are for changing position of the sound producer.
+  For the Sound Producer track, the top 2 tracks is for graphing audio and the bottom 3 tracks are for changing position of the sound producer.
+  
+  Click on browse button near audio track to load sound into the track.
   
   Click on the Add Sound Producer Track button to add a new track to control another sound producer.
   
@@ -59,3 +61,18 @@ wxwidgets https://www.wxwidgets.org/
   Back is positive x. Forward is negative x.
   
   Right is positive y. Left is negative y.
+
+# Important Note:
+Stereo(2 channel) audio does not get 3d spatialization and is instead used to play as background music.
+
+Have audio that you want to be played in 3D be mono(1 channel) audio
+and load it into the audio track.
+
+Stereo audio can be changed to mono audio using Audacity or other programs.
+  
+# Experimental Feature for 5.1,6.1,7.1 channel Surround Sound Output
+Run the alsoft-config program that came with the installation of OpenAL Soft to
+set the output to 5.1, 6.1, or 7.1 channels.
+OpenAL Soft should automatically convert 3d audio information into audio output for surround sound.
+
+For more information, read https://github.com/kcat/openal-soft/blob/master/docs/3D7.1.txt 
