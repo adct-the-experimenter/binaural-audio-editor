@@ -57,3 +57,18 @@ wxwidgets https://www.wxwidgets.org/
   Back is positive x. Forward is negative x.
   
   Right is positive y. Left is negative y.
+
+# Important Note:
+Stereo(2 channel) audio does not get 3d spatialization and is instead used to play as background music.
+
+Have audio that you want to be played in 3D be mono(1 channel) audio
+and load it into the audio track.
+
+Stereo audio can be changed to mono audio using Audacity or other programs.
+  
+# Experimental Feature for 5.1,6.1,7.1 channel Surround Sound Output
+Run the alsoft-config program that came with the installation of OpenAL Soft to
+set the output to 5.1, 6.1, or 7.1 channels.
+OpenAL Soft should automatically convert 3d audio information into audio output for surround sound.
+
+For more information, read https://github.com/kcat/openal-soft/blob/master/docs/3D7.1.txt 
