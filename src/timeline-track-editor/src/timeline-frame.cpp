@@ -98,6 +98,8 @@ void TimelineFrame::OnClose(wxCloseEvent& evt)
 	evt.Skip();
 }
 
+PlaybackControls* TimelineFrame::GetPlaybackControlsReference(){return controls;}
+
 BEGIN_EVENT_TABLE(TimelineFrame, wxFrame)
 EVT_CLOSE(TimelineFrame::OnClose)
 END_EVENT_TABLE()

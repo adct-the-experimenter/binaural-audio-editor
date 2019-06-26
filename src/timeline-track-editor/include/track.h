@@ -10,7 +10,6 @@
 
 #include "parameters.h"
 
-
 class Track : public wxPanel
 {
 
@@ -25,7 +24,7 @@ public:
     
     void SetReferenceToCurrentTimeVariable(double* thisTimeVariable);
     void SetReferenceToTimeTickVector(std::vector <int> *thisVector);
-    
+	
 	void SetTitle(wxString thisTitle);
     wxString GetTitle();
     

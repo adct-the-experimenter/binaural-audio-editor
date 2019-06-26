@@ -19,6 +19,9 @@ StereoAudioTrack::StereoAudioTrack(const wxString& title) : Track(title)
 	inputSoundFilePath = "";
 	streamSoundFilePath = "../resources/stream.wav"; //default file path for stream sound file
 	
+	
+	playbackControlsPtr = nullptr;
+	
 }
 
 void StereoAudioTrack::SetReferenceToSourceToManipulate(ALuint* source){sourceToManipulatePtr = source;}
@@ -64,6 +67,30 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 				break;
 			}
 			case State::PLAYER_PLAYING:
+			{
+				switch(audioPlayerPtr->UpdatePlayer(sourceToManipulatePtr,current_time))
+				{
+					case OpenALSoftPlayer::PlayerStatus::PLAYBACK_FINISHED:
+					{
+						std::cout << "Playback finished! \n";
+						
+						playbackControlsPtr->StopOP();
+						break;
+					}
+					case OpenALSoftPlayer::PlayerStatus::FAILED_TO_READ_ANYMORE_AUDIO_FROM_FILE:
+					{
+						std::cout << "No more audio to read! \n";
+						
+						playbackControlsPtr->StopOP();
+						break;
+					}
+					
+				}
+				
+				StereoAudioTrack::al_nssleep(10000000);
+				break;
+			}
+			case State::PLAYER_REWINDING:
 			{
 				audioPlayerPtr->UpdatePlayer(sourceToManipulatePtr,current_time);
 				StereoAudioTrack::al_nssleep(10000000);
@@ -160,6 +187,11 @@ void StereoAudioTrack::SetupAxisForVariable(double& start, double& end, double& 
 
 void StereoAudioTrack::OnBrowse(wxCommandEvent& event)
 {
+	StereoAudioTrack::BrowseForInputAudioFile();
+}
+
+void StereoAudioTrack::BrowseForInputAudioFile()
+{
 	if(audio_data_stream.GetSize() == 0)
 	{
 		wxFileDialog fileDlg(this, _("Choose the WAV file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|All files|*.*"));
@@ -205,7 +237,6 @@ void StereoAudioTrack::OnBrowse(wxCommandEvent& event)
 			 
 		} 
 	}
-	  
 }
 	
 void StereoAudioTrack::OnSize(wxSizeEvent& event)
@@ -258,3 +289,5 @@ void StereoAudioTrack::render(wxDC& dc)
 void StereoAudioTrack::logic_left_click(){}
 void StereoAudioTrack::logic_right_click(){}
 
+void StereoAudioTrack::SetReferenceToPlaybackControls(PlaybackControls* controls){playbackControlsPtr = controls;}
+PlaybackControls* StereoAudioTrack::GetReferenceToPlaybackControls(){return playbackControlsPtr;}

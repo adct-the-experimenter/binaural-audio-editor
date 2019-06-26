@@ -12,6 +12,8 @@
 
 #include "audio-stream-container.h"
 
+#include "playback-controls.h"
+
 #define	BUFFER_LEN	1024
 
 #define	MAX_CHANNELS	2
@@ -57,6 +59,9 @@ public:
     
     void SetReferenceToTimeTickVector(std::vector <int> *thisVector);
     std::vector <int> *GetReferenceToTimeTickVector();
+    
+    void SetReferenceToPlaybackControls(PlaybackControls* controls);
+	PlaybackControls* GetReferenceToPlaybackControls();
     
     void SetTitle(wxString thisTitle);
     wxString GetTitle();
@@ -120,6 +125,8 @@ private:
     std::function < void() > func_after_var_change;
     
     void al_nssleep(unsigned long nsec);
+    
+    PlaybackControls* playbackControlsPtr;
 };
 
 #endif

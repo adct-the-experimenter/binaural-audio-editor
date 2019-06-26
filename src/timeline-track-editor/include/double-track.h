@@ -5,7 +5,7 @@
 #include "editor-graph.h"
 
 #include <functional>   // std::function, std::negate
-
+#include "playback-controls.h"
 
 
 class DoubleTrack : public Track
@@ -30,6 +30,9 @@ public:
     
     void SetReferenceToTimeTickVector(std::vector <int> *thisVector);
     std::vector <int> *GetReferenceToTimeTickVector();
+    
+    void SetReferenceToPlaybackControls(PlaybackControls* controls);
+	PlaybackControls* GetReferenceToPlaybackControls();
     
     void SetTitle(wxString thisTitle);
     wxString GetTitle();
@@ -69,6 +72,8 @@ private:
     std::unordered_map <double, double> map_time_output;
     
     std::function < void() > func_after_var_change;
+    
+    PlaybackControls* playbackControlsPtr;
 	
 };
 

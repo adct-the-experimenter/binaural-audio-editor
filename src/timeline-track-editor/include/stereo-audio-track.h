@@ -3,6 +3,7 @@
 
 #include "track.h"
 #include "audio-track.h"
+#include "playback-controls.h"
 
 class StereoAudioTrack : public Track
 {
@@ -32,6 +33,8 @@ public:
 	
 	void SetStreamAudioFilePath(std::string filepath);
 	
+	void BrowseForInputAudioFile();
+	
 	//Audio Track related functions
 	
 	
@@ -50,6 +53,9 @@ public:
     
     void SetReferenceToCurrentTimeVariable(double* thisTimeVariable);
     void SetReferenceToTimeTickVector(std::vector <int> *thisVector);
+    
+    void SetReferenceToPlaybackControls(PlaybackControls* controls);
+	PlaybackControls* GetReferenceToPlaybackControls();
     
 	void SetTitle(wxString thisTitle);
     wxString GetTitle();
@@ -103,6 +109,8 @@ private:
     std::string streamSoundFilePath;
     
     void al_nssleep(unsigned long nsec);
+    
+    PlaybackControls* playbackControlsPtr;
     
 };
 

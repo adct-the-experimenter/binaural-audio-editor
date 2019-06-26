@@ -6,6 +6,9 @@ Track::Track(const wxString& title)  : wxPanel()
 	
 	Connect(wxEVT_PAINT, wxPaintEventHandler(Track::OnPaint));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(Track::OnSize));
+	
+	current_time_pos_pointer = nullptr;
+	ptrToTimeTickVector = nullptr;
 }
 
 

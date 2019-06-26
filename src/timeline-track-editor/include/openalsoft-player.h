@@ -68,6 +68,18 @@ public:
 	
 	void CloseOpenALSoft(ALCdevice* thisAudioDevice, ALCcontext* thisAudioContext);
 	
+	enum PlayerStatus
+	{
+		GOOD_PLAYING_STATUS=0,
+		ERROR_CHECKING_SOURCE_STATE=1,
+		FAILED_TO_READ_ANYMORE_AUDIO_FROM_FILE=2,
+		ERROR_BUFFERING_DATA=3,
+		ERROR_RESTARTING_PLAYBACK=4,
+		PLAYBACK_FINISHED=5,
+		ERROR_STARTING_PLAYBACK=6
+		
+	};
+	
 private:
 	ALCdevice* audioDevicePtr; //pointer to audio device to be used
     ALCcontext* alContextPtr; //pointer to context of where audio is played

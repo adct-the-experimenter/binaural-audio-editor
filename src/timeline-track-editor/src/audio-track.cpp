@@ -41,6 +41,9 @@ AudioTrack::AudioTrack(const wxString& title) : Track(title)
 	
 	m_audio_graph = nullptr;
 	
+	
+	playbackControlsPtr = nullptr;
+	
 }
 
 //Audio related functions
@@ -317,3 +320,5 @@ double AudioTrack::GetCurrentTime(){return Track::GetCurrentTime();}
 void AudioTrack::SetAudioTrackState(int thisState){track_state = thisState;}
 int AudioTrack::GetAudioTrackState(){return track_state;}
 
+void AudioTrack::SetReferenceToPlaybackControls(PlaybackControls* controls){playbackControlsPtr = controls;}
+PlaybackControls* AudioTrack::GetReferenceToPlaybackControls(){return playbackControlsPtr;}

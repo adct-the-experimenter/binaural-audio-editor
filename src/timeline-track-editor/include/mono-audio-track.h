@@ -35,6 +35,9 @@ public:
     void SetReferenceToCurrentTimeVariable(double* thisTimeVariable);
     void SetReferenceToTimeTickVector(std::vector <int> *thisVector);
     
+    void SetReferenceToPlaybackControls(PlaybackControls* controls);
+	PlaybackControls* GetReferenceToPlaybackControls();
+    
 	void SetTitle(wxString thisTitle);
     wxString GetTitle();
     
@@ -81,6 +84,8 @@ private:
     
     std::string inputSoundFilePath;
     std::string streamSoundFilePath;
+    
+    PlaybackControls* playbackControlsPtr;
     
 };
 

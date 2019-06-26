@@ -16,6 +16,9 @@ MonoAudioTrack::MonoAudioTrack(const wxString& title) : Track(title)
 	inputSoundFilePath = "";
 	streamSoundFilePath = "../resources/stream.wav";
 	
+	
+	playbackControlsPtr = nullptr;
+	
 }
 
 void MonoAudioTrack::SetReferenceToSourceToManipulate(ALuint* source){sourceToManipulatePtr = source;}
@@ -158,3 +161,5 @@ void MonoAudioTrack::render(wxDC& dc){}
 void MonoAudioTrack::logic_left_click(){}
 void MonoAudioTrack::logic_right_click(){}
 
+void MonoAudioTrack::SetReferenceToPlaybackControls(PlaybackControls* controls){playbackControlsPtr = controls;}
+PlaybackControls* MonoAudioTrack::GetReferenceToPlaybackControls(){return playbackControlsPtr;}

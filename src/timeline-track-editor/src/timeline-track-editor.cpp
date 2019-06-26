@@ -73,7 +73,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
 	DoubleTrack* track1 = new DoubleTrack("Variable Track");
-
+	//connect double track to graphical playback controls in time frame
+	track1->SetReferenceToPlaybackControls(timeFrame->GetPlaybackControlsReference());
+	
 	double start = -10.0f; //lowest value
 	double end = 10.0f; //highest value
 	int numTicks = 11; //number of ticks between lowest value and highest value including zero
@@ -138,8 +140,11 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 		audioPlayer->InitSource(&source);
 		
 		StereoAudioTrack* track2 = new StereoAudioTrack("Audio");
-		track2->SetReferenceToSourceToManipulate(&source);
-		track2->SetReferenceToAudioPlayer(audioPlayer);
+		track2->SetReferenceToSourceToManipulate(&source); //connect audio track to external source
+		track2->SetReferenceToAudioPlayer(audioPlayer); //connect stereo audio track to audio player
+		
+		//connect stereo audio track to playback controls in time frame
+		track2->SetReferenceToPlaybackControls(timeFrame->GetPlaybackControlsReference());
 		
 		wxButton* browseButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Browse"), wxDefaultPosition, wxSize(70, 30) );
 		track2->SetReferenceToBrowseButton(browseButton);
@@ -173,6 +178,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 		timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(track2);
 		timeFrame->AddTrackFunctionToCallInTimerLoopNullState(track2);
 		timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(track2);
+		timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(track2);
 		
 		track2->Show();
 	}

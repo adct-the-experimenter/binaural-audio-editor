@@ -175,7 +175,6 @@ void SoundProducerTrack::OnScroll(wxScrollEvent& event)
 	Refresh();
 	
 	FitInside();
-	
 }
 
 void SoundProducerTrack::OnSize(wxSizeEvent& event)
@@ -183,7 +182,6 @@ void SoundProducerTrack::OnSize(wxSizeEvent& event)
 	Refresh();
 	
 	FitInside();
-	
 }
 		
 void SoundProducerTrack::SetReferenceToCurrentTimeVariable(double* thisTimeVariable)
