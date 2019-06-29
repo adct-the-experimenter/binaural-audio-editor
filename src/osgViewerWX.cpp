@@ -96,12 +96,12 @@ bool wxOsgApp::OnInit()
 		viewer->setCameraManipulator(cameraManipulator);
 		
 		//Set camera to look at listener 10 units above origin and behind origin
-		osg::Vec3d eye( 10.0, 0.0, 5.0 ); //The position of your camera -can be used to set its height position.
+		osg::Vec3d eye( 0.0, 10.0, 10.0 ); //The position of your camera -can be used to set its height position.
 		osg::Vec3d center( 0.0, 0.0, 0.0 ); // The point your camera is looking at - set this to the center of the observed object.
 		// The up-vector of your camera - 
 		//this controls how your viewport will be rotated about its center 
-		//and should be equal to [0, 0, 1] in a conventional graphics coordinate system
-		osg::Vec3d up( 0.0, 0.0, 1.0 ); 
+		//and should be equal to [0, 1, 0] OpenAL Soft coordinate system
+		osg::Vec3d up( 0.0, 1.0, 0.0 ); 
 
 		cameraManipulator->setTransformation(eye,center,up);
 		

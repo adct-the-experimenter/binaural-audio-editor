@@ -54,13 +54,20 @@ wxwidgets https://www.wxwidgets.org/
   
   Click on the Remove Sound Producer Track button to remove a sound producer track.
   
-  The application uses standard Cartesian coordinate system to move sound producers and listener.
+  Like OpenAL and OpenGL, the application uses a right handed coordinate system to move listener and sound producers, 
   
-  Up is positive z. Down is negative z.
+  where in a frontal default view X (thumb) points right, 
   
-  Back is positive x. Forward is negative x.
+  Y points up (index finger), 
   
-  Right is positive y. Left is negative y.
+  and Z points towards the viewer/camera (middle finger). 
+  
+  Up is positive y. Down is negative y.
+  
+  Back is positive z. Forward is negative z.
+  
+  Right is positive x. Left is negative x.
+  
 
 # Important Note:
 Stereo(2 channel) audio does not get 3d spatialization and is instead used to play as background music.
@@ -69,6 +76,7 @@ Have audio that you want to be played in 3D be mono(1 channel) audio
 and load it into the audio track.
 
 Stereo audio can be changed to mono audio using Audacity or other programs.
+sndfile-mix-to-mono is an application that successfully turns multi-channel audio mix into mono-channel audio mix.
   
 # Experimental Feature for 5.1,6.1,7.1 channel Surround Sound Output
 Run the alsoft-config program that came with the installation of OpenAL Soft to
