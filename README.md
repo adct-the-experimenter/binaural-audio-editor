@@ -85,3 +85,6 @@ set the output to 5.1, 6.1, or 7.1 channels.
 OpenAL Soft should automatically convert 3d audio information into audio output for surround sound.
 
 For more information, read https://github.com/kcat/openal-soft/blob/master/docs/3D7.1.txt 
+
+#Feedback 
+Please email questions or comments to this email address bringerofawesomefood @ gmail . com without spaces.
