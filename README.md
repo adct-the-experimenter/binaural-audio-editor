@@ -86,5 +86,5 @@ OpenAL Soft should automatically convert 3d audio information into audio output 
 
 For more information, read https://github.com/kcat/openal-soft/blob/master/docs/3D7.1.txt 
 
-#Feedback 
+# Feedback 
 Please email questions or comments to this email address bringerofawesomefood @ gmail . com without spaces.
