@@ -15,6 +15,8 @@ public:
     
     TimelineWindow* GetTimelineWindow();
     
+    PlaybackControls* GetPlaybackControlsReference();
+    
     //Track related functions
     void AddTrack(Track* thisTrack, int& space);
     

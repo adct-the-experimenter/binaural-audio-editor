@@ -1,6 +1,8 @@
 # binaural-audio-editor
 This is an audio application that produces binaural audio from 2D mono/stereo audio samples and positional information given through the graphical user interface. Listen to 3D audio through stereo headphones.
 
+[![Open Source Helpers](https://www.codetriage.com/adct-the-experimenter/binaural-audio-editor/badges/users.svg)](https://www.codetriage.com/adct-the-experimenter/binaural-audio-editor)
+
 # Required Libraries
 OpenAL Soft https://github.com/kcat/openal-soft
 
@@ -44,19 +46,27 @@ wxwidgets https://www.wxwidgets.org/
   Add points to the graph by left clicking on the graph. Remove points from the graph by right clicking.
   First graph controls the x position, second graph is for y position, third graph is for z position.
   
-  The bottom 3 tracks are for changing position of the sound producer.
+  For the Sound Producer track, the top 2 tracks is for graphing audio and the bottom 3 tracks are for changing position of the sound producer.
+  
+  Click on browse button near audio track to load sound into the track.
   
   Click on the Add Sound Producer Track button to add a new track to control another sound producer.
   
   Click on the Remove Sound Producer Track button to remove a sound producer track.
   
-  The application uses standard Cartesian coordinate system to move sound producers and listener.
+  Like OpenAL and OpenGL, the application uses a right handed coordinate system to move listener and sound producers, 
   
-  Up is positive z. Down is negative z.
+  where in a frontal default view X (thumb) points right, 
   
-  Back is positive x. Forward is negative x.
+  Y points up (index finger), 
   
-  Right is positive y. Left is negative y.
+  and Z points towards the viewer/camera (middle finger). 
+  
+  Up is positive y. Down is negative y.
+  
+  Back is positive z. Forward is negative z.
+  
+  Right is positive x. Left is negative x.
 
 # Important Note:
 Stereo(2 channel) audio does not get 3d spatialization and is instead used to play as background music.
@@ -65,6 +75,9 @@ Have audio that you want to be played in 3D be mono(1 channel) audio
 and load it into the audio track.
 
 Stereo audio can be changed to mono audio using Audacity or other programs.
+
+sndfile-mix-to-mono is an application that successfully turns multi-channel audio mix into mono-channel audio mix.
+
   
 # Experimental Feature for 5.1,6.1,7.1 channel Surround Sound Output
 Run the alsoft-config program that came with the installation of OpenAL Soft to

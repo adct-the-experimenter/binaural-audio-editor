@@ -18,22 +18,27 @@ public:
 	PlaybackControls(wxWindow* parent);
 	
 	void RunPlaybackState();
+	void SetCurrentState(int state);
 	int GetCurrentState();
 	void SetReferenceToTimelineWindow(TimelineWindow* thisTimeline);
 	
-	enum 
+	void SetCurrentTimePosition(double& thisTime);
+	
+	enum PlaybackState
 	{
 		STATE_NULL = 0,
 		STATE_PLAY,
 		STATE_PAUSE,
 		STATE_REWIND,
-		STATE_FAST_FORWARD,
-		ID_PLAY_BUTTON_HIT,
-		ID_PAUSE_BUTTON_HIT,
-		ID_STOP_BUTTON_HIT,
-		ID_FAST_FORWARD_BUTON_HIT,
-		ID_REWIND_BUTTON_HIT
+		STATE_FAST_FORWARD
 	};
+	
+	//operations to carry out in playback
+	void PlayOP();
+	void PauseOP();
+	void StopOP();
+	void RewindOP();
+	void FastForwardOP();
 	
 private:
 	

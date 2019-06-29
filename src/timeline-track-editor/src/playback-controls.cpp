@@ -11,7 +11,7 @@ PlaybackControls::PlaybackControls(wxWindow* parent) : wxWindow(parent, wxID_ANY
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 	
 	//initialize buttons
-	m_play_button = new wxButton(this, ID_PLAY_BUTTON_HIT, wxT("Play"));;
+	m_play_button = new wxButton(this, wxID_NEW, wxT("Play"));;
     m_pause_button = new wxButton(this, wxID_NEW, wxT("Pause"));;
     m_stop_button = new wxButton(this, wxID_NEW, wxT("Stop"));;
     m_rewind_button = new wxButton(this, wxID_NEW, wxT("Rewind"));;
@@ -41,80 +41,30 @@ void PlaybackControls::RunPlaybackState()
 		case STATE_NULL:{  break;}
 		case STATE_PLAY:
 		{
-			if(timelineWindowPtr != nullptr)
-			{
-				//if current time is past the end 
-				if(timelineWindowPtr->GetCurrentTimePosition() <= TIME_END_VALUE)
-				{
-					//increment current time position until end, then set state to null
-					double newTime = timelineWindowPtr->GetCurrentTimePosition() + time_res_seconds;
-					timelineWindowPtr->SetCurrentTimePosition(newTime);
-				}
-				else
-				{
-					//set current time to end and put it in null state
-					double newTime = TIME_END_VALUE;
-					timelineWindowPtr->SetCurrentTimePosition(newTime);
-					current_state = STATE_NULL;
-				}
-				
-				
-			} 
+			PlaybackControls::PlayOP();
 			break;
 		}
 		case STATE_PAUSE:
 		{
-			if(timelineWindowPtr != nullptr)
-			{	
-				//do nothing
-				
-			}
+			PlaybackControls::PauseOP();
 			
 			break;
 		}
 		case STATE_REWIND:
 		{
-			if(timelineWindowPtr != nullptr)
-			{
-				if(timelineWindowPtr->GetCurrentTimePosition() >= TIME_START_VALUE)
-				{
-					//decrement current time position until beginning, then set state to null
-					double newTime = timelineWindowPtr->GetCurrentTimePosition() - time_rewind_seconds;
-					timelineWindowPtr->SetCurrentTimePosition(newTime);
-				}
-				else
-				{
-					double newTime = TIME_START_VALUE;
-					timelineWindowPtr->SetCurrentTimePosition(newTime);
-					current_state = STATE_NULL;
-				}
-			}
+			PlaybackControls::RewindOP();
 			break;
 			
 		}
 		case STATE_FAST_FORWARD:
 		{
-			if(timelineWindowPtr != nullptr)
-			{
-				//if current time is past the end 
-				if(timelineWindowPtr->GetCurrentTimePosition() <= TIME_END_VALUE)
-				{
-					//increment current time position until end, then set state to null
-					double newTime = timelineWindowPtr->GetCurrentTimePosition() + time_fast_forward_seconds;
-					timelineWindowPtr->SetCurrentTimePosition(newTime);
-				}
-				else
-				{
-					//set current time to end and put it in null state
-					double newTime = TIME_END_VALUE;
-					timelineWindowPtr->SetCurrentTimePosition(newTime);
-					current_state = STATE_NULL;
-				}
-			} 
+			PlaybackControls::FastForwardOP(); 
 			break;
 		}
 	};
 }
+
+
 
 void PlaybackControls::Play(wxCommandEvent& event)
 {
@@ -128,11 +78,7 @@ void PlaybackControls::Pause(wxCommandEvent& event)
 
 void PlaybackControls::Stop(wxCommandEvent& event)
 {
-	//reset time back to start
-	double newTime = 0.0;
-	timelineWindowPtr->SetCurrentTimePosition(newTime);
-	
-	current_state = STATE_NULL;
+	PlaybackControls::StopOP();
 }
 
 void PlaybackControls::Rewind(wxCommandEvent& event)
@@ -147,7 +93,97 @@ void PlaybackControls::FastForward(wxCommandEvent& event)
 
 void PlaybackControls::SetReferenceToTimelineWindow(TimelineWindow* thisTimeline){timelineWindowPtr = thisTimeline;}
 
+void PlaybackControls::SetCurrentState(int state){current_state = state;}
 int PlaybackControls::GetCurrentState(){return current_state;}
+
+void PlaybackControls::SetCurrentTimePosition(double& thisTime)
+{
+	if(timelineWindowPtr != nullptr)
+	{
+		timelineWindowPtr->SetCurrentTimePosition(thisTime);
+	}
+}
+
+void PlaybackControls::PlayOP()
+{
+	if(timelineWindowPtr != nullptr)
+	{
+		//if current time is past the end 
+		if(timelineWindowPtr->GetCurrentTimePosition() <= TIME_END_VALUE)
+		{
+			//increment current time position until end, then set state to null
+			double newTime = timelineWindowPtr->GetCurrentTimePosition() + time_res_seconds;
+			timelineWindowPtr->SetCurrentTimePosition(newTime);
+		}
+		else
+		{
+			//set current time to end and put it in null state
+			double newTime = TIME_END_VALUE;
+			timelineWindowPtr->SetCurrentTimePosition(newTime);
+			current_state = STATE_NULL;
+		}
+	} 
+}
+
+void PlaybackControls::PauseOP()
+{
+	if(timelineWindowPtr != nullptr)
+	{	
+		//do nothing
+	}
+}
+
+void PlaybackControls::StopOP()
+{
+	//reset time back to start
+	double newTime = 0.0;
+	timelineWindowPtr->SetCurrentTimePosition(newTime);
+	
+	current_state = STATE_NULL;
+}
+
+void PlaybackControls::RewindOP()
+{
+	if(timelineWindowPtr != nullptr)
+	{
+		if(timelineWindowPtr->GetCurrentTimePosition() >= TIME_START_VALUE)
+		{
+			//decrement current time position until beginning, then set state to null
+			double newTime = timelineWindowPtr->GetCurrentTimePosition() - time_rewind_seconds;
+			timelineWindowPtr->SetCurrentTimePosition(newTime);
+		}
+		else
+		{
+			double newTime = TIME_START_VALUE;
+			timelineWindowPtr->SetCurrentTimePosition(newTime);
+			current_state = STATE_NULL;
+		}
+	}
+	
+}
+
+void PlaybackControls::FastForwardOP()
+{
+	if(timelineWindowPtr != nullptr)
+	{
+		//if current time is past the end 
+		if(timelineWindowPtr->GetCurrentTimePosition() <= TIME_END_VALUE)
+		{
+			//increment current time position until end, then set state to null
+			double newTime = timelineWindowPtr->GetCurrentTimePosition() + time_fast_forward_seconds;
+			timelineWindowPtr->SetCurrentTimePosition(newTime);
+		}
+		else
+		{
+			//set current time to end and put it in null state
+			double newTime = TIME_END_VALUE;
+			timelineWindowPtr->SetCurrentTimePosition(newTime);
+			current_state = STATE_NULL;
+		}
+	}
+}
+
+//Playback Timer
 
 PlaybackTimer::PlaybackTimer(PlaybackControls* controls) : wxTimer()
 {
@@ -222,3 +258,4 @@ void PlaybackTimer::AddFunctionToTimerLoopNullState( std::function < void() > th
 {
 	functionsNullState.push_back(thisFunction);
 }
+

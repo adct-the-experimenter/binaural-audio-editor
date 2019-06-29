@@ -52,6 +52,8 @@ public:
 	void RewindSource(ALuint* thisSource);
 	void StopSource(ALuint* thisSource);
 	
+	//clear queue playing
+	void ClearQueue(ALuint* thisSource);
 	
 	//function to stream source
 	void StreamSource(ALuint* thisSource);
@@ -62,11 +64,23 @@ public:
 	//function to close current file loaded for streaming audio
 	void ClosePlayerFile();
 	
-	int StartPlayer(ALuint* source);
+	int StartPlayer(ALuint* source,double& current_time);
 	
-	int UpdatePlayer(ALuint* source);
+	int UpdatePlayer(ALuint* source,double& current_time);
 	
 	void CloseOpenALSoft(ALCdevice* thisAudioDevice, ALCcontext* thisAudioContext);
+	
+	enum PlayerStatus
+	{
+		GOOD_PLAYING_STATUS=0,
+		ERROR_CHECKING_SOURCE_STATE=1,
+		FAILED_TO_READ_ANYMORE_AUDIO_FROM_FILE=2,
+		ERROR_BUFFERING_DATA=3,
+		ERROR_RESTARTING_PLAYBACK=4,
+		PLAYBACK_FINISHED=5,
+		ERROR_STARTING_PLAYBACK=6
+		
+	};
 	
 private:
 	ALCdevice* audioDevicePtr; //pointer to audio device to be used
@@ -85,6 +99,8 @@ private:
 	
 	//has info on file loaded
 	SF_INFO sfinfo;
+	
+	int bit_size;
 };
 
 #endif

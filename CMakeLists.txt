@@ -38,10 +38,15 @@ set(SOURCES src/osgViewerWX.cpp
 			 src/EditListenerDialog.cpp
 			 src/openalsoftaudioengine.cpp src/soundproducer.cpp src/listener.cpp
 			 
-			 
 			 src/timeline-track-editor/src/timeline-frame.cpp
 			 src/timeline-track-editor/src/timeline-window.cpp
 			 src/timeline-track-editor/src/playback-controls.cpp
+			 src/timeline-track-editor/src/stereo-audio-track.cpp
+			 src/timeline-track-editor/src/mono-audio-track.cpp
+			 src/timeline-track-editor/src/audio-track.cpp
+			 src/timeline-track-editor/src/audio-graph.cpp
+			 src/timeline-track-editor/src/audio-stream-container.cpp
+			 src/timeline-track-editor/src/openalsoft-player.cpp
 			 src/timeline-track-editor/src/double-track.cpp
 			 src/timeline-track-editor/src/editor-graph.cpp
 			 src/timeline-track-editor/src/track.cpp

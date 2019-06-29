@@ -5,6 +5,8 @@ DoubleTrack::DoubleTrack(const wxString& title)  : Track (title)
 	varToManipulatePtr = nullptr;
 	graphEditor = nullptr;
 	
+	playbackControlsPtr = nullptr;
+	
 	Connect(wxEVT_PAINT, wxPaintEventHandler(DoubleTrack::OnPaint));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(DoubleTrack::OnSize));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(DoubleTrack::OnLeftMouseClick));
@@ -79,6 +81,9 @@ void DoubleTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
 	//initialize graph editor
 	graphEditor = new EditorGraph(this);
 	graphEditor->SetReferenceToTimeTickVector(timeTickVector);
+	
+	//wxStaticText *st1 = new wxStaticText(parent, wxID_ANY, DoubleTrack::GetTitle(), 
+	//									wxPoint(this->GetScreenPosition().x,this->GetScreenPosition().y) );
 }
 
 void DoubleTrack::SetupAxisForVariable(double& start, double& end,double& resolution, int& numTick)
@@ -195,3 +200,6 @@ void DoubleTrack::logic_right_click()
 }
 
 void DoubleTrack::SetFunctionToCallAfterVariableChange(std::function < void() > thisFunction){func_after_var_change = thisFunction;}
+
+void DoubleTrack::SetReferenceToPlaybackControls(PlaybackControls* controls){playbackControlsPtr = controls;}
+PlaybackControls* DoubleTrack::GetReferenceToPlaybackControls(){return playbackControlsPtr;}

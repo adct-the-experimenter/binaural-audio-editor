@@ -21,6 +21,14 @@ bool wxOsgApp::OnInit()
 	}
 	else
 	{
+		//initialize audio stuff
+		audioPlayer = new OpenALSoftPlayer();
+		audioPlayer->SetReferenceToAudioContext(audio_engine.GetReferenceToAudioContext());
+		audioPlayer->SetReferenceToAudioDevice(audio_engine.GetReferenceToAudioDevice());
+		
+		audioPlayer->InitBuffersForStreaming();
+		
+		//initialize graphical stuff
 		int width = 800;
 		int height = 600;
 		
@@ -28,6 +36,9 @@ bool wxOsgApp::OnInit()
 
 		MainFrame *frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
 			wxDefaultPosition, wxSize(width, height));
+			
+		//set reference to audio player. IMPORTANT
+		frame->SetAudioPlayerReference(audioPlayer);
 
 		// create osg canvas
 		//    - initialize
@@ -85,12 +96,12 @@ bool wxOsgApp::OnInit()
 		viewer->setCameraManipulator(cameraManipulator);
 		
 		//Set camera to look at listener 10 units above origin and behind origin
-		osg::Vec3d eye( 10.0, 0.0, 5.0 ); //The position of your camera -can be used to set its height position.
+		osg::Vec3d eye( 0.0, 10.0, 10.0 ); //The position of your camera -can be used to set its height position.
 		osg::Vec3d center( 0.0, 0.0, 0.0 ); // The point your camera is looking at - set this to the center of the observed object.
 		// The up-vector of your camera - 
 		//this controls how your viewport will be rotated about its center 
-		//and should be equal to [0, 0, 1] in a conventional graphics coordinate system
-		osg::Vec3d up( 0.0, 0.0, 1.0 ); 
+		//and should be equal to [0, 1, 0] OpenAL Soft coordinate system
+		osg::Vec3d up( 0.0, 1.0, 0.0 ); 
 
 		cameraManipulator->setTransformation(eye,center,up);
 		
@@ -200,13 +211,6 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	double end = 10.0f; //highest value
 	int numTicks = 11; //number of ticks between lowest value and highest value including zero
 	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
-	
-	//initialize sound producer track stuff
-	m_soundproducer_track_vec[0]->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
-	m_soundproducer_track_vec[0]->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
-	m_soundproducer_track_vec[0]->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
-	m_soundproducer_track_vec[0]->UpdateComboBoxListFromSoundProducerRegistry();
-	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
 	 
 	//initialize listener track
 	m_listener_track->InitTrack(timeFrame,nullptr);
@@ -233,13 +237,59 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	
 	//add block of space between Sound Producer Track and Listener Track
 	timeFrame->AddSpacerBlock(40);
+
+//Initialize SoundProducer Track
+	
+	//initialize sound producer track stuff
+	m_soundproducer_track_vec[0]->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
+	
+	//initialize audio track
+	wxButton* browseButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Browse"), wxDefaultPosition, wxSize(70, 30) );
+	m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->SetReferenceToBrowseButton(browseButton);
+	m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
+	
+	//initialize double tracks
+	m_soundproducer_track_vec[0]->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
+	m_soundproducer_track_vec[0]->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
+	m_soundproducer_track_vec[0]->UpdateComboBoxListFromSoundProducerRegistry();
+	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
 	
 	//add text to indicate it is a Sound Producer Track
 	wxBoxSizer* hboxTextSPTrack = new wxBoxSizer(wxHORIZONTAL);
-	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track"),wxDefaultPosition );
+	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track(x,y,z)"),wxDefaultPosition );
 	hboxTextSPTrack->Add(textSPTrack);
 	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
 	timeFrame->AddBoxSizer(hboxTextSPTrack);
+	
+	
+		
+	double audio_start = 0.0f; //lowest value
+	double audio_end = 10.0f; //highest value
+	int audio_numTicks = 11; //number of ticks between lowest value and highest value including zero
+	double audio_resolution = 0.1; //the fineness of how much variable can be incremented/decremented by
+
+	//setup bounds for vertical axis
+	m_soundproducer_track_vec[0]->SetupAxisForAudio(audio_start,audio_end,audio_resolution,audio_numTicks);
+	
+	timeFrame->AddSpacerBlock(50);
+	
+	//setup browse button and text label for stereo audio track
+	wxBoxSizer* hboxButtonText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textButtonText = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Stereo Audio Track"),wxDefaultPosition );
+	hboxButtonText->Add(textButtonText);
+	hboxButtonText->Add(browseButton);
+	timeFrame->AddBoxSizer(hboxButtonText);
+	
+	//add left channel track and right channel track to time frame
+	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->GetReferenceToLeftChannelTrack(),space);
+	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->GetReferenceToRightChannelTrack(),space);
+	
+	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec[0]);
+	timeFrame->AddTrackFunctionToCallInTimerLoopNullState(m_soundproducer_track_vec[0]);
+	timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(m_soundproducer_track_vec[0]);
+	timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(m_soundproducer_track_vec[0]);
+	timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(m_soundproducer_track_vec[0]);
+	
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToXTrack(),space);
@@ -286,6 +336,16 @@ void MainFrame::SetListenerReference(Listener* thisListener)
 }
 
 void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}
+
+void MainFrame::SetAudioPlayerReference(OpenALSoftPlayer* audioPlayer)
+{
+	audioPlayerPtr = audioPlayer;
+	//for all sound producer tracks
+	for(size_t i=0; i < m_soundproducer_track_vec.size(); i++)
+	{
+		m_soundproducer_track_vec[i]->SetReferenceToAudioPlayer(audioPlayerPtr);
+	}
+}
 
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
@@ -443,40 +503,70 @@ void MainFrame::CreateNewSoundProducerTrack()
 {
 	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track"));
 	
+	//initialize sound producer track stuff
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
+	
+	//initialize audio track
+	wxButton* browseButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Browse"), wxDefaultPosition, wxSize(70, 30) );
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->SetReferenceToBrowseButton(browseButton);
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
+	
+	//initialize double tracks
+	
 	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
 	double start = -10.0f; //lowest value
 	double end = 10.0f; //highest value
 	int numTicks = 11; //number of ticks between lowest value and highest value including zero
 	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
 	
-	//initialize sound producer track stuff
-	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->UpdateComboBoxListFromSoundProducerRegistry();
 	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToComboBox());
 	
-	//add special soundproducertrack function to call during playback
-	//it will also call x,y,z track playback functions
-	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)); 
-	
-	
-	//add block of space between previous sound producer track and new sound producer track
-	timeFrame->AddSpacerBlock(20);
-	
 	//add text to indicate it is a Sound Producer Track
 	wxBoxSizer* hboxTextSPTrack = new wxBoxSizer(wxHORIZONTAL);
-	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track"),wxDefaultPosition );
+	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track(x,y,z)"),wxDefaultPosition );
 	hboxTextSPTrack->Add(textSPTrack);
-	hboxTextSPTrack->Add(m_soundproducer_track_vec[m_soundproducer_track_vec.size()-1]->GetReferenceToComboBox());
+	hboxTextSPTrack->Add(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToComboBox());
 	timeFrame->AddBoxSizer(hboxTextSPTrack);
+	
+	
+		
+	double audio_start = 0.0f; //lowest value
+	double audio_end = 10.0f; //highest value
+	int audio_numTicks = 11; //number of ticks between lowest value and highest value including zero
+	double audio_resolution = 0.1; //the fineness of how much variable can be incremented/decremented by
+
+	//setup bounds for vertical axis
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetupAxisForAudio(audio_start,audio_end,audio_resolution,audio_numTicks);
+	
+	timeFrame->AddSpacerBlock(50);
+	
+	//setup browse button and text label for stereo audio track
+	wxBoxSizer* hboxButtonText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textButtonText = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Stereo Audio Track"),wxDefaultPosition );
+	hboxButtonText->Add(textButtonText);
+	hboxButtonText->Add(browseButton);
+	timeFrame->AddBoxSizer(hboxButtonText);
+	
+	//add left channel track and right channel track to time frame
+	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->GetReferenceToLeftChannelTrack(),space);
+	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->GetReferenceToRightChannelTrack(),space);
+	
+	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	timeFrame->AddTrackFunctionToCallInTimerLoopNullState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToXTrack(),space);
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToYTrack(),space);
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToZTrack(),space);
 	
-	timeFrame->AddSpacerBlock(40);
+	//add block of space between Sound Producer Track and bottom of window, also extends height of window
+	timeFrame->AddSpacerBlock(100);
 }
 
 void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
@@ -494,6 +584,7 @@ void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-5);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-6);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-7);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-8);
 		
 		//resize frame properly
 		timeFrame->Layout();
