@@ -287,6 +287,9 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec[0]);
 	timeFrame->AddTrackFunctionToCallInTimerLoopNullState(m_soundproducer_track_vec[0]);
 	timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(m_soundproducer_track_vec[0]);
+	timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(m_soundproducer_track_vec[0]);
+	timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(m_soundproducer_track_vec[0]);
+	
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToXTrack(),space);
@@ -554,6 +557,8 @@ void MainFrame::CreateNewSoundProducerTrack()
 	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
 	timeFrame->AddTrackFunctionToCallInTimerLoopNullState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
 	timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToXTrack(),space);

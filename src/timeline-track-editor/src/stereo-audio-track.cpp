@@ -60,10 +60,11 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 			}
 			case State::PLAYER_PAUSED:
 			{
-				audioPlayerPtr->PlaySource(sourceToManipulatePtr);
-				audioPlayerPtr->UpdatePlayer(sourceToManipulatePtr,current_time);
+				//audioPlayerPtr->PlaySource(sourceToManipulatePtr);
+				//audioPlayerPtr->UpdatePlayer(sourceToManipulatePtr,current_time);
+				audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
+				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time);
 				StereoAudioTrack::al_nssleep(10000000);
-				
 				break;
 			}
 			case State::PLAYER_PLAYING:
@@ -92,7 +93,13 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 			}
 			case State::PLAYER_REWINDING:
 			{
-				audioPlayerPtr->UpdatePlayer(sourceToManipulatePtr,current_time);
+				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time);
+				StereoAudioTrack::al_nssleep(10000000);
+				break;
+			}
+			case State::PLAYER_FAST_FORWARDING:
+			{
+				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time);
 				StereoAudioTrack::al_nssleep(10000000);
 				break;
 			}
@@ -112,7 +119,9 @@ void StereoAudioTrack::FunctionToCallInPauseState()
 	
 		if(sourceToManipulatePtr != nullptr)
 		{
-			audioPlayerPtr->PauseSource(sourceToManipulatePtr);
+			//audioPlayerPtr->PauseSource(sourceToManipulatePtr);
+			audioPlayerPtr->RewindSource(sourceToManipulatePtr);
+			audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
 		}
 		
 	}
@@ -121,11 +130,30 @@ void StereoAudioTrack::FunctionToCallInPauseState()
 
 void StereoAudioTrack::FunctionToCallInRewindState()
 {
+	//clear buffers in queue and rewind source
+	if(StereoAudioTrack::GetAudioTrackState() != State::PLAYER_REWINDING)
+	{
+		if(sourceToManipulatePtr != nullptr)
+		{
+			audioPlayerPtr->RewindSource(sourceToManipulatePtr);
+			audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
+		}
+	}
 	StereoAudioTrack::SetAudioTrackState(State::PLAYER_REWINDING);
+
 }
 
 void StereoAudioTrack::FunctionToCallInFastForwardState()
 {
+	//clear buffers in queue and rewind source
+	if(StereoAudioTrack::GetAudioTrackState() != State::PLAYER_FAST_FORWARDING)
+	{
+		if(sourceToManipulatePtr != nullptr)
+		{
+			audioPlayerPtr->RewindSource(sourceToManipulatePtr);
+			audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
+		}
+	}
 	StereoAudioTrack::SetAudioTrackState(State::PLAYER_FAST_FORWARDING);
 }
 
@@ -133,11 +161,12 @@ void StereoAudioTrack::FunctionToCallInNullState()
 {
 	if(StereoAudioTrack::GetAudioTrackState() != State::PLAYER_NULL)
 	{
-		StereoAudioTrack::SetAudioTrackState(StereoAudioTrack::State::PLAYER_PAUSED);
+		StereoAudioTrack::SetAudioTrackState(StereoAudioTrack::State::PLAYER_NULL);
 		if(sourceToManipulatePtr != nullptr)
 		{
 			audioPlayerPtr->StopSource(sourceToManipulatePtr);
 			audioPlayerPtr->RewindSource(sourceToManipulatePtr);
+			audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
 		}
 	}
 }

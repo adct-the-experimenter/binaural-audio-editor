@@ -14,6 +14,19 @@ public:
 	
 	void SetReferenceToBrowseButton(wxButton* thisButton);
 	
+	enum State
+    {
+		PLAYER_NULL = 0,
+		PLAYER_STOPPED,
+		PLAYER_PLAYING,
+		PLAYER_PAUSED,
+		PLAYER_REWINDING,
+		PLAYER_FAST_FORWARDING
+	};
+	
+	void SetAudioTrackState(int thisState);
+    int GetAudioTrackState();
+	
 	AudioTrack* GetReferenceToChannelTrack();
 	
 	//Audio Track related functions
@@ -69,6 +82,9 @@ private:
 
 	AudioTrack* m_channel_track;
 	
+	//state of audio track
+	int track_state;
+	
 	ALuint* sourceToManipulatePtr;
 	OpenALSoftPlayer* audioPlayerPtr;
 	
@@ -86,6 +102,8 @@ private:
     std::string streamSoundFilePath;
     
     PlaybackControls* playbackControlsPtr;
+    
+    void al_nssleep(unsigned long nsec);
     
 };
 

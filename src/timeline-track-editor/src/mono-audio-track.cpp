@@ -5,6 +5,8 @@ MonoAudioTrack::MonoAudioTrack(const wxString& title) : Track(title)
 	sourceToManipulatePtr = nullptr;
 	audioPlayerPtr = nullptr;
 	
+	track_state = State::PLAYER_NULL;
+	
 	//initialize audio tracks
 	m_channel_track = new AudioTrack("Channel");
 	
@@ -29,19 +31,149 @@ void MonoAudioTrack::SetReferenceToBrowseButton(wxButton* thisButton){browseButt
 AudioTrack* MonoAudioTrack::GetReferenceToChannelTrack(){return m_channel_track;}
 
 //Track related functions
+void MonoAudioTrack::al_nssleep(unsigned long nsec)
+{
+    struct timespec ts, rem;
+    ts.tv_sec = nsec / 1000000000ul;
+    ts.tv_nsec = nsec % 1000000000ul;
+    while(nanosleep(&ts, &rem) == -1 && errno == EINTR){ts = rem;}
+}
 
 void MonoAudioTrack::FunctionToCallInPlayState()
 {
-	if(m_channel_track != nullptr)
+	if(sourceToManipulatePtr != nullptr)
 	{
-		m_channel_track->FunctionToCallInPlayState();
+		double current_time = m_channel_track->GetCurrentTime();
+	
+		//get current state and do things differently depending on current state
+		switch(MonoAudioTrack::GetAudioTrackState())
+		{
+			case State::PLAYER_NULL:
+			{
+				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time); //start player
+				
+				break;
+			}
+			case State::PLAYER_PAUSED:
+			{
+				//audioPlayerPtr->PlaySource(sourceToManipulatePtr);
+				//audioPlayerPtr->UpdatePlayer(sourceToManipulatePtr,current_time);
+				audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
+				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time);
+				MonoAudioTrack::al_nssleep(10000000);
+				break;
+			}
+			case State::PLAYER_PLAYING:
+			{
+				switch(audioPlayerPtr->UpdatePlayer(sourceToManipulatePtr,current_time))
+				{
+					case OpenALSoftPlayer::PlayerStatus::PLAYBACK_FINISHED:
+					{
+						std::cout << "Playback finished! \n";
+						
+						playbackControlsPtr->StopOP();
+						break;
+					}
+					case OpenALSoftPlayer::PlayerStatus::FAILED_TO_READ_ANYMORE_AUDIO_FROM_FILE:
+					{
+						std::cout << "No more audio to read! \n";
+						
+						playbackControlsPtr->StopOP();
+						break;
+					}
+					
+				}
+				
+				MonoAudioTrack::al_nssleep(10000000);
+				break;
+			}
+			case State::PLAYER_REWINDING:
+			{
+				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time);
+				MonoAudioTrack::al_nssleep(10000000);
+				break;
+			}
+			case State::PLAYER_FAST_FORWARDING:
+			{
+				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time);
+				MonoAudioTrack::al_nssleep(10000000);
+				break;
+			}
+			
+		}		
+	}
+	
+	MonoAudioTrack::SetAudioTrackState(PLAYER_PLAYING); //switch to player playing state
+	
+}
+
+void MonoAudioTrack::FunctionToCallInPauseState()
+{
+	if(MonoAudioTrack::GetAudioTrackState() != State::PLAYER_PAUSED)
+	{
+		MonoAudioTrack::SetAudioTrackState(State::PLAYER_PAUSED);
+	
+		if(sourceToManipulatePtr != nullptr)
+		{
+			//audioPlayerPtr->PauseSource(sourceToManipulatePtr);
+			audioPlayerPtr->RewindSource(sourceToManipulatePtr);
+			audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
+		}
+		
+	}
+	
+}
+
+void MonoAudioTrack::FunctionToCallInRewindState()
+{
+	//clear buffers in queue and rewind source
+	if(MonoAudioTrack::GetAudioTrackState() != State::PLAYER_REWINDING)
+	{
+		if(sourceToManipulatePtr != nullptr)
+		{
+			audioPlayerPtr->RewindSource(sourceToManipulatePtr);
+			audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
+		}
+	}
+	MonoAudioTrack::SetAudioTrackState(State::PLAYER_REWINDING);
+
+}
+
+void MonoAudioTrack::FunctionToCallInFastForwardState()
+{
+	//clear buffers in queue and rewind source
+	if(MonoAudioTrack::GetAudioTrackState() != State::PLAYER_FAST_FORWARDING)
+	{
+		if(sourceToManipulatePtr != nullptr)
+		{
+			audioPlayerPtr->RewindSource(sourceToManipulatePtr);
+			audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
+		}
+	}
+	MonoAudioTrack::SetAudioTrackState(State::PLAYER_FAST_FORWARDING);
+}
+
+void MonoAudioTrack::FunctionToCallInNullState()
+{
+	if(MonoAudioTrack::GetAudioTrackState() != State::PLAYER_NULL)
+	{
+		MonoAudioTrack::SetAudioTrackState(MonoAudioTrack::State::PLAYER_NULL);
+		if(sourceToManipulatePtr != nullptr)
+		{
+			audioPlayerPtr->StopSource(sourceToManipulatePtr);
+			audioPlayerPtr->RewindSource(sourceToManipulatePtr);
+			audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
+		}
 	}
 }
 
-void MonoAudioTrack::FunctionToCallInPauseState(){}
-void MonoAudioTrack::FunctionToCallInRewindState(){}
-void MonoAudioTrack::FunctionToCallInFastForwardState(){}
-void MonoAudioTrack::FunctionToCallInNullState(){}
+void MonoAudioTrack::SetAudioTrackState(int thisState)
+{
+	track_state = thisState;
+	m_channel_track->SetAudioTrackState(thisState);
+}
+
+int MonoAudioTrack::GetAudioTrackState(){return track_state;}
     
 void MonoAudioTrack::SetReferenceToCurrentTimeVariable(double* thisTimeVariable){Track::SetReferenceToCurrentTimeVariable(thisTimeVariable);}
 void MonoAudioTrack::SetReferenceToTimeTickVector(std::vector <int> *thisVector){Track::SetReferenceToTimeTickVector(thisVector);}

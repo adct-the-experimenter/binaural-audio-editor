@@ -238,7 +238,7 @@ int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
     sf_count_t current_sample_number = current_time * sfinfo.samplerate;
     
     //move file to current sample number
-    sf_seek(infile, current_sample_number, SEEK_CUR);
+    sf_seek(infile, current_sample_number, SEEK_SET);
 	
     /* Fill the buffer queue */
     for(i = 0;i < NUM_BUFFERS;i++)
@@ -376,6 +376,12 @@ int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
 
 int OpenALSoftPlayer::UpdatePlayer(ALuint* source,double& current_time)
 {
+	 //convert time into sample number
+	sf_count_t current_sample_number = current_time * sfinfo.samplerate;
+	
+	//move file to current sample number
+	sf_seek(infile, current_sample_number, SEEK_SET);
+	
 	//std::cout << "In update player! \n";
     ALint processed, state;
 
@@ -400,12 +406,6 @@ int OpenALSoftPlayer::UpdatePlayer(ALuint* source,double& current_time)
 
         /* Read the next chunk of data, refill the buffer, and queue it
          * back on the source */
-         
-         //convert time into sample number
-		sf_count_t current_sample_number = current_time * sfinfo.samplerate;
-		
-		//move file to current sample number
-		sf_seek(infile, current_sample_number, SEEK_CUR);
          
          //read data differently depending on the bit size set in OpenPlayerFile
          switch(bit_size)
@@ -584,7 +584,7 @@ int OpenALSoftPlayer::UpdatePlayer(ALuint* source,double& current_time)
             return PlayerStatus::ERROR_RESTARTING_PLAYBACK;
         }
     }
-
+    
     return PlayerStatus::GOOD_PLAYING_STATUS;
 }
 
@@ -608,4 +608,7 @@ void OpenALSoftPlayer::StopSource(ALuint* thisSource)
 	alSourceStop(*thisSource);
 }
 
-
+void OpenALSoftPlayer::ClearQueue(ALuint* thisSource)
+{
+	alSourcei(*thisSource, AL_BUFFER, 0);
+}

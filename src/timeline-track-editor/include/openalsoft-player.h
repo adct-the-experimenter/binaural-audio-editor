@@ -52,6 +52,8 @@ public:
 	void RewindSource(ALuint* thisSource);
 	void StopSource(ALuint* thisSource);
 	
+	//clear queue playing
+	void ClearQueue(ALuint* thisSource);
 	
 	//function to stream source
 	void StreamSource(ALuint* thisSource);
