@@ -23,10 +23,18 @@ public:
 	
 	void WriteStreamContentsToFile(std::string filename, int format, int channels, int samplerate,int buffer_length);
 	
+	int GetFormat();
+	int GetChannels();
+	int GetSampleRate();
+	
 private:
 	std::vector <double> *input_audio_data_ptr;
 	
 	std::vector <double*> stream_audio_data;
+	
+	int m_format; 
+	int m_channels; 
+	int m_sample_rate;
 	
 };
 

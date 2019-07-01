@@ -8,6 +8,8 @@
 
 #include <wx/dcbuffer.h>
 
+#include <limits>
+
 #include "audio-stream-container.h"
 
 //Class used to only plot audio waveforms

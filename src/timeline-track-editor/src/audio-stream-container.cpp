@@ -36,9 +36,9 @@ void AudioStreamContainer::CopyInputAudioDataToStream()
 void AudioStreamContainer::WriteStreamContentsToFile(std::string filename, int format, int channels, int sample_rate,int buffer_length)
 {
 	SF_INFO sfinfo;
-    sfinfo.channels = channels;
-    sfinfo.samplerate = sample_rate;
-    sfinfo.format = format;
+    sfinfo.channels = channels; m_channels = channels;
+    sfinfo.samplerate = sample_rate; m_sample_rate = sample_rate;
+    sfinfo.format = format; m_format = format;
     
     SNDFILE * outFile;
     
@@ -59,3 +59,7 @@ void AudioStreamContainer::WriteStreamContentsToFile(std::string filename, int f
 	
 	sf_close(outFile);
 }
+
+int AudioStreamContainer::GetFormat(){return m_format;}
+int AudioStreamContainer::GetChannels(){return m_channels;}
+int AudioStreamContainer::GetSampleRate(){return m_sample_rate;}
