@@ -68,6 +68,8 @@
 #include <iostream>
 #include <memory> //for unique_ptr use
 
+#include <sstream> //for string stream
+
 class GraphicsWindowWX;
 
 class OSGCanvas : public wxGLCanvas
@@ -221,7 +223,7 @@ private:
     void OnAddSoundProducerTrack(wxCommandEvent& event);
    
     void CreateNewSoundProducerTrack();
-    
+    int sound_producer_track_count;
     wxButton* m_remove_soundproducertrack_button;
     void OnRemoveSoundProducerTrack(wxCommandEvent& event);
     

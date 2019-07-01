@@ -261,7 +261,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
 	timeFrame->AddBoxSizer(hboxTextSPTrack);
 	
-	
+	sound_producer_track_count = 1;
 		
 	double audio_start = 0.0f; //lowest value
 	double audio_end = 10.0f; //highest value
@@ -497,12 +497,29 @@ void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
 	timeFrame->GetTimelineWindow()->GetSizer()->Add(m_add_rm_box_sizer);
 	
 	timeFrame->Layout();
+	
 }
 
 void MainFrame::CreateNewSoundProducerTrack()
 {
+	//set title based on how many sound producer tracks there are
+	sound_producer_track_count += 1;
+	
+	//convert number to string
+	std::string result;          // string which will contain the result
+	std::ostringstream convert;   // stream used for the conversion
+	convert << sound_producer_track_count;      // insert the textual representation of 'Number' in the characters in the stream
+	result = convert.str(); // set 'Result' to the contents of the stream 
+	
+	wxString title = wxString("SoundProducer Track " + result);
+	
 	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track"));
 	
+	//set reference to audio player
+	if(audioPlayerPtr != nullptr)
+	{
+		m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToAudioPlayer(audioPlayerPtr);
+	}
 	//initialize sound producer track stuff
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
 	
