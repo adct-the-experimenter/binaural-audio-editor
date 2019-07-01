@@ -22,11 +22,7 @@ bool wxOsgApp::OnInit()
 	else
 	{
 		//initialize audio stuff
-		audioPlayer = new OpenALSoftPlayer();
-		audioPlayer->SetReferenceToAudioContext(audio_engine.GetReferenceToAudioContext());
-		audioPlayer->SetReferenceToAudioDevice(audio_engine.GetReferenceToAudioDevice());
-		
-		audioPlayer->InitBuffersForStreaming();
+
 		
 		//initialize graphical stuff
 		int width = 800;
@@ -35,10 +31,7 @@ bool wxOsgApp::OnInit()
 		// Create the main frame window
 
 		MainFrame *frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
-			wxDefaultPosition, wxSize(width, height));
-			
-		//set reference to audio player. IMPORTANT
-		frame->SetAudioPlayerReference(audioPlayer);
+			wxDefaultPosition, wxSize(width, height),&audio_engine);
 
 		// create osg canvas
 		//    - initialize
@@ -155,9 +148,11 @@ END_EVENT_TABLE()
 
 /* My frame constructor */
 MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
-    const wxSize& size, long style)
+    const wxSize& size, OpenAlSoftAudioEngine* thisAudioEngine,long style)
     : wxFrame(frame, wxID_ANY, title, pos, size, style)
 {
+	MainFrame::SetAudioEngineReference(thisAudioEngine);
+	
 	//create file menu item
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(wxID_EXIT);
@@ -203,7 +198,11 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
 	timeFrame = new TimelineFrame(this); 
 	
-	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track"));
+	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track",
+											audioEnginePtr->GetReferenceToAudioDevice(),
+											audioEnginePtr->GetReferenceToAudioContext())
+										);
+											
 	m_listener_track = new ListenerTrack("Listener Track");
 	
 	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
@@ -303,7 +302,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	m_add_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Add SoundProducer Track"), wxDefaultPosition, wxSize(200, 30) );
 	m_add_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnAddSoundProducerTrack,this);
 	
-	/*
+	
 	m_remove_soundproducertrack_button = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Remove SoundProducer Track"), wxDefaultPosition, wxSize(200, 30) );
 	m_remove_soundproducertrack_button->Bind(wxEVT_BUTTON, &MainFrame::OnRemoveSoundProducerTrack,this);
 	
@@ -314,7 +313,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	m_add_rm_box_sizer->Add(m_add_soundproducertrack_button);
 	
 	timeFrame->AddBoxSizer(m_add_rm_box_sizer);
-	*/
+	
 	timeFrame->Show(true); //show the timeframe
 	
 }
@@ -337,16 +336,6 @@ void MainFrame::SetListenerReference(Listener* thisListener)
 }
 
 void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}
-
-void MainFrame::SetAudioPlayerReference(OpenALSoftPlayer* audioPlayer)
-{
-	audioPlayerPtr = audioPlayer;
-	//for all sound producer tracks
-	for(size_t i=0; i < m_soundproducer_track_vec.size(); i++)
-	{
-		m_soundproducer_track_vec[i]->SetReferenceToAudioPlayer(audioPlayerPtr);
-	}
-}
 
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
@@ -514,13 +503,11 @@ void MainFrame::CreateNewSoundProducerTrack()
 	
 	wxString title = wxString("SoundProducer Track " + result);
 	
-	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track"));
+	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track",
+											audioEnginePtr->GetReferenceToAudioDevice(),
+											audioEnginePtr->GetReferenceToAudioContext())
+										);
 	
-	//set reference to audio player
-	if(audioPlayerPtr != nullptr)
-	{
-		m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToAudioPlayer(audioPlayerPtr);
-	}
 	//initialize sound producer track stuff
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
 	

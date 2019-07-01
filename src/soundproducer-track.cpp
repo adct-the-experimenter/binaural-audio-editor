@@ -1,15 +1,24 @@
 #include "soundproducer-track.h"
 
-SoundProducerTrack::SoundProducerTrack(const wxString& title) : Track(title)
+SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudioDevice,ALCcontext* thisAudioContext) : Track(title)
 {
 	soundProducerToManipulatePtr = nullptr;
 	m_combo_box = nullptr;
+	
+	//initialize audio player
+	audioPlayer = new OpenALSoftPlayer();
+	audioPlayer->SetReferenceToAudioContext(thisAudioContext);
+	audioPlayer->SetReferenceToAudioDevice(thisAudioDevice);
+	
+	audioPlayer->InitBuffersForStreaming();
 	
 	//initialize tracks
 	xTrack = new DoubleTrack("X Track");
 	yTrack = new DoubleTrack("Y Track");
 	zTrack = new DoubleTrack("Z Track");
 	audioTrack = new StereoAudioTrack("Track");
+	
+	audioTrack->SetReferenceToAudioPlayer(audioPlayer);
 	
 	std::string filepath_stream = "../src/timeline-track-editor/resources/" + title.ToStdString() + ".wav";
 	audioTrack->SetStreamAudioFilePath(filepath_stream);
@@ -100,12 +109,6 @@ void SoundProducerTrack::SetReferenceToSoundProducerToManipulate(SoundProducer* 
 	audioTrack->SetReferenceToSourceToManipulate(soundProducerToManipulatePtr->getSource());
 }
 
-void SoundProducerTrack::SetReferenceToAudioPlayer(OpenALSoftPlayer* audioPlayer)
-{
-	audioPlayerPtr = audioPlayer;
-	audioTrack->SetReferenceToAudioPlayer(audioPlayer);
-}
-
 StereoAudioTrack* SoundProducerTrack::GetReferenceToStereoAudioTrack(){return audioTrack;}
 DoubleTrack* SoundProducerTrack::GetReferenceToXTrack(){return xTrack;}
 DoubleTrack* SoundProducerTrack::GetReferenceToYTrack(){return yTrack;}
@@ -132,9 +135,6 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 		SoundProducer* thisSoundProducer = soundproducer_registry_ptr->GetPointerToSoundProducerWithThisName(thisStringName);
 		
 		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
-		
-		//remove name from list of sound producers to edit and update combobox list
-		soundproducer_registry_ptr->RemoveThisNameFromAllComboBoxesExceptThisOne(thisStringName,m_combo_box);
 	}
 	
 }

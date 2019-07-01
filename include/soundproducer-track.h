@@ -19,14 +19,16 @@
 class SoundProducerTrack : public Track
 {
 public:
-	SoundProducerTrack(const wxString& title);
+	SoundProducerTrack(const wxString& title,ALCdevice* thisAudioDevice,ALCcontext* thisAudioContext);
 	
 	StereoAudioTrack* GetReferenceToStereoAudioTrack();
 	DoubleTrack* GetReferenceToXTrack();
 	DoubleTrack* GetReferenceToYTrack();
 	DoubleTrack* GetReferenceToZTrack();
 	
-	void SetReferenceToAudioPlayer(OpenALSoftPlayer* audioPlayer);
+	//functions to set reference to audio device and audio context to use for player
+	void SetReferenceToAudioDevice(ALCdevice* thisAudioDevice);
+	void SetReferenceToAudioContext(ALCcontext* thisAudioContext);
 	
 	//SoundProducer Editing
 	void SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer);
@@ -68,7 +70,10 @@ public:
 private:
 	SoundProducer* soundProducerToManipulatePtr;
 	
-	OpenALSoftPlayer* audioPlayerPtr;
+	OpenALSoftPlayer* audioPlayer;
+	
+	ALCdevice* audioDevicePtr; //pointer to audio device to be used
+    ALCcontext* alContextPtr; //pointer to context of where audio is played
 	
 	StereoAudioTrack* audioTrack;
 	DoubleTrack* xTrack;
