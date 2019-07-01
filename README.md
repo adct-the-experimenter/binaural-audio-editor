@@ -50,9 +50,7 @@ wxwidgets https://www.wxwidgets.org/
   
   Click on browse button near audio track to load sound into the track.
   
-  Click on the Add Sound Producer Track button to add a new track to control another sound producer.
-  
-  Click on the Remove Sound Producer Track button to remove a sound producer track.
+  Can only edit 1 soundproducer at a time for now. Issues with adding and removing soundproducer tracks will be fixed soon.
   
   Like OpenAL and OpenGL, the application uses a right handed coordinate system to move listener and sound producers, 
   
