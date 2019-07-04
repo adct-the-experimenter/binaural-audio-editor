@@ -95,7 +95,7 @@ void SoundProducerTrack::FunctionToCallInNullState()
 {
 	if(soundProducerToManipulatePtr != nullptr)
 	{
-		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		if(soundProducerToManipulatePtr->getSource() != nullptr)
 		{
 			audioTrack->FunctionToCallInNullState();
 		}
@@ -158,6 +158,11 @@ void SoundProducerTrack::SetupAxisForVariable(double& start, double& end,double&
 void SoundProducerTrack::SetupAxisForAudio(double& start, double& end,double& resolution, int& numTick)
 {
 	audioTrack->SetupAxisForVariable(start,end,resolution,numTick);
+}
+
+void SoundProducerTrack::SetReferenceToPlaybackControls(PlaybackControls* controls)
+{
+	audioTrack->SetReferenceToPlaybackControls(controls);
 }
 
 void SoundProducerTrack::OnPaint(wxPaintEvent& event)

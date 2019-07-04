@@ -38,7 +38,9 @@ public:
 	
 	wxComboBox* GetReferenceToComboBox();
 	
+	//audio track related functions
 	void SetupAxisForAudio(double& start, double& end,double& resolution, int& numTick);
+	void SetReferenceToPlaybackControls(PlaybackControls* controls);
 	
 	//Double Track related functions
 	void SetupAxisForVariable(double& start, double& end, double& resolution, int& numTick);
