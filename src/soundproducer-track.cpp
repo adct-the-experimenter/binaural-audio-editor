@@ -139,8 +139,8 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 		std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
 	
 		SoundProducer* thisSoundProducer = soundproducer_registry_ptr->GetPointerToSoundProducerWithThisName(thisStringName);
-		thisSoundProducer->SetReferenceToTrackSource(&track_source);
 		
+		thisSoundProducer->SetReferenceToTrackSource(&track_source);
 		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
 		
 	}

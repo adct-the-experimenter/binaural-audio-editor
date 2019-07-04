@@ -415,15 +415,14 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 
 void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z)
 {
-	std::unique_ptr <SoundProducer> thisSoundProducer( new SoundProducer() );
 	
-	thisSoundProducer->InitSoundProducer(name,filePath,buffer,x,y,z);
+
+	sound_producer_vector_ref->push_back( std::unique_ptr <SoundProducer>(new SoundProducer()) );
+        
+	sound_producer_vector_ref->back()->InitSoundProducer(name,filePath,buffer,x,y,z);
 	
 	//add position attitude transform to root group of nodes
-	_rootNode->addChild( thisSoundProducer.get()->getTransformNode() );
-	
-	//move sound producer unique pointer to sound producer vector of unique pointers
-	sound_producer_vector_ref->push_back(std::move(thisSoundProducer));
+	_rootNode->addChild( sound_producer_vector_ref->back()->getTransformNode() );
 	
 	soundproducer_registry.AddRecentSoundProducerMadeToRegistry();
 	
