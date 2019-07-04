@@ -20,6 +20,13 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	
 	audioTrack->SetReferenceToAudioPlayer(audioPlayer);
 	
+	//initialize track source
+	alGenSources(1, &track_source);
+	alSourcei(track_source, AL_SOURCE_RELATIVE, AL_TRUE);
+	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source.");
+	
+	audioTrack->SetReferenceToSourceToManipulate(&track_source);
+	
 	std::string filepath_stream = "../src/timeline-track-editor/resources/" + title.ToStdString() + ".wav";
 	audioTrack->SetStreamAudioFilePath(filepath_stream);
 	
@@ -48,7 +55,7 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 		
 	if(soundProducerToManipulatePtr != nullptr)
 	{
-		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		if(track_source != 0)
 		{
 			soundProducerToManipulatePtr->SetPositionX(tempX);
 			soundProducerToManipulatePtr->SetPositionY(tempY);
@@ -61,7 +68,7 @@ void SoundProducerTrack::FunctionToCallInPauseState()
 {
 	if(soundProducerToManipulatePtr != nullptr)
 	{
-		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		if(track_source != 0)
 		{
 			audioTrack->FunctionToCallInPauseState();
 		}
@@ -73,7 +80,7 @@ void SoundProducerTrack::FunctionToCallInRewindState()
 {
 	if(soundProducerToManipulatePtr != nullptr)
 	{
-		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		if(track_source != 0)
 		{
 			audioTrack->FunctionToCallInRewindState();
 		}
@@ -84,7 +91,7 @@ void SoundProducerTrack::FunctionToCallInFastForwardState()
 {
 	if(soundProducerToManipulatePtr!= nullptr)
 	{
-		if(*(soundProducerToManipulatePtr->getSource()) != 0)
+		if(track_source != 0)
 		{
 			audioTrack->FunctionToCallInFastForwardState();
 		}
@@ -95,7 +102,7 @@ void SoundProducerTrack::FunctionToCallInNullState()
 {
 	if(soundProducerToManipulatePtr != nullptr)
 	{
-		if(soundProducerToManipulatePtr->getSource() != nullptr)
+		if(track_source != 0)
 		{
 			audioTrack->FunctionToCallInNullState();
 		}
@@ -106,7 +113,6 @@ void SoundProducerTrack::FunctionToCallInNullState()
 void SoundProducerTrack::SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer)
 {
 	soundProducerToManipulatePtr = thisSoundProducer;
-	audioTrack->SetReferenceToSourceToManipulate(soundProducerToManipulatePtr->getSource());
 }
 
 StereoAudioTrack* SoundProducerTrack::GetReferenceToStereoAudioTrack(){return audioTrack;}
@@ -133,8 +139,10 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 		std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
 	
 		SoundProducer* thisSoundProducer = soundproducer_registry_ptr->GetPointerToSoundProducerWithThisName(thisStringName);
+		thisSoundProducer->SetReferenceToTrackSource(&track_source);
 		
 		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
+		
 	}
 	
 }

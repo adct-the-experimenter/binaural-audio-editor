@@ -49,8 +49,10 @@ class SoundProducer
 		//function to use openal soft audio engine to create source from buffer
 		void CreateSource(); 
 		
-		void setSource(ALuint& thisBuffer);
+		void setSource(ALuint& thisSource);
 		ALuint* getSource();
+		
+		void SetReferenceToTrackSource(ALuint* thisSource);
 		
 		osg::ShapeDrawable* getRenderObject();
 		
@@ -74,6 +76,8 @@ class SoundProducer
     
 		//source to play buffer
 		ALuint m_source;
+		
+		ALuint* track_source_ptr;
 		
 		void moveSource(); //function to move source to producer position vector coordinates
 		

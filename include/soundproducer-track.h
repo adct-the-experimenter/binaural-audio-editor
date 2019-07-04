@@ -85,6 +85,9 @@ private:
 	//variables to hold temporary values for sound producer position
 	double tempX,tempY,tempZ;
 	
+	//source to play buffer
+	ALuint track_source;
+	
 	wxComboBox* m_combo_box;
 	
 	SoundProducerRegistry* soundproducer_registry_ptr;

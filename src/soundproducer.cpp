@@ -2,8 +2,6 @@
 
 SoundProducer::SoundProducer()
 {
-	//intialize source
-	SoundProducer::CreateSource();
 	
 	//initialize buffer as empty
 	m_buffer = 0;
@@ -14,37 +12,28 @@ SoundProducer::SoundProducer()
 	producer_position_vector[POSITION_INDEX::Y] = 0;
 	producer_position_vector[POSITION_INDEX::Z] = 0;
 	
-	
+	track_source_ptr = nullptr;
 }
 
 SoundProducer::~SoundProducer()
 {
 	if(m_source != 0)
 	{
-		#ifdef _cplusplus
-		//being compiled by a c++ compulter, inhibit mangling
-		extern "C" 
-		{
-			alDeleteSources(1, &m_source);
-		}
-		#endif
+		alDeleteSources(1, &m_source);
 	}
 	
 	if(m_buffer != 0)
 	{
-		#ifdef _cplusplus
-		//being compiled by a c++ compulter, inhibit mangling
-		extern "C" 
-		{
-			alDeleteBuffers(1, &m_buffer);
-		}
-		#endif
+		alDeleteBuffers(1, &m_buffer);
 	}
 }
 
 void SoundProducer::InitSoundProducer(std::string& thisName,std::string& filepath, ALuint& buffer,
 									double& x, double& y, double& z)
 {
+	//intialize source
+	SoundProducer::CreateSource();
+	
 	name = thisName;
 	m_filepath = filepath;
 	
@@ -94,6 +83,15 @@ void SoundProducer::moveSource()
 	
 		//move source 
 		alSource3f(m_source, AL_POSITION, 
+				(ALfloat)producer_position_vector[POSITION_INDEX::X], 
+				(ALfloat)producer_position_vector[POSITION_INDEX::Y], 
+				(ALfloat)producer_position_vector[POSITION_INDEX::Z]);
+	}
+	
+	if(track_source_ptr != nullptr)
+	{
+		//move source 
+		alSource3f(*track_source_ptr, AL_POSITION, 
 				(ALfloat)producer_position_vector[POSITION_INDEX::X], 
 				(ALfloat)producer_position_vector[POSITION_INDEX::Y], 
 				(ALfloat)producer_position_vector[POSITION_INDEX::Z]);
@@ -169,3 +167,5 @@ osg::ShapeDrawable* SoundProducer::getRenderObject(){return m_renderObject;}
 osg::Geode* SoundProducer::getGeodeNode(){return m_geode;}
 
 osg::PositionAttitudeTransform* SoundProducer::getTransformNode(){return m_paTransform;}
+
+void SoundProducer::SetReferenceToTrackSource(ALuint* thisSource){track_source_ptr = thisSource;}
