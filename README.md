@@ -37,6 +37,7 @@ wxwidgets https://www.wxwidgets.org/
   *Left Click + Right Click and mouse movement to move the camera up, down, left, or right.
 
 # Instructions
+
   
   Dark blue cube is you the listener. 
   
@@ -50,7 +51,7 @@ wxwidgets https://www.wxwidgets.org/
   
   Click on browse button near audio track to load sound into the track.
   
-  Can only edit 1 soundproducer at a time for now. Issues with adding and removing soundproducer tracks will be fixed soon.
+# Important note: Only create and edit 1 soundproducer for now due to a bug that crashes the program!
   
   Like OpenAL and OpenGL, the application uses a right handed coordinate system to move listener and sound producers, 
   
@@ -66,7 +67,7 @@ wxwidgets https://www.wxwidgets.org/
   
   Right is positive x. Left is negative x.
 
-# Important Note:
+# Important Note About Multi-channel Audio Input:
 Stereo(2 channel) audio does not get 3d spatialization and is instead used to play as background music.
 
 Have audio that you want to be played in 3D be mono(1 channel) audio
