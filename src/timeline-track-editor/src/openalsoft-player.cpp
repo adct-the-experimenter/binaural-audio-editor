@@ -226,7 +226,7 @@ int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
 	//std::cout << "In start player!\n";
 	
     size_t i;
-
+    
     /* Rewind the source position and clear the buffer queue */
     alSourceRewind(*source);
     alSourcei(*source, AL_BUFFER, 0);

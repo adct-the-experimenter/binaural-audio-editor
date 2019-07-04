@@ -46,7 +46,8 @@ class SoundProducer
 		void setBuffer(ALuint& thisSource);
 		ALuint* getBuffer();
 		
-		void CreateSourceFromBuffer(); //function to use openal soft audio engine to create source from buffer
+		//function to use openal soft audio engine to create source from buffer
+		void CreateSource(); 
 		
 		void setSource(ALuint& thisBuffer);
 		ALuint* getSource();

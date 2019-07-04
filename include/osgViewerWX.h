@@ -153,7 +153,7 @@ class MainFrame : public wxFrame
 {
 public:
     MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
-        const wxSize& size, long style = wxDEFAULT_FRAME_STYLE);
+        const wxSize& size, OpenAlSoftAudioEngine* thisAudioEngine, long style = wxDEFAULT_FRAME_STYLE);
 	
 	//for connecting mainframe to wxOsgApp
 	
@@ -161,7 +161,6 @@ public:
     void SetRootNode(osg::Group* root); 
     void SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector);
     void SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine);
-    void SetAudioPlayerReference(OpenALSoftPlayer* audioPlayer);
     void SetListenerReference(Listener* listener);
     
     // Mainframe menu operations
@@ -195,8 +194,6 @@ private:
 	osg::ref_ptr<osg::Group> _rootNode;
 
 	OpenAlSoftAudioEngine* audioEnginePtr;
-	
-	OpenALSoftPlayer* audioPlayerPtr;
 	
 	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;
 	
@@ -244,7 +241,6 @@ private:
 	std::vector < std::unique_ptr <SoundProducer> > sound_producer_vector; //vector to hold sound producers
 	
 	OpenAlSoftAudioEngine audio_engine; //class abstraction to handle playing binaural 3D audio
-	OpenALSoftPlayer* audioPlayer;
 	
 	std::unique_ptr <Listener> listener;
 	void initListener();
