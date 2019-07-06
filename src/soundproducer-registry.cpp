@@ -35,7 +35,7 @@ void SoundProducerRegistry::AddRecentSoundProducerMadeToRegistry()
 		else if(sound_producer_vector_ref->size() > 1)
 		{
 			thisSoundProducer = sound_producer_vector_ref->at(sound_producer_vector_ref->size() - 1).get();
-			it = sound_producer_vector_ref->end();
+			it = sound_producer_vector_ref->end() - 1;
 		}
 		
 		if(thisSoundProducer != nullptr)
