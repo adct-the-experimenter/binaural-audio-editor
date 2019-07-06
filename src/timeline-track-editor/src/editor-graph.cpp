@@ -113,7 +113,7 @@ void EditorGraph::PlacePointByMouse(T& vertStart, T& vertEnd, T& vertRes,
 	
 	//make time value a multiple of timer resolution
 	thisTime = round (thisTime / (double(TIME_RESOLUTION) / 1000)) * (double(TIME_RESOLUTION) / 1000);
-	
+	//std::cout << "add time:" << thisTime << std::endl;
 	
 	legitValues = false;
 	//check if there is already a point at that time value
@@ -128,8 +128,11 @@ void EditorGraph::PlacePointByMouse(T& vertStart, T& vertEnd, T& vertRes,
 		 
 		//put into vector of graph points
 		graph_points.push_back( wxPoint(mouseX,mouseY) );
+		
 		//put into time map
-		std::vector<wxPoint>::iterator it = graph_points.end();
+		//the iterator to element pushed back is actually the one before end iterator due to vectors having an extra element
+		//to carry out data operations!
+		std::vector<wxPoint>::iterator it = graph_points.end()-1; 
 		map_time.emplace(thisTime, it);
 		
 		//save time and mouse y to input variables
@@ -150,6 +153,10 @@ void EditorGraph::RemovePointByMouse(double& time,bool& legitValue)
 	
 	//convert mouse x to time value
 	double thisTime = mouseX * ((double)TIME_END_VALUE / (double)TRACK_WIDTH);
+	//make time value a multiple of timer resolution
+	thisTime = round (thisTime / (double(TIME_RESOLUTION) / 1000)) * (double(TIME_RESOLUTION) / 1000);
+	
+	//std::cout << "remove time:" << thisTime << std::endl;
 	
 	//check if there is already a point at that time value
 	if ( map_time.find(thisTime) == map_time.end() ) 
