@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #include <wx/combobox.h>
+#include <list>
 
 //class to contain map of sound producer pointers and their keys
 
@@ -14,7 +15,7 @@ class SoundProducerRegistry
 {
 public:
 
-	void SetReferenceToSoundProducerVector(std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector);
+	void SetReferenceToSoundProducerList(std::list <std::unique_ptr <SoundProducer>> *sound_producer_vector);
 	
 	SoundProducer* GetPointerToSoundProducerWithThisName(std::string thisName);
 	

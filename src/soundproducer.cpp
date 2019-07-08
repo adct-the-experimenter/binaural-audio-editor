@@ -17,6 +17,7 @@ SoundProducer::SoundProducer()
 
 SoundProducer::~SoundProducer()
 {
+	std::cout << "Sound Producer destructor called! \n";
 	if(m_source != 0)
 	{
 		alDeleteSources(1, &m_source);
@@ -168,4 +169,7 @@ osg::Geode* SoundProducer::getGeodeNode(){return m_geode;}
 
 osg::PositionAttitudeTransform* SoundProducer::getTransformNode(){return m_paTransform;}
 
-void SoundProducer::SetReferenceToTrackSource(ALuint* thisSource){track_source_ptr = thisSource;}
+void SoundProducer::SetReferenceToTrackSource(ALuint* thisSource)
+{
+	track_source_ptr = thisSource;
+}

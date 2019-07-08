@@ -24,29 +24,26 @@ void SoundProducerRegistry::AddRecentSoundProducerMadeToRegistry()
 	{
 		//std::cout << "Add recent sound producer made to track called! \n";
 		
+		
 		SoundProducer* thisSoundProducer = nullptr;
 		std::vector <std::unique_ptr <SoundProducer> >::iterator it;
 		
-		if(sound_producer_vector_ref->size() == 1)
-		{
-			thisSoundProducer = sound_producer_vector_ref->at(0).get();
-			it = sound_producer_vector_ref->begin();
-		}
-		else if(sound_producer_vector_ref->size() > 1)
+		if(sound_producer_vector_ref->size() >= 1)
 		{
 			thisSoundProducer = sound_producer_vector_ref->at(sound_producer_vector_ref->size() - 1).get();
 			it = sound_producer_vector_ref->end() - 1;
+			
+			if(thisSoundProducer != nullptr)
+			{
+				wxString thisString(thisSoundProducer->GetNameString());
+				
+				soundproducers_to_edit_wxstring.Add(thisString);
+				
+				map_soundproducer.emplace(thisSoundProducer->GetNameString(),it);
+			}
 		}
 		
-		if(thisSoundProducer != nullptr)
-		{
-			wxString thisString(thisSoundProducer->GetNameString());
-			
-			soundproducers_to_edit_wxstring.Add(thisString);
-			
-			map_soundproducer.emplace(thisSoundProducer->GetNameString(),it);
-		}
-		
+				
 	}
 	
 }

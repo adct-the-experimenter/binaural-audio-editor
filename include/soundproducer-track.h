@@ -20,6 +20,7 @@ class SoundProducerTrack : public Track
 {
 public:
 	SoundProducerTrack(const wxString& title,ALCdevice* thisAudioDevice,ALCcontext* thisAudioContext);
+	~SoundProducerTrack();
 	
 	StereoAudioTrack* GetReferenceToStereoAudioTrack();
 	DoubleTrack* GetReferenceToXTrack();
@@ -94,6 +95,7 @@ private:
 	
 	void OnSelectedSoundProducerInComboBox(wxCommandEvent& event);
 	
+	void SelectSoundProducerByName(std::string name);
 };
 
 #endif

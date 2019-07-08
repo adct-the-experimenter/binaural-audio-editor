@@ -323,11 +323,11 @@ void MainFrame::SetViewer(osgViewer::Viewer *viewer){_viewer = viewer;}
 
 void MainFrame::SetRootNode(osg::Group *root){_rootNode = root;}
 
-void MainFrame::SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector)
+void MainFrame::SetSoundProducerListRef(std::list < std::unique_ptr <SoundProducer> > *sound_producer_list)
 {
-	sound_producer_vector_ref = sound_producer_vector;
+	sound_producer_list_ref = sound_producer_list;
 	
-	soundproducer_registry.SetReferenceToSoundProducerVector(sound_producer_vector_ref);
+	soundproducer_registry.SetReferenceToSoundProducerVector(sound_producer_list_ref);
 }
 
 void MainFrame::SetListenerReference(Listener* thisListener)
@@ -416,13 +416,12 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z)
 {
 	
-
 	sound_producer_vector_ref->push_back( std::unique_ptr <SoundProducer>(new SoundProducer()) );
         
 	sound_producer_vector_ref->back()->InitSoundProducer(name,filePath,buffer,x,y,z);
 	
 	//add position attitude transform to root group of nodes
-	_rootNode->addChild( sound_producer_vector_ref->back()->getTransformNode() );
+	_rootNode->addChild( sound_producer_list_ref->back()->getTransformNode() );
 	
 	soundproducer_registry.AddRecentSoundProducerMadeToRegistry();
 	
@@ -436,7 +435,7 @@ void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, AL
 void MainFrame::OnEditMultipleSoundProducers(wxCommandEvent& event)
 {
 	std::unique_ptr <EditMultipleSoundProducersDialog> soundProducerEditDialog(new EditMultipleSoundProducersDialog( wxT("Edit Sound Producers"),
-																													sound_producer_vector_ref,
+																													sound_producer_list_ref,
 																													audioEnginePtr) 
 																				);
 																				

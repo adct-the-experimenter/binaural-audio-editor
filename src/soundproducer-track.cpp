@@ -44,6 +44,14 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	
 }
 
+SoundProducerTrack::~SoundProducerTrack()
+{
+	if(track_source != 0)
+	{
+		alDeleteSources(1, &track_source);
+	}
+}
+
 void SoundProducerTrack::FunctionToCallInPlayState()
 {
 	//std::cout << "FunctionToCall called in SoundProducerTrack \n";
@@ -124,9 +132,18 @@ void SoundProducerTrack::SetReferenceToSoundProducerRegistry(SoundProducerRegist
 
 void SoundProducerTrack::UpdateComboBoxListFromSoundProducerRegistry()
 {
+	//get current name selected
+	std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
+	
 	//clear current list and append new one from sound producer registry
 	m_combo_box->Clear();
 	m_combo_box->Append(soundproducer_registry_ptr->GetSoundProducersToEditList());
+	
+	if(thisStringName != "")
+	{
+		SoundProducerTrack::SelectSoundProducerByName(thisStringName);
+	}
+	
 }
 
 wxComboBox* SoundProducerTrack::GetReferenceToComboBox(){return m_combo_box;}
@@ -138,12 +155,21 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 	{
 		std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
 	
-		SoundProducer* thisSoundProducer = soundproducer_registry_ptr->GetPointerToSoundProducerWithThisName(thisStringName);
-		
-		thisSoundProducer->SetReferenceToTrackSource(&track_source);
-		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
+		SoundProducerTrack::SelectSoundProducerByName(thisStringName);
 		
 	}
+	
+}
+
+void SoundProducerTrack::SelectSoundProducerByName(std::string name)
+{
+	SoundProducer* thisSoundProducer = soundproducer_registry_ptr->GetPointerToSoundProducerWithThisName(name);
+	
+	if(thisSoundProducer)
+	{
+		thisSoundProducer->SetReferenceToTrackSource(&track_source);
+		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
+	}	
 	
 }
 
