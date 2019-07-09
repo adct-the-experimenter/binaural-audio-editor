@@ -9,11 +9,14 @@ void SoundProducerRegistry::SetReferenceToSoundProducerVector(std::vector <std::
 SoundProducer* SoundProducerRegistry::GetPointerToSoundProducerWithThisName(std::string thisName)
 {
 	//get iterator to sound producers vector from soundproducers map
-	std::unordered_map<std::string,std::vector <std::unique_ptr <SoundProducer> >::iterator>::const_iterator got = map_soundproducer.find (thisName);
+	//std::unordered_map<std::string,std::vector <std::unique_ptr <SoundProducer> >::iterator>::const_iterator got = map_soundproducer.find (thisName);
+	std::unordered_map<std::string,size_t>::const_iterator got = map_soundproducer.find (thisName);
 	
-	std::vector <std::unique_ptr <SoundProducer> >::iterator it = got->second;
+	//std::vector <std::unique_ptr <SoundProducer> >::iterator it = got->second;
+	size_t index = got->second;
 	
-	return it->get();
+	//return it->get();
+	return sound_producer_vector_ref->at(index).get();
 }
 
 wxArrayString& SoundProducerRegistry::GetSoundProducersToEditList(){return soundproducers_to_edit_wxstring;}
@@ -26,12 +29,14 @@ void SoundProducerRegistry::AddRecentSoundProducerMadeToRegistry()
 		
 		
 		SoundProducer* thisSoundProducer = nullptr;
-		std::vector <std::unique_ptr <SoundProducer> >::iterator it;
+		//std::vector <std::unique_ptr <SoundProducer> >::iterator it;
+		size_t index = 0;
 		
 		if(sound_producer_vector_ref->size() >= 1)
 		{
 			thisSoundProducer = sound_producer_vector_ref->at(sound_producer_vector_ref->size() - 1).get();
-			it = sound_producer_vector_ref->end() - 1;
+			//it = sound_producer_vector_ref->end() - 1;
+			index = sound_producer_vector_ref->size() - 1;
 			
 			if(thisSoundProducer != nullptr)
 			{
@@ -39,7 +44,7 @@ void SoundProducerRegistry::AddRecentSoundProducerMadeToRegistry()
 				
 				soundproducers_to_edit_wxstring.Add(thisString);
 				
-				map_soundproducer.emplace(thisSoundProducer->GetNameString(),it);
+				map_soundproducer.emplace(thisSoundProducer->GetNameString(),index);
 			}
 		}
 		
@@ -53,7 +58,23 @@ void SoundProducerRegistry::RemoveSoundProducerFromRegistry(SoundProducer* thisS
 	wxString thisString(thisSoundProducer->GetNameString());
 	soundproducers_to_edit_wxstring.Remove(thisString);
 	
+	//get index of sound producer to remove
+	size_t index_to_rm  = 0;
+	std::unordered_map<std::string,size_t>::const_iterator got = map_soundproducer.find (thisSoundProducer->GetNameString());
+	index_to_rm = got->second;
+	
+	//decrement index of all soundproducers after this index
+	for ( auto it = map_soundproducer.begin(); it != map_soundproducer.end(); ++it )
+	{
+		if(it->second > index_to_rm)
+		{
+			it->second--;
+		}
+	}
+	
+	//erase sound producer from map
 	map_soundproducer.erase(thisSoundProducer->GetNameString());
+	
 }
 
 

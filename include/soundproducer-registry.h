@@ -60,7 +60,8 @@ private:
 	std::vector <wxComboBox*> combo_box_ptr_vec;
 	
 	//dictionary to keep track of which wxstring associated with index
-	std::unordered_map <std::string, std::vector <std::unique_ptr <SoundProducer> >::iterator> map_soundproducer; 
+	//std::unordered_map <std::string, std::vector <std::unique_ptr <SoundProducer> >::iterator> map_soundproducer;
+	std::unordered_map <std::string, size_t> map_soundproducer; 
 };
 
 #endif
