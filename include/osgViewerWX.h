@@ -69,7 +69,6 @@
 #include <memory> //for unique_ptr use
 
 #include <sstream> //for string stream
-#include <list>
 
 class GraphicsWindowWX;
 
@@ -196,7 +195,7 @@ private:
 
 	OpenAlSoftAudioEngine* audioEnginePtr;
 	
-	std::list < std::unique_ptr <SoundProducer> > *sound_producer_list_ref;
+	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;
 	
 	Listener* listenerPtr;
 	ListenerTrack* m_listener_track;
@@ -239,7 +238,7 @@ public:
 private:
 	osg::ref_ptr<osg::Group> rootNode; //geometry node to hold ShapeDrawable objects
 	
-	std::list < std::unique_ptr <SoundProducer> > sound_producer_list; //vector to hold sound producers
+	std::vector < std::unique_ptr <SoundProducer> > sound_producer_vector; //vector to hold sound producers
 	
 	OpenAlSoftAudioEngine audio_engine; //class abstraction to handle playing binaural 3D audio
 	

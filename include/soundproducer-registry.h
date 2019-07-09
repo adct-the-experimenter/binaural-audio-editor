@@ -15,7 +15,7 @@ class SoundProducerRegistry
 {
 public:
 
-	void SetReferenceToSoundProducerList(std::list <std::unique_ptr <SoundProducer>> *sound_producer_vector);
+	void SetReferenceToSoundProducerVector(std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector);
 	
 	SoundProducer* GetPointerToSoundProducerWithThisName(std::string thisName);
 	

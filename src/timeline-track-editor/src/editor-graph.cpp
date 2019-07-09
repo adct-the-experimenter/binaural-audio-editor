@@ -22,11 +22,11 @@ int EditorGraph::GetVerticalGraphValueAtThisTime(double& thisTime, bool& legitVa
 		//if found
 		
 		//get iterator to vector from time map
-		std::unordered_map<double,std::vector<wxPoint>::iterator>::const_iterator got = map_time.find (thisTime);
-		std::vector<wxPoint>::iterator it = got->second;
+		std::unordered_map<double,wxPoint>::const_iterator got = map_time.find (thisTime);
+		wxPoint point = got->second;
 		
 		legitValue = true; 
-		return (int)(*it).y;
+		return (int)(point).y;
 	}
 }
 
@@ -127,13 +127,13 @@ void EditorGraph::PlacePointByMouse(T& vertStart, T& vertEnd, T& vertRes,
 		//if not found
 		 
 		//put into vector of graph points
-		graph_points.push_back( wxPoint(mouseX,mouseY) );
+		//graph_points.push_back( wxPoint(mouseX,mouseY) );
 		
 		//put into time map
 		//the iterator to element pushed back is actually the one before end iterator due to vectors having an extra element
 		//to carry out data operations!
-		std::vector<wxPoint>::iterator it = graph_points.end()-1; 
-		map_time.emplace(thisTime, it);
+		//std::vector<wxPoint>::iterator it = graph_points.end()-1; 
+		map_time.emplace(thisTime, wxPoint(mouseX,mouseY));
 		
 		//save time and mouse y to input variables
 		time = thisTime;
@@ -173,11 +173,11 @@ void EditorGraph::RemovePointByMouse(double& time,bool& legitValue)
 		time = thisTime;
 		
 		//get iterator to vector from time map
-		std::unordered_map<double,std::vector<wxPoint>::iterator>::const_iterator got = map_time.find (thisTime);
-		std::vector<wxPoint>::iterator it = got->second;
+		//std::unordered_map<double,wxPoint>::const_iterator got = map_time.find (thisTime);
+		//wxPoint point = got->second;
 		
 		//remove point from vector of graph points
-		graph_points.erase(it);
+		//graph_points.erase(it);
 		//remove from time map
 		map_time.erase(thisTime);
 	}
@@ -187,8 +187,13 @@ void EditorGraph::DrawCurrentPointsOnGraph(wxDC& dc)
 {
 	// draw a circle
     dc.SetBrush(*wxBLACK_BRUSH);
-    for(size_t i=0; i < graph_points.size(); i++)
-    {
-		dc.DrawCircle( graph_points.at(i), 2 );
+    //for(size_t i=0; i < graph_points.size(); i++)
+    //{
+	//	dc.DrawCircle( graph_points.at(i), 2 );
+	//}
+	for ( auto it = map_time.begin(); it != map_time.end(); ++it )
+	{
+		dc.DrawCircle( it->second, 2 );
 	}
+    
 }
