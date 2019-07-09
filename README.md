@@ -51,15 +51,10 @@ wxwidgets https://www.wxwidgets.org/
   
   Click on browse button near audio track to load sound into the track.
   
-# Important note: Only create and edit 1 soundproducer for now due to a bug that crashes the program!
   
   Like OpenAL and OpenGL, the application uses a right handed coordinate system to move listener and sound producers, 
   
-  where in a frontal default view X (thumb) points right, 
-  
-  Y points up (index finger), 
-  
-  and Z points towards the viewer/camera (middle finger). 
+  where in a frontal default view X (thumb) points right,  Y points up (index finger), and Z points towards the viewer/camera (middle finger). 
   
   Up is positive y. Down is negative y.
   
