@@ -49,7 +49,7 @@ wxwidgets https://www.wxwidgets.org/
   
   For the Sound Producer track, the top 2 tracks is for graphing audio and the bottom 3 tracks are for changing position of the sound producer.
   
-  Click on browse button near audio track to load sound into the track.
+  Click on browse button near audio track to load sound into the track. Load only 8-bit or 16-bit audio only.
   
   
   Like OpenAL and OpenGL, the application uses a right handed coordinate system to move listener and sound producers, 
