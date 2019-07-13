@@ -491,6 +491,7 @@ void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
 
 void MainFrame::CreateNewSoundProducerTrack()
 {
+	std::cout << "Count of items in timeline window size:" << timeFrame->GetTimelineWindow()->GetSizer()->GetItemCount() << std::endl;
 	//set title based on how many sound producer tracks there are
 	sound_producer_track_count += 1;
 	
@@ -575,11 +576,12 @@ void MainFrame::CreateNewSoundProducerTrack()
 }
 
 void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
-{	
-	int itemCount = timeFrame->GetTimelineWindow()->GetSizer()->GetItemCount();
-	std::cout << "Item Count: " << itemCount << std::endl;
+{
+	size_t itemCount = 	timeFrame->GetTimelineWindow()->GetSizer()->GetItemCount();
+	std::cout << "\nItem Count: " << itemCount << std::endl;
+	
 	//if item count is more than 13, which means the initial items to not be deleted are in the timeline window.
-	if(itemCount > 13)
+	if(itemCount > 16)
 	{
 		//remove x,y,z tracks of soundproducer track added to timelinewindow
 		//and remove the combo box and text label
@@ -590,6 +592,8 @@ void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-6);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-7);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-8);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-9);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-10);
 		
 		//resize frame properly
 		timeFrame->Layout();
@@ -597,6 +601,7 @@ void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 		//destroy last soundproducertrack from vector containing soundproducertracks
 		m_soundproducer_track_vec.pop_back();
 		
+		std::cout << "\nItem Count: " << timeFrame->GetTimelineWindow()->GetSizer()->GetItemCount() << std::endl;
 	}
 	
 }
