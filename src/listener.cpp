@@ -46,8 +46,14 @@ void Listener::initListener()
 	//set current listener orientation
 	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
 	
-	//Initialize Listener position	
+	//Initialize Listener speed
 	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f);//is not moving in 3d space
+	
+	//initialize listener position
+	alListener3f(AL_POSITION, 
+					listener_position_vector[POSITION_INDEX::X], 
+					listener_position_vector[POSITION_INDEX::Y], 
+					listener_position_vector[POSITION_INDEX::Z]);
 	
 		//make box
 	//create ShapeDrawable object

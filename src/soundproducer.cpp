@@ -155,7 +155,7 @@ ALuint* SoundProducer::getBuffer(){return &m_buffer;}
 void SoundProducer::CreateSource()
 {
 	alGenSources(1, &m_source);
-	alSourcei(m_source, AL_SOURCE_RELATIVE, AL_TRUE);
+	alSourcei(m_source, AL_SOURCE_RELATIVE, AL_FALSE);
 	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source.");
 
 }

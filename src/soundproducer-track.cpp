@@ -22,7 +22,7 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	
 	//initialize track source
 	alGenSources(1, &track_source);
-	alSourcei(track_source, AL_SOURCE_RELATIVE, AL_TRUE);
+	alSourcei(track_source, AL_SOURCE_RELATIVE, AL_FALSE);
 	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source.");
 	
 	audioTrack->SetReferenceToSourceToManipulate(&track_source);
