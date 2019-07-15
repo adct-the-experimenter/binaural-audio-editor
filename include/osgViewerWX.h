@@ -106,7 +106,7 @@ public:
 
 	void SetContextCurrent();
 	
-	
+	void SetReferenceToFunctionToRunKeydown(std::function < void(int&)> thisFunction);
 private:
     DECLARE_EVENT_TABLE()
 
@@ -114,6 +114,8 @@ private:
 
     wxCursor _oldCursor;
     wxGLContext _context;
+    
+    std::function < void(int&) > functionToRunKeyDown;
     
 };
 
@@ -234,6 +236,7 @@ class wxOsgApp : public wxApp
 public:
     bool OnInit();
     
+    void KeyDownLogic(int& thisKey);
     
 private:
 	osg::ref_ptr<osg::Group> rootNode; //geometry node to hold ShapeDrawable objects

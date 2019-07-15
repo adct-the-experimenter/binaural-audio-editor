@@ -35,9 +35,15 @@ void ListenerTrack::FunctionToCallInPlayState()
 		
 	if(listenerToManipulatePtr != nullptr)
 	{
-		listenerToManipulatePtr->setPositionX(thisX);
-		listenerToManipulatePtr->setPositionY(thisY);
-		listenerToManipulatePtr->setPositionZ(thisZ);
+		if(!listenerToManipulatePtr->GetListenerFreeRoamBool())
+		{
+			if(listenerToManipulatePtr->getPositionX() != thisX){listenerToManipulatePtr->setPositionX(thisX);}
+		
+			if(listenerToManipulatePtr->getPositionY() != thisY){listenerToManipulatePtr->setPositionY(thisY);}
+			
+			if(listenerToManipulatePtr->getPositionZ() != thisZ){listenerToManipulatePtr->setPositionZ(thisZ);}			
+		}
+		
 	}
 }
 

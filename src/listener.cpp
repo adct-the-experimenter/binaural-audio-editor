@@ -21,7 +21,10 @@ void Listener::initListener()
 {
 	std::cout << "Init Listener called! \n";
 	
-	    //set listener position at origin
+	//initially set ability for listener to be freely controlled by user instead of listener track
+	freeRoamByUser = true;
+	
+	//set listener position at origin
 	listener_position_vector[POSITION_INDEX::X] = 0.0f;
 	listener_position_vector[POSITION_INDEX::Y] = 0.0f;
 	listener_position_vector[POSITION_INDEX::Z] = 0.0f;
@@ -183,3 +186,42 @@ osg::ShapeDrawable* Listener::getRenderObject(){return m_renderObject;}
 osg::Geode* Listener::getGeodeNode(){return m_geode;}
 
 osg::PositionAttitudeTransform* Listener::getTransformNode(){return m_paTransform;}
+
+void Listener::MoveUp(float& distance)
+{
+	float newY = Listener::getPositionY() + distance;
+	Listener::setPositionY(newY);
+}
+
+void Listener::MoveDown(float& distance)
+{
+	float newY = Listener::getPositionY() - distance;
+	Listener::setPositionY(newY);
+}
+
+void Listener::MoveForward(float& distance)
+{
+	float newZ = Listener::getPositionZ() - distance;
+	Listener::setPositionZ(newZ);
+}
+
+void Listener::MoveBack(float& distance)
+{
+	float newZ = Listener::getPositionZ() + distance;
+	Listener::setPositionZ(newZ);
+}
+
+void Listener::MoveLeft(float& distance)
+{
+	float newX = Listener::getPositionX() - distance;
+	Listener::setPositionX(newX);
+}
+
+void Listener::MoveRight(float& distance)
+{
+	float newX = Listener::getPositionX() + distance;
+	Listener::setPositionX(newX);
+}
+
+void Listener::SetListenerFreeRoamBool(bool thisBool){freeRoamByUser = thisBool;}
+bool Listener::GetListenerFreeRoamBool(){return freeRoamByUser;}

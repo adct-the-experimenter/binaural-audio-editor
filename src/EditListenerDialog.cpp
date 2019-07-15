@@ -34,22 +34,14 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
 								wxPoint(150, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator,          // associate the text box with the desired validator
-								wxT("")); 
+								wxT(""));
+								 
 	
 	//reset text fields
 	textFieldX->Clear();
 	textFieldY->Clear();
 	textFieldZ->Clear();
 	
-	//update position text fields to have current position of sound producer selected
-	ptrListener = listener;
-	if(ptrListener == nullptr){std::cout << "listener pointer is nullptr! \n";}
-	else
-	{
-		(*textFieldX) << ptrListener->getPositionX();
-		(*textFieldY) << ptrListener->getPositionY();
-		(*textFieldZ) << ptrListener->getPositionZ();
-	}
 	
 	
 	//initialize text to the left of fields
@@ -66,6 +58,11 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
     vboxEdit->Add(textFieldY, 0, wxALL, 5);
     vboxEdit->Add(zPositionText, 0, wxALL, 1);
     vboxEdit->Add(textFieldZ, 0, wxALL, 5);
+    
+    //add checkmark box to determine if listener can roam freely in world or is controlled by listener track
+	checkBoxFreeRoam = new wxCheckBox(this, wxID_ANY, wxT("Free Roam"), wxDefaultPosition, wxSize(30,30));
+	checkBoxFreeRoam->Bind(wxEVT_CHECKBOX, &EditListenerDialog::OnCheckBoxClicked,this);
+	vboxEdit->Add(checkBoxFreeRoam, 1 , wxEXPAND | wxALL, 1);
 	
 	hbox->Add(vboxEdit, 1, wxEXPAND | wxALL, 10);
 	
@@ -95,6 +92,18 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
 	vbox->Add(hboxBottom, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
 	
 	SetSizerAndFit(vbox);
+	
+	//update position text fields and checkbox to have current properties of listener 
+	ptrListener = listener;
+	if(ptrListener == nullptr){std::cout << "listener pointer is nullptr! \n";}
+	else
+	{
+		(*textFieldX) << ptrListener->getPositionX();
+		(*textFieldY) << ptrListener->getPositionY();
+		(*textFieldZ) << ptrListener->getPositionZ();
+		
+		checkBoxFreeRoam->SetValue(ptrListener->GetListenerFreeRoamBool());
+	}
 
 	//center and show elements in dialog
 	Centre();
@@ -128,8 +137,16 @@ void EditListenerDialog::ChangeListenerAttributes()
 		ptrListener->setPositionX(x);
 		ptrListener->setPositionY(y);
 		ptrListener->setPositionZ(z);
+		
+		//change free roam status
+		ptrListener->SetListenerFreeRoamBool(tempFreeRoamBool);
 	}
 	
+}
+
+void EditListenerDialog::OnCheckBoxClicked(wxCommandEvent& event)
+{
+	tempFreeRoamBool = checkBoxFreeRoam->GetValue();
 }
 
 void EditListenerDialog::OnApply(wxCommandEvent& event)
@@ -157,5 +174,6 @@ void EditListenerDialog::Exit()
 	if(textFieldX != nullptr){ delete textFieldX;}
 	if(textFieldY != nullptr){ delete textFieldY;}
 	if(textFieldZ != nullptr){ delete textFieldZ;}
+	if(checkBoxFreeRoam != nullptr){delete checkBoxFreeRoam;}
     Close( true ); //close window
 }

@@ -8,6 +8,7 @@
 #include <wx/textctrl.h> //for wxTextCtrl
 #include <wx/listbox.h> //for list box
 
+#include <wx/checkbox.h>
 
 #include "listener.h"
 
@@ -45,6 +46,10 @@ private:
 	wxTextCtrl* textFieldX;
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
+	
+	wxCheckBox* checkBoxFreeRoam;
+	bool tempFreeRoamBool; 
+	void OnCheckBoxClicked(wxCommandEvent& event);
 	
 	Listener* ptrListener;
 	

@@ -47,7 +47,13 @@ bool wxOsgApp::OnInit()
 
 		OSGCanvas *canvas = new OSGCanvas(frame, wxID_ANY, wxDefaultPosition,
 			wxSize(width, height), wxSUNKEN_BORDER, wxT("osgviewerWX"), attributes);
-
+		
+		//set function KeyDownLogic to be called every time key pressed event happens in OSGCanvas
+		using std::placeholders::_1;
+		std::function<void(int&)> func = std::bind( &wxOsgApp::KeyDownLogic, this, _1 );
+		
+		canvas->SetReferenceToFunctionToRunKeydown(func);
+		
 		GraphicsWindowWX* gw = new GraphicsWindowWX(canvas);
 
 		canvas->SetGraphicsWindow(gw);
@@ -124,6 +130,55 @@ void wxOsgApp::initListener()
 		rootNode->addChild(listener->getTransformNode());
 		
 		init_listener_once = true;		
+	}
+}
+
+void wxOsgApp::KeyDownLogic(int& thisKey)
+{
+	//std::cout << "KeyDown Logic called in wxOsgApp.\n";
+	
+	float distanceToMove = 1.0f;
+	
+	//if a key is pressed
+	switch(thisKey)
+	{
+		//if w key pressed
+		case 87:
+		{
+			if(listener){listener->MoveForward(distanceToMove);}
+			break;
+		}
+		//if a key pressed
+		case 65:
+		{
+			if(listener){listener->MoveLeft(distanceToMove);}
+			break;
+		}
+		//if s key pressed
+		case 83:
+		{
+			if(listener){listener->MoveBack(distanceToMove);}
+			break;
+		}
+		//if d key pressed 
+		case 68:
+		{
+			if(listener){listener->MoveRight(distanceToMove);}
+			break;
+		}
+		//if q key pressed
+		case 81:
+		{
+			if(listener){listener->MoveDown(distanceToMove);}
+			break;
+		}
+		//if e key pressed
+		case 69:
+		{
+			if(listener){listener->MoveUp(distanceToMove);}
+			break;
+		}
+		default:{break;}
 	}
 }
 
@@ -712,7 +767,7 @@ void OSGCanvas::OnChar(wxKeyEvent &event)
 #else
     int key = event.GetKeyCode();
 #endif
-
+	
     //if (_graphics_window.valid())
     //    _graphics_window->getEventQueue()->keyPress(key);
 
@@ -744,7 +799,10 @@ void OSGCanvas::OnKeyDown(wxKeyEvent &event)
     int key = event.GetKeyCode();
 #endif
 	
-	//std::cout << "keydown in OSGCanvas\n";
+	//std::cout << "keydown in OSGCanvas, key:" << key << std::endl;
+	
+	//call function to run after key pressed down
+	functionToRunKeyDown(key);
 	
     if (_graphics_window.valid())
         _graphics_window->getEventQueue()->keyRelease(key);
@@ -819,6 +877,11 @@ void OSGCanvas::UseCursor(bool value)
         // (http://trac.wxwidgets.org/ticket/2946)
         // SetCursor( wxStockCursor( wxCURSOR_BLANK ) );
     }
+}
+
+void OSGCanvas::SetReferenceToFunctionToRunKeydown(std::function <void(int&)> thisFunction)
+{
+	functionToRunKeyDown = thisFunction;
 }
 
 

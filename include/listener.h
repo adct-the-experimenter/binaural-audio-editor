@@ -36,7 +36,17 @@ class Listener
 		float getPositionY(); //get y position of listener
 		void setPositionZ(float& z); //set z position of listener
 		float getPositionZ(); //get z position of listener
-
+		
+		void MoveUp(float& distance);
+		void MoveDown(float& distance);
+		void MoveForward(float& distance);
+		void MoveBack(float& distance);
+		void MoveLeft(float& distance);
+		void MoveRight(float& distance);
+		
+		void SetListenerFreeRoamBool(bool thisBool);
+		bool GetListenerFreeRoamBool();
+		
 		//Listener Orientation Functions
 		void setForwardX(float& x); //set x of forward of listener
 		float getForwardX(); //get x of forward of listener
@@ -60,6 +70,8 @@ class Listener
 		osg::PositionAttitudeTransform* getTransformNode();
 		
 	private:
+		//bool to indicate if the listener can be changed freely by user or by listener track
+		bool freeRoamByUser;
 		
 		void initListener();
 		
