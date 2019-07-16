@@ -73,16 +73,16 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 				{
 					case OpenALSoftPlayer::PlayerStatus::PLAYBACK_FINISHED:
 					{
-						//std::cout << "Playback finished! \n";
+						std::cout << "Playback finished! \n";
 						
-						//playbackControlsPtr->StopOP();
+						playbackControlsPtr->StopOP();
 						break;
 					}
 					case OpenALSoftPlayer::PlayerStatus::FAILED_TO_READ_ANYMORE_AUDIO_FROM_FILE:
 					{
 						std::cout << "No more audio to read! \n";
 						
-						//playbackControlsPtr->StopOP();
+						playbackControlsPtr->StopOP();
 						break;
 					}
 					
@@ -223,7 +223,7 @@ void StereoAudioTrack::BrowseForInputAudioFile()
 {
 	if(audio_data_stream.GetSize() == 0)
 	{
-		wxFileDialog fileDlg(this, _("Choose the WAV file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|All files|*.*"));
+		wxFileDialog fileDlg(this, _("Choose the WAV,FLAC,OGG file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|FLAC file|*.flac|OGG file|*.ogg|All files|*.*"));
 		if (fileDlg.ShowModal() == wxID_OK)
 		{
 			wxString path = fileDlg.GetPath();
