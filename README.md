@@ -54,7 +54,7 @@ wxwidgets https://www.wxwidgets.org/
   
   Light blue cubes are the sound producers.
   
-  Create a sound producer and name it under Sound Producers -> Create SOund Producers menu.
+  Create a sound producer and name it in Sound Producers -> Create Sound Producers menu.
   
   For the Sound Producer track, the top 2 tracks is for graphing audio and the bottom 3 tracks are for changing position of the sound producer.
   
