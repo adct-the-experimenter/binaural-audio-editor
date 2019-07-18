@@ -38,21 +38,29 @@ wxwidgets https://www.wxwidgets.org/
 
 # Instructions
 
+  #### Control Listener
   
   Dark blue cube is you the listener. 
   
-  Light blue cubes are the sound producers.
-
   Use WASD keys to move listener(you) forward, back, left, right. Q key moves listener down. E key moves listener up.
   
   To use the Listener Track(Group of first 3 tracks with graph) to change position of the listener(you), uncheck Free Roam in EditListener menu. 
   Add points to the graph by left clicking on the graph. Remove points from the graph by right clicking.
   First graph controls the x position, second graph is for y position, third graph is for z position.
   
+  
+  
+  #### Control SoundProducers
+  
+  Light blue cubes are the sound producers.
+  
+  Create a sound producer and name it under Sound Producers -> Create SOund Producers menu.
+  
   For the Sound Producer track, the top 2 tracks is for graphing audio and the bottom 3 tracks are for changing position of the sound producer.
   
-  Click on browse button near audio track to load sound into the track. Load only 8-bit or 16-bit audio only.
+  Click on dropdown box menu to choose a soundproducer to edit that was created.
   
+  Click on browse button near audio track to load sound into the track. Load only 8-bit or 16-bit audio only.
   
   Like OpenAL and OpenGL, the application uses a right handed coordinate system to move listener and sound producers, 
   
