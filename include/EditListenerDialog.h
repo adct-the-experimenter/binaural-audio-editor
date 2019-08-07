@@ -55,6 +55,7 @@ private:
 	wxCheckBox* checkBoxExternalDeviceOrientation;
 	bool tempExternalDeviceOrientation; 
 	void OnExternalDeviceOrientationCheckBoxClicked(wxCommandEvent& event);
+	wxTextCtrl* textFieldSerialPort;
 	
 	Listener* ptrListener;
 	

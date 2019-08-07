@@ -10,6 +10,7 @@ Listener::Listener()
     
     Listener::initListener();   
 
+	serialPortPath = "";
 }
 
 Listener::~Listener()
@@ -231,3 +232,6 @@ bool Listener::GetListenerFreeRoamBool(){return freeRoamByUser;}
 
 void Listener::SetListenerExternalDeviceOrientationBool(bool thisBool){orientationByExternalDevice = thisBool;}
 bool Listener::GetListenerExternalDeviceOrientationBool(){return orientationByExternalDevice;}
+
+void Listener::SetSerialPortPath(std::string port){serialPortPath = port;}
+std::string Listener::GetSerialPortPath(){return serialPortPath;}

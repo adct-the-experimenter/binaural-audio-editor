@@ -67,9 +67,15 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
 	checkBoxExternalDeviceOrientation = new wxCheckBox(this, wxID_ANY, wxT("External Device Orientation"), wxDefaultPosition, wxSize(30,30));
 	checkBoxExternalDeviceOrientation->Bind(wxEVT_CHECKBOX, &EditListenerDialog::OnExternalDeviceOrientationCheckBoxClicked,this);
 	
+	//initialize text field for path to serial port
+	textFieldSerialPort = new wxTextCtrl(this,-1, "Serial Port here",wxPoint(95, 20), wxSize(80,20),wxTE_PROCESS_ENTER);
+	textFieldSerialPort->Clear();
+	wxStaticText* serialPortText = new wxStaticText(this, -1, wxT("Serial Port :"), wxPoint(40, 60));
+	
 	vboxEdit->Add(checkBoxFreeRoam, 1 , wxEXPAND | wxALL, 1);
 	vboxEdit->Add(checkBoxExternalDeviceOrientation, 1 , wxEXPAND | wxALL, 1);
-	
+	vboxEdit->Add(serialPortText, 1 , wxEXPAND | wxALL, 1);
+	vboxEdit->Add(textFieldSerialPort, 1 , wxEXPAND | wxALL, 1);
 	
 	hbox->Add(vboxEdit, 1, wxEXPAND | wxALL, 10);
 	
@@ -109,8 +115,11 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
 		(*textFieldY) << ptrListener->getPositionY();
 		(*textFieldZ) << ptrListener->getPositionZ();
 		
+		
+		
 		checkBoxFreeRoam->SetValue(ptrListener->GetListenerFreeRoamBool());
 		checkBoxExternalDeviceOrientation->SetValue(ptrListener->GetListenerExternalDeviceOrientationBool());
+		(*textFieldSerialPort) << ptrListener->GetSerialPortPath();
 	}
 
 	//center and show elements in dialog
@@ -124,7 +133,7 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
 void EditListenerDialog::initPrivateVariables()
 {
 	ptrListener = nullptr;
-	textFieldX = nullptr; textFieldY = nullptr; textFieldZ = nullptr;
+	textFieldX = nullptr; textFieldY = nullptr; textFieldZ = nullptr; textFieldSerialPort = nullptr;
 	
 	applyButton = nullptr; okButton = nullptr; cancelButton = nullptr;
 }
@@ -151,6 +160,8 @@ void EditListenerDialog::ChangeListenerAttributes()
 		
 		//change external device orientation status
 		ptrListener->SetListenerExternalDeviceOrientationBool(tempExternalDeviceOrientation);
+		
+		ptrListener->SetSerialPortPath(textFieldSerialPort->GetLineText(0).ToStdString());
 	}
 	
 }
@@ -192,5 +203,7 @@ void EditListenerDialog::Exit()
 	if(textFieldY != nullptr){ delete textFieldY;}
 	if(textFieldZ != nullptr){ delete textFieldZ;}
 	if(checkBoxFreeRoam != nullptr){delete checkBoxFreeRoam;}
+	if(checkBoxExternalDeviceOrientation != nullptr){delete checkBoxExternalDeviceOrientation;}
+	if(textFieldSerialPort != nullptr){delete textFieldSerialPort;}
     Close( true ); //close window
 }

@@ -124,11 +124,11 @@ void ListenerTrack::FunctionToCallInPlayState()
 		//else if listener orientation is controlled by external device
 		else
 		{
-			if(m_serial_ptr == nullptr)
+			if(m_serial_ptr == nullptr && listenerToManipulatePtr->GetSerialPortPath() != "")
 			{
 				try
 				{
-					m_serial_ptr = new SimpleSerial("/dev/ttyACM0",9600);
+					m_serial_ptr = new SimpleSerial(listenerToManipulatePtr->GetSerialPortPath(),9600);
 				}
 				catch(boost::system::system_error& e)
 				{
@@ -166,13 +166,29 @@ void ListenerTrack::FunctionToCallInPlayState()
 					boost::math::quaternion <float> rotated_up_vector_quaternion; 
 					rotated_up_vector_quaternion = rotation_quaternion * up_vector_quaternion * inverse_rotation_quaternion;
 					
-					//remap for binaural audio editor
+					//remap values for binaural audio editor
 					//y in binaural audio editor = z in regular cartesian
 					//x in binaural audio editor = y in regular cartesian
 					//z in binaural audio editor = x in regular cartesian
-					std::cout << "z:" << rotated_forward_vector_quaternion.R_component_2() << std::endl;
-					std::cout << "x:" << rotated_forward_vector_quaternion.R_component_3() << std::endl;
-					std::cout << "y:" << rotated_forward_vector_quaternion.R_component_4() << std::endl;
+					float thisForwardZ = rotated_forward_vector_quaternion.R_component_2();
+					if(listenerToManipulatePtr->getForwardZ() != thisForwardZ){listenerToManipulatePtr->setForwardZ(thisForwardZ);}
+					
+					float thisForwardX = rotated_forward_vector_quaternion.R_component_3();
+					if(listenerToManipulatePtr->getForwardX() != thisForwardX){listenerToManipulatePtr->setForwardX(thisForwardX);}
+					
+					float thisForwardY = rotated_forward_vector_quaternion.R_component_4();
+					if(listenerToManipulatePtr->getForwardY() != thisForwardY){listenerToManipulatePtr->setForwardY(thisForwardY);}
+					
+					float thisUpZ = rotated_up_vector_quaternion.R_component_2();
+					if(listenerToManipulatePtr->getUpZ() != thisUpZ){listenerToManipulatePtr->setUpZ(thisUpZ);}
+					
+					float thisUpX = rotated_up_vector_quaternion.R_component_3();
+					if(listenerToManipulatePtr->getUpX() != thisUpX){listenerToManipulatePtr->setUpX(thisUpX);}
+					
+					float thisUpY = rotated_up_vector_quaternion.R_component_4();
+					if(listenerToManipulatePtr->getUpY() != thisUpY){listenerToManipulatePtr->setUpY(thisUpY);}
+					
+					
 				}
 				
 			}
