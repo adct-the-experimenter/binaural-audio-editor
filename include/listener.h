@@ -15,7 +15,7 @@
 #include <osg/PositionAttitudeTransform> //for matrix transform that moves object rendered
 #include <osg/Geode> //for object rendered to be moved on screen by matrix transform
 
-#include <boost/math/quaternion.hpp> //for using quaternion to change orientation
+
 
 //This is a class that holds positional info on object
 //as well as source and buffer components for use with OpenALSoftAudioEngine

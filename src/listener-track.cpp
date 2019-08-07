@@ -3,6 +3,7 @@
 ListenerTrack::ListenerTrack(const wxString& title) : Track(title)
 {
 	listenerToManipulatePtr = nullptr;
+	m_serial_ptr = nullptr;
 	
 	//initialize tracks
 	xTrack = new DoubleTrack("X Track");
@@ -71,6 +72,7 @@ void ListenerTrack::FunctionToCallInPlayState()
 			if(listenerToManipulatePtr->getPositionZ() != thisZ){listenerToManipulatePtr->setPositionZ(thisZ);}			
 		}
 		
+		//if listener orientation is not controlled by external device
 		if(!listenerToManipulatePtr->GetListenerExternalDeviceOrientationBool())
 		{
 			//if there is no change in rotation anywhere
@@ -94,7 +96,7 @@ void ListenerTrack::FunctionToCallInPlayState()
 				//calculate new up direction vector from rotation quaternion
 				
 				boost::math::quaternion <float> rotated_up_vector_quaternion; 
-				rotated_up_vector_quaternion = rotation_quaternion * forward_vector_quaternion * conjugate_rotation_quaternion;
+				rotated_up_vector_quaternion = rotation_quaternion * up_vector_quaternion * conjugate_rotation_quaternion;
 				
 				//set forward direction vector
 				float thisForwardX = rotated_forward_vector_quaternion.R_component_2();
@@ -118,11 +120,67 @@ void ListenerTrack::FunctionToCallInPlayState()
 				if(listenerToManipulatePtr->getUpZ() != thisUpZ){listenerToManipulatePtr->setUpZ(thisUpZ);}
 				
 			}
+		}
+		//else if listener orientation is controlled by external device
+		else
+		{
+			if(m_serial_ptr == nullptr)
+			{
+				try
+				{
+					m_serial_ptr = new SimpleSerial("/dev/ttyACM0",9600);
+				}
+				catch(boost::system::system_error& e)
+				{
+					std::cout<< "Error: " << e.what() << std::endl;
+					m_serial_ptr = nullptr;
+				}
+			}
+			else
+			{
+				std::vector<std::string> results;
+			
+				//read line
+				std::string quaternion_data = m_serial_ptr->readLine();
+				
+				//parse w,x,y,z data from line read
+				boost::split(results, quaternion_data, [](char c){return c == ' ';});
+				
+				if(results.size() >= 4)
+				{
+					//convert number values in string to float 
+					float w = std::stof(results[0]);
+					float x = std::stof(results[1]);
+					float y = std::stof(results[2]);
+					float z = std::stof(results[3]);
+					
+					boost::math::quaternion <float> rotation_quaternion(w,x,y,z); 
+					boost::math::quaternion <float> inverse_rotation_quaternion(w,-1*x,-1*y,-1*z); 
+					
+					
+					//calculate new rotated forward vector
+					// P'= R*P*R'
+					boost::math::quaternion <float> rotated_forward_vector_quaternion; 
+					rotated_forward_vector_quaternion = rotation_quaternion * forward_vector_quaternion * inverse_rotation_quaternion;
+					
+					boost::math::quaternion <float> rotated_up_vector_quaternion; 
+					rotated_up_vector_quaternion = rotation_quaternion * up_vector_quaternion * inverse_rotation_quaternion;
+					
+					//remap for binaural audio editor
+					//y in binaural audio editor = z in regular cartesian
+					//x in binaural audio editor = y in regular cartesian
+					//z in binaural audio editor = x in regular cartesian
+					std::cout << "z:" << rotated_forward_vector_quaternion.R_component_2() << std::endl;
+					std::cout << "x:" << rotated_forward_vector_quaternion.R_component_3() << std::endl;
+					std::cout << "y:" << rotated_forward_vector_quaternion.R_component_4() << std::endl;
+				}
+				
+			}
+			
+		}
 			
 			
 		}
-		
-	}
 }
 
 void ListenerTrack::FunctionToCallInPauseState(){}

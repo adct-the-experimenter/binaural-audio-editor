@@ -11,6 +11,10 @@
 #include <wx/combobox.h>
 #include <wx/arrstr.h>
 
+#include <boost/math/quaternion.hpp> //for using quaternion to change orientation
+#include "SimpleSerial.h" //for getting serial data
+#include <boost/algorithm/string.hpp> //for splitting string
+
 //class to manipulate x,y z position of sound producer
 class ListenerTrack : public Track
 {
@@ -60,6 +64,8 @@ public:
 	
 private:
 	Listener* listenerToManipulatePtr;
+	
+	SimpleSerial* m_serial_ptr;
 	
 	DoubleTrack* xTrack;
 	DoubleTrack* yTrack;
