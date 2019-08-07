@@ -12,6 +12,7 @@ libsndfile http://www.mega-nerd.com/libsndfile/
 
 wxwidgets https://www.wxwidgets.org/
 
+Boost Math Quaternion headers https://www.boost.org/users/history/version_1_70_0.html
 
 # How to Install
 
