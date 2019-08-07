@@ -45,7 +45,9 @@ set(SOURCES src/osgViewerWX.cpp
 			 src/soundproducer-registry.cpp
 			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp src/HRTF-Test-Dialog.cpp 
 			 src/EditListenerDialog.cpp
+			 src/setup-serial-dialog.cpp
 			 src/openalsoftaudioengine.cpp src/soundproducer.cpp src/listener.cpp
+			 src/external-orientation-device-serial.cpp
 			 
 			 src/timeline-track-editor/src/timeline-frame.cpp
 			 src/timeline-track-editor/src/timeline-window.cpp

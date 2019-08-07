@@ -65,8 +65,6 @@ public:
 private:
 	Listener* listenerToManipulatePtr;
 	
-	SimpleSerial* m_serial_ptr;
-	
 	DoubleTrack* xTrack;
 	DoubleTrack* yTrack;
 	DoubleTrack* zTrack;
@@ -80,6 +78,7 @@ private:
 	//variables to hold temporary values for listener position and orientation
 	double tempX,tempY,tempZ,tempQuatX,tempQuatY,tempQuatZ,tempQuatW;
 	
+	//quaternions for intial forward vector and up vector directions
 	boost::math::quaternion <float> forward_vector_quaternion;
 	boost::math::quaternion <float> up_vector_quaternion;
 };

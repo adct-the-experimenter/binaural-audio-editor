@@ -196,6 +196,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_PLAY_AUDIO, MainFrame::OnPlayAudio)
     EVT_MENU				(MainFrame::ID_TEST_HRTF, MainFrame::OnTestHRTF)
     EVT_MENU				(MainFrame::ID_LISTENER_EDIT, MainFrame::OnEditListener)
+    EVT_MENU				(MainFrame::ID_SETUP_SERIAL, MainFrame::OnSetupSerial)
     EVT_MENU				(MainFrame::ID_CHANGE_HRTF, MainFrame::OnChangeHRTF)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
@@ -231,9 +232,11 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     wxMenu* menuHRTF = new wxMenu;
     menuHRTF->Append(MainFrame::ID_TEST_HRTF,"&Test HRTF");
     menuHRTF->Append(MainFrame::ID_CHANGE_HRTF, "&Change HRTF");
+    
     //create listener menu item
     wxMenu* menuListener = new wxMenu;
     menuListener->Append(MainFrame::ID_LISTENER_EDIT,"&Edit Listener");
+    menuListener->Append(MainFrame::ID_SETUP_SERIAL,"&Setup Serial");
     
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
@@ -535,6 +538,17 @@ void MainFrame::OnEditListener(wxCommandEvent& event)
 															);
 																				
     editListenerDialog->Show(true);
+}
+
+void MainFrame::OnSetupSerial(wxCommandEvent& event)
+{
+	if(listenerPtr == nullptr){std::cout << "Listener Raw Pointer is null in OnSetupSerial. \n";}
+	
+	std::unique_ptr <SetupSerialDialog> setupSerialDialog(new SetupSerialDialog( wxT("Setup Serial"),
+																		listenerPtr)
+															);
+																				
+    setupSerialDialog->Show(true);
 }
 
 void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)

@@ -3,7 +3,6 @@
 ListenerTrack::ListenerTrack(const wxString& title) : Track(title)
 {
 	listenerToManipulatePtr = nullptr;
-	m_serial_ptr = nullptr;
 	
 	//initialize tracks
 	xTrack = new DoubleTrack("X Track");
@@ -29,7 +28,6 @@ ListenerTrack::ListenerTrack(const wxString& title) : Track(title)
 	xQuatTrack->SetReferenceToVarToManipulate(&tempQuatX);
 	yQuatTrack->SetReferenceToVarToManipulate(&tempQuatY);
 	zQuatTrack->SetReferenceToVarToManipulate(&tempQuatZ);
-	
 	
 	forward_vector_quaternion = boost::math::quaternion <float>(0,0,0,-1);
 	up_vector_quaternion = boost::math::quaternion <float>(0,0,1,0);
@@ -124,79 +122,12 @@ void ListenerTrack::FunctionToCallInPlayState()
 		//else if listener orientation is controlled by external device
 		else
 		{
-			if(m_serial_ptr == nullptr && listenerToManipulatePtr->GetSerialPortPath() != "")
-			{
-				try
-				{
-					m_serial_ptr = new SimpleSerial(listenerToManipulatePtr->GetSerialPortPath(),9600);
-				}
-				catch(boost::system::system_error& e)
-				{
-					std::cout<< "Error: " << e.what() << std::endl;
-					m_serial_ptr = nullptr;
-				}
-			}
-			else
-			{
-				std::vector<std::string> results;
-			
-				//read line
-				std::string quaternion_data = m_serial_ptr->readLine();
-				
-				//parse w,x,y,z data from line read
-				boost::split(results, quaternion_data, [](char c){return c == ' ';});
-				
-				if(results.size() >= 4)
-				{
-					//convert number values in string to float 
-					float w = std::stof(results[0]);
-					float x = std::stof(results[1]);
-					float y = std::stof(results[2]);
-					float z = std::stof(results[3]);
-					
-					boost::math::quaternion <float> rotation_quaternion(w,x,y,z); 
-					boost::math::quaternion <float> inverse_rotation_quaternion(w,-1*x,-1*y,-1*z); 
-					
-					
-					//calculate new rotated forward vector
-					// P'= R*P*R'
-					boost::math::quaternion <float> rotated_forward_vector_quaternion; 
-					rotated_forward_vector_quaternion = rotation_quaternion * forward_vector_quaternion * inverse_rotation_quaternion;
-					
-					boost::math::quaternion <float> rotated_up_vector_quaternion; 
-					rotated_up_vector_quaternion = rotation_quaternion * up_vector_quaternion * inverse_rotation_quaternion;
-					
-					//remap values for binaural audio editor
-					//y in binaural audio editor = z in regular cartesian
-					//x in binaural audio editor = y in regular cartesian
-					//z in binaural audio editor = x in regular cartesian
-					float thisForwardZ = rotated_forward_vector_quaternion.R_component_2();
-					if(listenerToManipulatePtr->getForwardZ() != thisForwardZ){listenerToManipulatePtr->setForwardZ(thisForwardZ);}
-					
-					float thisForwardX = rotated_forward_vector_quaternion.R_component_3();
-					if(listenerToManipulatePtr->getForwardX() != thisForwardX){listenerToManipulatePtr->setForwardX(thisForwardX);}
-					
-					float thisForwardY = rotated_forward_vector_quaternion.R_component_4();
-					if(listenerToManipulatePtr->getForwardY() != thisForwardY){listenerToManipulatePtr->setForwardY(thisForwardY);}
-					
-					float thisUpZ = rotated_up_vector_quaternion.R_component_2();
-					if(listenerToManipulatePtr->getUpZ() != thisUpZ){listenerToManipulatePtr->setUpZ(thisUpZ);}
-					
-					float thisUpX = rotated_up_vector_quaternion.R_component_3();
-					if(listenerToManipulatePtr->getUpX() != thisUpX){listenerToManipulatePtr->setUpX(thisUpX);}
-					
-					float thisUpY = rotated_up_vector_quaternion.R_component_4();
-					if(listenerToManipulatePtr->getUpY() != thisUpY){listenerToManipulatePtr->setUpY(thisUpY);}
-					
-					
-				}
-				
-			}
-			
+			//std::cout << "listener orientation by external device called! \n";
+			listenerToManipulatePtr->SetOrientationByExternalDevice();
 		}
 			
 			
-		}
+	}
 }
 
 void ListenerTrack::FunctionToCallInPauseState(){}
