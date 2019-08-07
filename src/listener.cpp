@@ -21,8 +21,11 @@ void Listener::initListener()
 {
 	std::cout << "Init Listener called! \n";
 	
-	//initially set ability for listener to be freely controlled by user instead of listener track
+	//initially set ability for listener position to be freely controlled by user instead of listener track
 	freeRoamByUser = true;
+	
+	//initially set ability for listener orientation to be controlled by external device instead of listener track.
+	orientationByExternalDevice = false;
 	
 	//set listener position at origin
 	listener_position_vector[POSITION_INDEX::X] = 0.0f;
@@ -225,3 +228,6 @@ void Listener::MoveRight(float& distance)
 
 void Listener::SetListenerFreeRoamBool(bool thisBool){freeRoamByUser = thisBool;}
 bool Listener::GetListenerFreeRoamBool(){return freeRoamByUser;}
+
+void Listener::SetListenerExternalDeviceOrientationBool(bool thisBool){orientationByExternalDevice = thisBool;}
+bool Listener::GetListenerExternalDeviceOrientationBool(){return orientationByExternalDevice;}

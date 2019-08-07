@@ -47,9 +47,14 @@ private:
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
 	
+
 	wxCheckBox* checkBoxFreeRoam;
 	bool tempFreeRoamBool; 
-	void OnCheckBoxClicked(wxCommandEvent& event);
+	void OnFreeRoamCheckBoxClicked(wxCommandEvent& event);
+	
+	wxCheckBox* checkBoxExternalDeviceOrientation;
+	bool tempExternalDeviceOrientation; 
+	void OnExternalDeviceOrientationCheckBoxClicked(wxCommandEvent& event);
 	
 	Listener* ptrListener;
 	

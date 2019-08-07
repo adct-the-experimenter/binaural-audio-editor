@@ -265,10 +265,16 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	double end = 10.0f; //highest value
 	int numTicks = 11; //number of ticks between lowest value and highest value including zero
 	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
-	 
+	
+	double ostart = -1; 
+	double oend = 1;
+	double oresolution = 0.1;
+	
 	//initialize listener track
 	m_listener_track->InitTrack(timeFrame,nullptr);
-	m_listener_track->SetupAxisForVariable(start,end,resolution,numTicks);
+	m_listener_track->SetupAxisForPositionVariable(start,end,resolution,numTicks);
+	
+	m_listener_track->SetupAxisForOrientationVariable(ostart,oend,oresolution,numTicks);
 	
 	//add block of space between Timeline Ruler and Sound Producer Track
 	timeFrame->AddSpacerBlock(40);
@@ -283,6 +289,12 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	timeFrame->AddTrack(m_listener_track->GetReferenceToXTrack(),space);
 	timeFrame->AddTrack(m_listener_track->GetReferenceToYTrack(),space);
 	timeFrame->AddTrack(m_listener_track->GetReferenceToZTrack(),space);
+	
+	//add quat w,x,y,z tracks of ListenerTrack to time frame
+	timeFrame->AddTrack(m_listener_track->GetReferenceToQuatWTrack(),space);
+	timeFrame->AddTrack(m_listener_track->GetReferenceToQuatXTrack(),space);
+	timeFrame->AddTrack(m_listener_track->GetReferenceToQuatYTrack(),space);
+	timeFrame->AddTrack(m_listener_track->GetReferenceToQuatZTrack(),space);
 	
 	//add special soundproducertrack function to call during playback
 	//it will also call x,y,z track playback functions
@@ -636,7 +648,7 @@ void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 	std::cout << "\nItem Count: " << itemCount << std::endl;
 	
 	//if item count is more than 13, which means the initial items to not be deleted are in the timeline window.
-	if(itemCount > 16)
+	if(itemCount > 20)
 	{
 		//remove x,y,z tracks of soundproducer track added to timelinewindow
 		//and remove the combo box and text label

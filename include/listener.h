@@ -15,6 +15,8 @@
 #include <osg/PositionAttitudeTransform> //for matrix transform that moves object rendered
 #include <osg/Geode> //for object rendered to be moved on screen by matrix transform
 
+#include <boost/math/quaternion.hpp> //for using quaternion to change orientation
+
 //This is a class that holds positional info on object
 //as well as source and buffer components for use with OpenALSoftAudioEngine
 
@@ -62,6 +64,8 @@ class Listener
 		void setUpZ(float& z); //set z of up of listener
 		float getUpZ(); //get z of up of listener
 		
+		void SetListenerExternalDeviceOrientationBool(bool thisBool);
+		bool GetListenerExternalDeviceOrientationBool();
 		
 		osg::ShapeDrawable* getRenderObject();
 		
@@ -70,8 +74,11 @@ class Listener
 		osg::PositionAttitudeTransform* getTransformNode();
 		
 	private:
-		//bool to indicate if the listener can be changed freely by user or by listener track
+		//bool to indicate if the listener position can be changed freely by user or by listener track
 		bool freeRoamByUser;
+		
+		//bool to indicate if the listener orientation can be changed by an external device or by listener track
+		bool orientationByExternalDevice;
 		
 		void initListener();
 		

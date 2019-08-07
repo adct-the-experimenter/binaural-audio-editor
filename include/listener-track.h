@@ -22,11 +22,17 @@ public:
 	DoubleTrack* GetReferenceToYTrack();
 	DoubleTrack* GetReferenceToZTrack();
 	
+	DoubleTrack* GetReferenceToQuatWTrack();
+	DoubleTrack* GetReferenceToQuatXTrack();
+	DoubleTrack* GetReferenceToQuatYTrack();
+	DoubleTrack* GetReferenceToQuatZTrack();
+	
 	//Listener Editing
 	void SetReferenceToListenerToManipulate(Listener* thisListener);
 	
 	//Double Track related functions
-	void SetupAxisForVariable(double& start, double& end, double& resolution, int& numTick);
+	void SetupAxisForPositionVariable(double& start, double& end, double& resolution, int& numTick);
+	void SetupAxisForOrientationVariable(double& start, double& end, double& resolution, int& numTick);
 	
 	void OnLeftMouseClick(wxMouseEvent& event);
 	void OnRightMouseClick(wxCommandEvent& event);
@@ -59,8 +65,17 @@ private:
 	DoubleTrack* yTrack;
 	DoubleTrack* zTrack;
 	
-	//variables to hold temporary values for sound producer position
-	double tempX,tempY,tempZ;
+	DoubleTrack* wQuatTrack;
+	DoubleTrack* xQuatTrack;
+	DoubleTrack* yQuatTrack;
+	DoubleTrack* zQuatTrack;
+	
+	
+	//variables to hold temporary values for listener position and orientation
+	double tempX,tempY,tempZ,tempQuatX,tempQuatY,tempQuatZ,tempQuatW;
+	
+	boost::math::quaternion <float> forward_vector_quaternion;
+	boost::math::quaternion <float> up_vector_quaternion;
 };
 
 #endif
