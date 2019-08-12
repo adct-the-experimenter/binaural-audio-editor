@@ -81,7 +81,7 @@ void ListenerTrack::FunctionToCallInPlayState()
 			else
 			{
 				boost::math::quaternion <float> rotation_quaternion(thisQuatW,thisQuatX,thisQuatY,thisQuatZ); 
-				boost::math::quaternion <float> conjugate_rotation_quaternion(thisQuatW,-1*thisQuatX,-1*thisQuatY,-1*thisQuatZ); 
+				boost::math::quaternion <float> conjugate_rotation_quaternion = conj(rotation_quaternion); 
 				
 				
 				//calculate new rotated forward vector from rotation quaternion
@@ -96,7 +96,8 @@ void ListenerTrack::FunctionToCallInPlayState()
 				boost::math::quaternion <float> rotated_up_vector_quaternion; 
 				rotated_up_vector_quaternion = rotation_quaternion * up_vector_quaternion * conjugate_rotation_quaternion;
 				
-				//set forward direction vector
+				//set new forward direction vector
+				
 				float thisForwardX = rotated_forward_vector_quaternion.R_component_2();
 				if(listenerToManipulatePtr->getForwardX() != thisForwardX){listenerToManipulatePtr->setForwardX(thisForwardX);}					
 				
@@ -106,7 +107,7 @@ void ListenerTrack::FunctionToCallInPlayState()
 				float thisForwardZ = rotated_forward_vector_quaternion.R_component_4();
 				if(listenerToManipulatePtr->getForwardZ() != thisForwardZ){listenerToManipulatePtr->setForwardZ(thisForwardZ);}					
 				
-				//set up direction vector
+				//set new up direction vector
 				
 				float thisUpX = rotated_up_vector_quaternion.R_component_2();
 				if(listenerToManipulatePtr->getUpX() != thisUpX){listenerToManipulatePtr->setUpX(thisUpX);}
