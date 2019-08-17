@@ -10,19 +10,26 @@ Listener::Listener()
     
     Listener::initListener();   
 
+	serialPortPath = "";
+	
+	m_ext_orientation_serial_device_ptr = new ExternalOrientationDeviceSerial();
 }
 
 Listener::~Listener()
 {
 	std::cout << "Listener destructor called! \n";
+	delete m_ext_orientation_serial_device_ptr;
 }
 
 void Listener::initListener()
 {
 	std::cout << "Init Listener called! \n";
 	
-	//initially set ability for listener to be freely controlled by user instead of listener track
+	//initially set ability for listener position to be freely controlled by user instead of listener track
 	freeRoamByUser = true;
+	
+	//initially set ability for listener orientation to be controlled by external device instead of listener track.
+	orientationByExternalDevice = false;
 	
 	//set listener position at origin
 	listener_position_vector[POSITION_INDEX::X] = 0.0f;
@@ -225,3 +232,34 @@ void Listener::MoveRight(float& distance)
 
 void Listener::SetListenerFreeRoamBool(bool thisBool){freeRoamByUser = thisBool;}
 bool Listener::GetListenerFreeRoamBool(){return freeRoamByUser;}
+
+void Listener::SetListenerExternalDeviceOrientationBool(bool thisBool){orientationByExternalDevice = thisBool;}
+bool Listener::GetListenerExternalDeviceOrientationBool(){return orientationByExternalDevice;}
+
+void Listener::SetSerialPortPath(std::string port){serialPortPath = port;}
+std::string Listener::GetSerialPortPath(){return serialPortPath;}
+
+ExternalOrientationDeviceSerial* Listener::GetExternalOrientationSerialDevicePtr(){return m_ext_orientation_serial_device_ptr;}
+
+void Listener::SetOrientationByExternalDevice()
+{
+	if(m_ext_orientation_serial_device_ptr)
+	{
+		//if device is initialized
+		if(m_ext_orientation_serial_device_ptr->GetDeviceInitializedBool())
+		{
+			float fx,fy,fz,ux,uy,uz;
+			
+			m_ext_orientation_serial_device_ptr->ReadOrientationParametersFromSerial(&fx,&fy,&fz,&ux,&uy,&uz);
+			std::cout << "fx: " << fx << " fy: " << fy << " fz: " << fz << "\n" << \
+					" ux: " << ux << " uy: " << uy << " uz: " << uz << std::endl;
+						 
+			Listener::setForwardX(fx);
+			Listener::setForwardY(fy);
+			Listener::setForwardZ(fz);
+			Listener::setUpX(ux);
+			Listener::setUpY(uy);
+			Listener::setUpZ(uz);
+		}
+	}
+}

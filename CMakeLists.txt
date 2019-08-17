@@ -21,11 +21,16 @@ endif()
 #OpenSceneGraph speicific stuff
 FIND_PACKAGE (OpenSceneGraph REQUIRED COMPONENTS osgUtil osgDB osgText osgGA osgFX osgSim osgViewer )
 
+#for serial data stuff
+set(BOOST_LIBS date_time system)
+find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
+find_package(Threads REQUIRED)
+
 #FreeBSD and linux specific include and libs
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so)
+set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
@@ -40,7 +45,9 @@ set(SOURCES src/osgViewerWX.cpp
 			 src/soundproducer-registry.cpp
 			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp src/HRTF-Test-Dialog.cpp 
 			 src/EditListenerDialog.cpp
+			 src/setup-serial-dialog.cpp
 			 src/openalsoftaudioengine.cpp src/soundproducer.cpp src/listener.cpp
+			 src/external-orientation-device-serial.cpp
 			 
 			 src/timeline-track-editor/src/timeline-frame.cpp
 			 src/timeline-track-editor/src/timeline-window.cpp

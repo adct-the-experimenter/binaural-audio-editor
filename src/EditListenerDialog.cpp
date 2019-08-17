@@ -61,8 +61,16 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
     
     //add checkmark box to determine if listener can roam freely in world or is controlled by listener track
 	checkBoxFreeRoam = new wxCheckBox(this, wxID_ANY, wxT("Free Roam"), wxDefaultPosition, wxSize(30,30));
-	checkBoxFreeRoam->Bind(wxEVT_CHECKBOX, &EditListenerDialog::OnCheckBoxClicked,this);
+	checkBoxFreeRoam->Bind(wxEVT_CHECKBOX, &EditListenerDialog::OnFreeRoamCheckBoxClicked,this);
+	
+	//add checkmark box to determine if listener orientation is controlled by external device or is controlled by listener track
+	checkBoxExternalDeviceOrientation = new wxCheckBox(this, wxID_ANY, wxT("External Device Orientation"), wxDefaultPosition, wxSize(30,30));
+	checkBoxExternalDeviceOrientation->Bind(wxEVT_CHECKBOX, &EditListenerDialog::OnExternalDeviceOrientationCheckBoxClicked,this);
+	
+
+	
 	vboxEdit->Add(checkBoxFreeRoam, 1 , wxEXPAND | wxALL, 1);
+	vboxEdit->Add(checkBoxExternalDeviceOrientation, 1 , wxEXPAND | wxALL, 1);
 	
 	hbox->Add(vboxEdit, 1, wxEXPAND | wxALL, 10);
 	
@@ -102,7 +110,12 @@ EditListenerDialog::EditListenerDialog(const wxString & title, Listener* listene
 		(*textFieldY) << ptrListener->getPositionY();
 		(*textFieldZ) << ptrListener->getPositionZ();
 		
+		
+		tempFreeRoamBool = ptrListener->GetListenerFreeRoamBool();
 		checkBoxFreeRoam->SetValue(ptrListener->GetListenerFreeRoamBool());
+		
+		tempExternalDeviceOrientation = ptrListener->GetListenerExternalDeviceOrientationBool();
+		checkBoxExternalDeviceOrientation->SetValue(ptrListener->GetListenerExternalDeviceOrientationBool());
 	}
 
 	//center and show elements in dialog
@@ -140,13 +153,23 @@ void EditListenerDialog::ChangeListenerAttributes()
 		
 		//change free roam status
 		ptrListener->SetListenerFreeRoamBool(tempFreeRoamBool);
+		
+		//change external device orientation status
+		ptrListener->SetListenerExternalDeviceOrientationBool(tempExternalDeviceOrientation);
+		
 	}
 	
 }
 
-void EditListenerDialog::OnCheckBoxClicked(wxCommandEvent& event)
+void EditListenerDialog::OnFreeRoamCheckBoxClicked(wxCommandEvent& event)
 {
 	tempFreeRoamBool = checkBoxFreeRoam->GetValue();
+}
+
+
+void EditListenerDialog::OnExternalDeviceOrientationCheckBoxClicked(wxCommandEvent& event)
+{
+	tempExternalDeviceOrientation = checkBoxExternalDeviceOrientation->GetValue();
 }
 
 void EditListenerDialog::OnApply(wxCommandEvent& event)
@@ -175,5 +198,6 @@ void EditListenerDialog::Exit()
 	if(textFieldY != nullptr){ delete textFieldY;}
 	if(textFieldZ != nullptr){ delete textFieldZ;}
 	if(checkBoxFreeRoam != nullptr){delete checkBoxFreeRoam;}
+	if(checkBoxExternalDeviceOrientation != nullptr){delete checkBoxExternalDeviceOrientation;}
     Close( true ); //close window
 }

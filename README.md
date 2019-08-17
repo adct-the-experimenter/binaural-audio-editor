@@ -1,3 +1,4 @@
+
 # binaural-audio-editor
 This is an audio application that produces binaural audio from 2D mono/stereo audio samples and positional information given through the graphical user interface. Listen to 3D audio through stereo headphones.
 
@@ -12,6 +13,7 @@ libsndfile http://www.mega-nerd.com/libsndfile/
 
 wxwidgets https://www.wxwidgets.org/
 
+Boost Math Quaternion headers https://www.boost.org/users/history/version_1_70_0.html
 
 # How to Install
 
@@ -44,10 +46,14 @@ wxwidgets https://www.wxwidgets.org/
   
   Use WASD keys to move listener(you) forward, back, left, right. Q key moves listener down. E key moves listener up.
   
-  To use the Listener Track(Group of first 3 tracks with graph) to change position of the listener(you), uncheck Free Roam in EditListener menu. 
+  To use the Listener Track(Group of first 7 tracks with graph) to change position of the listener(you), uncheck Free Roam in EditListener menu. 
   Add points to the graph by left clicking on the graph. Remove points from the graph by right clicking.
+  
+  
   First graph controls the x position, second graph is for y position, third graph is for z position.
   
+  
+  Fourth graph controls w parameter of quaternion rotation, fifth graph controls rotation around x axis, sixth graph controls rotation around y axis, seventh graph controls rotation around z axis.
   
   
   #### Control SoundProducers

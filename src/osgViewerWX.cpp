@@ -196,6 +196,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_PLAY_AUDIO, MainFrame::OnPlayAudio)
     EVT_MENU				(MainFrame::ID_TEST_HRTF, MainFrame::OnTestHRTF)
     EVT_MENU				(MainFrame::ID_LISTENER_EDIT, MainFrame::OnEditListener)
+    EVT_MENU				(MainFrame::ID_SETUP_SERIAL, MainFrame::OnSetupSerial)
     EVT_MENU				(MainFrame::ID_CHANGE_HRTF, MainFrame::OnChangeHRTF)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
@@ -231,9 +232,11 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     wxMenu* menuHRTF = new wxMenu;
     menuHRTF->Append(MainFrame::ID_TEST_HRTF,"&Test HRTF");
     menuHRTF->Append(MainFrame::ID_CHANGE_HRTF, "&Change HRTF");
+    
     //create listener menu item
     wxMenu* menuListener = new wxMenu;
     menuListener->Append(MainFrame::ID_LISTENER_EDIT,"&Edit Listener");
+    menuListener->Append(MainFrame::ID_SETUP_SERIAL,"&Setup Serial");
     
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
@@ -265,10 +268,16 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	double end = 10.0f; //highest value
 	int numTicks = 11; //number of ticks between lowest value and highest value including zero
 	double resolution = 1; //the fineness of how much variable can be incremented/decremented by
-	 
+	
+	double ostart = -1; 
+	double oend = 1;
+	double oresolution = 0.1;
+	
 	//initialize listener track
 	m_listener_track->InitTrack(timeFrame,nullptr);
-	m_listener_track->SetupAxisForVariable(start,end,resolution,numTicks);
+	m_listener_track->SetupAxisForPositionVariable(start,end,resolution,numTicks);
+	
+	m_listener_track->SetupAxisForOrientationVariable(ostart,oend,oresolution,numTicks);
 	
 	//add block of space between Timeline Ruler and Sound Producer Track
 	timeFrame->AddSpacerBlock(40);
@@ -280,9 +289,64 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	timeFrame->AddBoxSizer(hboxTextListener);
 	
 	//add x,y,z tracks of ListenerTrack to time frame
+	
+	//add label for x track 
+	wxBoxSizer* hboxLXText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textLX = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Listener X Position"),wxDefaultPosition );
+	hboxLXText->Add(textLX);
+	timeFrame->AddBoxSizer(hboxLXText);
+	
 	timeFrame->AddTrack(m_listener_track->GetReferenceToXTrack(),space);
+	
+	//add label for y track 
+	wxBoxSizer* hboxLYText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textLY = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Listener Y Position"),wxDefaultPosition );
+	hboxLYText->Add(textLY);
+	timeFrame->AddBoxSizer(hboxLYText);
+	
 	timeFrame->AddTrack(m_listener_track->GetReferenceToYTrack(),space);
+	
+	//add label for z track 
+	wxBoxSizer* hboxLZText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textLZ = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Listener Z Position"),wxDefaultPosition );
+	hboxLZText->Add(textLZ);
+	timeFrame->AddBoxSizer(hboxLZText);
+	
 	timeFrame->AddTrack(m_listener_track->GetReferenceToZTrack(),space);
+	
+	//add quat w,x,y,z tracks of ListenerTrack to time frame
+	
+	//add label for w quat track 
+	wxBoxSizer* hboxLQWText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textLQW = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Listener Quaternion W"),wxDefaultPosition );
+	hboxLQWText->Add(textLQW);
+	timeFrame->AddBoxSizer(hboxLQWText);
+	
+	timeFrame->AddTrack(m_listener_track->GetReferenceToQuatWTrack(),space);
+	
+	//add label for x quat track 
+	wxBoxSizer* hboxLQXText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textLQX = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Listener Quaternion X"),wxDefaultPosition );
+	hboxLQXText->Add(textLQX);
+	timeFrame->AddBoxSizer(hboxLQXText);
+	
+	timeFrame->AddTrack(m_listener_track->GetReferenceToQuatXTrack(),space);
+	
+	//add label for y quat track 
+	wxBoxSizer* hboxLQYText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textLQY = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Listener Quaternion Y"),wxDefaultPosition );
+	hboxLQYText->Add(textLQY);
+	timeFrame->AddBoxSizer(hboxLQYText);
+	
+	timeFrame->AddTrack(m_listener_track->GetReferenceToQuatYTrack(),space);
+	
+	//add label for z quat track 
+	wxBoxSizer* hboxLQZText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textLQZ = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Listener Quaternion Z"),wxDefaultPosition );
+	hboxLQZText->Add(textLQZ);
+	timeFrame->AddBoxSizer(hboxLQZText);
+	
+	timeFrame->AddTrack(m_listener_track->GetReferenceToQuatZTrack(),space);
 	
 	//add special soundproducertrack function to call during playback
 	//it will also call x,y,z track playback functions
@@ -335,8 +399,22 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	hboxButtonText->Add(browseButton);
 	timeFrame->AddBoxSizer(hboxButtonText);
 	
-	//add left channel track and right channel track to time frame
+	//add label for left channel audio
+	wxBoxSizer* hboxAudioLeftText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textAudioLeft = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Left Channel Audio"),wxDefaultPosition );
+	hboxAudioLeftText->Add(textAudioLeft);
+	timeFrame->AddBoxSizer(hboxAudioLeftText);
+	
+	//add left channel track to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->GetReferenceToLeftChannelTrack(),space);
+	
+	//add label for right channel audio
+	wxBoxSizer* hboxAudioRightText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textAudioRight = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Right Channel Audio"),wxDefaultPosition );
+	hboxAudioRightText->Add(textAudioRight);
+	timeFrame->AddBoxSizer(hboxAudioRightText);
+	
+	//add right channel track to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->GetReferenceToRightChannelTrack(),space);
 	
 	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec[0]);
@@ -347,8 +425,29 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
+	
+	//add label for x track 
+	wxBoxSizer* hboxXText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textX = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("X"),wxDefaultPosition );
+	hboxXText->Add(textX);
+	timeFrame->AddBoxSizer(hboxXText);
+	
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToXTrack(),space);
+	
+	//add label for y track 
+	wxBoxSizer* hboxYText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textY = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Y"),wxDefaultPosition );
+	hboxYText->Add(textY);
+	timeFrame->AddBoxSizer(hboxYText);
+	
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToYTrack(),space);
+	
+	//add label for z track 
+	wxBoxSizer* hboxZText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textZ = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Z"),wxDefaultPosition );
+	hboxZText->Add(textZ);
+	timeFrame->AddBoxSizer(hboxZText);
+	
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToZTrack(),space);
 	
 	//add block of space between Sound Producer Track and bottom of window, also extends height of window
@@ -525,6 +624,17 @@ void MainFrame::OnEditListener(wxCommandEvent& event)
     editListenerDialog->Show(true);
 }
 
+void MainFrame::OnSetupSerial(wxCommandEvent& event)
+{
+	if(listenerPtr == nullptr){std::cout << "Listener Raw Pointer is null in OnSetupSerial. \n";}
+	
+	std::unique_ptr <SetupSerialDialog> setupSerialDialog(new SetupSerialDialog( wxT("Setup Serial"),
+																		listenerPtr)
+															);
+																				
+    setupSerialDialog->Show(true);
+}
+
 void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
 {
 	//move remove sound producer track button to top of new sound producer track
@@ -611,8 +721,22 @@ void MainFrame::CreateNewSoundProducerTrack()
 	hboxButtonText->Add(browseButton);
 	timeFrame->AddBoxSizer(hboxButtonText);
 	
-	//add left channel track and right channel track to time frame
+	//add label for left channel audio
+	wxBoxSizer* hboxAudioLeftText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textAudioLeft = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Left Channel Audio"),wxDefaultPosition );
+	hboxAudioLeftText->Add(textAudioLeft);
+	timeFrame->AddBoxSizer(hboxAudioLeftText);
+	
+	//add left channel track to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->GetReferenceToLeftChannelTrack(),space);
+	
+	//add label for right channel audio
+	wxBoxSizer* hboxAudioRightText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textAudioRight = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Right Channel Audio"),wxDefaultPosition );
+	hboxAudioRightText->Add(textAudioRight);
+	timeFrame->AddBoxSizer(hboxAudioRightText);
+	
+	//add right channel track to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->GetReferenceToRightChannelTrack(),space);
 	
 	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
@@ -622,8 +746,29 @@ void MainFrame::CreateNewSoundProducerTrack()
 	timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
+	
+	//add label for x track 
+	wxBoxSizer* hboxXText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textX = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("X"),wxDefaultPosition );
+	hboxXText->Add(textX);
+	timeFrame->AddBoxSizer(hboxXText);
+	
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToXTrack(),space);
+	
+	//add label for y track 
+	wxBoxSizer* hboxYText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textY = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Y"),wxDefaultPosition );
+	hboxYText->Add(textY);
+	timeFrame->AddBoxSizer(hboxYText);
+	
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToYTrack(),space);
+	
+	//add label for z track 
+	wxBoxSizer* hboxZText = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText *textZ = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Z"),wxDefaultPosition );
+	hboxZText->Add(textZ);
+	timeFrame->AddBoxSizer(hboxZText);
+	
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToZTrack(),space);
 	
 	//add block of space between Sound Producer Track and bottom of window, also extends height of window
@@ -635,8 +780,8 @@ void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 	size_t itemCount = 	timeFrame->GetTimelineWindow()->GetSizer()->GetItemCount();
 	std::cout << "\nItem Count: " << itemCount << std::endl;
 	
-	//if item count is more than 13, which means the initial items to not be deleted are in the timeline window.
-	if(itemCount > 16)
+	//if item count is more than 25, which means the initial items to not be deleted are in the timeline window.
+	if(itemCount > 33)
 	{
 		//remove x,y,z tracks of soundproducer track added to timelinewindow
 		//and remove the combo box and text label
@@ -649,6 +794,11 @@ void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-8);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-9);
 		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-10);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-11);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-12);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-13);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-14);
+		timeFrame->GetTimelineWindow()->GetSizer()->Remove(itemCount-15);
 		
 		//resize frame properly
 		timeFrame->Layout();

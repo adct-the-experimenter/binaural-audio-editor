@@ -58,6 +58,7 @@
 #include "EditMultipleSoundProducersDialog.h"
 #include "HRTF-Test-Dialog.h"
 #include "EditListenerDialog.h"
+#include "setup-serial-dialog.h"
 
 #include "openalsoftaudioengine.h"
 
@@ -189,7 +190,8 @@ private:
 		ID_PLAY_AUDIO,
 		ID_TEST_HRTF,
 		ID_CHANGE_HRTF,
-		ID_LISTENER_EDIT
+		ID_LISTENER_EDIT,
+		ID_SETUP_SERIAL
 	};
     
     osg::ref_ptr<osgViewer::Viewer> _viewer;
@@ -213,6 +215,7 @@ private:
 	void OnTestHRTF(wxCommandEvent& event); //function for menu to test HRTF and get results
 	void OnChangeHRTF(wxCommandEvent& event); //function for menu to instruct how to change HRTF with alsoft-config
     void OnEditListener(wxCommandEvent& event); //function for menu to edit listener position and orientation
+    void OnSetupSerial(wxCommandEvent& event); //function for menu to setup serial communication
     
     SoundProducerRegistry soundproducer_registry;
     
