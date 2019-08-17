@@ -33,10 +33,10 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title, Ope
 								validator,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	textFieldSoundFilePath = new wxTextCtrl(this,-1, "", 
-								wxPoint(95, 140), wxSize(80,20),
-								wxTE_READONLY, wxDefaultValidator,       
-								wxT("")); 
+	//textFieldSoundFilePath = new wxTextCtrl(this,-1, "", 
+	//							wxPoint(95, 140), wxSize(80,20),
+	//							wxTE_READONLY, wxDefaultValidator,       
+	//							wxT("")); 
 	
 	//initialize text to the left of fields
 	wxStaticText* NameText = new wxStaticText(this, -1, wxT("Name :"), wxPoint(40, 20));
@@ -44,11 +44,11 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title, Ope
 	wxStaticText* xPositionText = new wxStaticText(this, -1, wxT("X :"), wxPoint(40, 60));
 	wxStaticText* yPositionText = new wxStaticText(this, -1, wxT("Y :"), wxPoint(40, 80));
 	wxStaticText* zPositionText = new wxStaticText(this, -1, wxT("Z :"), wxPoint(40, 100));
-    wxStaticText* SoundText = new wxStaticText(this, -1, wxT("Sound File :"), wxPoint(20, 120));
+    //wxStaticText* SoundText = new wxStaticText(this, -1, wxT("Sound File :"), wxPoint(20, 120));
     
     //initialize browse button
-    browseButton = new wxButton(this, CreateSoundProducerDialog::ID_BROWSE, wxT("Browse"), 
-							wxPoint(110,140), wxSize(70, 30));
+    //browseButton = new wxButton(this, CreateSoundProducerDialog::ID_BROWSE, wxT("Browse"), 
+	//						wxPoint(110,140), wxSize(70, 30));
     
     //initialize Ok and Cancel buttons 
 	okButton = new wxButton(this, CreateSoundProducerDialog::ID_OK, wxT("Ok"), 
@@ -94,12 +94,12 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title, Ope
 	
 	vbox->Add(hboxZ,1, wxEXPAND | wxALL, 10);
 	
-	wxBoxSizer *hboxSoundFile = new wxBoxSizer(wxHORIZONTAL);
-	hboxSoundFile->Add(SoundText);
-	hboxSoundFile->Add(textFieldSoundFilePath);
-	hboxSoundFile->Add(browseButton);
+	//wxBoxSizer *hboxSoundFile = new wxBoxSizer(wxHORIZONTAL);
+	//hboxSoundFile->Add(SoundText);
+	//hboxSoundFile->Add(textFieldSoundFilePath);
+	//hboxSoundFile->Add(browseButton);
 	
-	vbox->Add(hboxSoundFile,1, wxEXPAND | wxALL, 10);
+	//vbox->Add(hboxSoundFile,1, wxEXPAND | wxALL, 10);
 	
 	vbox->Add(hbox5, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
 

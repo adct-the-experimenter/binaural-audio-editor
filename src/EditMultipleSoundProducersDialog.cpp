@@ -81,13 +81,13 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	wxBoxSizer *hBoxSound = new wxBoxSizer(wxHORIZONTAL);
 	
 	//initialize browse button
-    browseButton = new wxButton(this, EditMultipleSoundProducersDialog::ID_BROWSE, wxT("Browse"), 
-							wxPoint(110,140), wxSize(70, 30));
+    //browseButton = new wxButton(this, EditMultipleSoundProducersDialog::ID_BROWSE, wxT("Browse"), 
+	//						wxPoint(110,140), wxSize(70, 30));
 	//initialize text field for sound
-	textFieldSoundFilePath = new wxTextCtrl(this,-1, "", 
-		wxPoint(95, 140), wxSize(80,20),
-		wxTE_READONLY, wxDefaultValidator,       
-		wxT("Sound")); 
+	//textFieldSoundFilePath = new wxTextCtrl(this,-1, "", 
+	//	wxPoint(95, 140), wxSize(80,20),
+	//	wxTE_READONLY, wxDefaultValidator,       
+	//	wxT("Sound")); 
 	
 	hBoxSound->Add(textFieldSoundFilePath);						
 	hBoxSound->Add(browseButton); //add browse button to 
@@ -194,7 +194,7 @@ void EditMultipleSoundProducersDialog::ChangeSoundProducerAttributes()
 		thisSoundProducer->SetPositionZ(zPosition);
 		//change sound attributes, if they have been changed in menu
 		if(buffer != 0){thisSoundProducer->setBuffer(buffer);}
-		if(soundFilePath != " "){thisSoundProducer->setFilepathToSound(soundFilePath);}
+		//if(soundFilePath != " "){thisSoundProducer->setFilepathToSound(soundFilePath);}
 	}
 	
 }
@@ -227,7 +227,7 @@ void EditMultipleSoundProducersDialog::Exit()
 	if(textFieldX != nullptr){ delete textFieldX;}
 	if(textFieldY != nullptr){ delete textFieldY;}
 	if(textFieldZ != nullptr){ delete textFieldZ;}
-    if(textFieldSoundFilePath != nullptr){delete textFieldSoundFilePath;}
+    //if(textFieldSoundFilePath != nullptr){delete textFieldSoundFilePath;}
     if(listbox != nullptr){delete listbox;}
     Close( true ); //close window
 }
@@ -254,8 +254,8 @@ void EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox(wxCommandE
 		(*textFieldX) << thisSoundProducer->GetPositionX();
 		(*textFieldY) << thisSoundProducer->GetPositionY();
 		(*textFieldZ) << thisSoundProducer->GetPositionZ();
-		wxString thisPath(thisSoundProducer->getFilepathToSound());
-		textFieldSoundFilePath->WriteText(thisPath);
+		//wxString thisPath(thisSoundProducer->getFilepathToSound());
+		//textFieldSoundFilePath->WriteText(thisPath);
 	}
 }
 

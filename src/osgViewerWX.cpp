@@ -244,7 +244,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     menuBar->Append(menuListener, "&Listener"); //connecte listener menu item to bar
     menuBar->Append( menuSoundProducers, "&Sound Producers"); //connect Sound Producers menu item to bar
     menuBar->Append( menuHRTF, "&HRTF"); //connect HRTF menu item to bar
-    menuBar->Append( menuPlayback, "&Playback"); //connect Playback menu item to bar
+    //menuBar->Append( menuPlayback, "&Playback"); //connect Playback menu item to bar
     menuBar->Append( menuHelp, "&Help" ); //connect help menu item  to bar
 
     SetMenuBar( menuBar );
