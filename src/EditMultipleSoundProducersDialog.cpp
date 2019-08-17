@@ -78,7 +78,7 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	hbox->Add(vboxEdit, 1, wxEXPAND | wxALL, 10);
 	
 	//make horizontal box to display info for browse and sound file text field
-	wxBoxSizer *hBoxSound = new wxBoxSizer(wxHORIZONTAL);
+	//wxBoxSizer *hBoxSound = new wxBoxSizer(wxHORIZONTAL);
 	
 	//initialize browse button
     //browseButton = new wxButton(this, EditMultipleSoundProducersDialog::ID_BROWSE, wxT("Browse"), 
@@ -89,10 +89,10 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	//	wxTE_READONLY, wxDefaultValidator,       
 	//	wxT("Sound")); 
 	
-	hBoxSound->Add(textFieldSoundFilePath);						
-	hBoxSound->Add(browseButton); //add browse button to 
+	//hBoxSound->Add(textFieldSoundFilePath);						
+	//hBoxSound->Add(browseButton); //add browse button to 
 	
-	hbox->Add(hBoxSound, 1, wxEXPAND | wxALL, 10);
+	//hbox->Add(hBoxSound, 1, wxEXPAND | wxALL, 10);
 	
 	
 	//initialize Ok and Cancel buttons 
@@ -182,19 +182,24 @@ void EditMultipleSoundProducersDialog::ChangeSoundProducerAttributes()
 	
 	if(sound_producer_vector_ref != nullptr)
 	{
-		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(selection_index).get();
+		if(sound_producer_vector_ref->size() > 0)
+		{
+			SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(selection_index).get();
 		
-		//change position of selected sound producer based on what is in textfields
-		double xPosition, yPosition, zPosition;
-		( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
-		( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
-		( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
-		thisSoundProducer->SetPositionX(xPosition);
-		thisSoundProducer->SetPositionY(yPosition);
-		thisSoundProducer->SetPositionZ(zPosition);
-		//change sound attributes, if they have been changed in menu
-		if(buffer != 0){thisSoundProducer->setBuffer(buffer);}
-		//if(soundFilePath != " "){thisSoundProducer->setFilepathToSound(soundFilePath);}
+			//change position of selected sound producer based on what is in textfields
+			double xPosition, yPosition, zPosition;
+			( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
+			( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
+			( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+			thisSoundProducer->SetPositionX(xPosition);
+			thisSoundProducer->SetPositionY(yPosition);
+			thisSoundProducer->SetPositionZ(zPosition);
+			//change sound attributes, if they have been changed in menu
+			if(buffer != 0){thisSoundProducer->setBuffer(buffer);}
+			//if(soundFilePath != " "){thisSoundProducer->setFilepathToSound(soundFilePath);}
+			
+		}
+		
 	}
 	
 }
@@ -223,7 +228,7 @@ void EditMultipleSoundProducersDialog::Exit()
 {
 	if(okButton != nullptr){ delete okButton;}
 	if(cancelButton != nullptr){delete cancelButton;}
-	if(browseButton != nullptr){delete browseButton;}
+	//if(browseButton != nullptr){delete browseButton;}
 	if(textFieldX != nullptr){ delete textFieldX;}
 	if(textFieldY != nullptr){ delete textFieldY;}
 	if(textFieldZ != nullptr){ delete textFieldZ;}
@@ -268,5 +273,5 @@ BEGIN_EVENT_TABLE(EditMultipleSoundProducersDialog, wxDialog)
     EVT_BUTTON				(ID_APPLY, EditMultipleSoundProducersDialog::onApply)
     EVT_LISTBOX				(ID_LISTBOX,  EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox)
     
-    EVT_BUTTON				(ID_BROWSE, EditMultipleSoundProducersDialog::OnBrowse)
+    //EVT_BUTTON				(ID_BROWSE, EditMultipleSoundProducersDialog::OnBrowse)
 END_EVENT_TABLE()

@@ -37,8 +37,7 @@ public:
 		ID_APPLY,
 		ID_CANCEL,
 		ID_RENAME,
-		ID_LISTBOX,
-		ID_BROWSE
+		ID_LISTBOX
 	};
 	
 	
