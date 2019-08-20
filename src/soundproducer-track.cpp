@@ -56,7 +56,7 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 {
 	//std::cout << "FunctionToCall called in SoundProducerTrack \n";
 	
-	audioTrack->FunctionToCallInPlayState();
+	//change position
 	xTrack->FunctionToCallInPlayState();
 	yTrack->FunctionToCallInPlayState();
 	zTrack->FunctionToCallInPlayState();
@@ -70,6 +70,9 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 			soundProducerToManipulatePtr->SetPositionZ(tempZ);
 		}
 	}
+	
+	//play audio
+	audioTrack->FunctionToCallInPlayState();
 }
 
 void SoundProducerTrack::FunctionToCallInPauseState()
