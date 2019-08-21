@@ -96,6 +96,11 @@ void ListenerTrack::FunctionToCallInPlayState()
 				boost::math::quaternion <float> rotated_up_vector_quaternion; 
 				rotated_up_vector_quaternion = rotation_quaternion * up_vector_quaternion * conjugate_rotation_quaternion;
 				
+				//remap values for binaural audio editor
+				//y in binaural audio editor = z in regular cartesian
+				//x in binaural audio editor = y in regular cartesian
+				//z in binaural audio editor = x in regular cartesian
+				
 				//set new forward direction vector
 				
 				float thisForwardX = rotated_forward_vector_quaternion.R_component_2();
