@@ -73,7 +73,7 @@ SetupSerialDialog::SetupSerialDialog(const wxString & title, ListenerExternal* l
 
 void SetupSerialDialog::initPrivateVariables()
 {
-	ptrListener = nullptr;
+	ptrListenerExternal = nullptr;
 	textFieldSerialPort = nullptr;
 	
 	setupButton = nullptr; okButton = nullptr; cancelButton = nullptr;
@@ -81,9 +81,9 @@ void SetupSerialDialog::initPrivateVariables()
 
 void SetupSerialDialog::ChangeListenerAttributes()
 {	
-	if(ptrListener != nullptr)
+	if(ptrListenerExternal != nullptr)
 	{
-		ptrListener->SetSerialPortPath(textFieldSerialPort->GetLineText(0).ToStdString());
+		ptrListenerExternal->SetSerialPortPath(textFieldSerialPort->GetLineText(0).ToStdString());
 	}
 	
 }
@@ -96,6 +96,7 @@ void SetupSerialDialog::OnSetup(wxCommandEvent& event)
 		{
 			if(!ptrListenerExternal->GetExternalOrientationSerialDevicePtr()->GetDeviceInitializedBool())
 			{
+				ptrListenerExternal->SetSerialPortPath(textFieldSerialPort->GetLineText(0).ToStdString());
 				ptrListenerExternal->GetExternalOrientationSerialDevicePtr()->InitSerialCommunication(textFieldSerialPort->GetLineText(0).ToStdString(),9600);
 			}
 		}

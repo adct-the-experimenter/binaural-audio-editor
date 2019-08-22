@@ -73,9 +73,6 @@ class Listener
 		
 		osg::PositionAttitudeTransform* getTransformNode();
 		
-		void SetSerialPortPath(std::string port);
-		std::string GetSerialPortPath();
-		
 		
 	private:
 		//bool to indicate if the listener position can be changed freely by user or by listener track

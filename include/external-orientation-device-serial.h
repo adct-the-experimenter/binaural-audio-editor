@@ -10,6 +10,9 @@
 #include <wx/wx.h>
 #include <wx/timer.h>
 
+#include "listener.h"
+
+
 class ExternalOrientationDeviceSerial
 {
 
@@ -39,10 +42,11 @@ private:
 class ExternalDeviceRepeatTimer : public wxTimer
 {
 public:
-    ExternalDeviceRepeatTimer(ExternalOrientationDeviceSerial* device);
+    ExternalDeviceRepeatTimer(ExternalOrientationDeviceSerial* device,Listener* thisListener);
     void Notify(); //action to take periodically after certain amount of time defined
     void start();
 
+	void FunctionToRepeat();
 	
 private:
 	ExternalOrientationDeviceSerial* m_device;

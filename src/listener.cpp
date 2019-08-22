@@ -9,14 +9,11 @@ Listener::Listener()
     listener_orientation_vector.resize(6);
     
     Listener::initListener();   
-
-	serialPortPath = "";
 }
 
 Listener::~Listener()
 {
 	std::cout << "Listener destructor called! \n";
-	delete m_ext_orientation_serial_device_ptr;
 }
 
 void Listener::initListener()
@@ -233,9 +230,6 @@ bool Listener::GetListenerFreeRoamBool(){return freeRoamByUser;}
 
 void Listener::SetListenerExternalDeviceOrientationBool(bool thisBool){orientationByExternalDevice = thisBool;}
 bool Listener::GetListenerExternalDeviceOrientationBool(){return orientationByExternalDevice;}
-
-void Listener::SetSerialPortPath(std::string port){serialPortPath = port;}
-std::string Listener::GetSerialPortPath(){return serialPortPath;}
 
 
 

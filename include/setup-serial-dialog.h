@@ -10,7 +10,6 @@
 
 #include <wx/checkbox.h>
 
-#include "listener.h"
 #include "listener-external.h"
 
 class SetupSerialDialog : public wxDialog
