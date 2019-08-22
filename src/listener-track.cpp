@@ -124,14 +124,7 @@ void ListenerTrack::FunctionToCallInPlayState()
 				if(listenerToManipulatePtr->getUpZ() != thisUpZ){listenerToManipulatePtr->setUpZ(thisUpZ);}
 				
 			}
-		}
-		//else if listener orientation is controlled by external device
-		else
-		{
-			//std::cout << "listener orientation by external device called! \n";
-			listenerToManipulatePtr->SetOrientationByExternalDevice();
-		}
-			
+		}	
 			
 	}
 }

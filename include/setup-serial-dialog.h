@@ -11,12 +11,13 @@
 #include <wx/checkbox.h>
 
 #include "listener.h"
+#include "listener-external.h"
 
 class SetupSerialDialog : public wxDialog
 {
 
 public:
-	SetupSerialDialog(const wxString& title,Listener* listener);
+	SetupSerialDialog(const wxString& title,ListenerExternal* listener_ext);
 	
 	
 	void OnOk(wxCommandEvent& event );
@@ -37,7 +38,7 @@ private:
 	
 	wxTextCtrl* textFieldSerialPort;
 	
-	Listener* ptrListener;
+	ListenerExternal* ptrListenerExternal;
 	
 	void initPrivateVariables(); 
 	

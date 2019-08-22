@@ -94,3 +94,19 @@ void ExternalOrientationDeviceSerial::ReadOrientationParametersFromSerial(float*
 		//if(listenerToManipulatePtr->getUpY() != thisUpY){listenerToManipulatePtr->setUpY(thisUpY);
 	}
 }
+
+ExternalDeviceRepeatTimer::ExternalDeviceRepeatTimer(ExternalOrientationDeviceSerial* device, Listener* listener) : wxTimer()
+{
+    m_device = device;
+    m_listener_ptr = listener;
+}
+
+void ExternalDeviceRepeatTimer::Notify()
+{
+     
+}
+
+void ExternalDeviceRepeatTimer::start()
+{
+    wxTimer::Start(250,wxTIMER_CONTINUOUS); //the timer calls Notify every 250 milliseconds
+}
