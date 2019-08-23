@@ -143,6 +143,7 @@ void EditMultipleSoundProducersDialog::initPrivateVariables()
 	buffer = 0;
 }
 
+/*
 void EditMultipleSoundProducersDialog::OnBrowse(wxCommandEvent& event)
 {
 	wxFileDialog fileDlg(this, _("Choose the WAV file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|All files|*.*"));
@@ -175,6 +176,7 @@ void EditMultipleSoundProducersDialog::OnBrowse(wxCommandEvent& event)
 		
 	}   
 }
+*/
 
 void EditMultipleSoundProducersDialog::ChangeSoundProducerAttributes()
 {
@@ -253,7 +255,7 @@ void EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox(wxCommandE
 		textFieldY->Clear();
 		textFieldZ->Clear();
 		
-		textFieldSoundFilePath->Clear();
+		//textFieldSoundFilePath->Clear();
 		
 		//update position text fields to have current position of sound producer selected
 		(*textFieldX) << thisSoundProducer->GetPositionX();
