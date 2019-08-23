@@ -7,6 +7,12 @@
 
 #include <iostream>
 
+#include <wx/wx.h>
+#include <wx/timer.h>
+
+#include "listener.h"
+
+
 class ExternalOrientationDeviceSerial
 {
 
@@ -29,6 +35,27 @@ private:
 	//quaternions for intial forward vector and up vector directions
 	boost::math::quaternion <float> forward_vector_quaternion;
 	boost::math::quaternion <float> up_vector_quaternion;
+
 };
+
+//class to use with mainframe
+class ExternalDeviceRepeatTimer : public wxTimer
+{
+public:
+    ExternalDeviceRepeatTimer(ExternalOrientationDeviceSerial* device,Listener* thisListener);
+    void Notify(); //action to take periodically after certain amount of time defined
+    void start();
+
+	void FunctionToRepeat();
+	
+private:
+	ExternalOrientationDeviceSerial* m_device;
+	Listener* m_listener_ptr;
+	bool reading_values;
+	
+	void SetReadingValuesBool(bool state);
+	bool GetReadingValuesBool();
+};
+
 
 #endif

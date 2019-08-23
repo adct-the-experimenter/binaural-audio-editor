@@ -9,16 +9,11 @@ Listener::Listener()
     listener_orientation_vector.resize(6);
     
     Listener::initListener();   
-
-	serialPortPath = "";
-	
-	m_ext_orientation_serial_device_ptr = new ExternalOrientationDeviceSerial();
 }
 
 Listener::~Listener()
 {
 	std::cout << "Listener destructor called! \n";
-	delete m_ext_orientation_serial_device_ptr;
 }
 
 void Listener::initListener()
@@ -116,7 +111,6 @@ float Listener::getPositionX(){return listener_position_vector[POSITION_INDEX::X
 void Listener::setPositionY(float& y)
 {
 	listener_position_vector[POSITION_INDEX::Y] = y;
-	
 	Listener::setListenerPosition();
 } 
 
@@ -188,6 +182,12 @@ void Listener::setUpZ(float& z)
 
 float Listener::getUpZ(){return listener_orientation_vector[ORIENTATION_INDEX::UP_Z];}
 
+void Listener::SetWholeOrientation(float& fx, float& fy, float& fz, float& ux, float& uy, float& uz)
+{
+	listener_orientation_vector.assign( {fx,fy,fz,ux,uy,uz} );
+	Listener::setListenerOrientation();
+}
+
 osg::ShapeDrawable* Listener::getRenderObject(){return m_renderObject;}
 
 osg::Geode* Listener::getGeodeNode(){return m_geode;}
@@ -236,30 +236,5 @@ bool Listener::GetListenerFreeRoamBool(){return freeRoamByUser;}
 void Listener::SetListenerExternalDeviceOrientationBool(bool thisBool){orientationByExternalDevice = thisBool;}
 bool Listener::GetListenerExternalDeviceOrientationBool(){return orientationByExternalDevice;}
 
-void Listener::SetSerialPortPath(std::string port){serialPortPath = port;}
-std::string Listener::GetSerialPortPath(){return serialPortPath;}
 
-ExternalOrientationDeviceSerial* Listener::GetExternalOrientationSerialDevicePtr(){return m_ext_orientation_serial_device_ptr;}
 
-void Listener::SetOrientationByExternalDevice()
-{
-	if(m_ext_orientation_serial_device_ptr)
-	{
-		//if device is initialized
-		if(m_ext_orientation_serial_device_ptr->GetDeviceInitializedBool())
-		{
-			float fx,fy,fz,ux,uy,uz;
-			
-			m_ext_orientation_serial_device_ptr->ReadOrientationParametersFromSerial(&fx,&fy,&fz,&ux,&uy,&uz);
-			std::cout << "fx: " << fx << " fy: " << fy << " fz: " << fz << "\n" << \
-					" ux: " << ux << " uy: " << uy << " uz: " << uz << std::endl;
-						 
-			Listener::setForwardX(fx);
-			Listener::setForwardY(fy);
-			Listener::setForwardZ(fz);
-			Listener::setUpX(ux);
-			Listener::setUpY(uy);
-			Listener::setUpZ(uz);
-		}
-	}
-}

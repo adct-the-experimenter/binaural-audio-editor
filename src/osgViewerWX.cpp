@@ -81,6 +81,9 @@ bool wxOsgApp::OnInit()
 		//connect mainframe to listener
 		frame->SetListenerReference(listener.get());
 		
+		//connect mainframe to external listener
+		frame->SetListenerExternalReference(listenerExternal.get());
+
 		//connect mainframe to soundproducer vector
 		frame->SetSoundProducerVectorRef(&sound_producer_vector);
 		
@@ -128,6 +131,14 @@ void wxOsgApp::initListener()
 		
 		//add position attitude transform to root node group
 		rootNode->addChild(listener->getTransformNode());
+		
+		//initialize listener external
+		if(listener.get() != nullptr)
+		{
+			std::unique_ptr <ListenerExternal> thisListenerExternal( new ListenerExternal(listener.get()) );
+			listenerExternal = std::move(thisListenerExternal);
+		}
+		
 		
 		init_listener_once = true;		
 	}
@@ -490,6 +501,12 @@ void MainFrame::SetListenerReference(Listener* thisListener)
 	m_listener_track->SetReferenceToListenerToManipulate(listenerPtr);
 }
 
+void MainFrame::SetListenerExternalReference(ListenerExternal* thisListenerExternal)
+{
+	listenerExternalPtr = thisListenerExternal;
+	m_listener_track->SetReferenceToExternalListener(thisListenerExternal);
+}
+
 void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}
 
 void MainFrame::OnIdle(wxIdleEvent &event)
@@ -629,7 +646,7 @@ void MainFrame::OnSetupSerial(wxCommandEvent& event)
 	if(listenerPtr == nullptr){std::cout << "Listener Raw Pointer is null in OnSetupSerial. \n";}
 	
 	std::unique_ptr <SetupSerialDialog> setupSerialDialog(new SetupSerialDialog( wxT("Setup Serial"),
-																		listenerPtr)
+																		listenerExternalPtr)
 															);
 																				
     setupSerialDialog->Show(true);

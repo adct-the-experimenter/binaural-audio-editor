@@ -51,6 +51,7 @@
 
 #include "soundproducer.h"
 #include "listener.h"
+#include "listener-external.h"
 
 #include "soundproducer-registry.h"
 
@@ -165,7 +166,7 @@ public:
     void SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector);
     void SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine);
     void SetListenerReference(Listener* listener);
-    
+    void SetListenerExternalReference(ListenerExternal* listenerExt);
     // Mainframe menu operations
     
     void OnOpen(wxCommandEvent& WXUNUSED(event));
@@ -202,6 +203,8 @@ private:
 	std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ref;
 	
 	Listener* listenerPtr;
+	ListenerExternal* listenerExternalPtr;
+	
 	ListenerTrack* m_listener_track;
 	
 	TimelineFrame *timeFrame;
@@ -249,6 +252,7 @@ private:
 	OpenAlSoftAudioEngine audio_engine; //class abstraction to handle playing binaural 3D audio
 	
 	std::unique_ptr <Listener> listener;
+	std::unique_ptr <ListenerExternal> listenerExternal;
 	void initListener();
 	
 	osg::ref_ptr<osgGA::TrackballManipulator> cameraManipulator; //pointer to camera manipulator

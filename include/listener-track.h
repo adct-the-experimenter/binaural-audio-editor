@@ -6,6 +6,7 @@
 
 #include "listener.h"
 #include "double-track.h"
+#include "listener-external.h"
 
 #include <memory>
 #include <wx/combobox.h>
@@ -33,6 +34,7 @@ public:
 	
 	//Listener Editing
 	void SetReferenceToListenerToManipulate(Listener* thisListener);
+	void SetReferenceToExternalListener(ListenerExternal* thisListenerExt);
 	
 	//Double Track related functions
 	void SetupAxisForPositionVariable(double& start, double& end, double& resolution, int& numTick);
@@ -64,6 +66,7 @@ public:
 	
 private:
 	Listener* listenerToManipulatePtr;
+	ListenerExternal* listenerExternalPtr;
 	
 	DoubleTrack* xTrack;
 	DoubleTrack* yTrack;

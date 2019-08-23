@@ -1,6 +1,6 @@
 #include "setup-serial-dialog.h"
 
-SetupSerialDialog::SetupSerialDialog(const wxString & title, Listener* listener)
+SetupSerialDialog::SetupSerialDialog(const wxString & title, ListenerExternal* listenerext)
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
 {
 	
@@ -55,12 +55,12 @@ SetupSerialDialog::SetupSerialDialog(const wxString & title, Listener* listener)
 	SetSizerAndFit(vbox);
 	
 	//update position text fields and checkbox to have current properties of listener 
-	ptrListener = listener;
-	if(ptrListener == nullptr){std::cout << "listener pointer is nullptr! \n";}
+	ptrListenerExternal = listenerext;
+	if(ptrListenerExternal == nullptr){std::cout << "listener external pointer is nullptr! \n";}
 	else
 	{
 		
-		(*textFieldSerialPort) << ptrListener->GetSerialPortPath();
+		(*textFieldSerialPort) << ptrListenerExternal->GetSerialPortPath();
 	}
 
 	//center and show elements in dialog
@@ -73,7 +73,7 @@ SetupSerialDialog::SetupSerialDialog(const wxString & title, Listener* listener)
 
 void SetupSerialDialog::initPrivateVariables()
 {
-	ptrListener = nullptr;
+	ptrListenerExternal = nullptr;
 	textFieldSerialPort = nullptr;
 	
 	setupButton = nullptr; okButton = nullptr; cancelButton = nullptr;
@@ -81,22 +81,23 @@ void SetupSerialDialog::initPrivateVariables()
 
 void SetupSerialDialog::ChangeListenerAttributes()
 {	
-	if(ptrListener != nullptr)
+	if(ptrListenerExternal != nullptr)
 	{
-		ptrListener->SetSerialPortPath(textFieldSerialPort->GetLineText(0).ToStdString());
+		ptrListenerExternal->SetSerialPortPath(textFieldSerialPort->GetLineText(0).ToStdString());
 	}
 	
 }
 
 void SetupSerialDialog::OnSetup(wxCommandEvent& event)
 {
-	if(ptrListener != nullptr)
+	if(ptrListenerExternal != nullptr)
 	{
 		if( textFieldSerialPort->GetLineText(0).ToStdString() != " " )
 		{
-			if(!ptrListener->GetExternalOrientationSerialDevicePtr()->GetDeviceInitializedBool())
+			if(!ptrListenerExternal->GetExternalOrientationSerialDevicePtr()->GetDeviceInitializedBool())
 			{
-				ptrListener->GetExternalOrientationSerialDevicePtr()->InitSerialCommunication(textFieldSerialPort->GetLineText(0).ToStdString(),9600);
+				ptrListenerExternal->SetSerialPortPath(textFieldSerialPort->GetLineText(0).ToStdString());
+				ptrListenerExternal->GetExternalOrientationSerialDevicePtr()->InitSerialCommunication(textFieldSerialPort->GetLineText(0).ToStdString(),9600);
 			}
 		}
 		
