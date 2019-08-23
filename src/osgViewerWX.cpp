@@ -504,6 +504,7 @@ void MainFrame::SetListenerReference(Listener* thisListener)
 void MainFrame::SetListenerExternalReference(ListenerExternal* thisListenerExternal)
 {
 	listenerExternalPtr = thisListenerExternal;
+	m_listener_track->SetReferenceToExternalListener(thisListenerExternal);
 }
 
 void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}

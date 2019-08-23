@@ -64,6 +64,8 @@ class Listener
 		void setUpZ(float& z); //set z of up of listener
 		float getUpZ(); //get z of up of listener
 		
+		void SetWholeOrientation(float& fx, float& fy, float& fz, float& ux, float& uy, float& uz);
+		
 		void SetListenerExternalDeviceOrientationBool(bool thisBool);
 		bool GetListenerExternalDeviceOrientationBool();
 		

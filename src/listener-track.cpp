@@ -3,6 +3,7 @@
 ListenerTrack::ListenerTrack(const wxString& title) : Track(title)
 {
 	listenerToManipulatePtr = nullptr;
+	listenerExternalPtr = nullptr;
 	
 	//initialize tracks
 	xTrack = new DoubleTrack("X Track");
@@ -104,25 +105,35 @@ void ListenerTrack::FunctionToCallInPlayState()
 				//set new forward direction vector
 				
 				float thisForwardX = rotated_forward_vector_quaternion.R_component_2();
-				if(listenerToManipulatePtr->getForwardX() != thisForwardX){listenerToManipulatePtr->setForwardX(thisForwardX);}					
+				//if(listenerToManipulatePtr->getForwardX() != thisForwardX){listenerToManipulatePtr->setForwardX(thisForwardX);}					
 				
 				float thisForwardY = rotated_forward_vector_quaternion.R_component_3();
-				if(listenerToManipulatePtr->getForwardY() != thisForwardY){listenerToManipulatePtr->setForwardY(thisForwardY);}					
+				//if(listenerToManipulatePtr->getForwardY() != thisForwardY){listenerToManipulatePtr->setForwardY(thisForwardY);}					
 				
 				float thisForwardZ = rotated_forward_vector_quaternion.R_component_4();
-				if(listenerToManipulatePtr->getForwardZ() != thisForwardZ){listenerToManipulatePtr->setForwardZ(thisForwardZ);}					
+				//if(listenerToManipulatePtr->getForwardZ() != thisForwardZ){listenerToManipulatePtr->setForwardZ(thisForwardZ);}					
 				
 				//set new up direction vector
 				
 				float thisUpX = rotated_up_vector_quaternion.R_component_2();
-				if(listenerToManipulatePtr->getUpX() != thisUpX){listenerToManipulatePtr->setUpX(thisUpX);}
+				//if(listenerToManipulatePtr->getUpX() != thisUpX){listenerToManipulatePtr->setUpX(thisUpX);}
 				
 				float thisUpY = rotated_up_vector_quaternion.R_component_3();
-				if(listenerToManipulatePtr->getUpY() != thisUpY){listenerToManipulatePtr->setUpY(thisUpY);}
+				//if(listenerToManipulatePtr->getUpY() != thisUpY){listenerToManipulatePtr->setUpY(thisUpY);}
 				
 				float thisUpZ = rotated_up_vector_quaternion.R_component_4();
-				if(listenerToManipulatePtr->getUpZ() != thisUpZ){listenerToManipulatePtr->setUpZ(thisUpZ);}
+				//if(listenerToManipulatePtr->getUpZ() != thisUpZ){listenerToManipulatePtr->setUpZ(thisUpZ);}
 				
+				listenerToManipulatePtr->SetWholeOrientation(thisForwardX,thisForwardY,thisForwardZ,thisUpX,thisUpY,thisUpZ);
+				
+			}
+		}
+		//if listener orientation is controlled by an external device
+		else
+		{
+			if(listenerExternalPtr != nullptr)
+			{
+				listenerExternalPtr->SetOrientationByExternalDevice();
 			}
 		}	
 			
@@ -135,6 +146,8 @@ void ListenerTrack::FunctionToCallInFastForwardState(){}
 void ListenerTrack::FunctionToCallInNullState(){}
 
 void ListenerTrack::SetReferenceToListenerToManipulate(Listener* thisListener){listenerToManipulatePtr = thisListener;}
+void ListenerTrack::SetReferenceToExternalListener(ListenerExternal* thisListenerExt){listenerExternalPtr = thisListenerExt;}
+
 
 DoubleTrack* ListenerTrack::GetReferenceToXTrack(){return xTrack;}
 DoubleTrack* ListenerTrack::GetReferenceToYTrack(){return yTrack;}

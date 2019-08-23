@@ -111,7 +111,6 @@ float Listener::getPositionX(){return listener_position_vector[POSITION_INDEX::X
 void Listener::setPositionY(float& y)
 {
 	listener_position_vector[POSITION_INDEX::Y] = y;
-	
 	Listener::setListenerPosition();
 } 
 
@@ -182,6 +181,12 @@ void Listener::setUpZ(float& z)
 }
 
 float Listener::getUpZ(){return listener_orientation_vector[ORIENTATION_INDEX::UP_Z];}
+
+void Listener::SetWholeOrientation(float& fx, float& fy, float& fz, float& ux, float& uy, float& uz)
+{
+	listener_orientation_vector.assign( {fx,fy,fz,ux,uy,uz} );
+	Listener::setListenerOrientation();
+}
 
 osg::ShapeDrawable* Listener::getRenderObject(){return m_renderObject;}
 

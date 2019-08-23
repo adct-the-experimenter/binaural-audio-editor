@@ -7,9 +7,10 @@ ListenerExternal::ListenerExternal(Listener* thisListener)
 	
 	m_ext_orientation_serial_device_ptr = new ExternalOrientationDeviceSerial();
 	
-	m_device_op_repeater = new ExternalDeviceRepeatTimer(m_ext_orientation_serial_device_ptr,m_listener_ptr);
+	m_device_op_repeater = nullptr;
+	//m_device_op_repeater = new ExternalDeviceRepeatTimer(m_ext_orientation_serial_device_ptr,m_listener_ptr);
 	
-	m_device_op_repeater->start();
+	//m_device_op_repeater->start();
 	serialPortPath = "";
 }
 
@@ -28,7 +29,13 @@ ListenerExternal::~ListenerExternal()
 
 void ListenerExternal::SetOrientationByExternalDevice()
 {
+	float fx,fy,fz,ux,uy,uz;
+			
+	m_ext_orientation_serial_device_ptr->ReadOrientationParametersFromSerial(&fx,&fy,&fz,&ux,&uy,&uz);
 	
+	std::cout << "fx:" << fx << ", fy:"  << fy << " ,fz:" << fz << "\n, ux:" << ux << ", uy:" << uy << ", uz:" << uz << std::endl;
+	
+	m_listener_ptr->SetWholeOrientation(fx,fy,fz,ux,uy,uz);
 }
 
 ExternalOrientationDeviceSerial* ListenerExternal::GetExternalOrientationSerialDevicePtr()
