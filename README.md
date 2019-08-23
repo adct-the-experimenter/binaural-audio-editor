@@ -49,12 +49,14 @@ This is an audio application that produces binaural audio from 2D mono/stereo au
   To use the Listener Track(Group of first 7 tracks with graph) to change position of the listener(you), uncheck Free Roam in EditListener menu. 
   Add points to the graph by left clicking on the graph. Remove points from the graph by right clicking.
   
-  
+
   First graph controls the x position, second graph is for y position, third graph is for z position.
   
   
   Fourth graph controls w parameter of quaternion rotation, fifth graph controls rotation around x axis, sixth graph controls rotation around y axis, seventh graph controls rotation around z axis.
   
+  To use IMU BNO055 sensor to control listener orientation.
+  See file External-Orientation-Setup.md
   
 ### Control SoundProducers
   
