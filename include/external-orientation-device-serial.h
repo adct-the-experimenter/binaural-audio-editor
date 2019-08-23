@@ -51,7 +51,10 @@ public:
 private:
 	ExternalOrientationDeviceSerial* m_device;
 	Listener* m_listener_ptr;
+	bool reading_values;
 	
+	void SetReadingValuesBool(bool state);
+	bool GetReadingValuesBool();
 };
 
 

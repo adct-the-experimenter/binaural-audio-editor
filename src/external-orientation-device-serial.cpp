@@ -44,66 +44,89 @@ void ExternalOrientationDeviceSerial::ReadOrientationParametersFromSerial(float*
 											float* ux, float* uy,float* uz)
 {
 	std::vector<std::string> results;
-			
+	std::cout << "In read orientation parameters. \n";
 	//read line
-	std::string quaternion_data = m_serial_ptr->readLine();
+	//std::string quaternion_data = m_serial_ptr->readLine();
+	
+	//std::cout << "quaternion data: \n" << quaternion_data << std::endl;
+	std::string quaternion_data;
+	
+	//get rotation quaternion w
+	m_serial_ptr->writeString("!"); //send command to display quaternion w
+	quaternion_data = m_serial_ptr->readLine(); //read number	
+	m_serial_ptr->writeString("%"); //send command to stop display
+	float w = std::stof(quaternion_data);
+	 
+	//std::cout << "\n quaternion data w:" << quaternion_data << std::endl;
+	
+	//get rotation quaternion x
+	m_serial_ptr->writeString("@"); //send command to display quaternion x
+	quaternion_data = m_serial_ptr->readLine(); //read number	
+	m_serial_ptr->writeString("%"); //send command to stop display
+	float x = std::stof(quaternion_data);
+	
+	//std::cout << "\n quaternion data x:" << quaternion_data << std::endl;
+	
+	//get rotation quaternion y
+	m_serial_ptr->writeString("#"); //send command to display quaternion y
+	quaternion_data = m_serial_ptr->readLine(); //read number	
+	m_serial_ptr->writeString("%"); //send command to stop display
+	float y = std::stof(quaternion_data);
+	
+	//std::cout << "\n quaternion data y:" << quaternion_data << std::endl;
+	
+	//get rotation quaternion z
+	m_serial_ptr->writeString("$"); //send command to display quaternion z
+	quaternion_data = m_serial_ptr->readLine(); //read number	
+	m_serial_ptr->writeString("%"); //send command to stop display
+	float z = std::stof(quaternion_data);
+	
+	//std::cout << "\n quaternion data z:" << quaternion_data << std::endl;
+	
+		
+	boost::math::quaternion <float> rotation_quaternion(w,x,y,z); 
+	boost::math::quaternion <float> inverse_rotation_quaternion(w,-1*x,-1*y,-1*z); 
 
-	//parse w,x,y,z data from line read
-	boost::split(results, quaternion_data, [](char c){return c == ' ';});
 
-	if(results.size() >= 4)
-	{
-		//convert number values in string to float 
-		float w = std::stof(results[0]);
-		float x = std::stof(results[1]);
-		float y = std::stof(results[2]);
-		float z = std::stof(results[3]);
+	//calculate new rotated forward vector
+	// P'= R*P*R'
+	boost::math::quaternion <float> rotated_forward_vector_quaternion; 
+	rotated_forward_vector_quaternion = rotation_quaternion * forward_vector_quaternion * inverse_rotation_quaternion;
 
-		boost::math::quaternion <float> rotation_quaternion(w,x,y,z); 
-		boost::math::quaternion <float> inverse_rotation_quaternion(w,-1*x,-1*y,-1*z); 
+	boost::math::quaternion <float> rotated_up_vector_quaternion; 
+	rotated_up_vector_quaternion = rotation_quaternion * up_vector_quaternion * inverse_rotation_quaternion;
 
+	//remap values for binaural audio editor
+	//y in binaural audio editor = z in regular cartesian
+	//x in binaural audio editor = y in regular cartesian
+	//z in binaural audio editor = x in regular cartesian
+	*fz = rotated_forward_vector_quaternion.R_component_2();
 
-		//calculate new rotated forward vector
-		// P'= R*P*R'
-		boost::math::quaternion <float> rotated_forward_vector_quaternion; 
-		rotated_forward_vector_quaternion = rotation_quaternion * forward_vector_quaternion * inverse_rotation_quaternion;
+	*fx = rotated_forward_vector_quaternion.R_component_3();
 
-		boost::math::quaternion <float> rotated_up_vector_quaternion; 
-		rotated_up_vector_quaternion = rotation_quaternion * up_vector_quaternion * inverse_rotation_quaternion;
+	*fy = rotated_forward_vector_quaternion.R_component_4();
 
-		//remap values for binaural audio editor
-		//y in binaural audio editor = z in regular cartesian
-		//x in binaural audio editor = y in regular cartesian
-		//z in binaural audio editor = x in regular cartesian
-		*fz = rotated_forward_vector_quaternion.R_component_2();
-		//if(listenerToManipulatePtr->getForwardZ() != thisForwardZ){listenerToManipulatePtr->setForwardZ(thisForwardZ);}
+	*uz = rotated_up_vector_quaternion.R_component_2();
 
-		*fx = rotated_forward_vector_quaternion.R_component_3();
-		//if(listenerToManipulatePtr->getForwardX() != thisForwardX){listenerToManipulatePtr->setForwardX(thisForwardX);}
+	*ux = rotated_up_vector_quaternion.R_component_3();
 
-		*fy = rotated_forward_vector_quaternion.R_component_4();
-		//if(listenerToManipulatePtr->getForwardY() != thisForwardY){listenerToManipulatePtr->setForwardY(thisForwardY);}
+	*uy = rotated_up_vector_quaternion.R_component_4();
 
-		*uz = rotated_up_vector_quaternion.R_component_2();
-		//if(listenerToManipulatePtr->getUpZ() != thisUpZ){listenerToManipulatePtr->setUpZ(thisUpZ);}
-
-		*ux = rotated_up_vector_quaternion.R_component_3();
-		//if(listenerToManipulatePtr->getUpX() != thisUpX){listenerToManipulatePtr->setUpX(thisUpX);}
-
-		*uy = rotated_up_vector_quaternion.R_component_4();
-		//if(listenerToManipulatePtr->getUpY() != thisUpY){listenerToManipulatePtr->setUpY(thisUpY);
-	}
 }
 
 ExternalDeviceRepeatTimer::ExternalDeviceRepeatTimer(ExternalOrientationDeviceSerial* device, Listener* listener) : wxTimer()
 {
     m_device = device;
     m_listener_ptr = listener;
+    reading_values = false;
 }
 
 void ExternalDeviceRepeatTimer::Notify()
 {
-     ExternalDeviceRepeatTimer::FunctionToRepeat();
+     if(!ExternalDeviceRepeatTimer::GetReadingValuesBool())
+     {
+		 ExternalDeviceRepeatTimer::FunctionToRepeat();
+	 }
 }
 
 void ExternalDeviceRepeatTimer::FunctionToRepeat()
@@ -112,6 +135,7 @@ void ExternalDeviceRepeatTimer::FunctionToRepeat()
 	{		
 		if(m_device->GetDeviceInitializedBool() && m_listener_ptr->GetListenerExternalDeviceOrientationBool())
 		{
+			ExternalDeviceRepeatTimer::SetReadingValuesBool(true);
 			
 			float fx,fy,fz,ux,uy,uz;
 			
@@ -126,11 +150,16 @@ void ExternalDeviceRepeatTimer::FunctionToRepeat()
 			m_listener_ptr->setUpX(ux);
 			m_listener_ptr->setUpY(uy);
 			m_listener_ptr->setUpZ(uz);
+			
+			ExternalDeviceRepeatTimer::SetReadingValuesBool(false);
 		}
 	}
 }
 
 void ExternalDeviceRepeatTimer::start()
 {
-    wxTimer::Start(250,wxTIMER_CONTINUOUS); //the timer calls Notify every 250 milliseconds
+    wxTimer::Start(400,wxTIMER_CONTINUOUS); //the timer calls Notify every 250 milliseconds
 }
+
+void ExternalDeviceRepeatTimer::SetReadingValuesBool(bool state){reading_values = state;}
+bool ExternalDeviceRepeatTimer::GetReadingValuesBool(){return reading_values;}
