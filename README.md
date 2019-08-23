@@ -4,18 +4,18 @@ This is an audio application that produces binaural audio from 2D mono/stereo au
 
 [![Open Source Helpers](https://www.codetriage.com/adct-the-experimenter/binaural-audio-editor/badges/users.svg)](https://www.codetriage.com/adct-the-experimenter/binaural-audio-editor)
 
-# Required Libraries
-OpenAL Soft https://github.com/kcat/openal-soft
+## Required Libraries
+- OpenAL Soft https://github.com/kcat/openal-soft
 
-openscenegraph https://github.com/openscenegraph/OpenSceneGraph
+- openscenegraph https://github.com/openscenegraph/OpenSceneGraph
 
-libsndfile http://www.mega-nerd.com/libsndfile/
+- libsndfile http://www.mega-nerd.com/libsndfile/
 
-wxwidgets https://www.wxwidgets.org/
+- wxwidgets https://www.wxwidgets.org/
 
-Boost Math Quaternion headers https://www.boost.org/users/history/version_1_70_0.html
+- Boost Math Quaternion headers and Boost ASIO serial https://www.boost.org/users/history/version_1_70_0.html
 
-# How to Install
+## How to Install
 
 1. Install required libraries.
 2. Clone this repository
@@ -30,17 +30,17 @@ Boost Math Quaternion headers https://www.boost.org/users/history/version_1_70_0
 7. make
 8. ./binaural-audio-editor
 
-# Controls
+## Controls
 
-  *Left Click and mouse movement to move orientation of the camera i.e. the direction the camera is facing.
+  - Left Click and mouse movement to move orientation of the camera i.e. the direction the camera is facing.
   
-  *Right Click and mouse movement to move the camera forward or backward.
+  - Right Click and mouse movement to move the camera forward or backward.
   
-  *Left Click + Right Click and mouse movement to move the camera up, down, left, or right.
+  - Left Click + Right Click and mouse movement to move the camera up, down, left, or right.
 
-# Instructions
+## Instructions
 
-  #### Control Listener
+### Control Listener
   
   Dark blue cube is you the listener. 
   
@@ -56,7 +56,7 @@ Boost Math Quaternion headers https://www.boost.org/users/history/version_1_70_0
   Fourth graph controls w parameter of quaternion rotation, fifth graph controls rotation around x axis, sixth graph controls rotation around y axis, seventh graph controls rotation around z axis.
   
   
-  #### Control SoundProducers
+### Control SoundProducers
   
   Light blue cubes are the sound producers.
   
@@ -67,18 +67,17 @@ Boost Math Quaternion headers https://www.boost.org/users/history/version_1_70_0
   Click on dropdown box menu to choose a soundproducer to edit that was created.
   
   Click on browse button near audio track to load sound into the track. Load only 8-bit or 16-bit audio only.
-  
-  Like OpenAL and OpenGL, the application uses a right handed coordinate system to move listener and sound producers, 
-  
-  where in a frontal default view X (thumb) points right,  Y points up (index finger), and Z points towards the viewer/camera (middle finger). 
-  
-  Up is positive y. Down is negative y.
-  
-  Back is positive z. Forward is negative z.
-  
-  Right is positive x. Left is negative x.
 
-# Important Note About Multi-channel Audio Input:
+### Coordinate System of Binaural Audio Editor and OpenAL Soft
+  Like OpenAL, the application uses a right handed coordinate system to move listener and sound producers, where in a frontal default view X (thumb) points right,  Y points up (index finger), and Z points towards the viewer/camera (middle finger). 
+  
+  - Up is positive y. Down is negative y.
+  
+  - Back is positive z. Forward is negative z.
+  
+  - Right is positive x. Left is negative x.
+
+## Important Note About Multi-channel Audio Input:
 Stereo(2 channel) audio does not get 3d spatialization and is instead used to play as background music.
 
 Have audio that you want to be played in 3D be mono(1 channel) audio
@@ -89,12 +88,12 @@ Stereo audio can be changed to mono audio using Audacity or other programs.
 sndfile-mix-to-mono is an application that successfully turns multi-channel audio mix into mono-channel audio mix.
 
   
-# Experimental Feature for 5.1,6.1,7.1 channel Surround Sound Output
+## Experimental Feature for 5.1,6.1,7.1 channel Surround Sound Output
 Run the alsoft-config program that came with the installation of OpenAL Soft to
 set the output to 5.1, 6.1, or 7.1 channels.
 OpenAL Soft should automatically convert 3d audio information into audio output for surround sound.
 
 For more information, read https://github.com/kcat/openal-soft/blob/master/docs/3D7.1.txt 
 
-# Feedback 
+## Feedback 
 Please email questions or comments to this email address bringerofawesomefood @ gmail . com without spaces.
