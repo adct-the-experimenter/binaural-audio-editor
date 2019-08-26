@@ -113,8 +113,7 @@ void TimelineWindow::OnPaint(wxPaintEvent& event)
 	
 	//initialize variables for timeline ruler
 	
-	wxFont font(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
-            wxFONTWEIGHT_NORMAL, false, wxT("Courier 10 Pitch"));
+	wxFont font = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
 	dc.SetFont(font);
 	
 	int step = (int) round( TRACK_WIDTH / (TIME_TICK_NUM-1) );

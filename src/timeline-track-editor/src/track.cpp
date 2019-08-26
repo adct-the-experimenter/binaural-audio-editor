@@ -35,6 +35,8 @@ void Track::OnSize(wxSizeEvent& event)
 	Refresh();
 
 	FitInside();
+	
+	event.Skip();
 }
 
 void Track::OnScroll(wxScrollEvent& event)
@@ -43,6 +45,8 @@ void Track::OnScroll(wxScrollEvent& event)
 	Refresh(); //for wxDc onPaint stuff 
 	
 	FitInside(); //for scroll and sizer
+	
+	event.Skip();
 }
 
 

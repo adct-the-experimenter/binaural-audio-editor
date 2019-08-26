@@ -298,8 +298,9 @@ void AudioGraph::DrawCurrentDataOnGraph(wxDC& dc)
 
 void AudioGraph::DrawHorizontalAxis(wxDC& dc)
 {
-	wxFont font(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
-            wxFONTWEIGHT_NORMAL, false, wxT("Courier 10 Pitch"));
+	//wxFont font(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+    //        wxFONTWEIGHT_NORMAL, false, wxT(number_font));
+	wxFont font = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
 	dc.SetFont(font);
 	
 	int step = (int) round( int(TRACK_WIDTH) / (int(TIME_TICK_NUM)-1) );

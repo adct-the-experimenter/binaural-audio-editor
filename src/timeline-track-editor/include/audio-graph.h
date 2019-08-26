@@ -3,6 +3,8 @@
 
 #include "../parameters.h"
 
+#include <wx/settings.h>
+
 #include <vector>
 #include <unordered_map>
 

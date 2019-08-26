@@ -273,6 +273,8 @@ void StereoAudioTrack::OnSize(wxSizeEvent& event)
 	Refresh();
 
 	FitInside();
+	
+	event.Skip();
 }
 
 void StereoAudioTrack::OnScroll(wxScrollEvent& event)
@@ -281,6 +283,8 @@ void StereoAudioTrack::OnScroll(wxScrollEvent& event)
 	Refresh(); //for wxDc onPaint stuff 
 	
 	FitInside(); //for scroll and sizer
+	
+	event.Skip();
 }
 
 
@@ -296,12 +300,12 @@ void StereoAudioTrack::OnPaint(wxPaintEvent& event)
 
 void StereoAudioTrack::OnLeftMouseClick(wxMouseEvent& event)
 {
-	
+	event.Skip();
 }
 
 void StereoAudioTrack::OnRightMouseClick(wxCommandEvent& event)
 {
-	
+	event.Skip();
 }
 
 double StereoAudioTrack::GetCurrentTime(){return Track::GetCurrentTime();}

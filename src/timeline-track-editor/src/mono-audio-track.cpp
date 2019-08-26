@@ -276,12 +276,12 @@ void MonoAudioTrack::OnPaint(wxPaintEvent& event)
 
 void MonoAudioTrack::OnLeftMouseClick(wxMouseEvent& event)
 {
-	
+	event.Skip();
 }
 
 void MonoAudioTrack::OnRightMouseClick(wxCommandEvent& event)
 {
-	
+	event.Skip();
 }
 
 double MonoAudioTrack::GetCurrentTime(){return Track::GetCurrentTime();}
