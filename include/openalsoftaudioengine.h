@@ -59,6 +59,8 @@ public:
     void GetAvailableHRTFNames(std::vector <std::string> *names_vector);
 	std::string GetCurrentHRTFSelected();
 	
+	void SelectThisHRTFByIndex(int& index,std::string& message);
+	
 //Sound Playback Related Functions
 
 	//loading buffer

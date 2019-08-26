@@ -229,6 +229,33 @@ std::string OpenAlSoftAudioEngine::GetCurrentHRTFSelected()
 	return name_string;
 }
 
+void OpenAlSoftAudioEngine::SelectThisHRTFByIndex(int& index,std::string& message)
+{
+	/* Define a macro to help load the function pointers. */
+		#define LOAD_PROC_alcGetStringiSOFT(d, x)  ((x) = (LPALCGETSTRINGISOFT)alcGetProcAddress((d), #x))
+			LOAD_PROC_alcGetStringiSOFT(gAudioDevice, alcGetStringiSOFT);
+		#undef LOAD_PROC__alcGetStringiSOFT
+
+		#define LOAD_PROC_alcResetDeviceSOFT(d, x)  ((x) = (LPALCRESETDEVICESOFT)alcGetProcAddress((d), #x))
+			LOAD_PROC_alcResetDeviceSOFT(gAudioDevice, alcResetDeviceSOFT);
+		#undef LOAD_PROC_alcResetDeviceSOFT
+		
+	ALCint i;
+	ALCint attr[5];
+	
+	i = 0;
+	attr[i++] = ALC_HRTF_SOFT;
+	attr[i++] = ALC_TRUE;
+	attr[i++] = ALC_HRTF_ID_SOFT;
+    attr[i++] = index;
+    attr[i] = 0;
+    
+    if(!alcResetDeviceSOFT(gAudioDevice, attr))
+    {
+		message = "Failed to reset device: \n" + std::string( alcGetString(gAudioDevice, alcGetError(gAudioDevice)) );}
+    else{message = "Successfully changed HRTF and reset device.";}
+}
+
 void OpenAlSoftAudioEngine::loadSound(ALuint* buffer, const std::string& filename)
 {
 	
