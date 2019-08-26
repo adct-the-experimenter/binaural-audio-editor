@@ -43,7 +43,8 @@ set(SOURCES src/osgViewerWX.cpp
 			 src/soundproducer-track.cpp
 			 src/listener-track.cpp
 			 src/soundproducer-registry.cpp
-			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp src/HRTF-Test-Dialog.cpp 
+			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp 
+			 src/Change-HRTF-Dialog.cpp src/HRTF-Test-Dialog.cpp 
 			 src/EditListenerDialog.cpp
 			 src/setup-serial-dialog.cpp
 			 src/listener-external.cpp

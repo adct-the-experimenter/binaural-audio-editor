@@ -58,6 +58,7 @@
 #include "CreateSoundProducerDialog.h"
 #include "EditMultipleSoundProducersDialog.h"
 #include "HRTF-Test-Dialog.h"
+#include "Change-HRTF-Dialog.h"
 #include "EditListenerDialog.h"
 #include "setup-serial-dialog.h"
 

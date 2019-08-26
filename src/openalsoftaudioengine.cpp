@@ -189,6 +189,45 @@ std::string OpenAlSoftAudioEngine::getHRTFTestResult(){return testHRTF_Results;}
 
 void OpenAlSoftAudioEngine::clear_testHRTFResults(){testHRTF_Results.clear();}
 
+void OpenAlSoftAudioEngine::GetAvailableHRTFNames(std::vector <std::string> *names_vector)
+{
+	
+	/* Define a macro to help load the function pointers. */
+		#define LOAD_PROC_alcGetStringiSOFT(d, x)  ((x) = (LPALCGETSTRINGISOFT)alcGetProcAddress((d), #x))
+			LOAD_PROC_alcGetStringiSOFT(gAudioDevice, alcGetStringiSOFT);
+		#undef LOAD_PROC__alcGetStringiSOFT
+		
+	 ALCint num_hrtf; //variable for number of hrtf avaiable
+	
+	/* Enumerate available HRTFs, and reset the device using one. */
+	alcGetIntegerv(gAudioDevice, ALC_NUM_HRTF_SPECIFIERS_SOFT, 1, &num_hrtf);
+	if(!num_hrtf)
+	{
+		return;
+	}
+	else
+	{
+		ALCint i; //iterator
+
+		for(i = 0;i < num_hrtf;i++)
+		{
+			const ALCchar *name = alcGetStringiSOFT(gAudioDevice, ALC_HRTF_SPECIFIER_SOFT, i);
+			
+			std::string name_string(name);
+			names_vector->push_back(name_string);
+		}
+	}
+}
+
+std::string OpenAlSoftAudioEngine::GetCurrentHRTFSelected()
+{
+	/* Check if HRTF is enabled, and show which is being used. */
+	const ALchar *name = alcGetString(gAudioDevice, ALC_HRTF_SPECIFIER_SOFT);
+	
+	std::string name_string(name);
+	
+	return name_string;
+}
 
 void OpenAlSoftAudioEngine::loadSound(ALuint* buffer, const std::string& filename)
 {

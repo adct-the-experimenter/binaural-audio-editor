@@ -51,11 +51,14 @@ public:
 	ALCcontext* GetReferenceToAudioContext();
 	
 //HRTF
-    //function to perform tests for HRTF support
+    //functions to perform tests for HRTF support
     void TestHRTF();
     std::string getHRTFTestResult();
     void clear_testHRTFResults();
-
+    
+    void GetAvailableHRTFNames(std::vector <std::string> *names_vector);
+	std::string GetCurrentHRTFSelected();
+	
 //Sound Playback Related Functions
 
 	//loading buffer
