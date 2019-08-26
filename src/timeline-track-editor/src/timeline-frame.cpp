@@ -38,6 +38,7 @@ TimelineFrame::~TimelineFrame()
 {
 	if(controls != nullptr){delete controls;}
 	if(timer != nullptr){delete timer;}
+	if(timelineWindowPtr != nullptr){delete timelineWindowPtr;}
 }
 
 TimelineWindow* TimelineFrame::GetTimelineWindow(){return timelineWindowPtr;}

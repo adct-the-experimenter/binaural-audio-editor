@@ -49,7 +49,7 @@ void Track::OnScroll(wxScrollEvent& event)
 void Track::OnPaint(wxPaintEvent& event)
 {
 	//std::cout << "Current Time in Track:" << *current_time_pos_pointer << std::endl;
-	
+	event.Skip();
 }
 
 double Track::GetCurrentTime(){return *current_time_pos_pointer;}

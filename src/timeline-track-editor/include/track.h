@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 
-#include "parameters.h"
+#include "../parameters.h"
 
 class Track : public wxPanel
 {

@@ -11,7 +11,7 @@
 
 #include "track.h"
 
-#include "parameters.h"
+#include "../parameters.h"
 
 class TimelineWindow : public wxScrolled<wxWindow>
 {

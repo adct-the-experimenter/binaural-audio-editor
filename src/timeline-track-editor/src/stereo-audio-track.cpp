@@ -11,10 +11,10 @@ StereoAudioTrack::StereoAudioTrack(const wxString& title) : Track(title)
 	m_left_channel_track = new AudioTrack("Left Channel");
 	m_right_channel_track = new AudioTrack("Right Channel");
 	
-	Connect(wxEVT_PAINT, wxPaintEventHandler(StereoAudioTrack::OnPaint));
-	Connect(wxEVT_SIZE, wxSizeEventHandler(StereoAudioTrack::OnSize));
-	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(StereoAudioTrack::OnLeftMouseClick));
-	Connect(wxEVT_CONTEXT_MENU, wxCommandEventHandler(StereoAudioTrack::OnRightMouseClick));
+	//Connect(wxEVT_PAINT, wxPaintEventHandler(Track::OnPaint));
+	//Connect(wxEVT_SIZE, wxSizeEventHandler(Track::OnSize));
+	//Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(StereoAudioTrack::OnLeftMouseClick));
+	//Connect(wxEVT_CONTEXT_MENU, wxCommandEventHandler(StereoAudioTrack::OnRightMouseClick));
 	
 	inputSoundFilePath = "";
 	streamSoundFilePath = "../resources/stream.wav"; //default file path for stream sound file
@@ -290,6 +290,8 @@ void StereoAudioTrack::OnPaint(wxPaintEvent& event)
 	wxPaintDC dc(this);
 	
 	StereoAudioTrack::render(dc);
+	
+	event.Skip();
 }
 
 void StereoAudioTrack::OnLeftMouseClick(wxMouseEvent& event)

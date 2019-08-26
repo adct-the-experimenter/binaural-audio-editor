@@ -10,10 +10,10 @@ MonoAudioTrack::MonoAudioTrack(const wxString& title) : Track(title)
 	//initialize audio tracks
 	m_channel_track = new AudioTrack("Channel");
 	
-	Connect(wxEVT_PAINT, wxPaintEventHandler(MonoAudioTrack::OnPaint));
-	Connect(wxEVT_SIZE, wxSizeEventHandler(MonoAudioTrack::OnSize));
-	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(MonoAudioTrack::OnLeftMouseClick));
-	Connect(wxEVT_CONTEXT_MENU, wxCommandEventHandler(MonoAudioTrack::OnRightMouseClick));
+	//Connect(wxEVT_PAINT, wxPaintEventHandler(MonoAudioTrack::OnPaint));
+	//Connect(wxEVT_SIZE, wxSizeEventHandler(MonoAudioTrack::OnSize));
+	//Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(MonoAudioTrack::OnLeftMouseClick));
+	//Connect(wxEVT_CONTEXT_MENU, wxCommandEventHandler(MonoAudioTrack::OnRightMouseClick));
 	
 	inputSoundFilePath = "";
 	streamSoundFilePath = "../resources/stream.wav";
@@ -270,6 +270,8 @@ void MonoAudioTrack::OnPaint(wxPaintEvent& event)
 	wxPaintDC dc(this);
 	
 	MonoAudioTrack::render(dc);
+	
+	event.Skip();
 }
 
 void MonoAudioTrack::OnLeftMouseClick(wxMouseEvent& event)

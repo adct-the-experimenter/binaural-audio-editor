@@ -1,7 +1,7 @@
 #include "wx/wx.h"
 #include "wx/sizer.h"
 
-#include "parameters.h"
+#include "../parameters.h"
 
 #include <vector>
 #include <list>
