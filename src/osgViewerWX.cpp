@@ -626,8 +626,11 @@ void MainFrame::OnTestHRTF(wxCommandEvent& event)
 
 void MainFrame::OnChangeHRTF(wxCommandEvent& event)
 {
-	wxMessageBox( "To change HRTF, \n 1. Open a terminal/console. \n 2. Type alsoft-config into the terminal/console and hit the Enter key.\n 3. Click on the HRTF tab in the OpenAL Soft Configuration window. \n 4. Select the HRTF in Preferred HRTF box.\n 5. Put a check mark on the Force On box. \n 6. Close Binaural Audio Editor and reopen it.",
-                  "Change HRTF", wxOK | wxICON_INFORMATION );
+	std::unique_ptr <ChangeHRTFDialog> hrtfChangeDialog(new ChangeHRTFDialog( wxT("Change HRTF"),
+																		audioEnginePtr) 
+													);
+																				
+    hrtfChangeDialog->Show(true);
 }
 
 void MainFrame::OnEditListener(wxCommandEvent& event)
