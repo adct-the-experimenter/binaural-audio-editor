@@ -19,7 +19,8 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	audioTrack = new StereoAudioTrack("Track");
 	
 	audioTrack->SetReferenceToAudioPlayer(audioPlayer);
-	
+	audioTrack->SetTrackOption(StereoAudioTrack::Options::ONLY_BUFFER_AUDIO);
+
 	//initialize track source
 	alGenSources(1, &track_source);
 	alSourcei(track_source, AL_SOURCE_RELATIVE, AL_FALSE);
@@ -71,7 +72,7 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 		}
 	}
 	
-	//play audio
+	//buffer audio
 	audioTrack->FunctionToCallInPlayState();
 }
 
@@ -210,6 +211,8 @@ void SoundProducerTrack::OnPaint(wxPaintEvent& event)
 	yTrack->render(dc);
 	zTrack->render(dc);
 	
+	event.Skip();
+	
 }
 
 void SoundProducerTrack::OnScroll(wxScrollEvent& event)
@@ -217,6 +220,8 @@ void SoundProducerTrack::OnScroll(wxScrollEvent& event)
 	Refresh();
 	
 	FitInside();
+	
+	event.Skip();
 }
 
 void SoundProducerTrack::OnSize(wxSizeEvent& event)
@@ -224,6 +229,8 @@ void SoundProducerTrack::OnSize(wxSizeEvent& event)
 	Refresh();
 	
 	FitInside();
+	
+	event.Skip();
 }
 		
 void SoundProducerTrack::SetReferenceToCurrentTimeVariable(double* thisTimeVariable)
@@ -261,4 +268,9 @@ void SoundProducerTrack::OnRightMouseClick(wxCommandEvent& event)
 	yTrack->logic_right_click();
 	zTrack->logic_right_click();
 	event.Skip();
+}
+
+ALuint* SoundProducerTrack::GetReferenceToTrackSource()
+{
+	return &track_source;
 }

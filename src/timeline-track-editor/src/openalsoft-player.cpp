@@ -31,6 +31,7 @@ OpenALSoftPlayer::OpenALSoftPlayer()
     infile = nullptr;
     bit_size = 0;
     buffer_size = 0;
+    buffer_index = 0;
 }
 
 OpenALSoftPlayer::~OpenALSoftPlayer()
@@ -221,11 +222,11 @@ void OpenALSoftPlayer::ClosePlayerFile()
 }
 
 /* Prebuffers some audio from the file, and starts playing the source */
-int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
+int OpenALSoftPlayer::StartPlayerBuffering(ALuint* source, double& current_time)
 {
 	//std::cout << "In start player!\n";
 	
-    size_t i;
+    buffer_index = 0; //reset buffer index
 
     /* Rewind the source position and clear the buffer queue */
     alSourceRewind(*source);
@@ -241,9 +242,9 @@ int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
     sf_seek(infile, current_sample_number, SEEK_SET);
 	
     /* Fill the buffer queue */
-    for(i = 0;i < NUM_BUFFERS;i++)
+    for(buffer_index = 0; buffer_index < NUM_BUFFERS;buffer_index++)
     {
-		std::cout << "i:" << i << std::endl;
+		std::cout << "buffer index:" << buffer_index << std::endl;
 		
 		//read data differently depending on bit size set in OpenPlayerFile
 		
@@ -271,7 +272,7 @@ int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
 			// Buffer the audio data into buffer array
 		
 			//set buffer data
-			alBufferData(buffers[i], format, &data.front(), slen, sfinfo.samplerate);
+			alBufferData(buffers[buffer_index], format, &data.front(), slen, sfinfo.samplerate);
 		}
 		
 		//if data is 16-bit
@@ -298,7 +299,7 @@ int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
 			// Buffer the audio data into buffer array
 		
 			//set buffer data
-			alBufferData(buffers[i], format, &data.front(), slen, sfinfo.samplerate);
+			alBufferData(buffers[buffer_index], format, &data.front(), slen, sfinfo.samplerate);
 		}
 		//else if data is 32-bit float
 		else if(bit_size == 4)
@@ -324,7 +325,7 @@ int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
 			// Buffer the audio data into buffer array
 		
 			//set buffer data
-			alBufferData(buffers[i], format, &data.front(), slen, sfinfo.samplerate);
+			alBufferData(buffers[buffer_index], format, &data.front(), slen, sfinfo.samplerate);
 		}
 		//else if data is 64-bit double
 		else if(bit_size == 8)
@@ -350,7 +351,7 @@ int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
 			// Buffer the audio data into buffer array
 		
 			//set buffer data
-			alBufferData(buffers[i], format, &data.front(), slen, sfinfo.samplerate);
+			alBufferData(buffers[buffer_index], format, &data.front(), slen, sfinfo.samplerate);
 		}
         
     }
@@ -361,20 +362,26 @@ int OpenALSoftPlayer::StartPlayer(ALuint* source, double& current_time)
         return PlayerStatus::ERROR_BUFFERING_DATA;
     }
     
+    /* Now queue buffer to source */
+    alSourceQueueBuffers(*source, buffer_index, buffers);
+    
+    return PlayerStatus::GOOD_START_BUFFERING;
+}
 
-    /* Now queue and start playback! */
-    alSourceQueueBuffers(*source, i, buffers);
+int OpenALSoftPlayer::StartPlayingBuffer(ALuint* source)
+{
+	//Start playback assume buffer queued
     alSourcePlay(*source);
     if(alGetError() != AL_NO_ERROR)
     {
         fprintf(stderr, "Error starting playback\n");
         return PlayerStatus::ERROR_STARTING_PLAYBACK;
     }
-
+    
     return PlayerStatus::GOOD_PLAYING_STATUS;
 }
 
-int OpenALSoftPlayer::UpdatePlayer(ALuint* source,double& current_time)
+int OpenALSoftPlayer::UpdatePlayerBuffer(ALuint* source,double& current_time)
 {
 	 //convert time into sample number
 	sf_count_t current_sample_number = current_time * sfinfo.samplerate;
@@ -557,15 +564,19 @@ int OpenALSoftPlayer::UpdatePlayer(ALuint* source,double& current_time)
 				}
 				break;
 			 }
-			 
 		 }
-		 
-        
-
-		
     }
+    
+    return PlayerStatus::GOOD_UPDATE_BUFFER_STATUS;
+}
 
-    /* Make sure the source hasn't underrun */
+int OpenALSoftPlayer::PlayUpdatedPlayerBuffer(ALuint* source)
+{
+	ALint state;
+	
+	alGetSourcei(*source, AL_SOURCE_STATE, &state);
+	
+	/* Make sure the source hasn't underrun */
     if(state != AL_PLAYING && state != AL_PAUSED)
     {
         ALint queued;
@@ -585,12 +596,100 @@ int OpenALSoftPlayer::UpdatePlayer(ALuint* source,double& current_time)
         }
     }
     
-    return PlayerStatus::GOOD_PLAYING_STATUS;
+    return GOOD_PLAYING_STATUS;
 }
+
+int OpenALSoftPlayer::PlayMultipleUpdatedPlayerBuffers(std::vector <ALuint*> *sources_vec)
+{	
+	//vector containing queued status of each source
+	std::vector <ALint> queued_source_vector;
+	queued_source_vector.resize(sources_vec->size());
+	
+	//vector containing sources that are eligible to be played i.e. no underrun 
+	std::vector <ALuint> sources_to_play_vec;
+	
+	for(size_t i = 0; i < sources_vec->size(); i++)
+	{
+		ALint state;
+		
+		//get state of source
+		alGetSourcei(*(sources_vec->at(i)), AL_SOURCE_STATE, &state);
+		
+		/* Make sure the source hasn't underrun */
+		if(state != AL_PLAYING && state != AL_PAUSED)
+		{
+			ALint queued;
+			
+			alGetSourcei(*(sources_vec->at(i)), AL_BUFFERS_QUEUED, &queued);
+			queued_source_vector[i] = queued;
+		}
+		
+	}
+	
+	for(size_t i = 0; i < queued_source_vector.size(); i++)
+	{
+		//if source not underrun 
+		if(queued_source_vector[i] != 0)
+		{
+			//add it to vector of eligible sources to be played
+			//if source is valid
+			if(alIsSource( *(sources_vec->at(i)) ) == AL_TRUE )
+			{
+				sources_to_play_vec.push_back( *(sources_vec->at(i)) );
+			}
+			else
+			{
+				std::cout << "Invalid source name:" << sources_vec->at(i) << std::endl;
+			}
+		}
+	}
+	
+	//if there are no elegible sources to play
+	if(sources_to_play_vec.size() == 0)
+	{
+		/* If no buffers are queued for all sources, playback is finished */
+		return PlayerStatus::PLAYBACK_FINISHED;
+	}
+	//else if there are eligible sources to play
+    else
+    {
+		 //play sources
+		ALsizei n = sources_to_play_vec.size();
+		
+		const ALuint *sNames = &sources_to_play_vec.at(0);
+		alSourcePlayv(n, sNames);
+		
+		ALenum err = alGetError();
+		if(err != AL_NO_ERROR)
+		{
+			fprintf(stderr, "Error restarting playback in PlayMultipleUpdatedPlayerBuffers.\n");
+			fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
+			return PlayerStatus::ERROR_RESTARTING_PLAYBACK;
+		}
+	}
+   
+    return GOOD_PLAYING_STATUS;
+}
+
 
 void OpenALSoftPlayer::PlaySource(ALuint* thisSource)
 {
 	alSourcePlay(*thisSource);
+	if(alGetError() != AL_NO_ERROR)
+    {
+        fprintf(stderr, "Error starting playback\n");
+    }
+}
+
+void OpenALSoftPlayer::PlayMultipleSources(std::vector <ALuint*> *sources_vec)
+{
+	ALsizei n = sources_vec->size();
+	const ALuint *sNames = sources_vec->at(0);
+	alSourcePlayv(n,sNames);
+	if(alGetError() != AL_NO_ERROR)
+    {
+        fprintf(stderr, "Error restarting playback in PlayMultipleSources.\n");
+    }
 }
 
 void OpenALSoftPlayer::PauseSource(ALuint* thisSource)
@@ -598,14 +697,37 @@ void OpenALSoftPlayer::PauseSource(ALuint* thisSource)
 	alSourcePause(*thisSource);
 }
 
+void OpenALSoftPlayer::PauseMultipleSources(std::vector <ALuint*> *sources_vec)
+{
+	ALsizei n = sources_vec->size();
+	const ALuint *sNames = sources_vec->at(0);
+	alSourcePausev (n,sNames);
+}
+
+
 void OpenALSoftPlayer::RewindSource(ALuint* thisSource)
 {
 	alSourceRewind(*thisSource);
 }
 
+void OpenALSoftPlayer::RewindMultipleSources(std::vector <ALuint*> *sources_vec)
+{
+	ALsizei n = sources_vec->size();
+	const ALuint *sNames = sources_vec->at(0);
+	alSourceRewindv (n, sNames);
+}
+	
+
 void OpenALSoftPlayer::StopSource(ALuint* thisSource)
 {
 	alSourceStop(*thisSource);
+}
+
+void OpenALSoftPlayer::StopMultipleSources(std::vector <ALuint*> *sources_vec)
+{
+	ALsizei n = sources_vec->size();
+	const ALuint *sNames = sources_vec->at(0);
+	alSourceStopv(n,sNames);
 }
 
 void OpenALSoftPlayer::ClearQueue(ALuint* thisSource)

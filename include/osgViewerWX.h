@@ -48,7 +48,7 @@
 #include <osgGA/OrbitManipulator>
 #include <osgGA/TrackballManipulator>
 
-
+#include "soundproducer-track-manager.h"
 #include "soundproducer.h"
 #include "listener.h"
 #include "listener-external.h"
@@ -209,6 +209,8 @@ private:
 	ListenerTrack* m_listener_track;
 	
 	TimelineFrame *timeFrame;
+	
+	std::unique_ptr <SoundProducerTrackManager> soundproducertrack_manager_ptr;
 	
 	std::vector <SoundProducerTrack*> m_soundproducer_track_vec;
 	
