@@ -72,7 +72,7 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 		}
 	}
 	
-	//play audio
+	//buffer audio
 	audioTrack->FunctionToCallInPlayState();
 }
 

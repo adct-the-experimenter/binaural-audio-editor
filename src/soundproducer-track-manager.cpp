@@ -59,7 +59,14 @@ void SoundProducerTrackManager::FunctionToCallInPlayState()
 	}
 
 	//play all sources in sync
-	audioPlayer->PlayMultipleUpdatedPlayerBuffers(&soundproducertracks_sources_vector);
+	if(soundProducerTracks_vec->at(0)->GetReferenceToStereoAudioTrack()->GetAudioTrackState() == StereoAudioTrack::State::PLAYER_NULL)
+	{
+		audioPlayer->PlayMultipleSources(&soundproducertracks_sources_vector);
+	}
+	else if(soundProducerTracks_vec->at(0)->GetReferenceToStereoAudioTrack()->GetAudioTrackState() == StereoAudioTrack::State::PLAYER_PLAYING)
+	{
+		audioPlayer->PlayMultipleUpdatedPlayerBuffers(&soundproducertracks_sources_vector);
+	}
 }
 
 void SoundProducerTrackManager::FunctionToCallInPauseState()

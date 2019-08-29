@@ -700,6 +700,7 @@ void MainFrame::CreateNewSoundProducerTrack()
 											audioEnginePtr->GetReferenceToAudioDevice(),
 											audioEnginePtr->GetReferenceToAudioContext())
 										);
+	soundproducertrack_manager_ptr->AddSourceOfLastTrackToSoundProducerTrackManager();
 	
 	//initialize sound producer track stuff
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
