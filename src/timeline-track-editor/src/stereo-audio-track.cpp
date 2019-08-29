@@ -22,6 +22,8 @@ StereoAudioTrack::StereoAudioTrack(const wxString& title) : Track(title)
 	
 	playbackControlsPtr = nullptr;
 	
+	track_options = StereoAudioTrack::Options::BUFFER_AND_PLAY_AUDIO; //by default buffer and play audio
+	
 }
 
 void StereoAudioTrack::SetReferenceToSourceToManipulate(ALuint* source){sourceToManipulatePtr = source;}
@@ -54,7 +56,12 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 		{
 			case State::PLAYER_NULL:
 			{
-				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time); //start player
+				audioPlayerPtr->StartPlayerBuffering(sourceToManipulatePtr,current_time); //start player
+				
+				if(track_options == StereoAudioTrack::Options::BUFFER_AND_PLAY_AUDIO)
+				{
+					audioPlayerPtr->StartPlayingBuffer(sourceToManipulatePtr);
+				}
 				
 				break;
 			}
@@ -63,13 +70,18 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 				//audioPlayerPtr->PlaySource(sourceToManipulatePtr);
 				//audioPlayerPtr->UpdatePlayer(sourceToManipulatePtr,current_time);
 				audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
-				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time);
+				audioPlayerPtr->StartPlayerBuffering(sourceToManipulatePtr,current_time);
+				if(track_options == StereoAudioTrack::Options::BUFFER_AND_PLAY_AUDIO)
+				{
+					audioPlayerPtr->StartPlayingBuffer(sourceToManipulatePtr);
+				}
+				
 				StereoAudioTrack::al_nssleep(10000000);
 				break;
 			}
 			case State::PLAYER_PLAYING:
 			{
-				switch(audioPlayerPtr->UpdatePlayer(sourceToManipulatePtr,current_time))
+				switch(audioPlayerPtr->UpdatePlayerBuffer(sourceToManipulatePtr,current_time))
 				{
 					case OpenALSoftPlayer::PlayerStatus::PLAYBACK_FINISHED:
 					{
@@ -85,7 +97,15 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 						playbackControlsPtr->StopOP();
 						break;
 					}
-					
+					case OpenALSoftPlayer::PlayerStatus::GOOD_UPDATE_BUFFER_STATUS:
+					{
+						if(track_options == StereoAudioTrack::Options::BUFFER_AND_PLAY_AUDIO)
+						{
+							audioPlayerPtr->PlayUpdatedPlayerBuffer(sourceToManipulatePtr);
+						}
+						
+						break;
+					}
 				}
 				
 				StereoAudioTrack::al_nssleep(10000000);
@@ -93,13 +113,22 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 			}
 			case State::PLAYER_REWINDING:
 			{
-				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time);
+				audioPlayerPtr->StartPlayerBuffering(sourceToManipulatePtr,current_time);
+				if(track_options == StereoAudioTrack::Options::BUFFER_AND_PLAY_AUDIO)
+				{
+					audioPlayerPtr->StartPlayingBuffer(sourceToManipulatePtr);
+				}
+				
 				StereoAudioTrack::al_nssleep(10000000);
 				break;
 			}
 			case State::PLAYER_FAST_FORWARDING:
 			{
-				audioPlayerPtr->StartPlayer(sourceToManipulatePtr,current_time);
+				audioPlayerPtr->StartPlayerBuffering(sourceToManipulatePtr,current_time);
+				if(track_options == StereoAudioTrack::Options::BUFFER_AND_PLAY_AUDIO)
+				{
+					audioPlayerPtr->StartPlayingBuffer(sourceToManipulatePtr);
+				}
 				StereoAudioTrack::al_nssleep(10000000);
 				break;
 			}
@@ -326,3 +355,6 @@ void StereoAudioTrack::logic_right_click(){}
 
 void StereoAudioTrack::SetReferenceToPlaybackControls(PlaybackControls* controls){playbackControlsPtr = controls;}
 PlaybackControls* StereoAudioTrack::GetReferenceToPlaybackControls(){return playbackControlsPtr;}
+
+void StereoAudioTrack::SetTrackOption(int thisOption){track_options = thisOption;}
+int StereoAudioTrack::GetTrackOption(){return track_options;}

@@ -48,7 +48,7 @@
 #include <osgGA/OrbitManipulator>
 #include <osgGA/TrackballManipulator>
 
-
+#include "soundproducer-track-manager.h"
 #include "soundproducer.h"
 #include "listener.h"
 #include "listener-external.h"

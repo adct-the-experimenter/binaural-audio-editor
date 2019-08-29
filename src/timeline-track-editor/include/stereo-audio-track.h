@@ -25,8 +25,20 @@ public:
 		PLAYER_FAST_FORWARDING
 	};
 	
+	
+
+	
 	void SetAudioTrackState(int thisState);
     int GetAudioTrackState();
+    
+    enum Options
+	{
+		ONLY_BUFFER_AUDIO = 0, //for use with multiple stereo audio track in use and only need to buffer multiple sources, play sources all in sync with PlayMultipleUpdatedBuffers
+		BUFFER_AND_PLAY_AUDIO //for use with only one stereo audio track and can play single buffer
+	};
+	
+	void SetTrackOption(int thisOption);
+	int GetTrackOption();
 	
 	AudioTrack* GetReferenceToLeftChannelTrack();
 	AudioTrack* GetReferenceToRightChannelTrack();
@@ -95,6 +107,9 @@ private:
 	ALuint* sourceToManipulatePtr;
 	OpenALSoftPlayer* audioPlayerPtr;
 	
+	//options for track
+	int track_options;
+	
 	double verticalStart; //vertical axis start
 	double verticalEnd; //vertical axis end
 	double verticalResolution;
@@ -111,6 +126,8 @@ private:
     void al_nssleep(unsigned long nsec);
     
     PlaybackControls* playbackControlsPtr;
+    
+    
     
 };
 

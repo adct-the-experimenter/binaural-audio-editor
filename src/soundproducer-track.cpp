@@ -19,7 +19,8 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	audioTrack = new StereoAudioTrack("Track");
 	
 	audioTrack->SetReferenceToAudioPlayer(audioPlayer);
-	
+	audioTrack->SetTrackOption(StereoAudioTrack::Options::ONLY_BUFFER_AUDIO);
+
 	//initialize track source
 	alGenSources(1, &track_source);
 	alSourcei(track_source, AL_SOURCE_RELATIVE, AL_FALSE);
@@ -261,4 +262,9 @@ void SoundProducerTrack::OnRightMouseClick(wxCommandEvent& event)
 	yTrack->logic_right_click();
 	zTrack->logic_right_click();
 	event.Skip();
+}
+
+ALuint* SoundProducerTrack::GetReferenceToTrackSource()
+{
+	return &track_source;
 }

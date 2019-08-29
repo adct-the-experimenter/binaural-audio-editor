@@ -69,6 +69,8 @@ public:
     virtual void FunctionToCallInRewindState();
     virtual void FunctionToCallInFastForwardState();
     virtual void FunctionToCallInNullState();
+    
+    ALuint* GetReferenceToTrackSource();
 	
 private:
 	SoundProducer* soundProducerToManipulatePtr;

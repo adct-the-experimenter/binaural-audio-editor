@@ -48,9 +48,16 @@ public:
 	
 	//functions to manipulate source
 	void PlaySource(ALuint* thisSource);
+	void PlayMultipleSources(std::vector <ALuint*> *sources_vec);
+	
 	void PauseSource(ALuint* thisSource);
+	void PauseMultipleSources(std::vector <ALuint*> *sources_vec);
+	
 	void RewindSource(ALuint* thisSource);
+	void RewindMultipleSources(std::vector <ALuint*> *sources_vec);
+	
 	void StopSource(ALuint* thisSource);
+	void StopMultipleSources(std::vector <ALuint*> *sources_vec);
 	
 	//clear queue playing
 	void ClearQueue(ALuint* thisSource);
@@ -64,9 +71,15 @@ public:
 	//function to close current file loaded for streaming audio
 	void ClosePlayerFile();
 	
-	int StartPlayer(ALuint* source,double& current_time);
+	int StartPlayerBuffering(ALuint* source,double& current_time);
 	
-	int UpdatePlayer(ALuint* source,double& current_time);
+	int StartPlayingBuffer(ALuint* source);
+	
+	int UpdatePlayerBuffer(ALuint* source,double& current_time);
+	
+	int PlayUpdatedPlayerBuffer(ALuint* source);
+	
+	int PlayMultipleUpdatedPlayerBuffers(std::vector <ALuint*> *sources_vec);
 	
 	void CloseOpenALSoft(ALCdevice* thisAudioDevice, ALCcontext* thisAudioContext);
 	
@@ -78,8 +91,9 @@ public:
 		ERROR_BUFFERING_DATA=3,
 		ERROR_RESTARTING_PLAYBACK=4,
 		PLAYBACK_FINISHED=5,
-		ERROR_STARTING_PLAYBACK=6
-		
+		ERROR_STARTING_PLAYBACK=6,
+		GOOD_UPDATE_BUFFER_STATUS,
+		GOOD_START_BUFFERING
 	};
 	
 private:
@@ -101,6 +115,8 @@ private:
 	SF_INFO sfinfo;
 	
 	int bit_size;
+	
+	size_t buffer_index; //keeps track of which buffer player is on
 };
 
 #endif
