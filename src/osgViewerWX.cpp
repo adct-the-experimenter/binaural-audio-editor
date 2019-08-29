@@ -696,7 +696,7 @@ void MainFrame::CreateNewSoundProducerTrack()
 	
 	wxString title = wxString("SoundProducer Track " + result);
 	
-	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track",
+	m_soundproducer_track_vec.push_back(new SoundProducerTrack(title,
 											audioEnginePtr->GetReferenceToAudioDevice(),
 											audioEnginePtr->GetReferenceToAudioContext())
 										);
