@@ -211,6 +211,8 @@ void SoundProducerTrack::OnPaint(wxPaintEvent& event)
 	yTrack->render(dc);
 	zTrack->render(dc);
 	
+	event.Skip();
+	
 }
 
 void SoundProducerTrack::OnScroll(wxScrollEvent& event)
@@ -218,6 +220,8 @@ void SoundProducerTrack::OnScroll(wxScrollEvent& event)
 	Refresh();
 	
 	FitInside();
+	
+	event.Skip();
 }
 
 void SoundProducerTrack::OnSize(wxSizeEvent& event)
@@ -225,6 +229,8 @@ void SoundProducerTrack::OnSize(wxSizeEvent& event)
 	Refresh();
 	
 	FitInside();
+	
+	event.Skip();
 }
 		
 void SoundProducerTrack::SetReferenceToCurrentTimeVariable(double* thisTimeVariable)

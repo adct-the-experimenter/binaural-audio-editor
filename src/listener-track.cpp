@@ -193,6 +193,8 @@ void ListenerTrack::OnPaint(wxPaintEvent& event)
 	yQuatTrack->render(dc);
 	zQuatTrack->render(dc);
 	
+	event.Skip();
+	
 }
 
 void ListenerTrack::OnScroll(wxScrollEvent& event)
@@ -201,6 +203,7 @@ void ListenerTrack::OnScroll(wxScrollEvent& event)
 	
 	FitInside();
 	
+	event.Skip();
 }
 
 void ListenerTrack::OnSize(wxSizeEvent& event)
@@ -208,6 +211,8 @@ void ListenerTrack::OnSize(wxSizeEvent& event)
 	Refresh();
 	
 	FitInside();
+	
+	event.Skip();
 	
 }
 		
