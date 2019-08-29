@@ -267,11 +267,21 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
 	timeFrame = new TimelineFrame(this); 
 	
+
+	soundproducertrack_manager_ptr = std::unique_ptr <SoundProducerTrackManager>(new SoundProducerTrackManager("SoundProducer Track Manager",
+																		audioEnginePtr->GetReferenceToAudioDevice(),
+																		audioEnginePtr->GetReferenceToAudioContext() ) ) ;
+	
+	soundproducertrack_manager_ptr->SetReferenceToSoundProducerTrackVector(&m_soundproducer_track_vec);
+	
+	
+	
 	m_soundproducer_track_vec.push_back(new SoundProducerTrack("SoundProducer Track",
 											audioEnginePtr->GetReferenceToAudioDevice(),
 											audioEnginePtr->GetReferenceToAudioContext())
 										);
-											
+	soundproducertrack_manager_ptr->AddSourceOfLastTrackToSoundProducerTrackManager();										
+	
 	m_listener_track = new ListenerTrack("Listener Track");
 	
 	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
@@ -359,9 +369,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	
 	timeFrame->AddTrack(m_listener_track->GetReferenceToQuatZTrack(),space);
 	
-	//add special soundproducertrack function to call during playback
-	//it will also call x,y,z track playback functions
-	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec[0]); 
+	
 	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_listener_track); 
 	
 	//add block of space between Sound Producer Track and Listener Track
@@ -428,11 +436,11 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	//add right channel track to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->GetReferenceToRightChannelTrack(),space);
 	
-	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec[0]);
-	timeFrame->AddTrackFunctionToCallInTimerLoopNullState(m_soundproducer_track_vec[0]);
-	timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(m_soundproducer_track_vec[0]);
-	timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(m_soundproducer_track_vec[0]);
-	timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(m_soundproducer_track_vec[0]);
+	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(soundproducertrack_manager_ptr.get());
+	timeFrame->AddTrackFunctionToCallInTimerLoopNullState(soundproducertrack_manager_ptr.get());
+	timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(soundproducertrack_manager_ptr.get());
+	timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(soundproducertrack_manager_ptr.get());
+	timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(soundproducertrack_manager_ptr.get());
 	
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
@@ -759,11 +767,11 @@ void MainFrame::CreateNewSoundProducerTrack()
 	//add right channel track to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->GetReferenceToRightChannelTrack(),space);
 	
-	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
-	timeFrame->AddTrackFunctionToCallInTimerLoopNullState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
-	timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
-	timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
-	timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	//timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	//timeFrame->AddTrackFunctionToCallInTimerLoopNullState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	//timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	//timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
+	//timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
 	
 	//add x,y,z tracks of SoundProducerTrack to time frame
 	
@@ -825,6 +833,7 @@ void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 		
 		//destroy last soundproducertrack from vector containing soundproducertracks
 		m_soundproducer_track_vec.pop_back();
+		soundproducertrack_manager_ptr->RemoveSourceOfLastTrackFromSoundProducerTrackManager();
 		
 		std::cout << "\nItem Count: " << timeFrame->GetTimelineWindow()->GetSizer()->GetItemCount() << std::endl;
 	}

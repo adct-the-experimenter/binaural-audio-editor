@@ -210,6 +210,8 @@ private:
 	
 	TimelineFrame *timeFrame;
 	
+	std::unique_ptr <SoundProducerTrackManager> soundproducertrack_manager_ptr;
+	
 	std::vector <SoundProducerTrack*> m_soundproducer_track_vec;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer

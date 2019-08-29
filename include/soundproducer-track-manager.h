@@ -18,13 +18,13 @@ public:
 	void SetReferenceToAudioDevice(ALCdevice* thisAudioDevice);
 	void SetReferenceToAudioContext(ALCcontext* thisAudioContext);
 	
-	void AddNewSoundProducerTrackToManager(SoundProducerTrack* thisTrack);
-	void RemoveLastSoundProducerTrackFromManager();
+	void SetReferenceToSoundProducerTrackVector(std::vector <SoundProducerTrack*> *thisTrackVec);
+	void AddSourceOfLastTrackToSoundProducerTrackManager();
+	void RemoveSourceOfLastTrackFromSoundProducerTrackManager();
 	
 	//Functions inherited from Track
 	void SetReferenceToCurrentTimeVariable(double* thisTimeVariable);
 	double GetCurrentTime();
-	
 	
 	
 	//function to call in timer loop, variable to manipulate gets changed here
@@ -36,8 +36,8 @@ public:
 	
 private:
 	
-	//vector to contain pointers to sound producer tracks
-	std::vector <SoundProducerTrack*> soundProducerTracks_vec;
+	//pointer to vector containing pointers to sound producer tracks
+	std::vector <SoundProducerTrack*> *soundProducerTracks_vec;
 	
 	//vector to contain pointers to sound producer track sources
 	std::vector <ALuint*> soundproducertracks_sources_vector;
