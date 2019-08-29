@@ -98,6 +98,17 @@ void SetupSerialDialog::OnSetup(wxCommandEvent& event)
 			{
 				ptrListenerExternal->SetSerialPortPath(textFieldSerialPort->GetLineText(0).ToStdString());
 				ptrListenerExternal->GetExternalOrientationSerialDevicePtr()->InitSerialCommunication(textFieldSerialPort->GetLineText(0).ToStdString(),9600);
+				
+				if(ptrListenerExternal->GetExternalOrientationSerialDevicePtr()->GetDeviceInitializedBool())
+				{
+					wxMessageBox(wxT("Successfully setup serial communication! \n"));
+				}
+				else
+				{
+					//wxString thisString(message);
+					wxMessageBox(wxT("Failed to setup serial communication! \n"));
+				}
+				
 			}
 		}
 		

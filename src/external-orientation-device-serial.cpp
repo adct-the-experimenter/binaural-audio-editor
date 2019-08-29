@@ -100,17 +100,17 @@ void ExternalOrientationDeviceSerial::ReadOrientationParametersFromSerial(float*
 	//y in binaural audio editor = z in regular cartesian
 	//x in binaural audio editor = y in regular cartesian
 	//z in binaural audio editor = x in regular cartesian
-	*fz = rotated_forward_vector_quaternion.R_component_2();
+	*fz = rotated_up_vector_quaternion.R_component_2();
 
-	*fx = rotated_forward_vector_quaternion.R_component_3();
+	*fx = rotated_up_vector_quaternion.R_component_4();
 
-	*fy = rotated_forward_vector_quaternion.R_component_4();
+	*fy = rotated_up_vector_quaternion.R_component_3();
 
-	*uz = rotated_up_vector_quaternion.R_component_2();
+	*uz = rotated_forward_vector_quaternion.R_component_2();
 
-	*ux = rotated_up_vector_quaternion.R_component_3();
+	*ux = rotated_forward_vector_quaternion.R_component_4();
 
-	*uy = rotated_up_vector_quaternion.R_component_4();
+	*uy = rotated_forward_vector_quaternion.R_component_3();
 
 }
 
@@ -131,29 +131,7 @@ void ExternalDeviceRepeatTimer::Notify()
 
 void ExternalDeviceRepeatTimer::FunctionToRepeat()
 {
-	if(m_listener_ptr && m_device)
-	{		
-		if(m_device->GetDeviceInitializedBool() && m_listener_ptr->GetListenerExternalDeviceOrientationBool())
-		{
-			ExternalDeviceRepeatTimer::SetReadingValuesBool(true);
-			
-			float fx,fy,fz,ux,uy,uz;
-			
-			m_device->ReadOrientationParametersFromSerial(&fx,&fy,&fz,&ux,&uy,&uz);
-			
-			std::cout << "fx:" << fx << ", fy:"  << fy << " ,fz:" << fz << "\n, ux:" << ux << ", uy:" << uy << ", uz:" << uz << std::endl;
-			
-			m_listener_ptr->setForwardX(fx);
-			m_listener_ptr->setForwardY(fy);
-			m_listener_ptr->setForwardZ(fz);
-			
-			m_listener_ptr->setUpX(ux);
-			m_listener_ptr->setUpY(uy);
-			m_listener_ptr->setUpZ(uz);
-			
-			ExternalDeviceRepeatTimer::SetReadingValuesBool(false);
-		}
-	}
+	
 }
 
 void ExternalDeviceRepeatTimer::start()

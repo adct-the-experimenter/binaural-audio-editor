@@ -323,8 +323,7 @@ void AudioGraph::DrawHorizontalAxis(wxDC& dc)
 
 void AudioGraph::DrawVerticalAxis(wxDC& dc,std::vector <double> *verticalAxisVector)
 {
-	wxFont font(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
-            wxFONTWEIGHT_NORMAL, false, wxT("Courier 10 Pitch"));
+	wxFont font = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
 	dc.SetFont(font);
 	
 	int step = (int) round( TRACK_HEIGHT / (verticalAxisVector->size()) );
