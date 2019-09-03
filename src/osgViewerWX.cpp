@@ -605,10 +605,11 @@ void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, AL
 	soundproducer_registry.AddRecentSoundProducerMadeToRegistry();
 	
 	//update lists of all sound producer tracks
-	for(size_t i=0; i < m_soundproducer_track_vec.size(); i++)
-	{
-		m_soundproducer_track_vec[i]->UpdateComboBoxListFromSoundProducerRegistry();
-	}
+	//for(size_t i=0; i < m_soundproducer_track_vec.size(); i++)
+	//{
+	//	m_soundproducer_track_vec[i]->UpdateComboBoxListFromSoundProducerRegistry();
+	//}
+	soundproducer_registry.UpdateAllComboBoxesList();
 }
 
 void MainFrame::OnEditMultipleSoundProducers(wxCommandEvent& event)
@@ -835,6 +836,7 @@ void MainFrame::OnRemoveSoundProducerTrack(wxCommandEvent& event)
 		//destroy last soundproducertrack from vector containing soundproducertracks
 		m_soundproducer_track_vec.pop_back();
 		soundproducertrack_manager_ptr->RemoveSourceOfLastTrackFromSoundProducerTrackManager();
+		soundproducer_registry.RemoveLastComboBoxReference();
 		
 		std::cout << "\nItem Count: " << timeFrame->GetTimelineWindow()->GetSizer()->GetItemCount() << std::endl;
 	}
