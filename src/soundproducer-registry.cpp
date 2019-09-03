@@ -109,6 +109,11 @@ void SoundProducerRegistry::AddReferenceToComboBox(wxComboBox* thisComboBox)
 	combo_box_ptr_vec.push_back(thisComboBox);
 }
 
+void SoundProducerRegistry::RemoveLastComboBoxReference()
+{
+	combo_box_ptr_vec.pop_back();
+}
+
 void SoundProducerRegistry::UpdateAllComboBoxesList()
 {
 	for(size_t i=0; i < combo_box_ptr_vec.size(); i++)
@@ -117,8 +122,9 @@ void SoundProducerRegistry::UpdateAllComboBoxesList()
 		
 		combo_box_ptr_vec[i]->Clear();
 		combo_box_ptr_vec[i]->Append(soundproducers_to_edit_wxstring);
-		combo_box_ptr_vec[i]->Append(currentNameSelected);
-		combo_box_ptr_vec[i]->SetValue(currentNameSelected);
+		
+		int select_index = combo_box_ptr_vec[i]->FindString(currentNameSelected,true); //case sensitive = true
+		combo_box_ptr_vec[i]->SetSelection(select_index);
 	}
 }
 
@@ -137,6 +143,10 @@ void SoundProducerRegistry::RemoveThisNameFromAllComboBoxesExceptThisOne(std::st
 			combo_box_ptr_vec[i]->Clear();
 			combo_box_ptr_vec[i]->Append(soundproducers_to_edit_wxstring);
 			
+			int select_index = combo_box_ptr_vec[i]->FindString(currentSelectionString,true); //case sensitive = true
+			combo_box_ptr_vec[i]->SetSelection(select_index); 	
 		}
 	}
 }
+
+

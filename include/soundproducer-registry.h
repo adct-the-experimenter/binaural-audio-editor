@@ -41,11 +41,16 @@ public:
 	//function to add reference to combo box to combo_box_ptr_vec
 	void AddReferenceToComboBox(wxComboBox* thisComboBox);
 	
+	//function to remove a combo box pointer from container, use when soundproducer track is removed
+	void RemoveLastComboBoxReference();
+	
 	//function to update all comboboxes list, used for updating list after removal of a selection that is being edited by a soundproducer track
 	void UpdateAllComboBoxesList();
 	
 	//function to remove a string name from all combo boxes except for one
 	void RemoveThisNameFromAllComboBoxesExceptThisOne(std::string thisName, wxComboBox* thisCombobox);
+	
+	
 	
 private:
 

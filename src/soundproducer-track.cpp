@@ -173,6 +173,11 @@ void SoundProducerTrack::SelectSoundProducerByName(std::string name)
 	{
 		thisSoundProducer->SetReferenceToTrackSource(&track_source);
 		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
+		
+		if(soundproducer_registry_ptr == nullptr)
+		{
+			soundproducer_registry_ptr->RemoveThisNameFromAllComboBoxesExceptThisOne(name,m_combo_box);
+		}
 	}	
 	
 }

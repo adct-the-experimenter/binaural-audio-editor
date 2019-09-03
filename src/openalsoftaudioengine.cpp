@@ -52,6 +52,7 @@ bool OpenAlSoftAudioEngine::initOpenALSoft()
 	{
 		std::cout << "OpenAL Soft was unable to initialize! \n";
 		std::cout << "Unable to initialize default audio device! \n";
+		std::cout << alGetString(alGetError()) << std::endl;
 		return false;
 	}
 
@@ -61,6 +62,7 @@ bool OpenAlSoftAudioEngine::initOpenALSoft()
 	{
 		std::cout << "OpenAL Soft was unable to initialize! \n";
 		std::cout << "Unable to initialize OpenAL context! \n";
+		std::cout << alGetString(alGetError()) << std::endl;
 		return false;
 	}
 	else{alcMakeContextCurrent(alContext);}
