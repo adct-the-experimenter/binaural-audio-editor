@@ -7,7 +7,7 @@
 
 #include <cassert>
 #include <string>
-#include <cstdint>
+#include <stdint.h>
 #include <vector>
 #include <iostream>
 

@@ -8,8 +8,8 @@ project (${PROJECT_NAME} LANGUAGES C CXX)
 
 
 #-DCMAKE_BUILD_TYPE=Release
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall -fPIE")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -fPIE")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -g -Wall -fPIE")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++11 -Wall -fPIE")
 
 #wxWidget specific stuff
 SET(wxWidgets_USE_LIBS)
@@ -32,12 +32,12 @@ find_package(Threads REQUIRED)
 #For the shared library:
 set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 #where to find library files .so 
-link_directories( /usr/lib /usr/local/lib ) 
+link_directories( /usr/lib /usr/local/lib /opt/local/lib) 
 
 set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} )
 
 #for where to find header files for source and library
-include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
+include_directories(/usr/include /usr/local/include ./include ./src/ /opt/local/include timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
 
 set(SOURCES src/osgViewerWX.cpp
 			 src/soundproducer-track-manager.cpp
