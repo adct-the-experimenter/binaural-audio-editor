@@ -8,8 +8,8 @@ project (${PROJECT_NAME} LANGUAGES C CXX)
 
 
 #-DCMAKE_BUILD_TYPE=Release
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -g -Wall -fPIE -stdlib=libc++")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++11  -stdlib=libc++ -Wall -fPIE")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -g -Wall -fPIE -stdlib=libc++ -DUSE_FRAMEWORKS=1")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++11  -stdlib=libc++ -Wall -fPIE -DUSE_FRAMEWORKS=1")
 
 #wxWidget specific stuff
 SET(wxWidgets_USE_LIBS)
