@@ -1,7 +1,7 @@
 #ifndef _OSGVIEWERWX_H_
 #define _OSGVIEWERWX_H_
 
-#include "wx/defs.h"
+
 #include "wx/app.h"
 #include "wx/cursor.h"
 #include "wx/glcanvas.h" //to work with openscenegraph opengl
@@ -11,24 +11,6 @@
 #include <string>
 #include <wx/filedlg.h> //for file dialog
 #include <wx/listctrl.h> //for popup menu
-
-
-
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
-// For wxCURSOR_BLANK below, but isn't used a.t.m.
-//#ifdef WIN32
-//#include "wx/msw/wx.rc"
-//#endif
 
 #include <wx/image.h>
 #include <wx/menu.h>

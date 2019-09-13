@@ -1,3 +1,16 @@
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#include <winsock2.h>
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
 #include "osgViewerWX.h"
 
 bool init_listener_once = false;
