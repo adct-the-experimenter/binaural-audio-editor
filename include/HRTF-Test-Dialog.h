@@ -8,7 +8,7 @@
 #include <wx/textctrl.h> //for wxTextCtrl
 
 
-#include <openalsoftaudioengine.h> //for loading buffer and creating source of sound producer
+#include "openalsoftaudioengine.h" //for loading buffer and creating source of sound producer
 
 class HRTFTestDialog : public wxDialog
 {
@@ -16,30 +16,30 @@ class HRTFTestDialog : public wxDialog
 public:
 	HRTFTestDialog(const wxString& title,
 									OpenAlSoftAudioEngine* audioEngine);
-	
-	
+
+
 	void OnOk(wxCommandEvent& event );
 
 	void Exit();
-	
-	enum 
+
+	enum
 	{
 		ID_OK = wxID_HIGHEST + 1,
 	};
-	
-	
+
+
 private:
-	
+
 	wxButton* okButton;
-	
-	wxTextCtrl* textBox;	
-	
+
+	wxTextCtrl* textBox;
+
 	OpenAlSoftAudioEngine* ptrAudioEngine;
-	
-	void initPrivateVariables(); 
-	
+
+	void initPrivateVariables();
+
 	DECLARE_EVENT_TABLE()
-	
+
 };
 
 
