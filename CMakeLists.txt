@@ -8,8 +8,8 @@ project (${PROJECT_NAME} LANGUAGES C CXX)
 
 
 #-DCMAKE_BUILD_TYPE=Release
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -g -Wall -fPIE -stdlib=libc++ -DUSE_FRAMEWORKS=1")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++11  -stdlib=libc++ -Wall -fPIE -DUSE_FRAMEWORKS=1")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -Wall -fPIE")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -fPIE")
 
 #wxWidget specific stuff
 SET(wxWidgets_USE_LIBS)
@@ -37,7 +37,7 @@ link_directories( /usr/lib /usr/local/lib /opt/local/lib)
 set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} )
 
 #for where to find header files for source and library
-include_directories(/usr/include /usr/local/include ./include ./src/ /opt/local/include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR} ./)
+include_directories(/usr/include /usr/local/include ./include ./src/ /opt/local/include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR} ./ /opt/local/Library/Frameworks/wxWidgets.framework/Versions/wxWidgets/3.0/include/wx-3.0)
 
 set(SOURCES src/osgViewerWX.cpp
 			 src/soundproducer-track-manager.cpp

@@ -147,6 +147,8 @@ public:
     virtual void closeImplementation() {}
     virtual bool releaseContextImplementation() { return true; }
 
+    virtual void requestRedraw();
+
 private:
     // XXX need to set _canvas to NULL when the canvas is deleted by
     // its parent. for this, need to add event handler in OSGCanvas
