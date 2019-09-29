@@ -8,7 +8,7 @@
 #include <wx/textctrl.h> //for wxTextCtrl
 
 
-#include <openalsoftaudioengine.h> //for hrtf operations
+#include "openalsoftaudioengine.h" //for hrtf operations
 
 #include <wx/wx.h>
 
@@ -24,41 +24,41 @@ class ChangeHRTFDialog : public wxDialog
 public:
 	ChangeHRTFDialog(const wxString& title,
 									OpenAlSoftAudioEngine* audioEngine);
-	
-	
-	
+
+
+
 	void OnOk(wxCommandEvent& event );
-	
+
 	void OnChange(wxCommandEvent& event);
 
 	void Exit();
-	
-	enum 
+
+	enum
 	{
 		ID_OK = wxID_HIGHEST + 1,
 		ID_CHANGE,
 		ID_LISTBOX
 	};
-	
-	
+
+
 private:
 	std::vector <std::string> hrtf_names;
-	
+
 	wxButton* okButton;
-	
+
 	wxButton* changeButton;
-	
+
 	OpenAlSoftAudioEngine* ptrAudioEngine;
-	
+
 	wxListBox* listbox;
 	int selection_index;
-	
-	void initPrivateVariables(); 
-	
+
+	void initPrivateVariables();
+
 	void OnHRTFNameSelected(wxCommandEvent& event);
-	
+
 	DECLARE_EVENT_TABLE()
-	
+
 };
 
 

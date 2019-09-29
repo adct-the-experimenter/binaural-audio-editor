@@ -1,10 +1,25 @@
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifdef WIN32
+#include <winsock2.h>
+#endif
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
 #include "external-orientation-device-serial.h"
 
 ExternalOrientationDeviceSerial::ExternalOrientationDeviceSerial()
 {
 	m_serial_ptr = nullptr;
 	deviceInitialized = false;
-	
+
 	forward_vector_quaternion = boost::math::quaternion <float>(0,0,0,-1);
 	up_vector_quaternion = boost::math::quaternion <float>(0,0,1,0);
 }
@@ -22,7 +37,7 @@ void ExternalOrientationDeviceSerial::InitSerialCommunication(std::string port,u
 	try
 	{
 		m_serial_ptr = new SimpleSerial(port,baud_rate);
-		
+
 		if(m_serial_ptr != nullptr)
 		{
 			ExternalOrientationDeviceSerial::SetDeviceInitializedBool(true);
@@ -47,53 +62,53 @@ void ExternalOrientationDeviceSerial::ReadOrientationParametersFromSerial(float*
 	std::cout << "In read orientation parameters. \n";
 	//read line
 	//std::string quaternion_data = m_serial_ptr->readLine();
-	
+
 	//std::cout << "quaternion data: \n" << quaternion_data << std::endl;
 	std::string quaternion_data;
-	
+
 	//get rotation quaternion w
 	m_serial_ptr->writeString("!"); //send command to display quaternion w
-	quaternion_data = m_serial_ptr->readLine(); //read number	
+	quaternion_data = m_serial_ptr->readLine(); //read number
 	m_serial_ptr->writeString("%"); //send command to stop display
 	float w = std::stof(quaternion_data);
-	 
+
 	//std::cout << "\n quaternion data w:" << quaternion_data << std::endl;
-	
+
 	//get rotation quaternion x
 	m_serial_ptr->writeString("@"); //send command to display quaternion x
-	quaternion_data = m_serial_ptr->readLine(); //read number	
+	quaternion_data = m_serial_ptr->readLine(); //read number
 	m_serial_ptr->writeString("%"); //send command to stop display
 	float x = std::stof(quaternion_data);
-	
+
 	//std::cout << "\n quaternion data x:" << quaternion_data << std::endl;
-	
+
 	//get rotation quaternion y
 	m_serial_ptr->writeString("#"); //send command to display quaternion y
-	quaternion_data = m_serial_ptr->readLine(); //read number	
+	quaternion_data = m_serial_ptr->readLine(); //read number
 	m_serial_ptr->writeString("%"); //send command to stop display
 	float y = std::stof(quaternion_data);
-	
+
 	//std::cout << "\n quaternion data y:" << quaternion_data << std::endl;
-	
+
 	//get rotation quaternion z
 	m_serial_ptr->writeString("$"); //send command to display quaternion z
-	quaternion_data = m_serial_ptr->readLine(); //read number	
+	quaternion_data = m_serial_ptr->readLine(); //read number
 	m_serial_ptr->writeString("%"); //send command to stop display
 	float z = std::stof(quaternion_data);
-	
+
 	//std::cout << "\n quaternion data z:" << quaternion_data << std::endl;
-	
-		
-	boost::math::quaternion <float> rotation_quaternion(w,x,y,z); 
-	boost::math::quaternion <float> inverse_rotation_quaternion(w,-1*x,-1*y,-1*z); 
+
+
+	boost::math::quaternion <float> rotation_quaternion(w,x,y,z);
+	boost::math::quaternion <float> inverse_rotation_quaternion(w,-1*x,-1*y,-1*z);
 
 
 	//calculate new rotated forward vector
 	// P'= R*P*R'
-	boost::math::quaternion <float> rotated_forward_vector_quaternion; 
+	boost::math::quaternion <float> rotated_forward_vector_quaternion;
 	rotated_forward_vector_quaternion = rotation_quaternion * forward_vector_quaternion * inverse_rotation_quaternion;
 
-	boost::math::quaternion <float> rotated_up_vector_quaternion; 
+	boost::math::quaternion <float> rotated_up_vector_quaternion;
 	rotated_up_vector_quaternion = rotation_quaternion * up_vector_quaternion * inverse_rotation_quaternion;
 
 	//remap values for binaural audio editor
@@ -131,7 +146,7 @@ void ExternalDeviceRepeatTimer::Notify()
 
 void ExternalDeviceRepeatTimer::FunctionToRepeat()
 {
-	
+
 }
 
 void ExternalDeviceRepeatTimer::start()

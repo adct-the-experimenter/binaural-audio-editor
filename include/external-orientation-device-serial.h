@@ -7,7 +7,6 @@
 
 #include <iostream>
 
-#include <wx/wx.h>
 #include <wx/timer.h>
 
 #include "listener.h"
@@ -19,19 +18,19 @@ class ExternalOrientationDeviceSerial
 public:
 	ExternalOrientationDeviceSerial();
 	~ExternalOrientationDeviceSerial();
-	
+
 	void InitSerialCommunication(std::string port,unsigned int baud_rate);
-	
+
 	void SetDeviceInitializedBool(bool status);
 	bool GetDeviceInitializedBool();
-	
+
 	void ReadOrientationParametersFromSerial(float* fx,float* fy, float* fz,
 											float* ux, float* uy,float* uz);
-	
+
 private:
 	SimpleSerial* m_serial_ptr;
 	bool deviceInitialized;
-	
+
 	//quaternions for intial forward vector and up vector directions
 	boost::math::quaternion <float> forward_vector_quaternion;
 	boost::math::quaternion <float> up_vector_quaternion;
@@ -47,12 +46,12 @@ public:
     void start();
 
 	void FunctionToRepeat();
-	
+
 private:
 	ExternalOrientationDeviceSerial* m_device;
 	Listener* m_listener_ptr;
 	bool reading_values;
-	
+
 	void SetReadingValuesBool(bool state);
 	bool GetReadingValuesBool();
 };

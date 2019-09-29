@@ -10,7 +10,7 @@
 
 #include "soundproducer.h"
 
-#include <openalsoftaudioengine.h> //for loading buffer and creating source of sound producer
+#include "openalsoftaudioengine.h" //for loading buffer and creating source of sound producer
 
 class EditMultipleSoundProducersDialog : public wxDialog
 {
@@ -19,19 +19,19 @@ public:
 	EditMultipleSoundProducersDialog(const wxString& title,
 									std::vector <std::unique_ptr <SoundProducer>> *sound_producer_vector,
 									OpenAlSoftAudioEngine* audioEngine);
-	
-	
+
+
 	void OnOk(wxCommandEvent& event );
 
 	void OnCancel(wxCommandEvent& event);
-	
+
 	void onApply(wxCommandEvent& event);
-	
+
 	void OnBrowse(wxCommandEvent& event);
 
 	void Exit();
-	
-	enum 
+
+	enum
 	{
 		ID_OK = wxID_HIGHEST + 1,
 		ID_APPLY,
@@ -39,40 +39,40 @@ public:
 		ID_RENAME,
 		ID_LISTBOX
 	};
-	
-	
+
+
 	bool OkClickedOn();
-	
+
 private:
 
 	std::vector <std::unique_ptr <SoundProducer> > *sound_producer_vector_ref; //pointer to vector of sound producers to edit
-	
+
 	wxButton* okButton;
-	wxButton* cancelButton;	
+	wxButton* cancelButton;
 	wxButton* applyButton;
-	
+
 	wxTextCtrl* textFieldX;
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
-	
+
 	wxListBox* listbox;
-	
+
 	OpenAlSoftAudioEngine* ptrAudioEngine;
 	wxTextCtrl* textFieldSoundFilePath;
 	wxButton* browseButton;
 	std::string soundFilePath;
 	ALuint buffer;
-	
-	void initPrivateVariables(); 
-	
+
+	void initPrivateVariables();
+
 	bool okClicked; //bool to indicate if ok button was clicked on
-	
+
 	void ChangeSoundProducerAttributes();
-	
+
 	void SoundProducerSelectedInListBox(wxCommandEvent& event );
-	
+
 	DECLARE_EVENT_TABLE()
-	
+
 };
 
 
