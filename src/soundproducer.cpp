@@ -5,7 +5,9 @@
 #pragma hdrstop
 #endif
 
+#ifdef WIN32
 #include <winsock2.h>
+#endif
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"

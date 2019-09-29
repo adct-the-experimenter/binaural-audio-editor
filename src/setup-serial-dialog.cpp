@@ -5,13 +5,17 @@
 #pragma hdrstop
 #endif
 
+#ifdef WIN32
 #include <winsock2.h>
+#endif
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
 
+
 #include "setup-serial-dialog.h"
+
 
 SetupSerialDialog::SetupSerialDialog(const wxString & title, ListenerExternal* listenerext)
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
