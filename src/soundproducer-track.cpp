@@ -174,6 +174,10 @@ void SoundProducerTrack::SelectSoundProducerByName(std::string name)
 		thisSoundProducer->SetReferenceToTrackSource(&track_source);
 		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
 		
+		tempX = thisSoundProducer->GetPositionX();
+		tempY = thisSoundProducer->GetPositionY();
+		tempZ = thisSoundProducer->GetPositionZ();
+		
 		if(soundproducer_registry_ptr == nullptr)
 		{
 			soundproducer_registry_ptr->RemoveThisNameFromAllComboBoxesExceptThisOne(name,m_combo_box);
