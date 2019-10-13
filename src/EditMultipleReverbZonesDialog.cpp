@@ -132,6 +132,7 @@ void EditMultipleReverbZonesDialog::initPrivateVariables()
 {
 	sound_producer_vector_ref = nullptr;
 	textFieldX = nullptr; textFieldY = nullptr; textFieldZ = nullptr;
+	textFieldWidth = nullptr; textFieldHeight = nullptr;
 	listbox = nullptr;
 	
 	applyButton = nullptr; okButton = nullptr; cancelButton = nullptr;

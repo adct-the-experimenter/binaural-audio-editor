@@ -2,6 +2,7 @@
 #define EFFECTS_MANAGER_H
 
 #include "soundproducer-track-manager.h"
+#include "reverb-zone.h"
 
 #include <wx/wx.h>
 
@@ -12,6 +13,7 @@ class EffectsManager
 public:
 	EffectsManager(SoundProducerTrackManager* track_manager);
 	~EffectsManager();
+	
 	
 private:
 	

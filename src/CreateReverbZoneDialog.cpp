@@ -25,6 +25,8 @@ void CreateReverbZoneDialog::Exit()
 	if(textFieldX != nullptr){ delete textFieldX;}
 	if(textFieldY != nullptr){ delete textFieldY;}
 	if(textFieldZ != nullptr){ delete textFieldZ;}
+	if(textFieldWidth != nullptr){ delete textFieldWidth;}
+	if(textFieldHeight != nullptr){ delete textFieldHeight;}
 	
  
     Close( true ); //close window
