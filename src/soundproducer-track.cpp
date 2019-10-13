@@ -279,7 +279,6 @@ void SoundProducerTrack::OnRightMouseClick(wxCommandEvent& event)
 	event.Skip();
 }
 
-ALuint* SoundProducerTrack::GetReferenceToTrackSource()
-{
-	return &track_source;
-}
+ALuint* SoundProducerTrack::GetReferenceToTrackSource(){return &track_source;}
+
+SoundProducer* SoundProducerTrack::GetReferenceToSoundProducerManipulated(){return soundProducerToManipulatePtr;}

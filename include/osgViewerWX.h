@@ -50,6 +50,9 @@
 #include "soundproducer-track.h"
 #include "listener-track.h"
 
+#include "effects-manager.h"
+#include "CreateReverbZoneDialog.h"
+
 #include <iostream>
 #include <memory> //for unique_ptr use
 
