@@ -175,7 +175,8 @@ private:
 		ID_TEST_HRTF,
 		ID_CHANGE_HRTF,
 		ID_LISTENER_EDIT,
-		ID_SETUP_SERIAL
+		ID_SETUP_SERIAL,
+		ID_CREATE_REVERB_ZONE
 	};
     
     osg::ref_ptr<osgViewer::Viewer> _viewer;

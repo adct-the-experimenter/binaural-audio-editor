@@ -68,9 +68,12 @@ public:
     virtual void FunctionToCallInRewindState();
     virtual void FunctionToCallInFastForwardState();
     virtual void FunctionToCallInNullState();
-
+	
+	//functions to return reference to track source and sound producer manipulated by soundproducer track
+	//for use with effects manager
     ALuint* GetReferenceToTrackSource();
-
+	SoundProducer* GetReferenceToSoundProducerManipulated();
+	
 private:
 	SoundProducer* soundProducerToManipulatePtr;
 
