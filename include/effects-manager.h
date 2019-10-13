@@ -14,11 +14,23 @@ public:
 	EffectsManager(SoundProducerTrackManager* track_manager);
 	~EffectsManager();
 	
+	//function to create reverb zone that uses standard effects
+	void CreateStandardReverbZone();
+	
+	//function to create reverb zone that uses EAX effectss
+	void CreateEAXReverbZone();
+	
+	//function to change attributes of reverb zone
+	void ChangeReverbZoneAttributes();
 	
 private:
 	
 	//pointer to manager that contains all soundproducer tracks used
 	SoundProducerTrackManager* m_track_manager_ptr;
+	
+	//vector to contain many reverb zone objects
+	std::vector <ReverbZone> reverb_zones_vector;
+	
 
 };
 

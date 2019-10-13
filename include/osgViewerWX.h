@@ -52,6 +52,7 @@
 
 #include "effects-manager.h"
 #include "CreateReverbZoneDialog.h"
+#include "EditMultipleReverbZonesDialog.h"
 
 #include <iostream>
 #include <memory> //for unique_ptr use
@@ -196,18 +197,26 @@ private:
 	
 	TimelineFrame *timeFrame;
 	
+	std::unique_ptr <EffectsManager> effects_manager_ptr;
+	
 	std::unique_ptr <SoundProducerTrackManager> soundproducertrack_manager_ptr;
 	
 	std::vector <SoundProducerTrack*> m_soundproducer_track_vec;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
-	
 	void OnEditMultipleSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
+	
 	void OnTestHRTF(wxCommandEvent& event); //function for menu to test HRTF and get results
 	void OnChangeHRTF(wxCommandEvent& event); //function for menu to instruct how to change HRTF with alsoft-config
     void OnEditListener(wxCommandEvent& event); //function for menu to edit listener position and orientation
     void OnSetupSerial(wxCommandEvent& event); //function for menu to setup serial communication
+    
+    void OnCreateReverbZone(wxCommandEvent& event); //function for menu to create and place reverb zone
+    void CreateStandardReverbZone();
+    void CreateEAXReverbZone();
+    
+    void OnEditMultipleReverbZones(wxCommandEvent& event); //function for menu to edit current available reverb zones
     
     SoundProducerRegistry soundproducer_registry;
     

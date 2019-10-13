@@ -37,7 +37,9 @@ public:
 		ID_RENAME,
 		ID_LISTBOX
 	};
-
+	
+	bool OkClicked();
+	
 private:
 	EffectsManager* m_effects_manager_ptr;
 	
@@ -50,7 +52,6 @@ private:
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
 	wxTextCtrl* textFieldWidth;
-	wxTextCtrl* textFieldHeight;
 
 	
 
@@ -63,6 +64,8 @@ private:
 	
 
 	void initPrivateVariables();
+	
+	bool okClicked;
 	
 	DECLARE_EVENT_TABLE()
 

@@ -224,6 +224,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_LISTENER_EDIT, MainFrame::OnEditListener)
     EVT_MENU				(MainFrame::ID_SETUP_SERIAL, MainFrame::OnSetupSerial)
     EVT_MENU				(MainFrame::ID_CHANGE_HRTF, MainFrame::OnChangeHRTF)
+    EVT_MENU				(MainFrame::ID_CREATE_REVERB_ZONE, MainFrame::OnCreateReverbZone)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -290,6 +291,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	soundproducertrack_manager_ptr = std::unique_ptr <SoundProducerTrackManager>(new SoundProducerTrackManager("SoundProducer Track Manager",
 																		audioEnginePtr->GetReferenceToAudioDevice(),
 																		audioEnginePtr->GetReferenceToAudioContext() ) ) ;
+																		
+	effects_manager_ptr = std::unique_ptr <EffectsManager>( new EffectsManager( soundproducertrack_manager_ptr.get() ) );
 
 	soundproducertrack_manager_ptr->SetReferenceToSoundProducerTrackVector(&m_soundproducer_track_vec);
 
@@ -681,6 +684,39 @@ void MainFrame::OnSetupSerial(wxCommandEvent& event)
 															);
 
     setupSerialDialog->Show(true);
+}
+
+void MainFrame::OnCreateReverbZone(wxCommandEvent& event)
+{
+	//show message box with ok icon,
+	//window title:about hello world
+	//message: This is a wxWidgets Helo world sample
+    //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
+
+    std::unique_ptr <CreateReverbZoneDialog> reverbZoneNewDialog(new CreateReverbZoneDialog(wxT("Create New Reverb Zone"),
+																									effects_manager_ptr.get()) );
+    reverbZoneNewDialog->Show(true);
+
+    if(reverbZoneNewDialog->OkClicked())
+    {
+		double x,y,z;
+
+		reverbZoneNewDialog->getNewPosition(x,y,z);
+		std::string name = reverbZoneNewDialog->getNewName();
+		//MainFrame::CreateSoundProducer(name,filePath,buffer,x,y,z);
+	}
+
+}
+
+
+void MainFrame::OnEditMultipleReverbZones(wxCommandEvent& event)
+{
+	std::unique_ptr <EditMultipleReverbZonesDialog> reverbZoneEditDialog(new EditMultipleReverbZonesDialog( wxT("Edit Reverb Zones"),
+																													effects_manager_ptr.get())
+																				);
+
+    reverbZoneEditDialog->Show(true);
+
 }
 
 void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
