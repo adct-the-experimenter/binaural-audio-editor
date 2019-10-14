@@ -628,11 +628,6 @@ void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, AL
 
 	soundproducer_registry.AddRecentSoundProducerMadeToRegistry();
 
-	//update lists of all sound producer tracks
-	//for(size_t i=0; i < m_soundproducer_track_vec.size(); i++)
-	//{
-	//	m_soundproducer_track_vec[i]->UpdateComboBoxListFromSoundProducerRegistry();
-	//}
 	soundproducer_registry.UpdateAllComboBoxesList();
 }
 

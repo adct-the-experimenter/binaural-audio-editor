@@ -82,34 +82,6 @@ ReverbZone::ReverbZone()
 	
 	m_type = ReverbZone::Type::NONE;
 	
-	 /* Define a macro to help load the function pointers. */
- 
-	#define LOAD_PROC(T, x)  ((x) = (T)alGetProcAddress(#x))
-		
-		LOAD_PROC(LPALDELETEEFFECTS, alDeleteEffects);
-		LOAD_PROC(LPALISEFFECT, alIsEffect);
-		LOAD_PROC(LPALEFFECTI, alEffecti);
-		LOAD_PROC(LPALEFFECTIV, alEffectiv);
-		LOAD_PROC(LPALEFFECTF, alEffectf);
-		LOAD_PROC(LPALEFFECTFV, alEffectfv);
-		LOAD_PROC(LPALGETEFFECTI, alGetEffecti);
-		LOAD_PROC(LPALGETEFFECTIV, alGetEffectiv);
-		LOAD_PROC(LPALGETEFFECTF, alGetEffectf);
-		LOAD_PROC(LPALGETEFFECTFV, alGetEffectfv);
-
-		LOAD_PROC(LPALGENAUXILIARYEFFECTSLOTS, alGenAuxiliaryEffectSlots);
-		LOAD_PROC(LPALDELETEAUXILIARYEFFECTSLOTS, alDeleteAuxiliaryEffectSlots);
-		LOAD_PROC(LPALISAUXILIARYEFFECTSLOT, alIsAuxiliaryEffectSlot);
-		LOAD_PROC(LPALAUXILIARYEFFECTSLOTI, alAuxiliaryEffectSloti);
-		LOAD_PROC(LPALAUXILIARYEFFECTSLOTIV, alAuxiliaryEffectSlotiv);
-		LOAD_PROC(LPALAUXILIARYEFFECTSLOTF, alAuxiliaryEffectSlotf);
-		LOAD_PROC(LPALAUXILIARYEFFECTSLOTFV, alAuxiliaryEffectSlotfv);
-		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTI, alGetAuxiliaryEffectSloti);
-		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTIV, alGetAuxiliaryEffectSlotiv);
-		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTF, alGetAuxiliaryEffectSlotf);
-		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTFV, alGetAuxiliaryEffectSlotfv);
-	#undef LOAD_PROC
-	
 }
 
 ReverbZone::~ReverbZone()
@@ -122,7 +94,7 @@ ReverbZone::~ReverbZone()
 ALuint ReverbZone::LoadStandardReverbEffect(const EFXEAXREVERBPROPERTIES *reverb)
 {
 	#define LOAD_PROC(T, x)  ((x) = (T)alGetProcAddress(#x))
-		
+		LOAD_PROC(LPALGENEFFECTS, alGenEffects);
 		LOAD_PROC(LPALDELETEEFFECTS, alDeleteEffects);
 		LOAD_PROC(LPALISEFFECT, alIsEffect);
 		LOAD_PROC(LPALEFFECTI, alEffecti);
@@ -191,7 +163,7 @@ ALuint ReverbZone::LoadStandardReverbEffect(const EFXEAXREVERBPROPERTIES *reverb
 ALuint ReverbZone::LoadEAXReverbEffect(const EFXEAXREVERBPROPERTIES *reverb)
 {
 	#define LOAD_PROC(T, x)  ((x) = (T)alGetProcAddress(#x))
-		
+		LOAD_PROC(LPALGENEFFECTS, alGenEffects);
 		LOAD_PROC(LPALDELETEEFFECTS, alDeleteEffects);
 		LOAD_PROC(LPALISEFFECT, alIsEffect);
 		LOAD_PROC(LPALEFFECTI, alEffecti);
@@ -336,7 +308,7 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	//initialize box at certain position
 	m_renderObject->setShape(m_box);
 	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.0f, 1.0f, 1.0f, 0.5f) );
+	m_renderObject->setColor( osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f) );
 
 	m_geode = new osg::Geode;
 	m_geode->addDrawable( m_renderObject.get() );
@@ -421,7 +393,7 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	//initialize box at certain position
 	m_renderObject->setShape(m_box);
 	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.0f, 1.0f, 1.0f, 0.5f) );
+	m_renderObject->setColor( osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f) );
 
 	m_geode = new osg::Geode;
 	m_geode->addDrawable( m_renderObject.get() );
