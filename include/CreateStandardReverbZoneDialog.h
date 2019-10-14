@@ -1,5 +1,5 @@
-#ifndef CREATE_REVERB_ZONE_H
-#define CREATE_REVERB_ZONE_H
+#ifndef CREATE_STANDARD_REVERB_ZONE_H
+#define CREATE_STANDARD_REVERB_ZONE_H
 
 #include <wx/wx.h>
 
@@ -9,11 +9,11 @@
 #include "effects-manager.h"
 
 
-class CreateReverbZoneDialog : public wxDialog
+class CreateStandardReverbZoneDialog : public wxDialog
 {
 
 public:
-	CreateReverbZoneDialog(const wxString& title,EffectsManager* effects_manager);
+	CreateStandardReverbZoneDialog(const wxString& title,EffectsManager* effects_manager);
 	
 
 	void OnOk(wxCommandEvent& event );

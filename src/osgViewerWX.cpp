@@ -224,7 +224,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_LISTENER_EDIT, MainFrame::OnEditListener)
     EVT_MENU				(MainFrame::ID_SETUP_SERIAL, MainFrame::OnSetupSerial)
     EVT_MENU				(MainFrame::ID_CHANGE_HRTF, MainFrame::OnChangeHRTF)
-    EVT_MENU				(MainFrame::ID_CREATE_REVERB_ZONE, MainFrame::OnCreateReverbZone)
+    EVT_MENU				(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE, MainFrame::OnCreateStandardReverbZone)
+    EVT_MENU				(MainFrame::ID_CREATE_EAX_REVERB_ZONE, MainFrame::OnCreateEAXReverbZone)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -267,7 +268,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     
     //create effects menu items
 	wxMenu* menuEffects = new wxMenu;
-    menuEffects->Append(MainFrame::ID_CREATE_REVERB_ZONE,"&Create Reverb Zone");
+    menuEffects->Append(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE,"&Create Standard Reverb Zone");
+    menuEffects->Append(MainFrame::ID_CREATE_EAX_REVERB_ZONE,"&Create EAX Reverb Zone");
     
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
@@ -686,14 +688,14 @@ void MainFrame::OnSetupSerial(wxCommandEvent& event)
     setupSerialDialog->Show(true);
 }
 
-void MainFrame::OnCreateReverbZone(wxCommandEvent& event)
+void MainFrame::OnCreateStandardReverbZone(wxCommandEvent& event)
 {
 	//show message box with ok icon,
 	//window title:about hello world
 	//message: This is a wxWidgets Helo world sample
     //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
 
-    std::unique_ptr <CreateReverbZoneDialog> reverbZoneNewDialog(new CreateReverbZoneDialog(wxT("Create New Reverb Zone"),
+    std::unique_ptr <CreateStandardReverbZoneDialog> reverbZoneNewDialog(new CreateStandardReverbZoneDialog(wxT("Create New Reverb Zone"),
 																									effects_manager_ptr.get()) );
     reverbZoneNewDialog->Show(true);
 
@@ -708,6 +710,27 @@ void MainFrame::OnCreateReverbZone(wxCommandEvent& event)
 
 }
 
+void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
+{
+	//show message box with ok icon,
+	//window title:about hello world
+	//message: This is a wxWidgets Helo world sample
+    //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
+
+    std::unique_ptr <CreateEAXReverbZoneDialog> reverbZoneNewDialog(new CreateEAXReverbZoneDialog(wxT("Create New Reverb Zone"),
+																									effects_manager_ptr.get()) );
+    reverbZoneNewDialog->Show(true);
+
+    if(reverbZoneNewDialog->OkClicked())
+    {
+		double x,y,z;
+
+		reverbZoneNewDialog->getNewPosition(x,y,z);
+		std::string name = reverbZoneNewDialog->getNewName();
+		//MainFrame::CreateSoundProducer(name,filePath,buffer,x,y,z);
+	}
+
+}
 
 void MainFrame::OnEditMultipleReverbZones(wxCommandEvent& event)
 {

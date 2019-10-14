@@ -15,10 +15,10 @@ public:
 	~EffectsManager();
 	
 	//function to create reverb zone that uses standard effects
-	void CreateStandardReverbZone();
+	void CreateStandardReverbZone(std::string& name, double& x, double& y, double& z, double& width, ReverbStandardProperties& properties);
 	
 	//function to create reverb zone that uses EAX effectss
-	void CreateEAXReverbZone();
+	void CreateEAXReverbZone(std::string& name, double& x, double& y, double& z, double& width, ReverbEAXProperties& properties);
 	
 	//function to change attributes of reverb zone
 	void ChangeReverbZoneAttributes();

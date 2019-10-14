@@ -41,7 +41,7 @@ include_directories(/usr/include /usr/local/include ./include ./src/timeline-tra
 
 set(SOURCES src/osgViewerWX.cpp
 			 src/effects-manager.cpp
-			 src/CreateReverbZoneDialog.cpp src/EditMultipleReverbZonesDialog.cpp src/reverb-zone.cpp
+			 src/CreateStandardReverbZoneDialog.cpp src/CreateEAXReverbZoneDialog.cpp src/EditMultipleReverbZonesDialog.cpp src/reverb-zone.cpp
 			 src/soundproducer-track-manager.cpp
 			 src/soundproducer-track.cpp
 			 src/listener-track.cpp

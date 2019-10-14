@@ -1,6 +1,6 @@
-#include "CreateReverbZoneDialog.h"
+#include "CreateEAXReverbZoneDialog.h"
 
-CreateReverbZoneDialog::CreateReverbZoneDialog(const wxString& title,EffectsManager* effects_manager) : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(250, 230))
+CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,EffectsManager* effects_manager) : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(250, 230))
 {
 	okClicked = false;
 	
@@ -10,6 +10,9 @@ CreateReverbZoneDialog::CreateReverbZoneDialog(const wxString& title,EffectsMana
 	
 	wxFloatingPointValidator <double> validator(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
     validator.SetRange(-10.00,10.00);     // set allowable range
+    
+    wxFloatingPointValidator <double> validatorWidth(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    validatorWidth.SetRange(0.00,10.00);     // set allowable range
     
     textFieldName = new wxTextCtrl(this,-1, "Name", 
 								wxPoint(95, 20), wxSize(80,20),
@@ -33,10 +36,11 @@ CreateReverbZoneDialog::CreateReverbZoneDialog(const wxString& title,EffectsMana
 								validator,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	//textFieldSoundFilePath = new wxTextCtrl(this,-1, "", 
-	//							wxPoint(95, 140), wxSize(80,20),
-	//							wxTE_READONLY, wxDefaultValidator,       
-	//							wxT("")); 
+	textFieldWidth = new wxTextCtrl(this,-1, "0.00", 
+								wxPoint(95, 100), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorWidth,          // associate the text box with the desired validator
+								wxT("")); 
 	
 	//initialize text to the left of fields
 	wxStaticText* NameText = new wxStaticText(this, -1, wxT("Name :"), wxPoint(40, 20));
@@ -44,17 +48,15 @@ CreateReverbZoneDialog::CreateReverbZoneDialog(const wxString& title,EffectsMana
 	wxStaticText* xPositionText = new wxStaticText(this, -1, wxT("X :"), wxPoint(40, 60));
 	wxStaticText* yPositionText = new wxStaticText(this, -1, wxT("Y :"), wxPoint(40, 80));
 	wxStaticText* zPositionText = new wxStaticText(this, -1, wxT("Z :"), wxPoint(40, 100));
-    //wxStaticText* SoundText = new wxStaticText(this, -1, wxT("Sound File :"), wxPoint(20, 120));
+	wxStaticText* widthText = new wxStaticText(this, -1, wxT("Width :"), wxPoint(40, 120));
     
-    //initialize browse button
-    //browseButton = new wxButton(this, CreateSoundProducerDialog::ID_BROWSE, wxT("Browse"), 
-	//						wxPoint(110,140), wxSize(70, 30));
+
     
     //initialize Ok and Cancel buttons 
-	okButton = new wxButton(this, CreateReverbZoneDialog::ID_OK, wxT("Ok"), 
+	okButton = new wxButton(this, CreateEAXReverbZoneDialog::ID_OK, wxT("Ok"), 
 							wxDefaultPosition, wxSize(70, 30));
 
-	cancelButton = new wxButton(this, CreateReverbZoneDialog::ID_CANCEL, wxT("Cancel"), 
+	cancelButton = new wxButton(this, CreateEAXReverbZoneDialog::ID_CANCEL, wxT("Cancel"), 
 								wxDefaultPosition, wxSize(70, 30));
 
 	//Make vertical box to put horizontal boxes in
@@ -94,12 +96,11 @@ CreateReverbZoneDialog::CreateReverbZoneDialog(const wxString& title,EffectsMana
 	
 	vbox->Add(hboxZ,1, wxEXPAND | wxALL, 10);
 	
-	//wxBoxSizer *hboxSoundFile = new wxBoxSizer(wxHORIZONTAL);
-	//hboxSoundFile->Add(SoundText);
-	//hboxSoundFile->Add(textFieldSoundFilePath);
-	//hboxSoundFile->Add(browseButton);
+	wxBoxSizer *hboxWidth = new wxBoxSizer(wxHORIZONTAL);
+	hboxWidth->Add(widthText);
+	hboxWidth->Add(textFieldWidth);
 	
-	//vbox->Add(hboxSoundFile,1, wxEXPAND | wxALL, 10);
+	vbox->Add(hboxWidth,1, wxEXPAND | wxALL, 10);
 	
 	vbox->Add(hbox5, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
 
@@ -113,16 +114,16 @@ CreateReverbZoneDialog::CreateReverbZoneDialog(const wxString& title,EffectsMana
 	Destroy(); 
 }
 
-std::string CreateReverbZoneDialog::getNewName(){return name;}
+std::string CreateEAXReverbZoneDialog::getNewName(){return name;}
 
-void CreateReverbZoneDialog::getNewPosition(double& x, double& y, double& z)
+void CreateEAXReverbZoneDialog::getNewPosition(double& x, double& y, double& z)
 {
 	x = xPosition;
 	y = yPosition;
 	z = zPosition;
 }
 
-void CreateReverbZoneDialog::OnOk(wxCommandEvent& event )
+void CreateEAXReverbZoneDialog::OnOk(wxCommandEvent& event )
 {
 	okClicked = true;
 	
@@ -131,16 +132,16 @@ void CreateReverbZoneDialog::OnOk(wxCommandEvent& event )
 	( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
 	( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
 	
-	CreateReverbZoneDialog::Exit();
+	CreateEAXReverbZoneDialog::Exit();
 }
 
-void CreateReverbZoneDialog::OnCancel(wxCommandEvent& event)
+void CreateEAXReverbZoneDialog::OnCancel(wxCommandEvent& event)
 {
 	
-	CreateReverbZoneDialog::Exit();
+	CreateEAXReverbZoneDialog::Exit();
 }
 
-void CreateReverbZoneDialog::Exit()
+void CreateEAXReverbZoneDialog::Exit()
 {
 	if(okButton != nullptr){ delete okButton;}
 	if(cancelButton != nullptr){delete cancelButton;}
@@ -154,13 +155,12 @@ void CreateReverbZoneDialog::Exit()
     Close( true ); //close window
 }
 
-bool CreateReverbZoneDialog::OkClicked(){return okClicked;}
+bool CreateEAXReverbZoneDialog::OkClicked(){return okClicked;}
 
 
 //Event table for main frame specific events
-BEGIN_EVENT_TABLE(CreateReverbZoneDialog, wxDialog)
-    EVT_BUTTON				(ID_OK, CreateReverbZoneDialog::OnOk)
-    EVT_BUTTON				(ID_CANCEL, CreateReverbZoneDialog::OnCancel)
+BEGIN_EVENT_TABLE(CreateEAXReverbZoneDialog, wxDialog)
+    EVT_BUTTON				(ID_OK, CreateEAXReverbZoneDialog::OnOk)
+    EVT_BUTTON				(ID_CANCEL, CreateEAXReverbZoneDialog::OnCancel)
     
-    //EVT_BUTTON				(ID_BROWSE, EditMultipleSoundProducersDialog::OnBrowse)
 END_EVENT_TABLE()

@@ -51,7 +51,8 @@
 #include "listener-track.h"
 
 #include "effects-manager.h"
-#include "CreateReverbZoneDialog.h"
+#include "CreateStandardReverbZoneDialog.h"
+#include "CreateEAXReverbZoneDialog.h"
 #include "EditMultipleReverbZonesDialog.h"
 
 #include <iostream>
@@ -180,7 +181,8 @@ private:
 		ID_CHANGE_HRTF,
 		ID_LISTENER_EDIT,
 		ID_SETUP_SERIAL,
-		ID_CREATE_REVERB_ZONE
+		ID_CREATE_STANDARD_REVERB_ZONE,
+		ID_CREATE_EAX_REVERB_ZONE
 	};
     
     osg::ref_ptr<osgViewer::Viewer> _viewer;
@@ -212,7 +214,9 @@ private:
     void OnEditListener(wxCommandEvent& event); //function for menu to edit listener position and orientation
     void OnSetupSerial(wxCommandEvent& event); //function for menu to setup serial communication
     
-    void OnCreateReverbZone(wxCommandEvent& event); //function for menu to create and place reverb zone
+    void OnCreateStandardReverbZone(wxCommandEvent& event); //function for menu to create and place standard reverb zone
+    void OnCreateEAXReverbZone(wxCommandEvent& event); //function for menu to create and place EAX reverb zone
+    
     void CreateStandardReverbZone();
     void CreateEAXReverbZone();
     

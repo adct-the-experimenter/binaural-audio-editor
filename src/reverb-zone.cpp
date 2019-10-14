@@ -76,10 +76,10 @@ ReverbZone::ReverbZone()
 	m_slot = 0;
 	
 	//initialize position vector
-	producer_position_vector.resize(3);
-	producer_position_vector[POSITION_INDEX::X] = 0;
-	producer_position_vector[POSITION_INDEX::Y] = 0;
-	producer_position_vector[POSITION_INDEX::Z] = 0;
+	position_vector.resize(3);
+	position_vector[POSITION_INDEX::X] = 0;
+	position_vector[POSITION_INDEX::Y] = 0;
+	position_vector[POSITION_INDEX::Z] = 0;
 	
 	m_type = ReverbZone::Type::NONE;
 	
@@ -218,7 +218,8 @@ static ALuint LoadEAXReverbEffect(const EFXEAXREVERBPROPERTIES *reverb)
 }
 
 void ReverbZone::InitStandardReverbZone(std::string& thisName,
-									double& x, double& y, double& z, double& width)
+									double& x, double& y, double& z, double& width,
+									ReverbStandardProperties& properties)
 {
 	//load effect based on type
 	m_effect = LoadStandardReverbEffect(&reverb);
@@ -239,9 +240,9 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	name = thisName;
 	
 	//set position
-	producer_position_vector[POSITION_INDEX::X] = x;
-	producer_position_vector[POSITION_INDEX::Y] = y;
-	producer_position_vector[POSITION_INDEX::Z] = z;
+	position_vector[POSITION_INDEX::X] = x;
+	position_vector[POSITION_INDEX::Y] = y;
+	position_vector[POSITION_INDEX::Z] = z;
 	
 	//set width
 	m_width = width;
@@ -255,7 +256,7 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	//initialize box at certain position
 	m_renderObject->setShape(m_box);
 	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f) );
+	m_renderObject->setColor( osg::Vec4(0.0f, 1.0f, 1.0f, 0.5f) );
 
 	m_geode = new osg::Geode;
 	m_geode->addDrawable( m_renderObject.get() );
@@ -273,7 +274,8 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 }
 
 void ReverbZone::InitEAXReverbZone(std::string& thisName,
-									double& x, double& y, double& z, double& width)
+									double& x, double& y, double& z, double& width,
+									ReverbEAXProperties& properties)
 {
 	//load effect based on type
 	m_effect = LoadEAXReverbEffect(&reverb);
@@ -294,9 +296,9 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	name = thisName;
 	
 	//set position
-	producer_position_vector[POSITION_INDEX::X] = x;
-	producer_position_vector[POSITION_INDEX::Y] = y;
-	producer_position_vector[POSITION_INDEX::Z] = z;
+	position_vector[POSITION_INDEX::X] = x;
+	position_vector[POSITION_INDEX::Y] = y;
+	position_vector[POSITION_INDEX::Z] = z;
 	
 	//set width
 	m_width = width;
@@ -310,7 +312,7 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	//initialize box at certain position
 	m_renderObject->setShape(m_box);
 	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f) );
+	m_renderObject->setColor( osg::Vec4(0.0f, 1.0f, 1.0f, 0.5f) );
 
 	m_geode = new osg::Geode;
 	m_geode->addDrawable( m_renderObject.get() );
@@ -333,36 +335,36 @@ std::string ReverbZone::GetNameString(){ return name;}
 
 void ReverbZone::SetPositionX(double& x)
 {
-	producer_position_vector[POSITION_INDEX::X] = x;
+	position_vector[POSITION_INDEX::X] = x;
 
 	m_paTransform->setPosition(osg::Vec3(x,
-								producer_position_vector[POSITION_INDEX::Y],
-								producer_position_vector[POSITION_INDEX::Z]));
+								position_vector[POSITION_INDEX::Y],
+								position_vector[POSITION_INDEX::Z]));
 }
 
-double ReverbZone::GetPositionX(){return producer_position_vector[POSITION_INDEX::X];}
+double ReverbZone::GetPositionX(){return position_vector[POSITION_INDEX::X];}
 
 void ReverbZone::SetPositionY(double& y)
 {
-	producer_position_vector[POSITION_INDEX::Y] = y;
+	position_vector[POSITION_INDEX::Y] = y;
 
-	m_paTransform->setPosition(osg::Vec3(producer_position_vector[POSITION_INDEX::X],
+	m_paTransform->setPosition(osg::Vec3(position_vector[POSITION_INDEX::X],
 								y,
-								producer_position_vector[POSITION_INDEX::Z]));
+								position_vector[POSITION_INDEX::Z]));
 }
 
-double ReverbZone::GetPositionY(){return producer_position_vector[POSITION_INDEX::Y];}
+double ReverbZone::GetPositionY(){return position_vector[POSITION_INDEX::Y];}
 
 void ReverbZone::SetPositionZ(double& z)
 {
-	producer_position_vector[POSITION_INDEX::Z] = z;
+	position_vector[POSITION_INDEX::Z] = z;
 
-	m_paTransform->setPosition(osg::Vec3(producer_position_vector[POSITION_INDEX::X],
-								producer_position_vector[POSITION_INDEX::Y],
+	m_paTransform->setPosition(osg::Vec3(position_vector[POSITION_INDEX::X],
+								position_vector[POSITION_INDEX::Y],
 								z));
 }
 
-double ReverbZone::GetPositionZ(){return producer_position_vector[POSITION_INDEX::Z];}
+double ReverbZone::GetPositionZ(){return position_vector[POSITION_INDEX::Z];}
 
 
 osg::ShapeDrawable* ReverbZone::getRenderObject(){return m_renderObject;}

@@ -17,7 +17,83 @@
 #include <osg/PositionAttitudeTransform> //for matrix transform that moves object rendered
 #include <osg/Geode> //for object rendered to be moved on screen by matrix transform
 
+struct ReverbEAXProperties
+{
+	//AL_EAXREVERB_DENSITY, 
+	double flDensity;
+	//AL_EAXREVERB_DIFFUSION, 
+	double flDiffusion;
+	//AL_EAXREVERB_GAIN, 
+	double flGain;
+	//AL_EAXREVERB_GAINHF, 
+	double flGainHF;
+	//AL_EAXREVERB_GAINLF, 
+	double flGainLF;
+	//AL_EAXREVERB_DECAY_TIME, 
+	double flDecayTime;
+	//AL_EAXREVERB_DECAY_HFRATIO, 
+	double flDecayHFRatio;
+	//AL_EAXREVERB_DECAY_LFRATIO, 
+	double flDecayLFRatio;
+	//AL_EAXREVERB_REFLECTIONS_GAIN, 
+	double flReflectionsGain;
+	//AL_EAXREVERB_REFLECTIONS_DELAY, 
+	double flReflectionsDelay;
+	//alEffectfv(effect, AL_EAXREVERB_REFLECTIONS_PAN, double flReflectionsPan;
+	//AL_EAXREVERB_LATE_REVERB_GAIN, 
+	double flLateReverbGain;
+	//AL_EAXREVERB_LATE_REVERB_DELAY, 
+	double flLateReverbDelay;
+	//alEffectfv(effect, AL_EAXREVERB_LATE_REVERB_PAN, double flLateReverbPan;
+	//AL_EAXREVERB_ECHO_TIME, 
+	double flEchoTime;
+	//AL_EAXREVERB_ECHO_DEPTH, 
+	double flEchoDepth;
+	//AL_EAXREVERB_MODULATION_TIME, 
+	double flModulationTime;
+	//AL_EAXREVERB_MODULATION_DEPTH, 
+	double flModulationDepth;
+	//AL_EAXREVERB_AIR_ABSORPTION_GAINHF, 
+	double flAirAbsorptionGainHF;
+	//AL_EAXREVERB_HFREFERENCE, 
+	double flHFReference;
+	//AL_EAXREVERB_LFREFERENCE, 
+	double flLFReference;
+	//AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, 
+	double flRoomRolloffFactor;
+	//AL_EAXREVERB_DECAY_HFLIMIT, 
+	double iDecayHFLimit; 
+};
 
+struct ReverbStandardProperties
+{
+	//AL_REVERB_DENSITY, 
+	double flDensity;
+	//AL_REVERB_DIFFUSION, 
+	double flDiffusion;
+	//AL_REVERB_GAIN, 
+	double flGain;
+	//AL_REVERB_GAINHF, 
+	double flGainHF;
+	//AL_REVERB_DECAY_TIME, 
+	double flDecayTime;
+	//AL_REVERB_DECAY_HFRATIO, 
+	double flDecayHFRatio;
+	//AL_REVERB_REFLECTIONS_GAIN, 
+	double flReflectionsGain;
+	//AL_REVERB_REFLECTIONS_DELAY, 
+	double flReflectionsDelay;
+	//AL_REVERB_LATE_REVERB_GAIN, 
+	double flLateReverbGain;
+	//AL_REVERB_LATE_REVERB_DELAY, 
+	double flLateReverbDelay;
+	//AL_REVERB_AIR_ABSORPTION_GAINHF, 
+	double flAirAbsorptionGainHF;
+	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
+	double flRoomRolloffFactor;
+	//AL_REVERB_DECAY_HFLIMIT, 
+	double iDecayHFLimit;
+};
 
 class ReverbZone
 {
@@ -46,13 +122,16 @@ public:
 	double GetPositionZ(); //get z position of sound producer
 	
 	
-	//functions to init reverb zones based on type
+	//functions to initialize reverb zones based on type
 	
 	void InitStandardReverbZone(std::string& thisName,
-							double& x, double& y, double& z, double& width);
+							double& x, double& y, double& z, double& width,
+							ReverbStandardProperties& properties);
 							
 	void InitEAXReverbZone(std::string& thisName,
-							double& x, double& y, double& z, double& width);
+							double& x, double& y, double& z, double& width,
+							ReverbEAXProperties& properties);
+							
 	//3d Object properties
 	osg::ShapeDrawable* getRenderObject();
 
@@ -85,7 +164,7 @@ private:
 	ReverbZone::Type m_type;
 
 	//position of reverb zone
-	std::vector <double> producer_position_vector;
+	std::vector <double> position_vector;
 	enum POSITION_INDEX { X=0,Y=1,Z=2 };
 	
 	double m_width;
