@@ -70,7 +70,6 @@ static LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 ReverbZone::ReverbZone()
 {	
 	//initialize OpenAL soft effects properties
-	reverb = EFX_REVERB_PRESET_GENERIC;
 	
 	m_effect = 0;
 	m_slot = 0;
@@ -120,8 +119,34 @@ ReverbZone::~ReverbZone()
 
 /* LoadEffect loads the given reverb properties into a new OpenAL effect
  * object, and returns the new effect ID. */
-static ALuint LoadStandardReverbEffect(const EFXEAXREVERBPROPERTIES *reverb)
+ALuint ReverbZone::LoadStandardReverbEffect(const EFXEAXREVERBPROPERTIES *reverb)
 {
+	#define LOAD_PROC(T, x)  ((x) = (T)alGetProcAddress(#x))
+		
+		LOAD_PROC(LPALDELETEEFFECTS, alDeleteEffects);
+		LOAD_PROC(LPALISEFFECT, alIsEffect);
+		LOAD_PROC(LPALEFFECTI, alEffecti);
+		LOAD_PROC(LPALEFFECTIV, alEffectiv);
+		LOAD_PROC(LPALEFFECTF, alEffectf);
+		LOAD_PROC(LPALEFFECTFV, alEffectfv);
+		LOAD_PROC(LPALGETEFFECTI, alGetEffecti);
+		LOAD_PROC(LPALGETEFFECTIV, alGetEffectiv);
+		LOAD_PROC(LPALGETEFFECTF, alGetEffectf);
+		LOAD_PROC(LPALGETEFFECTFV, alGetEffectfv);
+
+		LOAD_PROC(LPALGENAUXILIARYEFFECTSLOTS, alGenAuxiliaryEffectSlots);
+		LOAD_PROC(LPALDELETEAUXILIARYEFFECTSLOTS, alDeleteAuxiliaryEffectSlots);
+		LOAD_PROC(LPALISAUXILIARYEFFECTSLOT, alIsAuxiliaryEffectSlot);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTI, alAuxiliaryEffectSloti);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTIV, alAuxiliaryEffectSlotiv);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTF, alAuxiliaryEffectSlotf);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTFV, alAuxiliaryEffectSlotfv);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTI, alGetAuxiliaryEffectSloti);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTIV, alGetAuxiliaryEffectSlotiv);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTF, alGetAuxiliaryEffectSlotf);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTFV, alGetAuxiliaryEffectSlotfv);
+	#undef LOAD_PROC
+	
     ALuint effect = 0;
     ALenum err;
 
@@ -163,8 +188,34 @@ static ALuint LoadStandardReverbEffect(const EFXEAXREVERBPROPERTIES *reverb)
     return effect;
 }
 
-static ALuint LoadEAXReverbEffect(const EFXEAXREVERBPROPERTIES *reverb)
+ALuint ReverbZone::LoadEAXReverbEffect(const EFXEAXREVERBPROPERTIES *reverb)
 {
+	#define LOAD_PROC(T, x)  ((x) = (T)alGetProcAddress(#x))
+		
+		LOAD_PROC(LPALDELETEEFFECTS, alDeleteEffects);
+		LOAD_PROC(LPALISEFFECT, alIsEffect);
+		LOAD_PROC(LPALEFFECTI, alEffecti);
+		LOAD_PROC(LPALEFFECTIV, alEffectiv);
+		LOAD_PROC(LPALEFFECTF, alEffectf);
+		LOAD_PROC(LPALEFFECTFV, alEffectfv);
+		LOAD_PROC(LPALGETEFFECTI, alGetEffecti);
+		LOAD_PROC(LPALGETEFFECTIV, alGetEffectiv);
+		LOAD_PROC(LPALGETEFFECTF, alGetEffectf);
+		LOAD_PROC(LPALGETEFFECTFV, alGetEffectfv);
+
+		LOAD_PROC(LPALGENAUXILIARYEFFECTSLOTS, alGenAuxiliaryEffectSlots);
+		LOAD_PROC(LPALDELETEAUXILIARYEFFECTSLOTS, alDeleteAuxiliaryEffectSlots);
+		LOAD_PROC(LPALISAUXILIARYEFFECTSLOT, alIsAuxiliaryEffectSlot);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTI, alAuxiliaryEffectSloti);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTIV, alAuxiliaryEffectSlotiv);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTF, alAuxiliaryEffectSlotf);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTFV, alAuxiliaryEffectSlotfv);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTI, alGetAuxiliaryEffectSloti);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTIV, alGetAuxiliaryEffectSlotiv);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTF, alGetAuxiliaryEffectSlotf);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTFV, alGetAuxiliaryEffectSlotfv);
+	#undef LOAD_PROC
+	
 	ALuint effect = 0;
     ALenum err;
     
@@ -221,6 +272,35 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 									double& x, double& y, double& z, double& width,
 									ReverbStandardProperties& properties)
 {
+	#define LOAD_PROC(T, x)  ((x) = (T)alGetProcAddress(#x))
+		
+		LOAD_PROC(LPALDELETEEFFECTS, alDeleteEffects);
+		LOAD_PROC(LPALISEFFECT, alIsEffect);
+		LOAD_PROC(LPALEFFECTI, alEffecti);
+		LOAD_PROC(LPALEFFECTIV, alEffectiv);
+		LOAD_PROC(LPALEFFECTF, alEffectf);
+		LOAD_PROC(LPALEFFECTFV, alEffectfv);
+		LOAD_PROC(LPALGETEFFECTI, alGetEffecti);
+		LOAD_PROC(LPALGETEFFECTIV, alGetEffectiv);
+		LOAD_PROC(LPALGETEFFECTF, alGetEffectf);
+		LOAD_PROC(LPALGETEFFECTFV, alGetEffectfv);
+
+		LOAD_PROC(LPALGENAUXILIARYEFFECTSLOTS, alGenAuxiliaryEffectSlots);
+		LOAD_PROC(LPALDELETEAUXILIARYEFFECTSLOTS, alDeleteAuxiliaryEffectSlots);
+		LOAD_PROC(LPALISAUXILIARYEFFECTSLOT, alIsAuxiliaryEffectSlot);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTI, alAuxiliaryEffectSloti);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTIV, alAuxiliaryEffectSlotiv);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTF, alAuxiliaryEffectSlotf);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTFV, alAuxiliaryEffectSlotfv);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTI, alGetAuxiliaryEffectSloti);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTIV, alGetAuxiliaryEffectSlotiv);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTF, alGetAuxiliaryEffectSlotf);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTFV, alGetAuxiliaryEffectSlotfv);
+	#undef LOAD_PROC
+	
+	//initialize reverb property
+	EFXEAXREVERBPROPERTIES reverb = EFX_REVERB_PRESET_GENERIC;
+	
 	//load effect based on type
 	m_effect = LoadStandardReverbEffect(&reverb);
 	
@@ -277,6 +357,35 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 									double& x, double& y, double& z, double& width,
 									ReverbEAXProperties& properties)
 {
+	#define LOAD_PROC(T, x)  ((x) = (T)alGetProcAddress(#x))
+		
+		LOAD_PROC(LPALDELETEEFFECTS, alDeleteEffects);
+		LOAD_PROC(LPALISEFFECT, alIsEffect);
+		LOAD_PROC(LPALEFFECTI, alEffecti);
+		LOAD_PROC(LPALEFFECTIV, alEffectiv);
+		LOAD_PROC(LPALEFFECTF, alEffectf);
+		LOAD_PROC(LPALEFFECTFV, alEffectfv);
+		LOAD_PROC(LPALGETEFFECTI, alGetEffecti);
+		LOAD_PROC(LPALGETEFFECTIV, alGetEffectiv);
+		LOAD_PROC(LPALGETEFFECTF, alGetEffectf);
+		LOAD_PROC(LPALGETEFFECTFV, alGetEffectfv);
+
+		LOAD_PROC(LPALGENAUXILIARYEFFECTSLOTS, alGenAuxiliaryEffectSlots);
+		LOAD_PROC(LPALDELETEAUXILIARYEFFECTSLOTS, alDeleteAuxiliaryEffectSlots);
+		LOAD_PROC(LPALISAUXILIARYEFFECTSLOT, alIsAuxiliaryEffectSlot);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTI, alAuxiliaryEffectSloti);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTIV, alAuxiliaryEffectSlotiv);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTF, alAuxiliaryEffectSlotf);
+		LOAD_PROC(LPALAUXILIARYEFFECTSLOTFV, alAuxiliaryEffectSlotfv);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTI, alGetAuxiliaryEffectSloti);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTIV, alGetAuxiliaryEffectSlotiv);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTF, alGetAuxiliaryEffectSlotf);
+		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTFV, alGetAuxiliaryEffectSlotfv);
+	#undef LOAD_PROC
+	
+	//initialize reverb property
+	EFXEAXREVERBPROPERTIES reverb = EFX_REVERB_PRESET_GENERIC;
+	
 	//load effect based on type
 	m_effect = LoadEAXReverbEffect(&reverb);
 	

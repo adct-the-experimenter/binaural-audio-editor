@@ -28,6 +28,9 @@ public:
 
 	std::string getNewName();
 
+	double& getNewWidth();
+	
+	ReverbEAXProperties& getNewProperties();
 	
 	enum
 	{
@@ -60,7 +63,8 @@ private:
 	double yPosition;
 	double zPosition;
 	double width;
-	double height;
+	
+	ReverbEAXProperties m_properties;
 	
 
 	void initPrivateVariables();

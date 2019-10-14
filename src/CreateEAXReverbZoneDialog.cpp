@@ -123,6 +123,10 @@ void CreateEAXReverbZoneDialog::getNewPosition(double& x, double& y, double& z)
 	z = zPosition;
 }
 
+double& CreateEAXReverbZoneDialog::getNewWidth(){return width;}
+	
+ReverbEAXProperties& CreateEAXReverbZoneDialog::getNewProperties(){return m_properties;}
+
 void CreateEAXReverbZoneDialog::OnOk(wxCommandEvent& event )
 {
 	okClicked = true;

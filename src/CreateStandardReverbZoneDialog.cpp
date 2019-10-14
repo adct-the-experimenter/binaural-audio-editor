@@ -114,7 +114,7 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	Destroy(); 
 }
 
-std::string CreateStandardReverbZoneDialog::getNewName(){return name;}
+std::string& CreateStandardReverbZoneDialog::getNewName(){return name;}
 
 void CreateStandardReverbZoneDialog::getNewPosition(double& x, double& y, double& z)
 {
@@ -122,6 +122,10 @@ void CreateStandardReverbZoneDialog::getNewPosition(double& x, double& y, double
 	y = yPosition;
 	z = zPosition;
 }
+
+double& CreateStandardReverbZoneDialog::getNewWidth(){return width;}
+	
+ReverbStandardProperties& CreateStandardReverbZoneDialog::getNewProperties(){return m_properties;}
 
 void CreateStandardReverbZoneDialog::OnOk(wxCommandEvent& event )
 {

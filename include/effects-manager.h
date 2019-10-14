@@ -23,6 +23,8 @@ public:
 	//function to change attributes of reverb zone
 	void ChangeReverbZoneAttributes();
 	
+	std::vector <ReverbZone> *GetReferenceToReverbZoneVector();
+	
 private:
 	
 	//pointer to manager that contains all soundproducer tracks used

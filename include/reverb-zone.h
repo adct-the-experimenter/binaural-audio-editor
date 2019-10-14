@@ -147,9 +147,6 @@ public:
 	ALuint* GetEffectsSlot();
 	
 private:
-	
-	//reverb property
-	EFXEAXREVERBPROPERTIES reverb;
     
     //effect
     ALuint m_effect; 
@@ -179,7 +176,9 @@ private:
 
 	//moves the geode
 	osg::ref_ptr<osg::PositionAttitudeTransform> m_paTransform;
-
+	
+	ALuint LoadStandardReverbEffect(const EFXEAXREVERBPROPERTIES *reverb);
+	ALuint LoadEAXReverbEffect(const EFXEAXREVERBPROPERTIES *reverb);
 };
 
 #endif

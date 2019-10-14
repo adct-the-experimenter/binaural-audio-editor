@@ -26,8 +26,11 @@ public:
 	//function to return position of new sound producer object
 	void getNewPosition(double& x, double& y, double& z);
 
-	std::string getNewName();
+	std::string& getNewName();
 
+	double& getNewWidth();
+	
+	ReverbStandardProperties& getNewProperties();
 	
 	enum
 	{
@@ -62,7 +65,8 @@ private:
 	double width;
 	double height;
 	
-
+	ReverbStandardProperties m_properties;
+	
 	void initPrivateVariables();
 	
 	bool okClicked;

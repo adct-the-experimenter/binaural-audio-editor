@@ -701,11 +701,18 @@ void MainFrame::OnCreateStandardReverbZone(wxCommandEvent& event)
 
     if(reverbZoneNewDialog->OkClicked())
     {
-		double x,y,z;
-
+		double x,y,z,width;
+		ReverbStandardProperties properties;
+		
 		reverbZoneNewDialog->getNewPosition(x,y,z);
 		std::string name = reverbZoneNewDialog->getNewName();
-		//MainFrame::CreateSoundProducer(name,filePath,buffer,x,y,z);
+		width = reverbZoneNewDialog->getNewWidth();
+		properties = reverbZoneNewDialog->getNewProperties();
+		
+		effects_manager_ptr->CreateStandardReverbZone(name,x,y,z,width,properties);
+		
+		//add position attitude transform to root group of nodes
+		_rootNode->addChild( (effects_manager_ptr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
 	}
 
 }
@@ -723,11 +730,18 @@ void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
 
     if(reverbZoneNewDialog->OkClicked())
     {
-		double x,y,z;
-
+		double x,y,z,width;
+		ReverbEAXProperties properties;
+		
 		reverbZoneNewDialog->getNewPosition(x,y,z);
 		std::string name = reverbZoneNewDialog->getNewName();
-		//MainFrame::CreateSoundProducer(name,filePath,buffer,x,y,z);
+		width = reverbZoneNewDialog->getNewWidth();
+		properties = reverbZoneNewDialog->getNewProperties();
+		
+		effects_manager_ptr->CreateEAXReverbZone(name,x,y,z,width,properties);
+		
+		//add position attitude transform to root group of nodes
+		_rootNode->addChild( (effects_manager_ptr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
 	}
 
 }
