@@ -8,6 +8,8 @@
 #include <wx/wx.h>
 
 
+
+
 //class to manipulate x,y z position of sound producer
 class EffectsManager
 {
@@ -45,6 +47,17 @@ private:
 	void DetermineWhichSoundProducersAreInReverbZone(std::vector <SoundProducer*> soundproducers_in_zone,ReverbZone* thisZone);
 	
 
+};
+
+class CheckListenerReverbZoneThread : public wxThread 
+{ 
+public:     
+
+	CheckListenerReverbZoneThread(EffectsManager* manager);   
+	virtual void *Entry(); 
+
+private:     
+	EffectsManager* m_effects_manager_ptr;
 };
 
 

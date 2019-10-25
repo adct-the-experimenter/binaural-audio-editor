@@ -251,6 +251,9 @@ private:
 class wxOsgApp : public wxApp
 {
 public:
+	wxOsgApp();
+	~wxOsgApp();
+	
     bool OnInit();
     
     void KeyDownLogic(int& thisKey);
@@ -269,6 +272,7 @@ private:
 	
 	//effects manager
 	std::unique_ptr <EffectsManager> effects_manager_ptr;
+	CheckListenerReverbZoneThread* m_listener_reverb_thread;
 	
 	osg::ref_ptr<osgGA::TrackballManipulator> cameraManipulator; //pointer to camera manipulator
 };

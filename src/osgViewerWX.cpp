@@ -17,6 +17,19 @@
 
 bool init_listener_once = false;
 
+wxOsgApp::wxOsgApp()
+{
+	m_listener_reverb_thread = nullptr;
+}
+
+wxOsgApp::~wxOsgApp()
+{
+	if(m_listener_reverb_thread)
+	{
+		m_listener_reverb_thread->Delete();
+	}
+}
+
 // `Main program' equivalent, creating windows and returning main app frame
 bool wxOsgApp::OnInit()
 {
@@ -108,6 +121,22 @@ bool wxOsgApp::OnInit()
 		//initialize effects manager
 		effects_manager_ptr = std::unique_ptr <EffectsManager>( new EffectsManager( frame->GetReferenceToSoundProducerTrackManager(), listener.get() ) );
 		
+		 m_listener_reverb_thread = new CheckListenerReverbZoneThread(effects_manager_ptr.get()); 
+		 if ( m_listener_reverb_thread->Create() != wxTHREAD_NO_ERROR ) 
+		 {
+			 wxLogError(wxT("Can't create thread!"));
+			 std::cout << "Can't create thread! \n";
+		 }
+		 else
+		 {
+			 std::cout << "\nThread created! Trying to run thread.\n";
+			 if(m_listener_reverb_thread->Run() != wxTHREAD_NO_ERROR)
+			 {
+				 wxLogError(wxT("Can't run thread!"));
+				 std::cout << "Can't run thread! \n";
+			 }
+		 }
+		 
 		//connect mainframe to effects manager
 		frame->SetEffectsManagerReference(effects_manager_ptr.get());
 		
