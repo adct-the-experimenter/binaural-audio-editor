@@ -150,11 +150,20 @@ public:
 	//for connecting mainframe to wxOsgApp
 	
     void SetViewer(osgViewer::Viewer *viewer);
+    
     void SetRootNode(osg::Group* root); 
+    
     void SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector);
+    
     void SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine);
+    
     void SetListenerReference(Listener* listener);
     void SetListenerExternalReference(ListenerExternal* listenerExt);
+    
+    void SetEffectsManagerReference(EffectsManager* effectsManager);
+    
+    SoundProducerTrackManager* GetReferenceToSoundProducerTrackManager();
+    
     // Mainframe menu operations
     
     void OnOpen(wxCommandEvent& WXUNUSED(event));
@@ -199,7 +208,7 @@ private:
 	
 	TimelineFrame *timeFrame;
 	
-	std::unique_ptr <EffectsManager> effects_manager_ptr;
+	EffectsManager* effectsManagerPtr;
 	
 	std::unique_ptr <SoundProducerTrackManager> soundproducertrack_manager_ptr;
 	
@@ -253,9 +262,13 @@ private:
 	
 	OpenAlSoftAudioEngine audio_engine; //class abstraction to handle playing binaural 3D audio
 	
+	//listener
 	std::unique_ptr <Listener> listener;
 	std::unique_ptr <ListenerExternal> listenerExternal;
 	void initListener();
+	
+	//effects manager
+	std::unique_ptr <EffectsManager> effects_manager_ptr;
 	
 	osg::ref_ptr<osgGA::TrackballManipulator> cameraManipulator; //pointer to camera manipulator
 };

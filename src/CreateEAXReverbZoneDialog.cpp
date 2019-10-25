@@ -12,7 +12,7 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
     validator.SetRange(-10.00,10.00);     // set allowable range
     
     wxFloatingPointValidator <double> validatorWidth(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validatorWidth.SetRange(0.00,10.00);     // set allowable range
+    validatorWidth.SetRange(0.01,10.00);     // set allowable range
     
     textFieldName = new wxTextCtrl(this,-1, "Name", 
 								wxPoint(95, 20), wxSize(80,20),
@@ -36,7 +36,7 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 								validator,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	textFieldWidth = new wxTextCtrl(this,-1, "0.00", 
+	textFieldWidth = new wxTextCtrl(this,-1, "0.01", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorWidth,          // associate the text box with the desired validator
@@ -135,6 +135,7 @@ void CreateEAXReverbZoneDialog::OnOk(wxCommandEvent& event )
 	( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
 	( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
 	( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+	( textFieldWidth->GetLineText(0) ).ToDouble(&width);
 	
 	CreateEAXReverbZoneDialog::Exit();
 }

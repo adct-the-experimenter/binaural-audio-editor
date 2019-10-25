@@ -104,7 +104,13 @@ bool wxOsgApp::OnInit()
 
 		//connect mainframe to openal soft audio engine
 		frame->SetAudioEngineReference(&audio_engine);
-
+		
+		//initialize effects manager
+		effects_manager_ptr = std::unique_ptr <EffectsManager>( new EffectsManager( frame->GetReferenceToSoundProducerTrackManager() ) );
+		
+		//connect mainframe to effects manager
+		frame->SetEffectsManagerReference(effects_manager_ptr.get());
+		
 		//initialize viewer
 		viewer->setSceneData(rootNode.get());
 
@@ -293,8 +299,6 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	soundproducertrack_manager_ptr = std::unique_ptr <SoundProducerTrackManager>(new SoundProducerTrackManager("SoundProducer Track Manager",
 																		audioEnginePtr->GetReferenceToAudioDevice(),
 																		audioEnginePtr->GetReferenceToAudioContext() ) ) ;
-																		
-	effects_manager_ptr = std::unique_ptr <EffectsManager>( new EffectsManager( soundproducertrack_manager_ptr.get() ) );
 
 	soundproducertrack_manager_ptr->SetReferenceToSoundProducerTrackVector(&m_soundproducer_track_vec);
 
@@ -541,6 +545,10 @@ void MainFrame::SetListenerExternalReference(ListenerExternal* thisListenerExter
 
 void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}
 
+void MainFrame::SetEffectsManagerReference(EffectsManager* effectsManager){effectsManagerPtr = effectsManager;}
+
+SoundProducerTrackManager* MainFrame::GetReferenceToSoundProducerTrackManager(){return soundproducertrack_manager_ptr.get();}
+
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
     if (!_viewer->isRealized())
@@ -691,7 +699,7 @@ void MainFrame::OnCreateStandardReverbZone(wxCommandEvent& event)
     //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
 
     std::unique_ptr <CreateStandardReverbZoneDialog> reverbZoneNewDialog(new CreateStandardReverbZoneDialog(wxT("Create New Reverb Zone"),
-																									effects_manager_ptr.get()) );
+																									effectsManagerPtr) );
     reverbZoneNewDialog->Show(true);
 
     if(reverbZoneNewDialog->OkClicked())
@@ -704,10 +712,10 @@ void MainFrame::OnCreateStandardReverbZone(wxCommandEvent& event)
 		width = reverbZoneNewDialog->getNewWidth();
 		properties = reverbZoneNewDialog->getNewProperties();
 		
-		effects_manager_ptr->CreateStandardReverbZone(name,x,y,z,width,properties);
+		effectsManagerPtr->CreateStandardReverbZone(name,x,y,z,width,properties);
 		
 		//add position attitude transform to root group of nodes
-		_rootNode->addChild( (effects_manager_ptr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
 	}
 
 }
@@ -720,7 +728,7 @@ void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
     //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
 
     std::unique_ptr <CreateEAXReverbZoneDialog> reverbZoneNewDialog(new CreateEAXReverbZoneDialog(wxT("Create New Reverb Zone"),
-																									effects_manager_ptr.get()) );
+																									effectsManagerPtr) );
     reverbZoneNewDialog->Show(true);
 
     if(reverbZoneNewDialog->OkClicked())
@@ -733,10 +741,10 @@ void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
 		width = reverbZoneNewDialog->getNewWidth();
 		properties = reverbZoneNewDialog->getNewProperties();
 		
-		effects_manager_ptr->CreateEAXReverbZone(name,x,y,z,width,properties);
+		effectsManagerPtr->CreateEAXReverbZone(name,x,y,z,width,properties);
 		
 		//add position attitude transform to root group of nodes
-		_rootNode->addChild( (effects_manager_ptr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
 	}
 
 }
@@ -744,8 +752,8 @@ void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
 void MainFrame::OnEditMultipleReverbZones(wxCommandEvent& event)
 {
 	std::unique_ptr <EditMultipleReverbZonesDialog> reverbZoneEditDialog(new EditMultipleReverbZonesDialog( wxT("Edit Reverb Zones"),
-																													effects_manager_ptr.get())
-																				);
+																													effectsManagerPtr));
+																				
 
     reverbZoneEditDialog->Show(true);
 
