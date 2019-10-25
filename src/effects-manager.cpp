@@ -1,13 +1,15 @@
 #include "effects-manager.h"
 
-EffectsManager::EffectsManager(SoundProducerTrackManager* track_manager)
+EffectsManager::EffectsManager(SoundProducerTrackManager* track_manager, Listener* listener)
 {
 	m_track_manager_ptr = track_manager;
+	m_listener_ptr = listener;
 }
 
 EffectsManager::~EffectsManager()
 {
 	m_track_manager_ptr = nullptr;
+	m_listener_ptr = nullptr;
 }
 
 

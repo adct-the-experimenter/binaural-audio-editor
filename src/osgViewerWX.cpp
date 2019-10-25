@@ -106,7 +106,7 @@ bool wxOsgApp::OnInit()
 		frame->SetAudioEngineReference(&audio_engine);
 		
 		//initialize effects manager
-		effects_manager_ptr = std::unique_ptr <EffectsManager>( new EffectsManager( frame->GetReferenceToSoundProducerTrackManager() ) );
+		effects_manager_ptr = std::unique_ptr <EffectsManager>( new EffectsManager( frame->GetReferenceToSoundProducerTrackManager(), listener.get() ) );
 		
 		//connect mainframe to effects manager
 		frame->SetEffectsManagerReference(effects_manager_ptr.get());
