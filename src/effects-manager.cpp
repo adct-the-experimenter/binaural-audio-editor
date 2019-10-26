@@ -52,7 +52,6 @@ void EffectsManager::PerformReverbThreadOperation()
 				if(EffectsManager::IsListenerInThisReverbZone(thisZone))
 				{
 					//if listener is in the reverb zone
-					std::cout << "Listener is in the reverb zone!\n";
 					
 					//check if sound producers are inside the zone
 					if(m_track_manager_ptr->soundProducerTracks_vec->size() > 0)
