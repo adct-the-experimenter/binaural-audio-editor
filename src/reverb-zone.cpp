@@ -86,7 +86,14 @@ ReverbZone::ReverbZone()
 
 ReverbZone::~ReverbZone()
 {
-	
+	if(m_effect)
+	{
+		alDeleteEffects(1, &m_effect);
+	}
+	if(m_slot)
+	{
+		 alDeleteAuxiliaryEffectSlots(1, &m_slot);
+	}
 }
 
 /* LoadEffect loads the given reverb properties into a new OpenAL effect
@@ -321,7 +328,8 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	m_paTransform->setPosition( osg::Vec3(x,y,z));
 	m_paTransform->addChild(m_geode);
 	
-	
+	//initialize type to Standard
+	m_type = ReverbZone::Type::STANDARD;
 	
 }
 
@@ -406,6 +414,8 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	m_paTransform->setPosition( osg::Vec3(x,y,z));
 	m_paTransform->addChild(m_geode);
 	
+	//initialize type to EAX
+	m_type = ReverbZone::Type::EAX;
 	
 	
 }

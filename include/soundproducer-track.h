@@ -73,6 +73,8 @@ public:
 	//for use with effects manager
     ALuint* GetReferenceToTrackSource();
 	SoundProducer* GetReferenceToSoundProducerManipulated();
+	bool IsReverbApplied();
+	void SetStatusReverbApplied(bool status);
 	
 private:
 	SoundProducer* soundProducerToManipulatePtr;
@@ -100,6 +102,10 @@ private:
 	void OnSelectedSoundProducerInComboBox(wxCommandEvent& event);
 
 	void SelectSoundProducerByName(std::string name);
+	
+	//bool to tell if reverb is applied to the source of the track
+	bool reverbApplied;
+	
 };
 
 #endif

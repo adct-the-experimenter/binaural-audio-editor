@@ -37,6 +37,10 @@ public:
     //function to return status of sound being played
     bool IsSoundBeingPlayed();
 	
+	//allow effects manager to be a friend so that it can access
+	//sources to add effects to them
+	friend class EffectsManager; 
+	
 private:
 	
 	//pointer to vector containing pointers to sound producer tracks

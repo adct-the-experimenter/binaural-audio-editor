@@ -37,6 +37,9 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	yTrack->SetReferenceToVarToManipulate(&tempY);
 	zTrack->SetReferenceToVarToManipulate(&tempZ);
 	
+	//initialize reverb applied status
+	SoundProducerTrack::SetStatusReverbApplied(false);
+	
 	
 	Connect(wxEVT_PAINT, wxPaintEventHandler(Track::OnPaint));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(Track::OnSize));
@@ -282,3 +285,7 @@ void SoundProducerTrack::OnRightMouseClick(wxCommandEvent& event)
 ALuint* SoundProducerTrack::GetReferenceToTrackSource(){return &track_source;}
 
 SoundProducer* SoundProducerTrack::GetReferenceToSoundProducerManipulated(){return soundProducerToManipulatePtr;}
+
+bool SoundProducerTrack::IsReverbApplied(){return reverbApplied;}
+
+void SoundProducerTrack::SetStatusReverbApplied(bool status){reverbApplied = status;}

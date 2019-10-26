@@ -36,10 +36,92 @@ std::vector <ReverbZone> *EffectsManager::GetReferenceToReverbZoneVector(){retur
 
 ReverbZone* EffectsManager::GetPointerToReverbZone(size_t& index){return &reverb_zones_vector[index];}
 
+void EffectsManager::PerformReverbThreadOperation()
+{
+	//if sound is being played and there are reverb zones
+	if(m_track_manager_ptr->IsSoundBeingPlayed() && reverb_zones_vector.size() > 0)
+	{
+		for(size_t i = 0; i < reverb_zones_vector.size(); i++)
+		{
+			//check if listener is in reverb zone
+			ReverbZone* thisZone = &reverb_zones_vector[i];
+			
+			//check if zone is initialized
+			if(thisZone->GetType() != ReverbZone::Type::NONE && thisZone->getTransformNode() != nullptr)
+			{
+				if(EffectsManager::IsListenerInThisReverbZone(thisZone))
+				{
+					//if listener is in the reverb zone
+					std::cout << "Listener is in the reverb zone!\n";
+					
+					//check if sound producers are inside the zone
+					if(m_track_manager_ptr->soundProducerTracks_vec->size() > 0)
+					{
+						for(size_t i = 0; i < m_track_manager_ptr->soundProducerTracks_vec->size(); i++)
+						{
+							SoundProducerTrack* thisSoundProducerTrack = m_track_manager_ptr->soundProducerTracks_vec->at(i);
+							
+							//if no reverb is applied
+							if(!thisSoundProducerTrack->IsReverbApplied())
+							{
+								SoundProducer* thisSoundProducer = thisSoundProducerTrack->GetReferenceToSoundProducerManipulated();
+							
+								//if there is a sound producer attached to sound producer track
+								if(thisSoundProducer != nullptr)
+								{
+									//if sound producer is inside the zone
+									if(EffectsManager::IsThisSoundProducerInsideReverbZone(thisSoundProducer,thisZone))
+									{
+										//std::cout << "SoundProducer is inside the reverb zone!\n";
+										//apply reverb to source of sound producer track
+										EffectsManager::ApplyThisReverbZoneEffectToThisTrack(thisSoundProducerTrack,thisZone);
+									}
+								}
+							}
+							
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+				else
+				{
+					//if listener is not in the reverb zone
+					
+					//check if sound producers are inside the zone
+					if(m_track_manager_ptr->soundProducerTracks_vec->size() > 0)
+					{
+						for(size_t i = 0; i < m_track_manager_ptr->soundProducerTracks_vec->size(); i++)
+						{
+							SoundProducerTrack* thisSoundProducerTrack = m_track_manager_ptr->soundProducerTracks_vec->at(i);
+							
+							SoundProducer* thisSoundProducer = thisSoundProducerTrack->GetReferenceToSoundProducerManipulated();
+							
+							//if there is a sound producer attached to sound producer track
+							if(thisSoundProducer != nullptr)
+							{
+								//if sound producer is inside the zone
+								if(EffectsManager::IsThisSoundProducerInsideReverbZone(thisSoundProducer,thisZone)
+								   || thisSoundProducerTrack->IsReverbApplied())
+								{
+									//remove reverb effect from sound producer track
+									EffectsManager::RemoveEffectFromThisTrack(thisSoundProducerTrack);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 bool EffectsManager::IsListenerInThisReverbZone(ReverbZone* thisZone)
 {
-	osg::BoundingBox zone_box = thisZone->getRenderObject()->computeBoundingBox();
-	osg::BoundingBox listener_box = m_listener_ptr->getRenderObject()->computeBoundingBox();
+	osg::BoundingSphere zone_box = thisZone->getTransformNode()->computeBound();
+	osg::BoundingSphere listener_box = m_listener_ptr->getTransformNode()->computeBound();
 	
 	//if bounding box of listener intersects bounding box of reverb zone
 	if(zone_box.intersects(listener_box) )
@@ -48,6 +130,44 @@ bool EffectsManager::IsListenerInThisReverbZone(ReverbZone* thisZone)
 	}
 	
 	return false;
+}
+
+bool EffectsManager::IsThisSoundProducerInsideReverbZone(SoundProducer* thisSoundProducer,ReverbZone* thisZone)
+{
+	osg::BoundingSphere zone_box = thisZone->getTransformNode()->computeBound();
+	osg::BoundingSphere sound_producer_box = thisZone->getTransformNode()->computeBound();
+	
+	//if bounding box of listener intersects bounding box of reverb zone
+	if(zone_box.intersects(sound_producer_box) )
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+void EffectsManager::ApplyThisReverbZoneEffectToThisTrack(SoundProducerTrack* thisSoundProducerTrack, ReverbZone* thisZone)
+{
+	/* Connect the source to the effect slot. This tells the source to use the
+	 * effect slot 'slot', on send #0 with the AL_FILTER_NULL filter object.
+	 */
+	
+	ALuint* thisSource = thisSoundProducerTrack->GetReferenceToTrackSource();
+	 
+	alSource3i(*thisSource, AL_AUXILIARY_SEND_FILTER, (ALint)(*thisZone->GetEffectsSlot()), 0, AL_FILTER_NULL);
+	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source");
+	
+	thisSoundProducerTrack->SetStatusReverbApplied(true);
+}
+
+void EffectsManager::RemoveEffectFromThisTrack(SoundProducerTrack* thisSoundProducerTrack)
+{
+	ALuint* thisSource = thisSoundProducerTrack->GetReferenceToTrackSource();
+	
+	alSource3i(*thisSource,AL_AUXILIARY_SEND_FILTER,AL_EFFECTSLOT_NULL, 0, NULL); 
+	assert(alGetError()==AL_NO_ERROR && "Failed to disable source send 0.");
+	
+	thisSoundProducerTrack->SetStatusReverbApplied(false);
 }
 
 CheckListenerReverbZoneThread::CheckListenerReverbZoneThread(EffectsManager* manager)
@@ -71,30 +191,11 @@ CheckListenerReverbZoneThread::CheckListenerReverbZoneThread(EffectsManager* man
 void *CheckListenerReverbZoneThread::Entry() 
 {
 
-	long endtime = ::wxGetLocalTime()+1;
 	while (!TestDestroy() )
 	{
-		wxMilliSleep(500); //sleep for 500 milliseconds
+		wxMilliSleep(250); //sleep for 500 milliseconds
 		
-		//if sound is being played and there are reverb zones
-		if(m_effects_manager_ptr->m_track_manager_ptr->IsSoundBeingPlayed() && m_effects_manager_ptr->GetReferenceToReverbZoneVector()->size() > 0)
-		{
-			for(size_t i = 0; i < m_effects_manager_ptr->GetReferenceToReverbZoneVector()->size(); i++)
-			{
-				//check if listener is in reverb zone
-				ReverbZone* thisZone = m_effects_manager_ptr->GetPointerToReverbZone(i);
-				
-				//check if zone is initialized
-				if(thisZone->GetType() != ReverbZone::Type::NONE && thisZone->getGeodeNode() != nullptr)
-				{
-					if(m_effects_manager_ptr->IsListenerInThisReverbZone(thisZone))
-					{
-						//if listener is in the reverb zone
-						std::cout << "Listener is in the reverb zone!\n";
-					}
-				}
-			}
-		}
+		m_effects_manager_ptr->PerformReverbThreadOperation();
 		
 	}
 	

@@ -45,13 +45,20 @@ private:
 	//vector to contain many reverb zone objects
 	std::vector <ReverbZone> reverb_zones_vector;
 	
+	//function to perform the entire reverb thread operation of checking and setting reverb
+	void PerformReverbThreadOperation();
+	
 	//function to return bool of if a listener is in a reverb zone
 	bool IsListenerInThisReverbZone(ReverbZone* thisZone);
 	
-	//function to check if a sound producer is in the reverb zone
-	void DetermineWhichSoundProducersAreInReverbZone(std::vector <SoundProducer*> soundproducers_in_zone,ReverbZone* thisZone);
+	//function to return bool of if a sound producer is in a reverb zone
+	bool IsThisSoundProducerInsideReverbZone(SoundProducer* thisSoundProducer,ReverbZone* thisZone);
 	
-
+	//function to apply reverb effect of a zone to sound producer track
+	void ApplyThisReverbZoneEffectToThisTrack(SoundProducerTrack* thisSoundProducerTrack, ReverbZone* thisZone);
+	
+	//function to remove effect applied to the sound producer track
+	void RemoveEffectFromThisTrack(SoundProducerTrack* thisSoundProducerTrack);
 };
 
 class wxOsgApp;
