@@ -258,6 +258,8 @@ public:
     
     void KeyDownLogic(int& thisKey);
     
+    friend class CheckListenerReverbZoneThread;            // allow it to access our  m_listener_reverb_thread
+    
 private:
 	osg::ref_ptr<osg::Group> rootNode; //geometry node to hold ShapeDrawable objects
 	
@@ -274,6 +276,9 @@ private:
 	std::unique_ptr <EffectsManager> effects_manager_ptr;
 	CheckListenerReverbZoneThread* m_listener_reverb_thread;
 	
+    wxCriticalSection m_pThreadCS;    // protects the  m_listener_reverb_thread pointer
+    
+    
 	osg::ref_ptr<osgGA::TrackballManipulator> cameraManipulator; //pointer to camera manipulator
 };
 

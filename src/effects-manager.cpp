@@ -34,6 +34,22 @@ void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y
 
 std::vector <ReverbZone> *EffectsManager::GetReferenceToReverbZoneVector(){return &reverb_zones_vector;}
 
+ReverbZone* EffectsManager::GetPointerToReverbZone(size_t& index){return &reverb_zones_vector[index];}
+
+bool EffectsManager::IsListenerInThisReverbZone(ReverbZone* thisZone)
+{
+	osg::BoundingBox zone_box = thisZone->getRenderObject()->computeBoundingBox();
+	osg::BoundingBox listener_box = m_listener_ptr->getRenderObject()->computeBoundingBox();
+	
+	//if bounding box of listener intersects bounding box of reverb zone
+	if(zone_box.intersects(listener_box) )
+	{
+		return true;
+	}
+	
+	return false;
+}
+
 CheckListenerReverbZoneThread::CheckListenerReverbZoneThread(EffectsManager* manager)
 {
 	m_effects_manager_ptr = manager;
@@ -54,14 +70,33 @@ CheckListenerReverbZoneThread::CheckListenerReverbZoneThread(EffectsManager* man
 
 void *CheckListenerReverbZoneThread::Entry() 
 {
-	while (!TestDestroy())
-    {
-        // ... do a bit of work...
-        
-        //check if listener is in reverb zone
-        
-    }     
-	 
+
+	long endtime = ::wxGetLocalTime()+1;
+	while (!TestDestroy() )
+	{
+		wxMilliSleep(500); //sleep for 500 milliseconds
+		
+		//if sound is being played and there are reverb zones
+		if(m_effects_manager_ptr->m_track_manager_ptr->IsSoundBeingPlayed() && m_effects_manager_ptr->GetReferenceToReverbZoneVector()->size() > 0)
+		{
+			for(size_t i = 0; i < m_effects_manager_ptr->GetReferenceToReverbZoneVector()->size(); i++)
+			{
+				//check if listener is in reverb zone
+				ReverbZone* thisZone = m_effects_manager_ptr->GetPointerToReverbZone(i);
+				
+				//check if zone is initialized
+				if(thisZone->GetType() != ReverbZone::Type::NONE && thisZone->getGeodeNode() != nullptr)
+				{
+					if(m_effects_manager_ptr->IsListenerInThisReverbZone(thisZone))
+					{
+						//if listener is in the reverb zone
+						std::cout << "Listener is in the reverb zone!\n";
+					}
+				}
+			}
+		}
+		
+	}
 	
 	return nullptr;  
 }

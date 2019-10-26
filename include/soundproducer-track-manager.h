@@ -33,6 +33,9 @@ public:
     virtual void FunctionToCallInRewindState();
     virtual void FunctionToCallInFastForwardState();
     virtual void FunctionToCallInNullState();
+    
+    //function to return status of sound being played
+    bool IsSoundBeingPlayed();
 	
 private:
 	
@@ -46,6 +49,9 @@ private:
 	
 	ALCdevice* audioDevicePtr; //pointer to audio device to be used
     ALCcontext* alContextPtr; //pointer to context of where audio is played
+    
+    bool soundPlaying;
+    void SetSoundPlayingBool(bool status);
 
 };
 

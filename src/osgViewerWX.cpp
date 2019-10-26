@@ -24,10 +24,16 @@ wxOsgApp::wxOsgApp()
 
 wxOsgApp::~wxOsgApp()
 {
-	if(m_listener_reverb_thread)
-	{
-		m_listener_reverb_thread->Delete();
+    
+    // wait for thread completion
+    wxThread::This()->Sleep(2);
+    
+    if (m_listener_reverb_thread->Delete() != wxTHREAD_NO_ERROR )
+    {
+		wxLogError("Can't delete the thread!");
 	}
+				
+	
 }
 
 // `Main program' equivalent, creating windows and returning main app frame

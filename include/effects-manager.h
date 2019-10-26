@@ -26,8 +26,13 @@ public:
 	//function to return a pointer to reverb zone vector
 	std::vector <ReverbZone> *GetReferenceToReverbZoneVector();
 	
+	//function to return a pointer to reverb zone from index in vector
+	ReverbZone* GetPointerToReverbZone(size_t& index);
+	
 	//function to run to apply reverb zone effect if listener is in reverb zone
 	void RunListenerInReverbZoneOperation();
+	
+	friend class CheckListenerReverbZoneThread;
 	
 private:
 	
@@ -41,7 +46,7 @@ private:
 	std::vector <ReverbZone> reverb_zones_vector;
 	
 	//function to return bool of if a listener is in a reverb zone
-	bool IsListenerInReverbZone(ReverbZone* thisZone);
+	bool IsListenerInThisReverbZone(ReverbZone* thisZone);
 	
 	//function to check if a sound producer is in the reverb zone
 	void DetermineWhichSoundProducersAreInReverbZone(std::vector <SoundProducer*> soundproducers_in_zone,ReverbZone* thisZone);
@@ -49,11 +54,14 @@ private:
 
 };
 
+class wxOsgApp;
+
 class CheckListenerReverbZoneThread : public wxThread 
 { 
 public:     
 
-	CheckListenerReverbZoneThread(EffectsManager* manager);   
+	CheckListenerReverbZoneThread(EffectsManager* manager);
+	   
 	virtual void *Entry(); 
 
 private:     
