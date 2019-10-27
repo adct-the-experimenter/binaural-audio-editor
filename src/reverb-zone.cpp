@@ -293,7 +293,6 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	reverb.flLateReverbDelay = properties.flLateReverbDelay;
 	reverb.flAirAbsorptionGainHF = properties.flAirAbsorptionGainHF;
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
-	reverb.iDecayHFLimit = properties.iDecayHFLimit;
 	
 	//load effect based on type
 	m_effect = LoadStandardReverbEffect(&reverb);
@@ -394,7 +393,6 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	reverb.flLateReverbDelay = properties.flLateReverbDelay;
 	reverb.flAirAbsorptionGainHF = properties.flAirAbsorptionGainHF;
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
-	reverb.iDecayHFLimit = properties.iDecayHFLimit;
 	
 	//load effect based on type
 	m_effect = LoadEAXReverbEffect(&reverb);

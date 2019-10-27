@@ -62,7 +62,7 @@ struct ReverbEAXProperties
 	//AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, 
 	double flRoomRolloffFactor;
 	//AL_EAXREVERB_DECAY_HFLIMIT, 
-	int iDecayHFLimit; 
+	//int iDecayHFLimit; 
 };
 
 struct ReverbStandardProperties
@@ -92,7 +92,7 @@ struct ReverbStandardProperties
 	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
 	double flRoomRolloffFactor;
 	//AL_REVERB_DECAY_HFLIMIT, 
-	int iDecayHFLimit;
+	//int iDecayHFLimit;
 };
 
 class ReverbZone

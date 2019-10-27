@@ -12,7 +12,7 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
     validator.SetRange(-10.00,10.00);     // set allowable range
     
     wxFloatingPointValidator <double> validatorWidth(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validatorWidth.SetRange(0.01,10.00);     // set allowable range
+    validatorWidth.SetRange(1.00,10.00);     // set allowable range
     
     wxFloatingPointValidator <double> validator0To10(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
     validator0To10.SetRange(0.00,10.00);     // set allowable range
@@ -42,7 +42,7 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 								validator,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	textFieldWidth = new wxTextCtrl(this,-1, "0.01", 
+	textFieldWidth = new wxTextCtrl(this,-1, "2.00", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorWidth,          // associate the text box with the desired validator
@@ -81,10 +81,6 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER);
 	
-	textField_iDecayHFLimit = new wxTextCtrl(this,-1, "decay HF limit:", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER);
-	
 	textField_flReflectionsDelay = new wxTextCtrl(this,-1, "0.007", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER);
@@ -106,7 +102,7 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 								wxTE_PROCESS_ENTER,validator0To10,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flRoomRolloffFactor = new wxTextCtrl(this,-1, "room rolloff factor:", 
+	textField_flRoomRolloffFactor = new wxTextCtrl(this,-1, "0.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,validator0To10,          // associate the text box with the desired validator
 								wxT(""));
@@ -128,7 +124,6 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	wxStaticText* flGainHFText = new wxStaticText(this, -1, wxT("gain HF:"), wxPoint(40, 120));
 	wxStaticText* flDecayTimeText = new wxStaticText(this, -1, wxT("decay time:"), wxPoint(40, 120));
 	wxStaticText* flDecayHFRatioText = new wxStaticText(this, -1, wxT("decay HF ratio:"), wxPoint(40, 120));
-	wxStaticText* iDecayHFLimitText = new wxStaticText(this, -1, wxT("decay HF limit:"), wxPoint(40, 120));
 	wxStaticText* flLateReverbGainText = new wxStaticText(this, -1, wxT("late reverb gain:"), wxPoint(40, 120));
 	wxStaticText* flLateReverbDelayText = new wxStaticText(this, -1, wxT("late reverb delay:"), wxPoint(40, 120));						
 	wxStaticText* flReflectionsGainText = new wxStaticText(this, -1, wxT("reflections gain:"), wxPoint(40, 120));
@@ -203,7 +198,6 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	wxBoxSizer *hboxReverbRow3 = new wxBoxSizer(wxHORIZONTAL);
 	hboxReverbRow3->Add(flDecayTimeText); hboxReverbRow3->Add(textField_flDecayTime);
 	hboxReverbRow3->Add(flDecayHFRatioText); hboxReverbRow3->Add(textField_flDecayHFRatio);
-	hboxReverbRow3->Add(iDecayHFLimitText); hboxReverbRow3->Add(textField_iDecayHFLimit);
 	
 	vbox->Add(hboxReverbRow3,1, wxEXPAND | wxALL, 10);
 	
@@ -275,7 +269,6 @@ void CreateStandardReverbZoneDialog::OnOk(wxCommandEvent& event )
 	( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&properties.flLateReverbDelay);
 	( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&properties.flAirAbsorptionGainHF);
 	( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&properties.flRoomRolloffFactor);
-	properties.iDecayHFLimit = wxAtoi( textField_iDecayHFLimit->GetLineText(0) );
 	
 	CreateStandardReverbZoneDialog::Exit();
 }

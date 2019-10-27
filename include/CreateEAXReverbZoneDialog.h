@@ -85,8 +85,6 @@ private:
 	wxTextCtrl* textField_flAirAbsorptionGainHF;
 	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
 	wxTextCtrl* textField_flRoomRolloffFactor;
-	//AL_REVERB_DECAY_HFLIMIT, 
-	wxTextCtrl* textField_iDecayHFLimit;
 
 	
 
