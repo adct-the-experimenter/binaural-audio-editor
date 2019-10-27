@@ -280,6 +280,21 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	//initialize reverb property
 	EFXEAXREVERBPROPERTIES reverb = EFX_REVERB_PRESET_GENERIC;
 	
+	//assign custom properties
+	reverb.flDensity = properties.flDensity;
+	reverb.flDiffusion = properties.flDiffusion;
+	reverb.flGain = properties.flGain;
+	reverb.flGainHF = properties.flGainHF;
+	reverb.flDecayTime = properties.flDecayTime;
+	reverb.flDecayHFRatio = properties.flDecayHFRatio;
+	reverb.flReflectionsGain = properties.flReflectionsGain;
+	reverb.flReflectionsDelay = properties.flReflectionsDelay;
+	reverb.flLateReverbGain = properties.flLateReverbGain;
+	reverb.flLateReverbDelay = properties.flLateReverbDelay;
+	reverb.flAirAbsorptionGainHF = properties.flAirAbsorptionGainHF;
+	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
+	reverb.iDecayHFLimit = properties.iDecayHFLimit;
+	
 	//load effect based on type
 	m_effect = LoadStandardReverbEffect(&reverb);
 	
@@ -365,6 +380,21 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	
 	//initialize reverb property
 	EFXEAXREVERBPROPERTIES reverb = EFX_REVERB_PRESET_GENERIC;
+	
+	//assign custom properties
+	reverb.flDensity = properties.flDensity;
+	reverb.flDiffusion = properties.flDiffusion;
+	reverb.flGain = properties.flGain;
+	reverb.flGainHF = properties.flGainHF;
+	reverb.flDecayTime = properties.flDecayTime;
+	reverb.flDecayHFRatio = properties.flDecayHFRatio;
+	reverb.flReflectionsGain = properties.flReflectionsGain;
+	reverb.flReflectionsDelay = properties.flReflectionsDelay;
+	reverb.flLateReverbGain = properties.flLateReverbGain;
+	reverb.flLateReverbDelay = properties.flLateReverbDelay;
+	reverb.flAirAbsorptionGainHF = properties.flAirAbsorptionGainHF;
+	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
+	reverb.iDecayHFLimit = properties.iDecayHFLimit;
 	
 	//load effect based on type
 	m_effect = LoadEAXReverbEffect(&reverb);

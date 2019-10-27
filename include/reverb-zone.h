@@ -53,16 +53,16 @@ struct ReverbEAXProperties
 	double flModulationTime;
 	//AL_EAXREVERB_MODULATION_DEPTH, 
 	double flModulationDepth;
-	//AL_EAXREVERB_AIR_ABSORPTION_GAINHF, 
-	double flAirAbsorptionGainHF;
 	//AL_EAXREVERB_HFREFERENCE, 
 	double flHFReference;
 	//AL_EAXREVERB_LFREFERENCE, 
 	double flLFReference;
+	//AL_EAXREVERB_AIR_ABSORPTION_GAINHF, 
+	double flAirAbsorptionGainHF;
 	//AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, 
 	double flRoomRolloffFactor;
 	//AL_EAXREVERB_DECAY_HFLIMIT, 
-	double iDecayHFLimit; 
+	int iDecayHFLimit; 
 };
 
 struct ReverbStandardProperties
@@ -92,7 +92,7 @@ struct ReverbStandardProperties
 	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
 	double flRoomRolloffFactor;
 	//AL_REVERB_DECAY_HFLIMIT, 
-	double iDecayHFLimit;
+	int iDecayHFLimit;
 };
 
 class ReverbZone

@@ -733,7 +733,7 @@ void MainFrame::OnCreateStandardReverbZone(wxCommandEvent& event)
 	//message: This is a wxWidgets Helo world sample
     //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
 
-    std::unique_ptr <CreateStandardReverbZoneDialog> reverbZoneNewDialog(new CreateStandardReverbZoneDialog(wxT("Create New Reverb Zone"),
+    std::unique_ptr <CreateStandardReverbZoneDialog> reverbZoneNewDialog(new CreateStandardReverbZoneDialog(wxT("Create New Standard Reverb Zone"),
 																									effectsManagerPtr) );
     reverbZoneNewDialog->Show(true);
 
@@ -762,7 +762,7 @@ void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
 	//message: This is a wxWidgets Helo world sample
     //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
 
-    std::unique_ptr <CreateEAXReverbZoneDialog> reverbZoneNewDialog(new CreateEAXReverbZoneDialog(wxT("Create New Reverb Zone"),
+    std::unique_ptr <CreateEAXReverbZoneDialog> reverbZoneNewDialog(new CreateEAXReverbZoneDialog(wxT("Create New EAX Reverb Zone"),
 																									effectsManagerPtr) );
     reverbZoneNewDialog->Show(true);
 
