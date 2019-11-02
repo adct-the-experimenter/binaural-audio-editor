@@ -246,6 +246,23 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
+class wxOsgApp;
+
+class CheckListenerReverbZoneThread : public wxThread 
+{ 
+public:     
+
+	CheckListenerReverbZoneThread(EffectsManager* manager,wxOsgApp *handler);
+	~CheckListenerReverbZoneThread();
+	
+protected:
+    virtual wxThread::ExitCode Entry();
+    wxOsgApp *m_ThreadHandler; 
+
+private:     
+	EffectsManager* m_effects_manager_ptr;
+};
+
 /* Define a new application type */
 //the main of the application
 class wxOsgApp : public wxApp
@@ -257,8 +274,6 @@ public:
     bool OnInit();
     
     void KeyDownLogic(int& thisKey);
-    
-    friend class CheckListenerReverbZoneThread;            // allow it to access our  m_listener_reverb_thread
     
 private:
 	osg::ref_ptr<osg::Group> rootNode; //geometry node to hold ShapeDrawable objects
@@ -274,10 +289,11 @@ private:
 	
 	//effects manager
 	std::unique_ptr <EffectsManager> effects_manager_ptr;
-	CheckListenerReverbZoneThread* m_listener_reverb_thread;
 	
-    wxCriticalSection m_pThreadCS;    // protects the  m_listener_reverb_thread pointer
+	CheckListenerReverbZoneThread* m_listener_reverb_thread;
+    wxCriticalSection m_ReverbThreadCS;    // protects the  m_listener_reverb_thread pointer
     
+    friend class CheckListenerReverbZoneThread;
     
 	osg::ref_ptr<osgGA::TrackballManipulator> cameraManipulator; //pointer to camera manipulator
 };

@@ -169,34 +169,3 @@ void EffectsManager::RemoveEffectFromThisTrack(SoundProducerTrack* thisSoundProd
 	thisSoundProducerTrack->SetStatusReverbApplied(false);
 }
 
-CheckListenerReverbZoneThread::CheckListenerReverbZoneThread(EffectsManager* manager)
-{
-	m_effects_manager_ptr = manager;
-	
-	//intialize thread outside of class
-	/*
-		 CheckListenerReverbZoneThread *thread = new CheckListenerReverbZoneThread(); 
-		 if ( thread->Create() != wxTHREAD_NO_ERROR ) 
-		 {
-			wxLogError(wxT("Can't create thread!")); 
-		 } 
-	*/
-	
-	//call wxThread:: Run virtual function to start thread which runs Entry()
-	
-	//call wxThRead::Delete to destroy thread
-}
-
-void *CheckListenerReverbZoneThread::Entry() 
-{
-
-	while (!TestDestroy() )
-	{
-		wxMilliSleep(250); //sleep for 500 milliseconds
-		
-		m_effects_manager_ptr->PerformReverbThreadOperation();
-		
-	}
-	
-	return nullptr;  
-}

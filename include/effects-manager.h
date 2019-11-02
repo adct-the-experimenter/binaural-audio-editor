@@ -61,19 +61,6 @@ private:
 	void RemoveEffectFromThisTrack(SoundProducerTrack* thisSoundProducerTrack);
 };
 
-class wxOsgApp;
-
-class CheckListenerReverbZoneThread : public wxThread 
-{ 
-public:     
-
-	CheckListenerReverbZoneThread(EffectsManager* manager);
-	   
-	virtual void *Entry(); 
-
-private:     
-	EffectsManager* m_effects_manager_ptr;
-};
 
 
 #endif

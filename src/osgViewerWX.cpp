@@ -25,15 +25,78 @@ wxOsgApp::wxOsgApp()
 wxOsgApp::~wxOsgApp()
 {
     
-    // wait for thread completion
-    wxThread::This()->Sleep(2);
+    //Free CheckListenerReverbThread member
+	
+	{
+		wxCriticalSectionLocker enter(m_ReverbThreadCS);
+		if (m_listener_reverb_thread)         // does the thread still exist?
+		{
+			wxMessageOutputDebug().Printf("wxOsgApp: deleting thread");
+			
+			if (m_listener_reverb_thread->Delete() != wxTHREAD_NO_ERROR )
+			{
+				wxLogError("Can't delete the thread!");
+			}
+				
+		}
+    }       
+    // exit from the critical section to give the thread
+    // the possibility to enter its destructor
+    // (which is guarded with m_pThreadCS critical section!)
     
-    if (m_listener_reverb_thread->Delete() != wxTHREAD_NO_ERROR )
+    while (1)
     {
-		wxLogError("Can't delete the thread!");
-	}
+        { // was the ~MyThread() function executed?
+            wxCriticalSectionLocker enter(m_ReverbThreadCS);
+            if (!m_listener_reverb_thread){break;}
+        }
+        
+        // wait for thread completion
+        wxThread::This()->Sleep(1);
+    }
 				
 	
+}
+
+CheckListenerReverbZoneThread::CheckListenerReverbZoneThread(EffectsManager* manager,wxOsgApp* handler)
+{
+	m_effects_manager_ptr = manager;
+	
+	m_ThreadHandler = handler;
+	
+	//intialize thread outside of class
+	/*
+		 CheckListenerReverbZoneThread *thread = new CheckListenerReverbZoneThread(); 
+		 if ( thread->Create() != wxTHREAD_NO_ERROR ) 
+		 {
+			wxLogError(wxT("Can't create thread!")); 
+		 } 
+	*/
+	
+	//call wxThread:: Run virtual function to start thread which runs Entry()
+	
+	//call wxThRead::Delete to destroy thread
+}
+
+CheckListenerReverbZoneThread::~CheckListenerReverbZoneThread()
+{
+	wxCriticalSectionLocker enter(m_ThreadHandler->m_ReverbThreadCS);
+    // the thread is being destroyed; make sure not to leave dangling pointers around
+    m_ThreadHandler->m_listener_reverb_thread = NULL;
+}
+
+wxThread::ExitCode CheckListenerReverbZoneThread::Entry() 
+{
+
+	while (!TestDestroy() )
+	{
+		wxMilliSleep(250); //sleep for 500 milliseconds
+		
+		m_effects_manager_ptr->PerformReverbThreadOperation();
+		
+	}
+	
+	return nullptr;  
 }
 
 // `Main program' equivalent, creating windows and returning main app frame
@@ -127,7 +190,7 @@ bool wxOsgApp::OnInit()
 		//initialize effects manager
 		effects_manager_ptr = std::unique_ptr <EffectsManager>( new EffectsManager( frame->GetReferenceToSoundProducerTrackManager(), listener.get() ) );
 		
-		 m_listener_reverb_thread = new CheckListenerReverbZoneThread(effects_manager_ptr.get()); 
+		 m_listener_reverb_thread = new CheckListenerReverbZoneThread(effects_manager_ptr.get(),this); 
 		 if ( m_listener_reverb_thread->Create() != wxTHREAD_NO_ERROR ) 
 		 {
 			 wxLogError(wxT("Can't create thread!"));
