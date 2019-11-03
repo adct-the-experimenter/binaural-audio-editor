@@ -20,6 +20,21 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
     wxFloatingPointValidator <double> validator0To1(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
     validator0To1.SetRange(0.00,1.00);     // set allowable range
     
+    wxFloatingPointValidator <double> validator0p1To20(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    validator0p1To20.SetRange(0.10,20.00);     // set allowable range
+    
+    wxFloatingPointValidator <double> validator0p1To2p0(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    validator0p1To2p0.SetRange(0.10,2.00);     // set allowable range
+    
+    wxFloatingPointValidator <double> validator0p0To0p3(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    validator0p0To0p3.SetRange(0.00,0.30);     // set allowable range
+    
+    wxFloatingPointValidator <double> validator0p0To0p1(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    validator0p0To0p1.SetRange(0.00,0.10);     // set allowable range
+    
+    wxFloatingPointValidator <double> validator0p0To3p16(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    validator0p0To3p16.SetRange(0.00,3.16);     // set allowable range
+    
     textFieldName = new wxTextCtrl(this,-1, "Name", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER);
@@ -75,37 +90,50 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 	
 	textField_flDecayTime = new wxTextCtrl(this,-1, "1.49", 
 								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER);
+								wxTE_PROCESS_ENTER,
+								validator0p1To20,          // associate the text box with the desired validator
+								wxT(""));
 	
 	textField_flDecayHFRatio = new wxTextCtrl(this,-1, "0.83", 
 								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER);
-	
+								wxTE_PROCESS_ENTER,
+								validator0p1To2p0,          // associate the text box with the desired validator
+								wxT(""));
 	
 	textField_flReflectionsDelay = new wxTextCtrl(this,-1, "0.007", 
 								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER);
+								wxTE_PROCESS_ENTER,
+								validator0p0To0p3,
+								wxT(""));
 	
 	textField_flLateReverbGain = new wxTextCtrl(this,-1, "1.26", 
 								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER);
+								wxTE_PROCESS_ENTER,
+								validator0To10,
+								wxT(""));
 	
 	textField_flLateReverbDelay = new wxTextCtrl(this,-1, "0.011", 
 								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER);
+								wxTE_PROCESS_ENTER,
+								validator0p0To0p1,
+								wxT(""));
 								
 	textField_flReflectionsGain = new wxTextCtrl(this,-1, "0.05", 
 								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER);
+								wxTE_PROCESS_ENTER,
+								validator0p0To3p16,
+								wxT(""));
 	
 	textField_flAirAbsorptionGainHF = new wxTextCtrl(this,-1, "0.994", 
 								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,validator0To10,          // associate the text box with the desired validator
+								wxTE_PROCESS_ENTER,
+								validator0To10,          // associate the text box with the desired validator
 								wxT(""));
 	
 	textField_flRoomRolloffFactor = new wxTextCtrl(this,-1, "0.0", 
 								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,validator0To10,          // associate the text box with the desired validator
+								wxTE_PROCESS_ENTER,
+								validator0To10,          // associate the text box with the desired validator
 								wxT(""));
 	
 	

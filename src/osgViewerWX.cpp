@@ -31,7 +31,7 @@ wxOsgApp::~wxOsgApp()
 		wxCriticalSectionLocker enter(m_ReverbThreadCS);
 		if (m_listener_reverb_thread)         // does the thread still exist?
 		{
-			wxMessageOutputDebug().Printf("wxOsgApp: deleting thread");
+			wxMessageOutputDebug().Printf("wxOsgApp: deleting listener reverb thread");
 			
 			if (m_listener_reverb_thread->Delete() != wxTHREAD_NO_ERROR )
 			{
