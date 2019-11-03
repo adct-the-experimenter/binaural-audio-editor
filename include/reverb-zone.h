@@ -146,6 +146,8 @@ public:
 	ALuint* GetEffect();
 	ALuint* GetEffectsSlot();
 	
+	void FreeEffects();
+	
 private:
     
     //effect

@@ -302,13 +302,79 @@ void CreateEAXReverbZoneDialog::OnOk(wxCommandEvent& event )
 
 void CreateEAXReverbZoneDialog::OnPreview(wxCommandEvent& event)
 {
-	//get sound producer track of first sound producer track
+	if(m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size() > 0)
+	{
+		for(size_t i=0; i < m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size(); i++)
+		{
+			//get sound producer track of first sound producer track
+			std::vector <SoundProducerTrack*> *ref_track_vec = m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector();
+			SoundProducerTrack* thisTrack = ref_track_vec->at(i);
+			
+			//if track has a sound producer
+			if(thisTrack->GetReferenceToSoundProducerManipulated() != nullptr)
+			{
+				//Create temporary reverb zone
+				ReverbZone tempZone;
+				
+				name = textFieldName->GetLineText(0).ToStdString();
+				( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
+				( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
+				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
+				
+				( textField_flDensity->GetLineText(0) ).ToDouble(&properties.flDensity);
+				( textField_flDiffusion->GetLineText(0) ).ToDouble(&properties.flDiffusion);
+				( textField_flGain->GetLineText(0) ).ToDouble(&properties.flGain);
+				( textField_flGainHF->GetLineText(0) ).ToDouble(&properties.flGainHF);
+				( textField_flDecayTime->GetLineText(0) ).ToDouble(&properties.flDecayTime);
+				( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&properties.flDecayHFRatio);
+				( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&properties.flReflectionsGain);
+				( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&properties.flReflectionsDelay);
+				( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&properties.flLateReverbGain);
+				( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&properties.flLateReverbDelay);
+				( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&properties.flAirAbsorptionGainHF);
+				( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&properties.flRoomRolloffFactor);
+				
+				tempZone.InitEAXReverbZone(name,xPosition,yPosition,zPosition,width,properties);
+				
+				//apply effect to sound producer track
+				m_effects_manager_ptr->ApplyThisReverbZoneEffectToThisTrack(thisTrack, &tempZone);
+				
+				//play for a few seconds
+				
+				ALenum state;
+				
+				long endtime = ::wxGetLocalTime()+10; //10 second limit
+				while( ::wxGetLocalTime()<endtime )
+				{
+					alGetSourcei(*thisTrack->GetReferenceToTrackSource(), AL_SOURCE_STATE, &state);
+					if (state == AL_STOPPED || state == AL_INITIAL)
+					{ 
+						alSourcePlay(*thisTrack->GetReferenceToTrackSource());
+					}
+				}
+				
+				
+				//remove effect from sound producer track
+				m_effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
+				
+				break;
+			}
+			else
+			{
+				if(i == m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size() - 1)
+				{
+					wxMessageBox( wxT("Create a soundproducer. Set it to a track. Load audio to it with browse button!") );
+				}
+			}
+			
+		}
+	}
+	else
+	{
+		wxMessageBox( wxT("Create a soundproducer. Set it to a track. Load audio to it with browse button!") );
+	}
 	
-	//apply effect to sound producer track
-	
-	//play for a few seconds
-	
-	//remove effect from sound producer track
 	
 }
 

@@ -2,6 +2,8 @@
 
 SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudioDevice,ALCcontext* thisAudioContext) : Track(title)
 {
+	track_source = 0;
+	
 	soundProducerToManipulatePtr = nullptr;
 	m_combo_box = nullptr;
 	

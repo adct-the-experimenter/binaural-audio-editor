@@ -86,13 +86,9 @@ ReverbZone::ReverbZone()
 
 ReverbZone::~ReverbZone()
 {
-	if(m_effect)
-	{
-		alDeleteEffects(1, &m_effect);
-	}
-	if(m_slot)
-	{
-		 alDeleteAuxiliaryEffectSlots(1, &m_slot);
+	if(m_effect != 0 && m_slot != 0)
+	{	
+		FreeEffects();
 	}
 }
 
@@ -498,4 +494,16 @@ ReverbZone::Type& ReverbZone::GetType(){return m_type;}
 ALuint* ReverbZone::GetEffect(){return &m_effect;}
 ALuint* ReverbZone::GetEffectsSlot(){return &m_slot;}
 
-
+void ReverbZone::FreeEffects()
+{
+	if(m_effect)
+	{
+		alDeleteEffects(1, &m_effect);
+		m_effect = 0;
+	}
+	if(m_slot)
+	{
+		 alDeleteAuxiliaryEffectSlots(1, &m_slot);
+		 m_slot = 0;
+	}
+}

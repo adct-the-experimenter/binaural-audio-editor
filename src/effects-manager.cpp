@@ -163,9 +163,13 @@ void EffectsManager::RemoveEffectFromThisTrack(SoundProducerTrack* thisSoundProd
 {
 	ALuint* thisSource = thisSoundProducerTrack->GetReferenceToTrackSource();
 	
-	alSource3i(*thisSource,AL_AUXILIARY_SEND_FILTER,AL_EFFECTSLOT_NULL, 0, NULL); 
+	alSource3i(*thisSource,AL_AUXILIARY_SEND_FILTER,AL_EFFECTSLOT_NULL, 0, 0); 
 	assert(alGetError()==AL_NO_ERROR && "Failed to disable source send 0.");
 	
 	thisSoundProducerTrack->SetStatusReverbApplied(false);
 }
 
+std::vector <SoundProducerTrack*> *EffectsManager::GetReferenceToSoundProducerTracksVector()
+{
+	return m_track_manager_ptr->soundProducerTracks_vec;
+}

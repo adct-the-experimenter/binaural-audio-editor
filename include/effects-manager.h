@@ -33,6 +33,8 @@ public:
 	void RunListenerInReverbZoneOperation();
 	
 	friend class CheckListenerReverbZoneThread;
+	friend class CreateEAXReverbZoneDialog;
+	friend class CreateStandardReverbZoneDialog;
 	
 private:
 	
@@ -59,6 +61,8 @@ private:
 	
 	//function to remove effect applied to the sound producer track
 	void RemoveEffectFromThisTrack(SoundProducerTrack* thisSoundProducerTrack);
+	
+	std::vector <SoundProducerTrack*> *GetReferenceToSoundProducerTracksVector();
 };
 
 
