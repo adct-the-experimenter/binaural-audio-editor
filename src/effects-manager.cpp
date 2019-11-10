@@ -7,7 +7,7 @@ EffectsManager::EffectsManager(SoundProducerTrackManager* track_manager, Listene
 }
 
 EffectsManager::~EffectsManager()
-{
+{	
 	m_track_manager_ptr = nullptr;
 	m_listener_ptr = nullptr;
 }
@@ -172,4 +172,13 @@ void EffectsManager::RemoveEffectFromThisTrack(SoundProducerTrack* thisSoundProd
 std::vector <SoundProducerTrack*> *EffectsManager::GetReferenceToSoundProducerTracksVector()
 {
 	return m_track_manager_ptr->soundProducerTracks_vec;
+}
+
+void EffectsManager::FreeEffects()
+{
+	std::cout << "Freeing effects...\n";
+	for(size_t i=0; i < reverb_zones_vector.size(); i++)
+	{
+		reverb_zones_vector[i].FreeEffects();
+	}
 }

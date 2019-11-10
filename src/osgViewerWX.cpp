@@ -54,7 +54,8 @@ wxOsgApp::~wxOsgApp()
         // wait for thread completion
         wxThread::This()->Sleep(1);
     }
-				
+	
+	effects_manager_ptr->FreeEffects();
 	
 }
 
@@ -90,7 +91,7 @@ wxThread::ExitCode CheckListenerReverbZoneThread::Entry()
 
 	while (!TestDestroy() )
 	{
-		wxMilliSleep(250); //sleep for 500 milliseconds
+		wxMilliSleep(250); //sleep for 250 milliseconds
 		
 		m_effects_manager_ptr->PerformReverbThreadOperation();
 		

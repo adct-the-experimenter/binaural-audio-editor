@@ -32,6 +32,9 @@ public:
 	//function to run to apply reverb zone effect if listener is in reverb zone
 	void RunListenerInReverbZoneOperation();
 	
+	//function to free reverb zone effects
+	void FreeEffects();
+	
 	friend class CheckListenerReverbZoneThread;
 	friend class CreateEAXReverbZoneDialog;
 	friend class CreateStandardReverbZoneDialog;
