@@ -17,6 +17,89 @@
 
 bool init_listener_once = false;
 
+wxOsgApp::wxOsgApp()
+{
+	m_listener_reverb_thread = nullptr;
+}
+
+wxOsgApp::~wxOsgApp()
+{
+    
+    //Free CheckListenerReverbThread member
+	
+	{
+		wxCriticalSectionLocker enter(m_ReverbThreadCS);
+		if (m_listener_reverb_thread)         // does the thread still exist?
+		{
+			wxMessageOutputDebug().Printf("wxOsgApp: deleting listener reverb thread");
+			
+			if (m_listener_reverb_thread->Delete() != wxTHREAD_NO_ERROR )
+			{
+				wxLogError("Can't delete the thread!");
+			}
+				
+		}
+    }       
+    // exit from the critical section to give the thread
+    // the possibility to enter its destructor
+    // (which is guarded with m_pThreadCS critical section!)
+    
+    while (1)
+    {
+        { // was the ~MyThread() function executed?
+            wxCriticalSectionLocker enter(m_ReverbThreadCS);
+            if (!m_listener_reverb_thread){break;}
+        }
+        
+        // wait for thread completion
+        wxThread::This()->Sleep(1);
+    }
+	
+	effects_manager_ptr->FreeEffects();
+	
+}
+
+CheckListenerReverbZoneThread::CheckListenerReverbZoneThread(EffectsManager* manager,wxOsgApp* handler)
+{
+	m_effects_manager_ptr = manager;
+	
+	m_ThreadHandler = handler;
+	
+	//intialize thread outside of class
+	/*
+		 CheckListenerReverbZoneThread *thread = new CheckListenerReverbZoneThread(); 
+		 if ( thread->Create() != wxTHREAD_NO_ERROR ) 
+		 {
+			wxLogError(wxT("Can't create thread!")); 
+		 } 
+	*/
+	
+	//call wxThread:: Run virtual function to start thread which runs Entry()
+	
+	//call wxThRead::Delete to destroy thread
+}
+
+CheckListenerReverbZoneThread::~CheckListenerReverbZoneThread()
+{
+	wxCriticalSectionLocker enter(m_ThreadHandler->m_ReverbThreadCS);
+    // the thread is being destroyed; make sure not to leave dangling pointers around
+    m_ThreadHandler->m_listener_reverb_thread = NULL;
+}
+
+wxThread::ExitCode CheckListenerReverbZoneThread::Entry() 
+{
+
+	while (!TestDestroy() )
+	{
+		wxMilliSleep(250); //sleep for 250 milliseconds
+		
+		m_effects_manager_ptr->PerformReverbThreadOperation();
+		
+	}
+	
+	return nullptr;  
+}
+
 // `Main program' equivalent, creating windows and returning main app frame
 bool wxOsgApp::OnInit()
 {
@@ -104,7 +187,29 @@ bool wxOsgApp::OnInit()
 
 		//connect mainframe to openal soft audio engine
 		frame->SetAudioEngineReference(&audio_engine);
-
+		
+		//initialize effects manager
+		effects_manager_ptr = std::unique_ptr <EffectsManager>( new EffectsManager( frame->GetReferenceToSoundProducerTrackManager(), listener.get() ) );
+		
+		 m_listener_reverb_thread = new CheckListenerReverbZoneThread(effects_manager_ptr.get(),this); 
+		 if ( m_listener_reverb_thread->Create() != wxTHREAD_NO_ERROR ) 
+		 {
+			 wxLogError(wxT("Can't create thread!"));
+			 std::cout << "Can't create thread! \n";
+		 }
+		 else
+		 {
+			 std::cout << "\nThread created! Trying to run thread.\n";
+			 if(m_listener_reverb_thread->Run() != wxTHREAD_NO_ERROR)
+			 {
+				 wxLogError(wxT("Can't run thread!"));
+				 std::cout << "Can't run thread! \n";
+			 }
+		 }
+		 
+		//connect mainframe to effects manager
+		frame->SetEffectsManagerReference(effects_manager_ptr.get());
+		
 		//initialize viewer
 		viewer->setSceneData(rootNode.get());
 
@@ -224,6 +329,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_LISTENER_EDIT, MainFrame::OnEditListener)
     EVT_MENU				(MainFrame::ID_SETUP_SERIAL, MainFrame::OnSetupSerial)
     EVT_MENU				(MainFrame::ID_CHANGE_HRTF, MainFrame::OnChangeHRTF)
+    EVT_MENU				(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE, MainFrame::OnCreateStandardReverbZone)
+    EVT_MENU				(MainFrame::ID_CREATE_EAX_REVERB_ZONE, MainFrame::OnCreateEAXReverbZone)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -263,14 +370,19 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     wxMenu* menuListener = new wxMenu;
     menuListener->Append(MainFrame::ID_LISTENER_EDIT,"&Edit Listener");
     menuListener->Append(MainFrame::ID_SETUP_SERIAL,"&Setup Serial");
-
+    
+    //create effects menu items
+	wxMenu* menuEffects = new wxMenu;
+    menuEffects->Append(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE,"&Create Standard Reverb Zone");
+    menuEffects->Append(MainFrame::ID_CREATE_EAX_REVERB_ZONE,"&Create EAX Reverb Zone");
+    
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append( menuFile, "&File" ); //connect file menu item to bar
     menuBar->Append(menuListener, "&Listener"); //connecte listener menu item to bar
     menuBar->Append( menuSoundProducers, "&Sound Producers"); //connect Sound Producers menu item to bar
-    menuBar->Append( menuHRTF, "&HRTF"); //connect HRTF menu item to bar
-    //menuBar->Append( menuPlayback, "&Playback"); //connect Playback menu item to bar
+    menuBar->Append( menuEffects, "&Effects");
+    menuBar->Append( menuHRTF, "&HRTF"); //connect HRTF menu item to bar	
     menuBar->Append( menuHelp, "&Help" ); //connect help menu item  to bar
 
     SetMenuBar( menuBar );
@@ -532,6 +644,10 @@ void MainFrame::SetListenerExternalReference(ListenerExternal* thisListenerExter
 
 void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}
 
+void MainFrame::SetEffectsManagerReference(EffectsManager* effectsManager){effectsManagerPtr = effectsManager;}
+
+SoundProducerTrackManager* MainFrame::GetReferenceToSoundProducerTrackManager(){return soundproducertrack_manager_ptr.get();}
+
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
     if (!_viewer->isRealized())
@@ -619,11 +735,6 @@ void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, AL
 
 	soundproducer_registry.AddRecentSoundProducerMadeToRegistry();
 
-	//update lists of all sound producer tracks
-	//for(size_t i=0; i < m_soundproducer_track_vec.size(); i++)
-	//{
-	//	m_soundproducer_track_vec[i]->UpdateComboBoxListFromSoundProducerRegistry();
-	//}
 	soundproducer_registry.UpdateAllComboBoxesList();
 }
 
@@ -677,6 +788,74 @@ void MainFrame::OnSetupSerial(wxCommandEvent& event)
 															);
 
     setupSerialDialog->Show(true);
+}
+
+void MainFrame::OnCreateStandardReverbZone(wxCommandEvent& event)
+{
+	//show message box with ok icon,
+	//window title:about hello world
+	//message: This is a wxWidgets Helo world sample
+    //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
+
+    std::unique_ptr <CreateStandardReverbZoneDialog> reverbZoneNewDialog(new CreateStandardReverbZoneDialog(wxT("Create New Standard Reverb Zone"),
+																									effectsManagerPtr) );
+    reverbZoneNewDialog->Show(true);
+
+    if(reverbZoneNewDialog->OkClicked())
+    {
+		double x,y,z,width;
+		ReverbStandardProperties properties;
+		
+		reverbZoneNewDialog->getNewPosition(x,y,z);
+		std::string name = reverbZoneNewDialog->getNewName();
+		width = reverbZoneNewDialog->getNewWidth();
+		properties = reverbZoneNewDialog->getNewProperties();
+		
+		effectsManagerPtr->CreateStandardReverbZone(name,x,y,z,width,properties);
+		
+		//add position attitude transform to root group of nodes
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
+	}
+
+}
+
+void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
+{
+	//show message box with ok icon,
+	//window title:about hello world
+	//message: This is a wxWidgets Helo world sample
+    //wxMessageBox( "Create Sound Producer", "Create Sound Producer",wxOK | wxCANCEL |wxICON_INFORMATION );
+
+    std::unique_ptr <CreateEAXReverbZoneDialog> reverbZoneNewDialog(new CreateEAXReverbZoneDialog(wxT("Create New EAX Reverb Zone"),
+																									effectsManagerPtr) );
+    reverbZoneNewDialog->Show(true);
+
+    if(reverbZoneNewDialog->OkClicked())
+    {
+		double x,y,z,width;
+		ReverbEAXProperties properties;
+		
+		reverbZoneNewDialog->getNewPosition(x,y,z);
+		std::string name = reverbZoneNewDialog->getNewName();
+		width = reverbZoneNewDialog->getNewWidth();
+		properties = reverbZoneNewDialog->getNewProperties();
+		
+		effectsManagerPtr->CreateEAXReverbZone(name,x,y,z,width,properties);
+		
+		//add position attitude transform to root group of nodes
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
+	}
+
+}
+
+void MainFrame::OnEditMultipleReverbZones(wxCommandEvent& event)
+{
+	std::unique_ptr <EditMultipleReverbZonesDialog> reverbZoneEditDialog(new EditMultipleReverbZonesDialog( wxT("Edit Reverb Zones"),
+																													effectsManagerPtr));
+																				
+
+    reverbZoneEditDialog->Show(true);
+
 }
 
 void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)

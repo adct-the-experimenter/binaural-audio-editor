@@ -8,6 +8,8 @@ SoundProducerTrackManager::SoundProducerTrackManager(const wxString& title,ALCde
 	audioPlayer->SetReferenceToAudioDevice(thisAudioDevice);
 	
 	soundProducerTracks_vec = nullptr;
+	
+	SoundProducerTrackManager::SetSoundPlayingBool(false);
 }
 
 SoundProducerTrackManager::~SoundProducerTrackManager()
@@ -52,6 +54,8 @@ double SoundProducerTrackManager::GetCurrentTime(){return Track::GetCurrentTime(
 //function to call in timer loop, variable to manipulate gets changed here
 void SoundProducerTrackManager::FunctionToCallInPlayState()
 {
+	SoundProducerTrackManager::SetSoundPlayingBool(true);
+	
 	//buffer audio for all track sources
 	for(size_t i=0; i < soundProducerTracks_vec->size(); i++)
 	{
@@ -71,6 +75,8 @@ void SoundProducerTrackManager::FunctionToCallInPlayState()
 
 void SoundProducerTrackManager::FunctionToCallInPauseState()
 {
+	SoundProducerTrackManager::SetSoundPlayingBool(false);
+	
 	for(size_t i=0; i < soundProducerTracks_vec->size(); i++)
 	{
 		soundProducerTracks_vec->at(i)->FunctionToCallInPauseState();
@@ -79,6 +85,8 @@ void SoundProducerTrackManager::FunctionToCallInPauseState()
 
 void SoundProducerTrackManager::FunctionToCallInRewindState()
 {
+	SoundProducerTrackManager::SetSoundPlayingBool(false);
+	
 	for(size_t i=0; i < soundProducerTracks_vec->size(); i++)
 	{
 		soundProducerTracks_vec->at(i)->FunctionToCallInRewindState();
@@ -87,6 +95,8 @@ void SoundProducerTrackManager::FunctionToCallInRewindState()
 
 void SoundProducerTrackManager::FunctionToCallInFastForwardState()
 {
+	SoundProducerTrackManager::SetSoundPlayingBool(false);
+	
 	for(size_t i=0; i < soundProducerTracks_vec->size(); i++)
 	{
 		soundProducerTracks_vec->at(i)->FunctionToCallInFastForwardState();
@@ -95,8 +105,14 @@ void SoundProducerTrackManager::FunctionToCallInFastForwardState()
 
 void SoundProducerTrackManager::FunctionToCallInNullState()
 {
+	SoundProducerTrackManager::SetSoundPlayingBool(false);
+	
 	for(size_t i=0; i < soundProducerTracks_vec->size(); i++)
 	{
 		soundProducerTracks_vec->at(i)->FunctionToCallInNullState();
 	}
 }
+
+void SoundProducerTrackManager::SetSoundPlayingBool(bool status){soundPlaying = status;}
+
+bool SoundProducerTrackManager::IsSoundBeingPlayed(){return soundPlaying;}

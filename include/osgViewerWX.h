@@ -50,6 +50,11 @@
 #include "soundproducer-track.h"
 #include "listener-track.h"
 
+#include "effects-manager.h"
+#include "CreateStandardReverbZoneDialog.h"
+#include "CreateEAXReverbZoneDialog.h"
+#include "EditMultipleReverbZonesDialog.h"
+
 #include <iostream>
 #include <memory> //for unique_ptr use
 
@@ -145,11 +150,20 @@ public:
 	//for connecting mainframe to wxOsgApp
 	
     void SetViewer(osgViewer::Viewer *viewer);
+    
     void SetRootNode(osg::Group* root); 
+    
     void SetSoundProducerVectorRef(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector);
+    
     void SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine);
+    
     void SetListenerReference(Listener* listener);
     void SetListenerExternalReference(ListenerExternal* listenerExt);
+    
+    void SetEffectsManagerReference(EffectsManager* effectsManager);
+    
+    SoundProducerTrackManager* GetReferenceToSoundProducerTrackManager();
+    
     // Mainframe menu operations
     
     void OnOpen(wxCommandEvent& WXUNUSED(event));
@@ -175,7 +189,9 @@ private:
 		ID_TEST_HRTF,
 		ID_CHANGE_HRTF,
 		ID_LISTENER_EDIT,
-		ID_SETUP_SERIAL
+		ID_SETUP_SERIAL,
+		ID_CREATE_STANDARD_REVERB_ZONE,
+		ID_CREATE_EAX_REVERB_ZONE
 	};
     
     osg::ref_ptr<osgViewer::Viewer> _viewer;
@@ -192,18 +208,28 @@ private:
 	
 	TimelineFrame *timeFrame;
 	
+	EffectsManager* effectsManagerPtr;
+	
 	std::unique_ptr <SoundProducerTrackManager> soundproducertrack_manager_ptr;
 	
 	std::vector <SoundProducerTrack*> m_soundproducer_track_vec;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
-	
 	void OnEditMultipleSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
+	
 	void OnTestHRTF(wxCommandEvent& event); //function for menu to test HRTF and get results
 	void OnChangeHRTF(wxCommandEvent& event); //function for menu to instruct how to change HRTF with alsoft-config
     void OnEditListener(wxCommandEvent& event); //function for menu to edit listener position and orientation
     void OnSetupSerial(wxCommandEvent& event); //function for menu to setup serial communication
+    
+    void OnCreateStandardReverbZone(wxCommandEvent& event); //function for menu to create and place standard reverb zone
+    void OnCreateEAXReverbZone(wxCommandEvent& event); //function for menu to create and place EAX reverb zone
+    
+    void CreateStandardReverbZone();
+    void CreateEAXReverbZone();
+    
+    void OnEditMultipleReverbZones(wxCommandEvent& event); //function for menu to edit current available reverb zones
     
     SoundProducerRegistry soundproducer_registry;
     
@@ -220,11 +246,31 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
+class wxOsgApp;
+
+class CheckListenerReverbZoneThread : public wxThread 
+{ 
+public:     
+
+	CheckListenerReverbZoneThread(EffectsManager* manager,wxOsgApp *handler);
+	~CheckListenerReverbZoneThread();
+	
+protected:
+    virtual wxThread::ExitCode Entry();
+    wxOsgApp *m_ThreadHandler; 
+
+private:     
+	EffectsManager* m_effects_manager_ptr;
+};
+
 /* Define a new application type */
 //the main of the application
 class wxOsgApp : public wxApp
 {
 public:
+	wxOsgApp();
+	~wxOsgApp();
+	
     bool OnInit();
     
     void KeyDownLogic(int& thisKey);
@@ -236,10 +282,19 @@ private:
 	
 	OpenAlSoftAudioEngine audio_engine; //class abstraction to handle playing binaural 3D audio
 	
+	//listener
 	std::unique_ptr <Listener> listener;
 	std::unique_ptr <ListenerExternal> listenerExternal;
 	void initListener();
 	
+	//effects manager
+	std::unique_ptr <EffectsManager> effects_manager_ptr;
+	
+	CheckListenerReverbZoneThread* m_listener_reverb_thread;
+    wxCriticalSection m_ReverbThreadCS;    // protects the  m_listener_reverb_thread pointer
+    
+    friend class CheckListenerReverbZoneThread;
+    
 	osg::ref_ptr<osgGA::TrackballManipulator> cameraManipulator; //pointer to camera manipulator
 };
 

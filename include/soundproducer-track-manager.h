@@ -33,6 +33,13 @@ public:
     virtual void FunctionToCallInRewindState();
     virtual void FunctionToCallInFastForwardState();
     virtual void FunctionToCallInNullState();
+    
+    //function to return status of sound being played
+    bool IsSoundBeingPlayed();
+	
+	//allow effects manager to be a friend so that it can access
+	//sources to add effects to them
+	friend class EffectsManager; 
 	
 private:
 	
@@ -46,6 +53,9 @@ private:
 	
 	ALCdevice* audioDevicePtr; //pointer to audio device to be used
     ALCcontext* alContextPtr; //pointer to context of where audio is played
+    
+    bool soundPlaying;
+    void SetSoundPlayingBool(bool status);
 
 };
 

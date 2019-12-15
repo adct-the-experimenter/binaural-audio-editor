@@ -2,6 +2,8 @@
 
 SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudioDevice,ALCcontext* thisAudioContext) : Track(title)
 {
+	track_source = 0;
+	
 	soundProducerToManipulatePtr = nullptr;
 	m_combo_box = nullptr;
 	
@@ -36,6 +38,9 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	xTrack->SetReferenceToVarToManipulate(&tempX);
 	yTrack->SetReferenceToVarToManipulate(&tempY);
 	zTrack->SetReferenceToVarToManipulate(&tempZ);
+	
+	//initialize reverb applied status
+	SoundProducerTrack::SetStatusReverbApplied(false);
 	
 	
 	Connect(wxEVT_PAINT, wxPaintEventHandler(Track::OnPaint));
@@ -279,7 +284,10 @@ void SoundProducerTrack::OnRightMouseClick(wxCommandEvent& event)
 	event.Skip();
 }
 
-ALuint* SoundProducerTrack::GetReferenceToTrackSource()
-{
-	return &track_source;
-}
+ALuint* SoundProducerTrack::GetReferenceToTrackSource(){return &track_source;}
+
+SoundProducer* SoundProducerTrack::GetReferenceToSoundProducerManipulated(){return soundProducerToManipulatePtr;}
+
+bool SoundProducerTrack::IsReverbApplied(){return reverbApplied;}
+
+void SoundProducerTrack::SetStatusReverbApplied(bool status){reverbApplied = status;}
