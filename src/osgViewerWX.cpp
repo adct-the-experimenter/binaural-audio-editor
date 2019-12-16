@@ -512,7 +512,12 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->SetReferenceToBrowseButton(browseButton);
 	m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
 	m_soundproducer_track_vec.at(0)->SetReferenceToPlaybackControls(timeFrame->GetPlaybackControlsReference());
-
+	
+	wxButton* importAudioDAWButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Import DAW Audio"), wxDefaultPosition, wxSize(150, 30) ); 
+	m_soundproducer_track_vec.at(0)->SetReferenceToImportAudioDAWButton(importAudioDAWButton);
+	
+	
+	
 	//initialize double tracks
 	m_soundproducer_track_vec[0]->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	m_soundproducer_track_vec[0]->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
@@ -543,6 +548,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	wxStaticText *textButtonText = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Stereo Audio Track"),wxDefaultPosition );
 	hboxButtonText->Add(textButtonText);
 	hboxButtonText->Add(browseButton);
+	hboxButtonText->Add(importAudioDAWButton);
 	timeFrame->AddBoxSizer(hboxButtonText);
 
 	//add label for left channel audio
@@ -563,6 +569,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	//add right channel track to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->GetReferenceToRightChannelTrack(),space);
 
+	//add track functions to call for sound producer track manager
 	timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(soundproducertrack_manager_ptr.get());
 	timeFrame->AddTrackFunctionToCallInTimerLoopNullState(soundproducertrack_manager_ptr.get());
 	timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(soundproducertrack_manager_ptr.get());
@@ -905,7 +912,10 @@ void MainFrame::CreateNewSoundProducerTrack()
 	wxButton* browseButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Browse"), wxDefaultPosition, wxSize(70, 30) );
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->SetReferenceToBrowseButton(browseButton);
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
-
+	
+	wxButton* importAudioDAWButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Import DAW Audio"), wxDefaultPosition, wxSize(150, 30) ); 
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToImportAudioDAWButton(importAudioDAWButton);
+	
 	//initialize double tracks
 
 	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
@@ -943,6 +953,7 @@ void MainFrame::CreateNewSoundProducerTrack()
 	wxStaticText *textButtonText = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Stereo Audio Track"),wxDefaultPosition );
 	hboxButtonText->Add(textButtonText);
 	hboxButtonText->Add(browseButton);
+	hboxButtonText->Add(importAudioDAWButton);
 	timeFrame->AddBoxSizer(hboxButtonText);
 
 	//add label for left channel audio
@@ -962,12 +973,6 @@ void MainFrame::CreateNewSoundProducerTrack()
 
 	//add right channel track to time frame
 	timeFrame->AddTrack(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToStereoAudioTrack()->GetReferenceToRightChannelTrack(),space);
-
-	//timeFrame->AddTrackFunctionToCallInTimerLoopPlayState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
-	//timeFrame->AddTrackFunctionToCallInTimerLoopNullState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
-	//timeFrame->AddTrackFunctionToCallInTimerLoopPauseState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
-	//timeFrame->AddTrackFunctionToCallInTimerLoopRewindState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
-	//timeFrame->AddTrackFunctionToCallInTimerLoopFastForwardState(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1));
 
 	//add x,y,z tracks of SoundProducerTrack to time frame
 

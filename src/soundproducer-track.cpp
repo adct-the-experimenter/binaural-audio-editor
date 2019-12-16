@@ -7,6 +7,8 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	soundProducerToManipulatePtr = nullptr;
 	m_combo_box = nullptr;
 	
+	m_importAudioDAWButton = nullptr;
+	
 	//initialize audio player
 	audioPlayer = new OpenALSoftPlayer();
 	audioPlayer->SetReferenceToAudioContext(thisAudioContext);
@@ -32,6 +34,7 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	
 	std::string filepath_stream = "../src/timeline-track-editor/resources/" + title.ToStdString() + ".wav";
 	audioTrack->SetStreamAudioFilePath(filepath_stream);
+	streamSoundFilePath = filepath_stream;
 	
 	tempX=0.0; tempY=0.0; tempZ=0.0;
 	
@@ -291,3 +294,65 @@ SoundProducer* SoundProducerTrack::GetReferenceToSoundProducerManipulated(){retu
 bool SoundProducerTrack::IsReverbApplied(){return reverbApplied;}
 
 void SoundProducerTrack::SetStatusReverbApplied(bool status){reverbApplied = status;}
+
+
+void SoundProducerTrack::SetReferenceToImportAudioDAWButton(wxButton* thisButton)
+{
+	m_importAudioDAWButton = thisButton;
+	
+	m_importAudioDAWButton->Bind(wxEVT_BUTTON, &SoundProducerTrack::OnImportAudioDAWButtonClick,this);
+}
+
+void SoundProducerTrack::OnImportAudioDAWButtonClick(wxCommandEvent& event)
+{
+	std::cout << "Importing audio from DAW...\n";
+	
+	//load audio file imported_audio_DAW.wav
+	//use this path in your app
+	std::string inputSoundFilePath = std::string("../src/timeline-track-editor/resources/") + std::string("imported_audio_DAW.wav");
+	
+	SF_INFO input_sfinfo;
+	
+	int channels = audioTrack->GetReferenceToLeftChannelTrack()->GetNumberOfChannelsInAudioFile(inputSoundFilePath,input_sfinfo);
+	std::cout << "channels:" << channels << std::endl;
+	
+	if(channels == 0)
+	{
+		wxMessageBox(wxT("Failed to load audio from imported_audio_DAW.wav!\n No such file or data is incorrect. \n"));
+	}
+	
+	//object to hold audio data for streaming
+	AudioStreamContainer audio_data_stream;
+	
+	//Hold data for left channel and right channel
+	std::vector <double> audio_data_input_copy;
+	
+	if(channels == 1)
+	{
+		//create a copy of file to reference for editing
+		//also put data into stream
+		audioTrack->GetReferenceToLeftChannelTrack()->ReadAndCopyDataFromInputFile(&audio_data_input_copy,inputSoundFilePath,input_sfinfo);
+		audioTrack->GetReferenceToLeftChannelTrack()->CopyInputDataIntoAudioDataStream(&audio_data_input_copy,&audio_data_stream,streamSoundFilePath,input_sfinfo);
+		//graph all data in channel to one graph
+		audioTrack->GetReferenceToLeftChannelTrack()->PlotOneChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
+	}
+	else if(channels == 2)
+	{
+		//create a copy of file to reference for editing
+		//also put data into stream
+		audioTrack->GetReferenceToLeftChannelTrack()->ReadAndCopyDataFromInputFile(&audio_data_input_copy,inputSoundFilePath,input_sfinfo);
+		audioTrack->GetReferenceToLeftChannelTrack()->CopyInputDataIntoAudioDataStream(&audio_data_input_copy,&audio_data_stream,streamSoundFilePath,input_sfinfo);
+			
+		//plot left channel data to one graph 
+		audioTrack->GetReferenceToLeftChannelTrack()->PlotLeftChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
+		//plot right channel data to other graph
+		audioTrack->GetReferenceToRightChannelTrack()->PlotRightChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
+		
+	}
+	
+	//open file to play during streaming
+	//audioTrack->OpenPlayerFile(streamSoundFilePath.c_str());
+	
+	std::cout << "\nFinished importing audio from DAW!\n";
+	event.Skip();
+}
