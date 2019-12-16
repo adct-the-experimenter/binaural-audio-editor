@@ -351,7 +351,7 @@ void SoundProducerTrack::OnImportAudioDAWButtonClick(wxCommandEvent& event)
 	}
 	
 	//open file to play during streaming
-	//audioTrack->OpenPlayerFile(streamSoundFilePath.c_str());
+	audioPlayer->OpenPlayerFile(streamSoundFilePath.c_str());
 	
 	std::cout << "\nFinished importing audio from DAW!\n";
 	event.Skip();
