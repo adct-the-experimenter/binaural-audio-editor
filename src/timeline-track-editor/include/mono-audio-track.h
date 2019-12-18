@@ -81,13 +81,6 @@ public:
     void logic_right_click();
 	
 private:
-	//object to hold audio data for streaming
-	AudioStreamContainer audio_data_stream;
-	
-	//Hold data for left channel and right channel
-	std::vector <double> audio_data_input_copy;
-	
-	SF_INFO input_sfinfo;
 
 	AudioTrack* m_channel_track;
 	

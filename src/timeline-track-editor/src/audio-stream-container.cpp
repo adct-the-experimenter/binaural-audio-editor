@@ -1,5 +1,9 @@
 #include "audio-stream-container.h"
 
+#include <fstream>
+#include <stdio.h>
+
+
 AudioStreamContainer::AudioStreamContainer()
 {
 	input_audio_data_ptr = nullptr;
@@ -55,6 +59,7 @@ void AudioStreamContainer::WriteStreamContentsToFile(std::string filename, int f
 	sf_count_t write_count = 0; 
 	size_t count_buffer = 0;
 	
+	sf_seek(outFile, 0, SEEK_SET);
 	write_count = sf_write_double(outFile, stream_audio_data.front(), readSize);
 	
 	sf_close(outFile);
@@ -63,3 +68,23 @@ void AudioStreamContainer::WriteStreamContentsToFile(std::string filename, int f
 int AudioStreamContainer::GetFormat(){return m_format;}
 int AudioStreamContainer::GetChannels(){return m_channels;}
 int AudioStreamContainer::GetSampleRate(){return m_sample_rate;}
+
+void AudioStreamContainer::ClearStreamDataStored()
+{
+	//clear audio data stored
+	stream_audio_data.clear();
+}
+
+void AudioStreamContainer::ClearDataInStreamFile(std::string filename)
+{
+	//clear audio data stored in file
+	if( remove( filename.c_str() ) != 0 )
+	{
+		std::cout << "\nError deleting file\n";
+	}
+    else
+    {
+		std::cout << "\nFile successfully deleted.\n";
+	}
+    
+}

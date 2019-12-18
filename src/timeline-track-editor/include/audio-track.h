@@ -91,6 +91,8 @@ public:
 	void SetAudioTrackState(int thisState);
     int GetAudioTrackState();
     
+    void ClearGraph();
+    
 private:
 	
 	//Audio Processes and Operations

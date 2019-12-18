@@ -402,3 +402,9 @@ void AudioGraph::PlotAudioDataToGraph(std::vector <double> *audio_data, int samp
 		count++;
 	}
 }
+
+void AudioGraph::ClearGraph()
+{
+	max_graph_points.clear();
+	min_graph_points.clear();
+}

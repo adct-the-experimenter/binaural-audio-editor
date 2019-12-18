@@ -27,6 +27,9 @@ public:
 	int GetChannels();
 	int GetSampleRate();
 	
+	void ClearStreamDataStored();
+	void ClearDataInStreamFile(std::string filename);
+	
 private:
 	std::vector <double> *input_audio_data_ptr;
 	

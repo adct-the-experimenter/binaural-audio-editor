@@ -305,6 +305,10 @@ void SoundProducerTrack::SetReferenceToImportAudioDAWButton(wxButton* thisButton
 
 void SoundProducerTrack::OnImportAudioDAWButtonClick(wxCommandEvent& event)
 {
+	//clear graphs
+	audioTrack->GetReferenceToLeftChannelTrack()->ClearGraph();
+	audioTrack->GetReferenceToRightChannelTrack()->ClearGraph();
+	
 	std::cout << "Importing audio from DAW...\n";
 	
 	//load audio file imported_audio_DAW.wav
