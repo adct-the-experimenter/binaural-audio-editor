@@ -56,7 +56,7 @@ private:
     
     bool soundPlaying;
     void SetSoundPlayingBool(bool status);
-
+	
 };
 
 #endif

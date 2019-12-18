@@ -322,3 +322,11 @@ int AudioTrack::GetAudioTrackState(){return track_state;}
 
 void AudioTrack::SetReferenceToPlaybackControls(PlaybackControls* controls){playbackControlsPtr = controls;}
 PlaybackControls* AudioTrack::GetReferenceToPlaybackControls(){return playbackControlsPtr;}
+
+void AudioTrack::ClearGraph()
+{
+	m_audio_graph->ClearGraph();
+	Refresh();
+}
+
+

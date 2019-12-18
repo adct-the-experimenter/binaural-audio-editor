@@ -40,6 +40,8 @@ public:
 	
 	void PlotAudioDataToGraph(std::vector <double> *audio_data, int sample_rate, double& verticalStart, double& verticalEnd, double& verticalResolution);
 	
+	void ClearGraph();
+	
 private:
 
 	std::vector <int> *timeTickVectorPtr;

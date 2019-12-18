@@ -87,14 +87,14 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 					{
 						std::cout << "Playback finished! \n";
 						
-						//playbackControlsPtr->StopOP();
+						playbackControlsPtr->StopOP();
 						break;
 					}
 					case OpenALSoftPlayer::PlayerStatus::FAILED_TO_READ_ANYMORE_AUDIO_FROM_FILE:
 					{
 						std::cout << "No more audio to read! \n";
 						
-						//playbackControlsPtr->StopOP();
+						playbackControlsPtr->StopOP();
 						break;
 					}
 					case OpenALSoftPlayer::PlayerStatus::GOOD_UPDATE_BUFFER_STATUS:
@@ -250,11 +250,25 @@ void StereoAudioTrack::OnBrowse(wxCommandEvent& event)
 
 void StereoAudioTrack::BrowseForInputAudioFile()
 {
+	//object to hold audio data for streaming
+	AudioStreamContainer audio_data_stream;
+	
+	//Hold data for left channel and right channel
+	std::vector <double> audio_data_input_copy;
+	
+	//audio format info
+	SF_INFO input_sfinfo;
+	
 	if(audio_data_stream.GetSize() == 0)
 	{
 		wxFileDialog fileDlg(this, _("Choose the WAV,FLAC,OGG file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|FLAC file|*.flac|OGG file|*.ogg|All files|*.*"));
 		if (fileDlg.ShowModal() == wxID_OK)
 		{
+			//clear and free any current data 
+			
+			m_left_channel_track->ClearGraph();
+			m_right_channel_track->ClearGraph();
+			
 			wxString path = fileDlg.GetPath();
 			//use this path in your app
 			inputSoundFilePath = std::string(path.mb_str());
@@ -292,7 +306,10 @@ void StereoAudioTrack::BrowseForInputAudioFile()
 			
 			//open file to play during streaming
 			audioPlayerPtr->OpenPlayerFile(streamSoundFilePath.c_str());
-			 
+			
+			//clear data stored
+			audio_data_stream.ClearStreamDataStored();
+			audio_data_input_copy.clear();
 		} 
 	}
 }

@@ -76,6 +76,9 @@ public:
 	bool IsReverbApplied();
 	void SetStatusReverbApplied(bool status);
 	
+	//Audio DAW 
+	void SetReferenceToImportAudioDAWButton(wxButton* thisButton);
+	
 private:
 	SoundProducer* soundProducerToManipulatePtr;
 
@@ -106,6 +109,12 @@ private:
 	//bool to tell if reverb is applied to the source of the track
 	bool reverbApplied;
 	
+	//button for using the DAW audio import plugin for binaural audio editor
+	wxButton* m_importAudioDAWButton;
+	
+	void OnImportAudioDAWButtonClick(wxCommandEvent& event);
+	
+	std::string streamSoundFilePath;
 };
 
 #endif

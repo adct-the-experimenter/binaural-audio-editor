@@ -238,11 +238,22 @@ void MonoAudioTrack::SetupAxisForVariable(double& start, double& end, double& re
 
 void MonoAudioTrack::OnBrowse(wxCommandEvent& event)
 {
+	//object to hold audio data for streaming
+	AudioStreamContainer audio_data_stream;
+	
+	//Hold data for left channel and right channel
+	std::vector <double> audio_data_input_copy;
+	
+	//audio format
+	SF_INFO input_sfinfo;
+	
 	if(audio_data_stream.GetSize() == 0)
 	{
 		wxFileDialog fileDlg(this, _("Choose the WAV,FLAC,OGG file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|FLAC file|*.flac|OGG file|*.ogg|All files|*.*"));
 		if (fileDlg.ShowModal() == wxID_OK)
 		{
+			m_channel_track->ClearGraph();
+			
 			wxString path = fileDlg.GetPath();
 			//use this path in your app
 			inputSoundFilePath = std::string(path.mb_str());
@@ -253,9 +264,6 @@ void MonoAudioTrack::OnBrowse(wxCommandEvent& event)
 			
 			int channels = m_channel_track->GetNumberOfChannelsInAudioFile(inputSoundFilePath,input_sfinfo);
 			std::cout << "channels:" << channels << std::endl;
-			
-			
-			
 			
 			if(channels == 1)
 			{
@@ -268,6 +276,10 @@ void MonoAudioTrack::OnBrowse(wxCommandEvent& event)
 				
 				//open file to play during streaming
 				audioPlayerPtr->OpenPlayerFile(streamSoundFilePath.c_str());
+				
+				//clear data stored
+				audio_data_stream.ClearStreamDataStored();
+				audio_data_input_copy.clear();
 			}
 			
 			

@@ -97,5 +97,12 @@ OpenAL Soft should automatically convert 3d audio information into audio output 
 
 For more information, read https://github.com/kcat/openal-soft/blob/master/docs/3D7.1.txt 
 
+## To use with Digital Audio Workstation
+
+See the import-audio-DAW-BAE plugin page about building and installing the plugin.
+
+https://github.com/adct-the-experimenter/import-audio-DAW-BAE
+
+This plugin will export audio from a digital audio workstation to the sound tracks of binaural audio editor so that one can use their DAW to edit audio and spatialize it in Binaural Audio Editor.
 ## Feedback 
 Please email questions or comments to this email address bringerofawesomefood @ gmail . com without spaces.
