@@ -36,6 +36,9 @@ public:
     
     //function to return status of sound being played
     bool IsSoundBeingPlayed();
+    
+    //function to play a track by its index in the vector
+    void PlayThisTrackFromSoundProducerTrackVector(int& index);
 	
 	//allow effects manager to be a friend so that it can access
 	//sources to add effects to them

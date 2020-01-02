@@ -5,6 +5,7 @@
 
 #include <wx/valnum.h> //for wxFloatingPointValidator
 #include <wx/textctrl.h> //for wxTextCtrl
+#include <wx/listbox.h> //for list box
 
 #include "effects-manager.h"
 
@@ -53,6 +54,8 @@ private:
 	wxButton* cancelButton;
 	wxButton* previewButton;
 	
+	wxListBox* listboxSoundProducers;
+	
 	//text fields
 	wxTextCtrl* textFieldName;
 
@@ -100,6 +103,8 @@ private:
 	void initPrivateVariables();
 	
 	bool okClicked;
+	
+	void SoundProducerTrackSelectedInListBox(wxCommandEvent& event );
 	
 	DECLARE_EVENT_TABLE()
 

@@ -61,6 +61,8 @@ private:
 	wxTextCtrl* textFieldZ;
 	wxTextCtrl* textFieldWidth;
 	
+	wxListBox* listboxSoundProducers;
+	
 	//AL_REVERB_DENSITY, 
 	wxTextCtrl* textField_flDensity;
 	//AL_REVERB_DIFFUSION, 
@@ -86,8 +88,6 @@ private:
 	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
 	wxTextCtrl* textField_flRoomRolloffFactor;
 
-	
-
 	std::string name;
 	double xPosition;
 	double yPosition;
@@ -95,7 +95,6 @@ private:
 	double width;
 	
 	ReverbEAXProperties properties;
-	
 
 	void initPrivateVariables();
 	

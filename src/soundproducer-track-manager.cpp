@@ -116,3 +116,19 @@ void SoundProducerTrackManager::FunctionToCallInNullState()
 void SoundProducerTrackManager::SetSoundPlayingBool(bool status){soundPlaying = status;}
 
 bool SoundProducerTrackManager::IsSoundBeingPlayed(){return soundPlaying;}
+
+void SoundProducerTrackManager::PlayThisTrackFromSoundProducerTrackVector(int& index)
+{
+	//buffer audio for track source
+	soundProducerTracks_vec->at(index)->FunctionToCallInPlayState();
+	
+	//play all sources in sync
+	if(soundProducerTracks_vec->at(index)->GetReferenceToStereoAudioTrack()->GetAudioTrackState() == StereoAudioTrack::State::PLAYER_NULL)
+	{
+		audioPlayer->PlaySource(soundproducertracks_sources_vector[index]);
+	}
+	else if(soundProducerTracks_vec->at(index)->GetReferenceToStereoAudioTrack()->GetAudioTrackState() == StereoAudioTrack::State::PLAYER_PLAYING)
+	{
+		audioPlayer->PlayUpdatedPlayerBuffer(soundproducertracks_sources_vector[index]);
+	}
+}

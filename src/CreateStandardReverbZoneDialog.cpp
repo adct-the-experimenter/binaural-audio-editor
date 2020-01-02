@@ -160,6 +160,35 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	wxStaticText* flAirAbsorptionGainHFText = new wxStaticText(this, -1, wxT("air absorption:"), wxPoint(40, 120));
 	wxStaticText* flRoomRolloffFactorText = new wxStaticText(this, -1, wxT("room rolloff factor:"), wxPoint(40, 120)); 
 
+    wxStaticText* spPreviewText = new wxStaticText(this, -1, wxT("Sound Producer on Track To Preview :"), wxPoint(40, 20));
+    
+    //make horizontal box to put names in
+	wxBoxSizer* hboxSoundProducers = new wxBoxSizer(wxHORIZONTAL);
+	
+	//list box to contain names of Sound Producers to edit, single selection by default 
+	listboxSoundProducers = new wxListBox(this, ID_LISTBOX, 
+							wxPoint(0, 0), wxSize(100, 20)); 
+	
+
+	
+	//add contents of soundproducers to listbox
+	if(m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size() > 0)
+	{
+		for(size_t i = 0; i < m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size(); i++)
+		{
+			SoundProducer* thisSoundProducer =  m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->at(i)->GetReferenceToSoundProducerManipulated();
+			if(thisSoundProducer)
+			{
+				wxString mystring( thisSoundProducer->GetNameString() );
+				listboxSoundProducers ->Append(mystring);
+			}
+		}
+	}
+	
+	
+	//add listbox to name box
+	hboxSoundProducers->Add(listboxSoundProducers, 1, wxEXPAND | wxALL, 20);
+    
     
     //initialize Ok and Cancel buttons 
 	okButton = new wxButton(this, CreateStandardReverbZoneDialog::ID_OK, wxT("Ok"), 
@@ -249,6 +278,9 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	
 	vbox->Add(hboxReverbRow6,1, wxEXPAND | wxALL, 10);
 	
+	vbox->Add(spPreviewText);
+	vbox->Add(hboxSoundProducers,1, wxEXPAND | wxALL, 10);
+	
 	vbox->Add(hbox5, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
 
 	SetSizerAndFit(vbox);
@@ -306,70 +338,57 @@ void CreateStandardReverbZoneDialog::OnPreview(wxCommandEvent& event)
 {
 	if(m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size() > 0)
 	{
-		for(size_t i=0; i < m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size(); i++)
+		
+		//get sound producer track of first sound producer track
+		std::vector <SoundProducerTrack*> *ref_track_vec = m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector();
+		SoundProducerTrack* thisTrack = ref_track_vec->at(listboxSoundProducers->GetSelection());
+		
+		//if track has a sound producer
+		if(thisTrack->GetReferenceToSoundProducerManipulated() != nullptr)
 		{
-			//get sound producer track of first sound producer track
-			std::vector <SoundProducerTrack*> *ref_track_vec = m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector();
-			SoundProducerTrack* thisTrack = ref_track_vec->at(i);
+			//Create temporary reverb zone
+			ReverbZone tempZone;
 			
-			//if track has a sound producer
-			if(thisTrack->GetReferenceToSoundProducerManipulated() != nullptr)
+			name = textFieldName->GetLineText(0).ToStdString();
+			( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
+			( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
+			( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+			( textFieldWidth->GetLineText(0) ).ToDouble(&width);
+			
+			( textField_flDensity->GetLineText(0) ).ToDouble(&properties.flDensity);
+			( textField_flDiffusion->GetLineText(0) ).ToDouble(&properties.flDiffusion);
+			( textField_flGain->GetLineText(0) ).ToDouble(&properties.flGain);
+			( textField_flGainHF->GetLineText(0) ).ToDouble(&properties.flGainHF);
+			( textField_flDecayTime->GetLineText(0) ).ToDouble(&properties.flDecayTime);
+			( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&properties.flDecayHFRatio);
+			( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&properties.flReflectionsGain);
+			( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&properties.flReflectionsDelay);
+			( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&properties.flLateReverbGain);
+			( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&properties.flLateReverbDelay);
+			( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&properties.flAirAbsorptionGainHF);
+			( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&properties.flRoomRolloffFactor);
+			
+			tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,properties);
+			
+			//apply effect to sound producer track
+			m_effects_manager_ptr->ApplyThisReverbZoneEffectToThisTrack(thisTrack, &tempZone);
+			
+			//play for a few seconds
+			
+			long endtime = ::wxGetLocalTime()+10; //10 second limit
+			int index_track = listboxSoundProducers->GetSelection();
+			while( ::wxGetLocalTime() < endtime )
 			{
-				//Create temporary reverb zone
-				ReverbZone tempZone;
-				
-				name = textFieldName->GetLineText(0).ToStdString();
-				( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
-				( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
-				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
-				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
-				
-				( textField_flDensity->GetLineText(0) ).ToDouble(&properties.flDensity);
-				( textField_flDiffusion->GetLineText(0) ).ToDouble(&properties.flDiffusion);
-				( textField_flGain->GetLineText(0) ).ToDouble(&properties.flGain);
-				( textField_flGainHF->GetLineText(0) ).ToDouble(&properties.flGainHF);
-				( textField_flDecayTime->GetLineText(0) ).ToDouble(&properties.flDecayTime);
-				( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&properties.flDecayHFRatio);
-				( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&properties.flReflectionsGain);
-				( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&properties.flReflectionsDelay);
-				( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&properties.flLateReverbGain);
-				( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&properties.flLateReverbDelay);
-				( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&properties.flAirAbsorptionGainHF);
-				( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&properties.flRoomRolloffFactor);
-				
-				tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,properties);
-				
-				//apply effect to sound producer track
-				m_effects_manager_ptr->ApplyThisReverbZoneEffectToThisTrack(thisTrack, &tempZone);
-				
-				//play for a few seconds
-				
-				ALenum state;
-				
-				long endtime = ::wxGetLocalTime()+10; //10 second limit
-				while( ::wxGetLocalTime()<endtime )
-				{
-					alGetSourcei(*thisTrack->GetReferenceToTrackSource(), AL_SOURCE_STATE, &state);
-					if (state == AL_STOPPED || state == AL_INITIAL)
-					{ 
-						alSourcePlay(*thisTrack->GetReferenceToTrackSource());
-					}
-				}
-				
-				
-				//remove effect from sound producer track
-				m_effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
-				
-				break;
-			}
-			else
-			{
-				if(i == m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size() - 1)
-				{
-					wxMessageBox( wxT("Create a soundproducer. Set it to a track. Load audio to it with browse button!") );
-				}
+				m_effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(index_track);
 			}
 			
+			
+			//remove effect from sound producer track
+			m_effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
+		}
+		else
+		{
+			wxMessageBox( wxT("Create a soundproducer. Set it to a track. Load audio to it with browse button!") );	
 		}
 	}
 	else
@@ -378,6 +397,12 @@ void CreateStandardReverbZoneDialog::OnPreview(wxCommandEvent& event)
 	}
 	
 }
+
+void CreateStandardReverbZoneDialog::SoundProducerTrackSelectedInListBox(wxCommandEvent& event )
+{
+	
+}
+
 
 void CreateStandardReverbZoneDialog::OnCancel(wxCommandEvent& event)
 {
@@ -408,5 +433,6 @@ BEGIN_EVENT_TABLE(CreateStandardReverbZoneDialog, wxDialog)
     EVT_BUTTON				(ID_OK, CreateStandardReverbZoneDialog::OnOk)
     EVT_BUTTON				(ID_CANCEL, CreateStandardReverbZoneDialog::OnCancel)
     EVT_BUTTON				(ID_PREVIEW, CreateStandardReverbZoneDialog::OnPreview)
+    EVT_LISTBOX				(ID_LISTBOX,  CreateStandardReverbZoneDialog::SoundProducerTrackSelectedInListBox)
     
 END_EVENT_TABLE()
