@@ -62,6 +62,9 @@ private:
 	wxTextCtrl* textFieldWidth;
 	
 	wxListBox* listboxSoundProducers;
+	int spt_selection_index;
+	
+	void SoundProducerTrackSelectedInListBox(wxCommandEvent& event );
 	
 	//AL_REVERB_DENSITY, 
 	wxTextCtrl* textField_flDensity;

@@ -55,6 +55,7 @@ private:
 	wxButton* previewButton;
 	
 	wxListBox* listboxSoundProducers;
+	int spt_selection_index;
 	
 	//text fields
 	wxTextCtrl* textFieldName;

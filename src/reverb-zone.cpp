@@ -441,7 +441,6 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	//initialize type to EAX
 	m_type = ReverbZone::Type::EAX;
 	
-	
 }
 
 void ReverbZone::SetNameString(std::string& thisName){ name = thisName;}
