@@ -19,7 +19,7 @@ void EffectsManager::CreateStandardReverbZone(std::string& name, double& x, doub
 	
 	reverb_zones_vector.push_back(r_zone);
 	
-	reverb_zones_vector.back().InitStandardReverbZone(name,x,y,z,width,properties);
+	reverb_zones_vector.back().InitStandardReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 }
 
 
@@ -29,7 +29,7 @@ void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y
 	
 	reverb_zones_vector.push_back(r_zone);
 	
-	reverb_zones_vector.back().InitEAXReverbZone(name,x,y,z,width,properties);
+	reverb_zones_vector.back().InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 }
 
 std::vector <ReverbZone> *EffectsManager::GetReferenceToReverbZoneVector(){return &reverb_zones_vector;}

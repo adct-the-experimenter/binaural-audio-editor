@@ -316,6 +316,20 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	//set width
 	m_width = width;
 	
+	//initialize type to Standard
+	m_type = ReverbZone::Type::STANDARD;
+	
+}
+
+void ReverbZone::InitStandardReverbZoneWithGraphicalObject(std::string& thisName,
+							double& x, double& y, double& z, double& width,
+							ReverbStandardProperties& properties)
+{
+	
+	ReverbZone::InitStandardReverbZone( thisName,
+									x, y, z, width,
+									properties);
+	
 	//make box
 	//create ShapeDrawable object
 	m_renderObject = new osg::ShapeDrawable;
@@ -337,10 +351,6 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	//initialize transform and add geode to it
 	m_paTransform->setPosition( osg::Vec3(x,y,z));
 	m_paTransform->addChild(m_geode);
-	
-	//initialize type to Standard
-	m_type = ReverbZone::Type::STANDARD;
-	
 }
 
 void ReverbZone::InitEAXReverbZone(std::string& thisName,
@@ -416,6 +426,22 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	//set width
 	m_width = width;
 	
+	
+	
+	//initialize type to EAX
+	m_type = ReverbZone::Type::EAX;
+	
+}
+
+void ReverbZone::InitEAXReverbZoneWithGraphicalObject(std::string& thisName,
+							double& x, double& y, double& z, double& width,
+							ReverbEAXProperties& properties)
+{
+	
+	ReverbZone::InitEAXReverbZone(thisName,
+									x, y, z, width,
+									properties);
+	
 	//make box
 	//create ShapeDrawable object
 	m_renderObject = new osg::ShapeDrawable;
@@ -437,10 +463,6 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	//initialize transform and add geode to it
 	m_paTransform->setPosition( osg::Vec3(x,y,z));
 	m_paTransform->addChild(m_geode);
-	
-	//initialize type to EAX
-	m_type = ReverbZone::Type::EAX;
-	
 }
 
 void ReverbZone::SetNameString(std::string& thisName){ name = thisName;}

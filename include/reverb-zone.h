@@ -128,7 +128,15 @@ public:
 							double& x, double& y, double& z, double& width,
 							ReverbStandardProperties& properties);
 							
+	void InitStandardReverbZoneWithGraphicalObject(std::string& thisName,
+							double& x, double& y, double& z, double& width,
+							ReverbStandardProperties& properties);
+							
 	void InitEAXReverbZone(std::string& thisName,
+							double& x, double& y, double& z, double& width,
+							ReverbEAXProperties& properties);
+							
+	void InitEAXReverbZoneWithGraphicalObject(std::string& thisName,
 							double& x, double& y, double& z, double& width,
 							ReverbEAXProperties& properties);
 							
