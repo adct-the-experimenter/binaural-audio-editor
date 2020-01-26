@@ -171,7 +171,7 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	listboxSoundProducers = new wxListBox(this, ID_LISTBOX, 
 							wxPoint(0, 0), wxSize(100, 20)); 
 	
-
+	listboxSoundProducers->Bind(wxEVT_LISTBOX,&CreateStandardReverbZoneDialog::SoundProducerTrackSelectedInListBox,this);
 	
 	//add contents of soundproducers to listbox
 	if(m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size() > 0)
@@ -195,13 +195,19 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
     //initialize Ok and Cancel buttons 
 	okButton = new wxButton(this, CreateStandardReverbZoneDialog::ID_OK, wxT("Ok"), 
 							wxDefaultPosition, wxSize(70, 30));
-
+	
+	okButton->Bind(wxEVT_BUTTON,&CreateStandardReverbZoneDialog::OnOk,this);
+	
 	cancelButton = new wxButton(this, CreateStandardReverbZoneDialog::ID_CANCEL, wxT("Cancel"), 
 								wxDefaultPosition, wxSize(70, 30));
 	
+	cancelButton->Bind(wxEVT_BUTTON,&CreateStandardReverbZoneDialog::OnCancel,this);
+	
 	previewButton = new wxButton(this, CreateStandardReverbZoneDialog::ID_PREVIEW, wxT("Preview"), 
 								wxDefaultPosition, wxSize(70, 30));
-
+	
+	previewButton->Bind(wxEVT_BUTTON,&CreateStandardReverbZoneDialog::OnPreview,this);
+	
 	//Make vertical box to put horizontal boxes in
 	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
 	
@@ -386,6 +392,8 @@ void CreateStandardReverbZoneDialog::OnPreview(wxCommandEvent& event)
 					m_effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(spt_selection_index);
 				}
 				
+				//stop source
+				m_effects_manager_ptr->m_track_manager_ptr->StopThisTrackFromSoundProducerTrackVector(spt_selection_index);
 				
 				//remove effect from sound producer track
 				m_effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
@@ -400,8 +408,8 @@ void CreateStandardReverbZoneDialog::OnPreview(wxCommandEvent& event)
 			wxMessageBox( wxT("Select a soundproducer!") );
 		}
 	}
-		
 	
+	event.Skip();
 }
 
 void CreateStandardReverbZoneDialog::SoundProducerTrackSelectedInListBox(wxCommandEvent& event )
@@ -433,12 +441,3 @@ void CreateStandardReverbZoneDialog::Exit()
 
 bool CreateStandardReverbZoneDialog::OkClicked(){return okClicked;}
 
-
-//Event table for main frame specific events
-BEGIN_EVENT_TABLE(CreateStandardReverbZoneDialog, wxDialog)
-    EVT_BUTTON				(ID_OK, CreateStandardReverbZoneDialog::OnOk)
-    EVT_BUTTON				(ID_CANCEL, CreateStandardReverbZoneDialog::OnCancel)
-    EVT_BUTTON				(ID_PREVIEW, CreateStandardReverbZoneDialog::OnPreview)
-    EVT_LISTBOX				(ID_LISTBOX,  CreateStandardReverbZoneDialog::SoundProducerTrackSelectedInListBox)
-    
-END_EVENT_TABLE()

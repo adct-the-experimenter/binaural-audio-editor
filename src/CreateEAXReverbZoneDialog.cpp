@@ -171,6 +171,7 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 							wxPoint(0, 0), wxSize(100, 20)); 
 	
 
+	listboxSoundProducers->Bind(wxEVT_LISTBOX,&CreateEAXReverbZoneDialog::SoundProducerTrackSelectedInListBox,this);
 	
 	//add contents of soundproducers to listbox
 	if(m_effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size() > 0)
@@ -193,12 +194,18 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
     //initialize Ok and Cancel buttons 
 	okButton = new wxButton(this, CreateEAXReverbZoneDialog::ID_OK, wxT("Ok"), 
 							wxDefaultPosition, wxSize(70, 30));
-
+	
+	okButton->Bind(wxEVT_BUTTON,&CreateEAXReverbZoneDialog::OnOk,this);
+	
 	cancelButton = new wxButton(this, CreateEAXReverbZoneDialog::ID_CANCEL, wxT("Cancel"), 
 								wxDefaultPosition, wxSize(70, 30));
 	
+	cancelButton->Bind(wxEVT_BUTTON,&CreateEAXReverbZoneDialog::OnCancel,this);
+	
 	previewButton = new wxButton(this, CreateEAXReverbZoneDialog::ID_PREVIEW, wxT("Preview"), 
 								wxDefaultPosition, wxSize(70, 30));
+	
+	previewButton->Bind(wxEVT_BUTTON,&CreateEAXReverbZoneDialog::OnPreview,this);
 
 	//Make vertical box to put horizontal boxes in
 	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
@@ -380,6 +387,8 @@ void CreateEAXReverbZoneDialog::OnPreview(wxCommandEvent& event)
 					m_effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(spt_selection_index);
 				}
 				
+				//stop source
+				m_effects_manager_ptr->m_track_manager_ptr->StopThisTrackFromSoundProducerTrackVector(spt_selection_index);
 				
 				//remove effect from sound producer track
 				m_effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
@@ -396,6 +405,7 @@ void CreateEAXReverbZoneDialog::OnPreview(wxCommandEvent& event)
 		wxMessageBox( wxT("Create a soundproducer. Set it to a track. Load audio to it with browse button!") );
 	}
 	
+	event.Skip();
 }
 
 void CreateEAXReverbZoneDialog::SoundProducerTrackSelectedInListBox(wxCommandEvent& event )
@@ -426,13 +436,3 @@ void CreateEAXReverbZoneDialog::Exit()
 }
 
 bool CreateEAXReverbZoneDialog::OkClicked(){return okClicked;}
-
-
-//Event table for main frame specific events
-BEGIN_EVENT_TABLE(CreateEAXReverbZoneDialog, wxDialog)
-    EVT_BUTTON				(ID_OK, CreateEAXReverbZoneDialog::OnOk)
-    EVT_BUTTON				(ID_CANCEL, CreateEAXReverbZoneDialog::OnCancel)
-    EVT_BUTTON				(ID_PREVIEW, CreateEAXReverbZoneDialog::OnPreview)
-    EVT_LISTBOX				(ID_LISTBOX,  CreateEAXReverbZoneDialog::SoundProducerTrackSelectedInListBox)
-    
-END_EVENT_TABLE()

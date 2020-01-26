@@ -132,3 +132,8 @@ void SoundProducerTrackManager::PlayThisTrackFromSoundProducerTrackVector(int& i
 		audioPlayer->PlayUpdatedPlayerBuffer(soundproducertracks_sources_vector[index]);
 	}
 }
+
+void SoundProducerTrackManager::StopThisTrackFromSoundProducerTrackVector(int& index)
+{
+	audioPlayer->StopSource(soundproducertracks_sources_vector[index]);
+}

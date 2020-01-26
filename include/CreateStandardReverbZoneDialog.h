@@ -106,8 +106,6 @@ private:
 	bool okClicked;
 	
 	void SoundProducerTrackSelectedInListBox(wxCommandEvent& event );
-	
-	DECLARE_EVENT_TABLE()
 
 };
 

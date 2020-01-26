@@ -102,8 +102,6 @@ private:
 	void initPrivateVariables();
 	
 	bool okClicked;
-	
-	DECLARE_EVENT_TABLE()
 
 };
 
