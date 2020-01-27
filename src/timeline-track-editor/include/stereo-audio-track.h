@@ -47,6 +47,9 @@ public:
 	
 	void BrowseForInputAudioFile();
 	
+	void BufferAndPlayAudio(double& current_time);
+	void StopAudio();
+	
 	//Audio Track related functions
 	
 	

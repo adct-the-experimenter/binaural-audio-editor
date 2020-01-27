@@ -291,6 +291,7 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
 	
 	//load effect based on type
+	m_effect = 0;
 	m_effect = LoadStandardReverbEffect(&reverb);
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
@@ -303,7 +304,7 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
      * effect object afterward without affecting the effect slot.
      */
     alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, (ALint)m_effect);
-    assert(alGetError()==AL_NO_ERROR && "Failed to set effect slot");
+    assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
     
 	//set name
 	name = thisName;

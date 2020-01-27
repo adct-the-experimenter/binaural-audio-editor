@@ -120,20 +120,20 @@ bool SoundProducerTrackManager::IsSoundBeingPlayed(){return soundPlaying;}
 void SoundProducerTrackManager::PlayThisTrackFromSoundProducerTrackVector(int& index)
 {
 	//buffer audio for track source
-	soundProducerTracks_vec->at(index)->FunctionToCallInPlayState();
+	//soundProducerTracks_vec->at(index)->FunctionToCallInPlayState();
 	
-	//play all sources in sync
-	if(soundProducerTracks_vec->at(index)->GetReferenceToStereoAudioTrack()->GetAudioTrackState() == StereoAudioTrack::State::PLAYER_NULL)
-	{
-		audioPlayer->PlaySource(soundproducertracks_sources_vector[index]);
-	}
-	else if(soundProducerTracks_vec->at(index)->GetReferenceToStereoAudioTrack()->GetAudioTrackState() == StereoAudioTrack::State::PLAYER_PLAYING)
-	{
-		audioPlayer->PlayUpdatedPlayerBuffer(soundproducertracks_sources_vector[index]);
-	}
+	double current_time = 0;
+	
+	soundProducerTracks_vec->at(index)->BufferAndPlayAudio(current_time);
+	
+}
+
+void SoundProducerTrackManager::PauseThisTrackFromSoundProducerTrackVector(int& index)
+{
+	audioPlayer->PauseSource(soundproducertracks_sources_vector[index]);
 }
 
 void SoundProducerTrackManager::StopThisTrackFromSoundProducerTrackVector(int& index)
 {
-	audioPlayer->StopSource(soundproducertracks_sources_vector[index]);
+	soundProducerTracks_vec->at(index)->StopAudio();
 }

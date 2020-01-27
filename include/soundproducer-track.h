@@ -25,6 +25,9 @@ public:
 	DoubleTrack* GetReferenceToXTrack();
 	DoubleTrack* GetReferenceToYTrack();
 	DoubleTrack* GetReferenceToZTrack();
+	
+	void BufferAndPlayAudio(double& current_time);
+	void StopAudio();
 
 	//functions to set reference to audio device and audio context to use for player
 	void SetReferenceToAudioDevice(ALCdevice* thisAudioDevice);
@@ -41,7 +44,7 @@ public:
 	//audio track related functions
 	void SetupAxisForAudio(double& start, double& end,double& resolution, int& numTick);
 	void SetReferenceToPlaybackControls(PlaybackControls* controls);
-
+	
 	//Double Track related functions
 	void SetupAxisForVariable(double& start, double& end, double& resolution, int& numTick);
 

@@ -192,17 +192,17 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 	hboxSoundProducers->Add(listboxSoundProducers, 1, wxEXPAND | wxALL, 20);
     
     //initialize Ok and Cancel buttons 
-	okButton = new wxButton(this, CreateEAXReverbZoneDialog::ID_OK, wxT("Ok"), 
+	okButton = new wxButton(this, wxID_ANY, wxT("Ok"), 
 							wxDefaultPosition, wxSize(70, 30));
 	
 	okButton->Bind(wxEVT_BUTTON,&CreateEAXReverbZoneDialog::OnOk,this);
 	
-	cancelButton = new wxButton(this, CreateEAXReverbZoneDialog::ID_CANCEL, wxT("Cancel"), 
+	cancelButton = new wxButton(this, wxID_ANY, wxT("Cancel"), 
 								wxDefaultPosition, wxSize(70, 30));
 	
 	cancelButton->Bind(wxEVT_BUTTON,&CreateEAXReverbZoneDialog::OnCancel,this);
 	
-	previewButton = new wxButton(this, CreateEAXReverbZoneDialog::ID_PREVIEW, wxT("Preview"), 
+	previewButton = new wxButton(this, wxID_ANY, wxT("Preview"), 
 								wxDefaultPosition, wxSize(70, 30));
 	
 	previewButton->Bind(wxEVT_BUTTON,&CreateEAXReverbZoneDialog::OnPreview,this);
@@ -379,19 +379,31 @@ void CreateEAXReverbZoneDialog::OnPreview(wxCommandEvent& event)
 				//apply effect to sound producer track
 				m_effects_manager_ptr->ApplyThisReverbZoneEffectToThisTrack(thisTrack, &tempZone);
 				
-				//play for a few seconds
+				//play track
+
+				m_effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(spt_selection_index);
 				
-				long endtime = ::wxGetLocalTime()+10; //10 second limit
+				//delay for a few seconds 				
+				double duration = 4; //seconds
+				long endtime = ::wxGetLocalTime() + duration;
 				while( ::wxGetLocalTime() < endtime )
-				{
-					m_effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(spt_selection_index);
+				{	
+					::wxMilliSleep(100);
 				}
 				
-				//stop source
-				m_effects_manager_ptr->m_track_manager_ptr->StopThisTrackFromSoundProducerTrackVector(spt_selection_index);
+				//pause instead of stop to avoid crash with stopping source with effect applied
+				m_effects_manager_ptr->m_track_manager_ptr->PauseThisTrackFromSoundProducerTrackVector(spt_selection_index);
 				
 				//remove effect from sound producer track
 				m_effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
+				
+				//free effect
+				tempZone.FreeEffects();
+				
+				//remove effect from sound producer track
+				m_effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
+				
+				tempZone.FreeEffects();
 			}
 			
 		}
@@ -405,7 +417,6 @@ void CreateEAXReverbZoneDialog::OnPreview(wxCommandEvent& event)
 		wxMessageBox( wxT("Create a soundproducer. Set it to a track. Load audio to it with browse button!") );
 	}
 	
-	event.Skip();
 }
 
 void CreateEAXReverbZoneDialog::SoundProducerTrackSelectedInListBox(wxCommandEvent& event )

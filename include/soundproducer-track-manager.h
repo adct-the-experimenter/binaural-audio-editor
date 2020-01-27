@@ -40,6 +40,9 @@ public:
     //function to play a track by its index in the soundproducers vector
     void PlayThisTrackFromSoundProducerTrackVector(int& index);
     
+    //function to pause a track by its index in the soundproducers vector
+    void PauseThisTrackFromSoundProducerTrackVector(int& index);
+    
     //funtion to stop a track by its index in the soundproducers vector
     void StopThisTrackFromSoundProducerTrackVector(int& index);
 	

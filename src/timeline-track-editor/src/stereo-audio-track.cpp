@@ -140,6 +140,56 @@ void StereoAudioTrack::FunctionToCallInPlayState()
 	
 }
 
+void StereoAudioTrack::BufferAndPlayAudio(double& current_time)
+{
+	if(sourceToManipulatePtr)
+	{
+		if(current_time == 0)
+		{
+			audioPlayerPtr->StartPlayerBuffering(sourceToManipulatePtr,current_time); //start player buffering
+			audioPlayerPtr->StartPlayingBuffer(sourceToManipulatePtr);
+		}
+		else
+		{
+			switch(audioPlayerPtr->UpdatePlayerBuffer(sourceToManipulatePtr,current_time))
+			{
+				case OpenALSoftPlayer::PlayerStatus::PLAYBACK_FINISHED:
+				{
+					std::cout << "Playback finished! \n";
+					
+					break;
+				}
+				case OpenALSoftPlayer::PlayerStatus::FAILED_TO_READ_ANYMORE_AUDIO_FROM_FILE:
+				{
+					std::cout << "No more audio to read! \n";
+					
+					break;
+				}
+				case OpenALSoftPlayer::PlayerStatus::GOOD_UPDATE_BUFFER_STATUS:
+				{
+					audioPlayerPtr->PlayUpdatedPlayerBuffer(sourceToManipulatePtr);
+					
+					break;
+				}
+			}
+		}
+		
+		StereoAudioTrack::al_nssleep(10000000);
+	}
+	
+	
+}
+
+void StereoAudioTrack::StopAudio()
+{
+	if(sourceToManipulatePtr)
+	{
+		audioPlayerPtr->StopSource(sourceToManipulatePtr);
+		audioPlayerPtr->RewindSource(sourceToManipulatePtr);
+		audioPlayerPtr->ClearQueue(sourceToManipulatePtr);
+	}
+}
+
 void StereoAudioTrack::FunctionToCallInPauseState()
 {
 	if(StereoAudioTrack::GetAudioTrackState() != State::PLAYER_PAUSED)

@@ -84,6 +84,16 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 	audioTrack->FunctionToCallInPlayState();
 }
 
+void SoundProducerTrack::BufferAndPlayAudio(double& current_time)
+{
+	audioTrack->BufferAndPlayAudio(current_time);
+}
+
+void SoundProducerTrack::StopAudio()
+{
+	audioTrack->StopAudio();
+}
+
 void SoundProducerTrack::FunctionToCallInPauseState()
 {
 	if(soundProducerToManipulatePtr != nullptr)
