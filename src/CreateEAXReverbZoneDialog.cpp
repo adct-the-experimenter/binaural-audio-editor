@@ -71,7 +71,7 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 								validator0To1,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flDiffusion = new wxTextCtrl(this,-1, "1.0:", 
+	textField_flDiffusion = new wxTextCtrl(this,-1, "1.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0To1,          // associate the text box with the desired validator
