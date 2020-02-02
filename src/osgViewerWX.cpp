@@ -677,7 +677,7 @@ void MainFrame::OnAbout(wxCommandEvent& event)
 	//show message box with ok icon,
 	//window title:About Binaural Audio Editor
 	//message:
-    wxMessageBox( "Version 0.0 of Binaural Audio Editor. \n This program is for producing and editing binaural audio from mono or stereo samples of audio.",
+    wxMessageBox( "Version 1.0 of Binaural Audio Editor. \n This program is for producing and editing binaural audio from mono samples of audio.",
                   "About Binaural Audio Editor", wxOK | wxICON_INFORMATION );
 }
 
