@@ -331,6 +331,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_CHANGE_HRTF, MainFrame::OnChangeHRTF)
     EVT_MENU				(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE, MainFrame::OnCreateStandardReverbZone)
     EVT_MENU				(MainFrame::ID_CREATE_EAX_REVERB_ZONE, MainFrame::OnCreateEAXReverbZone)
+    EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_REVERB_ZONES, MainFrame::OnEditMultipleReverbZones)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -375,6 +376,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	wxMenu* menuEffects = new wxMenu;
     menuEffects->Append(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE,"&Create Standard Reverb Zone");
     menuEffects->Append(MainFrame::ID_CREATE_EAX_REVERB_ZONE,"&Create EAX Reverb Zone");
+    menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_REVERB_ZONES,"&Edit Multiple Reverb Zones");
     
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;

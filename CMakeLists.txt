@@ -40,8 +40,8 @@ set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIR
 include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
 
 set(SOURCES src/osgViewerWX.cpp
+			src/CreateStandardReverbZoneDialog.cpp src/CreateEAXReverbZoneDialog.cpp src/EditMultipleReverbZonesDialog.cpp src/reverb-zone.cpp
 			 src/effects-manager.cpp
-			 src/CreateStandardReverbZoneDialog.cpp src/CreateEAXReverbZoneDialog.cpp src/EditMultipleReverbZonesDialog.cpp src/reverb-zone.cpp
 			 src/soundproducer-track-manager.cpp
 			 src/soundproducer-track.cpp
 			 src/listener-track.cpp
