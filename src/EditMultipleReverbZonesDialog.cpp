@@ -6,6 +6,7 @@ EditMultipleReverbZonesDialog::EditMultipleReverbZonesDialog(const wxString& tit
 	
 	EditMultipleReverbZonesDialog::initPrivateVariables();
 	
+	effects_manager_ptr = effects_manager;
 
 	//make horizontal box to put names in
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
@@ -39,10 +40,6 @@ EditMultipleReverbZonesDialog::EditMultipleReverbZonesDialog(const wxString& tit
     wxFloatingPointValidator <double> validator0p0To3p16(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
     validator0p0To3p16.SetRange(0.00,3.16);     // set allowable range
     
-    textFieldName = new wxTextCtrl(this,-1, "Name", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER);
-    
 	textFieldX = new wxTextCtrl(this,-1, "0.00", 
 								wxPoint(95, 60), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
@@ -61,80 +58,80 @@ EditMultipleReverbZonesDialog::EditMultipleReverbZonesDialog(const wxString& tit
 								validator,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	textFieldWidth = new wxTextCtrl(this,-1, "2.00", 
+	textFieldWidth = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorWidth,          // associate the text box with the desired validator
 								wxT("")); 
 	
 	 
-	textField_flDensity = new wxTextCtrl(this,-1, "1.0", 
+	textField_flDensity = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0To1,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flDiffusion = new wxTextCtrl(this,-1, "1.0", 
+	textField_flDiffusion = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0To1,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flGain = new wxTextCtrl(this,-1, "0.32", 
+	textField_flGain = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0To1,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flGainHF = new wxTextCtrl(this,-1, "0.89", 
+	textField_flGainHF = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0To1,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flDecayTime = new wxTextCtrl(this,-1, "1.49", 
+	textField_flDecayTime = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0p1To20,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flDecayHFRatio = new wxTextCtrl(this,-1, "0.83", 
+	textField_flDecayHFRatio = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0p1To2p0,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flReflectionsDelay = new wxTextCtrl(this,-1, "0.007", 
+	textField_flReflectionsDelay = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0p0To0p3,
 								wxT(""));
 	
-	textField_flLateReverbGain = new wxTextCtrl(this,-1, "1.26", 
+	textField_flLateReverbGain = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0To10,
 								wxT(""));
 	
-	textField_flLateReverbDelay = new wxTextCtrl(this,-1, "0.011", 
+	textField_flLateReverbDelay = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0p0To0p1,
 								wxT(""));
 								
-	textField_flReflectionsGain = new wxTextCtrl(this,-1, "0.05", 
+	textField_flReflectionsGain = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0p0To3p16,
 								wxT(""));
 	
-	textField_flAirAbsorptionGainHF = new wxTextCtrl(this,-1, "0.994", 
+	textField_flAirAbsorptionGainHF = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0To10,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flRoomRolloffFactor = new wxTextCtrl(this,-1, "0.0", 
+	textField_flRoomRolloffFactor = new wxTextCtrl(this,-1, "", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validator0To10,          // associate the text box with the desired validator
@@ -143,7 +140,6 @@ EditMultipleReverbZonesDialog::EditMultipleReverbZonesDialog(const wxString& tit
 	
 	
 	//initialize text to the left of fields
-	wxStaticText* NameText = new wxStaticText(this, -1, wxT("Name :"), wxPoint(40, 20));
 	wxStaticText* positionText = new wxStaticText(this, -1, wxT("Position :"), wxPoint(20, 40));
 	wxStaticText* xPositionText = new wxStaticText(this, -1, wxT("X :"), wxPoint(40, 60));
 	wxStaticText* yPositionText = new wxStaticText(this, -1, wxT("Y :"), wxPoint(40, 80));
@@ -172,7 +168,7 @@ EditMultipleReverbZonesDialog::EditMultipleReverbZonesDialog(const wxString& tit
 	//list box to contain names of Sound Producers to edit, single selection by default 
 	listboxReverbZones = new wxListBox(this, wxID_ANY, wxPoint(0, 0), wxSize(100, 20)); 
 	
-
+	listboxReverbZones->Bind(wxEVT_LISTBOX,&EditMultipleReverbZonesDialog::ReverbZoneSelectedInListBox,this);
 	
 	//add contents of soundproducers to listbox
 	for(size_t i = 0; i < effects_manager->GetReferenceToReverbZoneVector()->size(); i++)
@@ -214,15 +210,11 @@ EditMultipleReverbZonesDialog::EditMultipleReverbZonesDialog(const wxString& tit
 	wxBoxSizer *hbox5 = new wxBoxSizer(wxHORIZONTAL);
 	
 	hbox5->Add(previewButton,1);
+	hbox5->Add(applyButton,1);
 	hbox5->Add(okButton, 1);
 	hbox5->Add(cancelButton, 1, wxLEFT, 5);
 	
 	//add panel of text fields in vertical box
-	
-	wxBoxSizer *hboxName = new wxBoxSizer(wxHORIZONTAL);
-	hboxName->Add(NameText); hboxName->Add(textFieldName);
-	
-	vbox->Add(hboxName, 1, wxEXPAND | wxALL, 10);
 	
 	vbox->Add(positionText);
 	
@@ -303,7 +295,6 @@ EditMultipleReverbZonesDialog::EditMultipleReverbZonesDialog(const wxString& tit
 void EditMultipleReverbZonesDialog::initPrivateVariables()
 {
 	m_selection_index = -1;
-	sound_producer_vector_ref = nullptr;
 	textFieldX = nullptr; textFieldY = nullptr; textFieldZ = nullptr;
 	textFieldWidth = nullptr;
 	listboxReverbZones = nullptr;
@@ -316,32 +307,24 @@ void EditMultipleReverbZonesDialog::ChangeReverbZoneAttributes()
 {
 	if(m_selection_index != -1)
 	{
-		
-	}
-	
-	/*
-	if(sound_producer_vector_ref != nullptr)
-	{
-		if(sound_producer_vector_ref->size() > 0)
+		if(effects_manager_ptr->reverb_zones_vector.size() > 0)
 		{
-			SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(selection_index).get();
-		
-			//change position of selected sound producer based on what is in textfields
+			ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
+			
+			//change position of selected reverb zone based on what is in textfields
 			double xPosition, yPosition, zPosition;
+			
 			( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
 			( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
 			( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
-			thisSoundProducer->SetPositionX(xPosition);
-			thisSoundProducer->SetPositionY(yPosition);
-			thisSoundProducer->SetPositionZ(zPosition);
-			//change sound attributes, if they have been changed in menu
-			if(buffer != 0){thisSoundProducer->setBuffer(buffer);}
-			//if(soundFilePath != " "){thisSoundProducer->setFilepathToSound(soundFilePath);}
+			
+			thisReverbZone->SetPositionX(xPosition);
+			thisReverbZone->SetPositionY(yPosition);
+			thisReverbZone->SetPositionZ(zPosition);
 			
 		}
-		
 	}
-	*/
+	
 }
 
 void EditMultipleReverbZonesDialog::OnPreview(wxCommandEvent& event)
@@ -385,10 +368,10 @@ void EditMultipleReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEvent& 
 	//std::cout << "\nSelected sound producer! " <<  listboxReverbZones->GetSelection() << " item on the list.\n";
 	m_selection_index = listboxReverbZones->GetSelection();
 	
-	/*
-	if(sound_producer_vector_ref != nullptr)
+	
+	if(effects_manager_ptr->reverb_zones_vector.size() > 0)
 	{
-		SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(selection_index).get();
+		ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
 		//wxString mystring( thisSoundProducer->GetNameString() );
 		//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;
 		
@@ -397,14 +380,94 @@ void EditMultipleReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEvent& 
 		textFieldY->Clear();
 		textFieldZ->Clear();
 		
-		//textFieldSoundFilePath->Clear();
-		
 		//update position text fields to have current position of sound producer selected
-		(*textFieldX) << thisSoundProducer->GetPositionX();
-		(*textFieldY) << thisSoundProducer->GetPositionY();
-		(*textFieldZ) << thisSoundProducer->GetPositionZ();
-		//wxString thisPath(thisSoundProducer->getFilepathToSound());
-		//textFieldSoundFilePath->WriteText(thisPath);
+		(*textFieldX) << thisReverbZone->GetPositionX();
+		(*textFieldY) << thisReverbZone->GetPositionY();
+		(*textFieldZ) << thisReverbZone->GetPositionZ();
+		
+		
+		
+		if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
+		{
+			ReverbStandardProperties tempStandardRevProp = thisReverbZone->GetStandardReverbZoneProperties();
+		
+			textField_flDensity->Clear();
+			(*textField_flDensity) << tempStandardRevProp.flDensity;
+			
+			textField_flDiffusion->Clear();
+			(*textField_flDiffusion) << tempStandardRevProp.flDiffusion;
+			
+			textField_flGain->Clear();
+			(*textField_flGain) << tempStandardRevProp.flGain;
+			
+			textField_flGainHF->Clear();
+			(*textField_flGainHF) << tempStandardRevProp.flGainHF;
+			
+			textField_flDecayTime->Clear();
+			(*textField_flDecayTime) << tempStandardRevProp.flDecayTime;
+			
+			textField_flDecayHFRatio->Clear();
+			(*textField_flDecayHFRatio) << tempStandardRevProp.flDecayHFRatio;
+			
+			textField_flReflectionsDelay->Clear(); 
+			(*textField_flReflectionsDelay) << tempStandardRevProp.flReflectionsDelay;
+			
+			textField_flLateReverbGain->Clear(); 
+			(*textField_flLateReverbGain) << tempStandardRevProp.flLateReverbGain;
+			
+			textField_flLateReverbDelay->Clear();
+			(*textField_flLateReverbDelay) << tempStandardRevProp.flLateReverbDelay;
+			 
+			textField_flReflectionsGain->Clear();
+			(*textField_flReflectionsGain) << tempStandardRevProp.flReflectionsGain;
+			
+			textField_flAirAbsorptionGainHF->Clear(); 
+			(*textField_flAirAbsorptionGainHF) << tempStandardRevProp.flAirAbsorptionGainHF; 
+			
+			textField_flRoomRolloffFactor->Clear();
+			(*textField_flRoomRolloffFactor) << tempStandardRevProp.flRoomRolloffFactor;
+		}
+		else
+		{
+			ReverbEAXProperties tempEAXRevProp = thisReverbZone->GetEAXReverbZoneProperties();
+			
+			textField_flDensity->Clear();
+			(*textField_flDensity) << tempEAXRevProp.flDensity;
+			
+			textField_flDiffusion->Clear();
+			(*textField_flDiffusion) << tempEAXRevProp.flDiffusion;
+			
+			textField_flGain->Clear();
+			(*textField_flGain) << tempEAXRevProp.flGain;
+			
+			textField_flGainHF->Clear();
+			(*textField_flGainHF) << tempEAXRevProp.flGainHF;
+			
+			textField_flDecayTime->Clear();
+			(*textField_flDecayTime) << tempEAXRevProp.flDecayTime;
+			
+			textField_flDecayHFRatio->Clear();
+			(*textField_flDecayHFRatio) << tempEAXRevProp.flDecayHFRatio;
+			
+			textField_flReflectionsDelay->Clear(); 
+			(*textField_flReflectionsDelay) << tempEAXRevProp.flReflectionsDelay;
+			
+			textField_flLateReverbGain->Clear(); 
+			(*textField_flLateReverbGain) << tempEAXRevProp.flLateReverbGain;
+			
+			textField_flLateReverbDelay->Clear();
+			(*textField_flLateReverbDelay) << tempEAXRevProp.flLateReverbDelay;
+			 
+			textField_flReflectionsGain->Clear();
+			(*textField_flReflectionsGain) << tempEAXRevProp.flReflectionsGain;
+			
+			textField_flAirAbsorptionGainHF->Clear(); 
+			(*textField_flAirAbsorptionGainHF) << tempEAXRevProp.flAirAbsorptionGainHF; 
+			
+			textField_flRoomRolloffFactor->Clear();
+			(*textField_flRoomRolloffFactor) << tempEAXRevProp.flRoomRolloffFactor;
+		}
+		
+		
 	}
-	* */
 }

@@ -139,7 +139,15 @@ public:
 	void InitEAXReverbZoneWithGraphicalObject(std::string& thisName,
 							double& x, double& y, double& z, double& width,
 							ReverbEAXProperties& properties);
+	
 							
+	//function to change reverb properties 
+	void ChangeStandardReverbZoneProperties(ReverbStandardProperties& properties);
+	void ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties);
+	
+	ReverbStandardProperties& GetStandardReverbZoneProperties();
+	ReverbEAXProperties& GetEAXReverbZoneProperties();
+	
 	//3d Object properties
 	osg::ShapeDrawable* getRenderObject();
 
@@ -189,6 +197,9 @@ private:
 	
 	ALuint LoadStandardReverbEffect(const EFXEAXREVERBPROPERTIES *reverb);
 	ALuint LoadEAXReverbEffect(const EFXEAXREVERBPROPERTIES *reverb);
+	
+	ReverbStandardProperties m_standard_prop;
+	ReverbEAXProperties m_eax_prop;
 };
 
 #endif

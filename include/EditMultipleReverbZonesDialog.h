@@ -30,8 +30,11 @@ public:
 
 private:
 
-	std::vector <std::unique_ptr <SoundProducer> > *sound_producer_vector_ref; //pointer to vector of sound producers to edit
-
+	EffectsManager* effects_manager_ptr; //pointer to vector of sound producers to edit
+	
+	ReverbStandardProperties tempStandardRevProp;
+	ReverbEAXProperties tempEAXRevProp;
+	
 	wxButton* okButton;
 	wxButton* cancelButton;
 	wxButton* applyButton;
@@ -79,8 +82,6 @@ private:
 	wxTextCtrl* textField_flAirAbsorptionGainHF;
 	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
 	wxTextCtrl* textField_flRoomRolloffFactor;
-
-	DECLARE_EVENT_TABLE()
 
 };
 
