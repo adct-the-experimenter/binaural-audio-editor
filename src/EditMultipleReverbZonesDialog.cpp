@@ -322,6 +322,63 @@ void EditMultipleReverbZonesDialog::ChangeReverbZoneAttributes()
 			thisReverbZone->SetPositionY(yPosition);
 			thisReverbZone->SetPositionZ(zPosition);
 			
+			if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
+			{
+				(textField_flDensity->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDensity);
+				
+				(textField_flDiffusion->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDiffusion);
+				
+				(textField_flGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGain);
+				
+				(textField_flGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGainHF);
+				
+				(textField_flDecayTime->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayTime);
+				
+				(textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayHFRatio);
+				
+				(textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsDelay);
+				
+				(textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbGain);
+				
+				(textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbDelay);
+				 
+				(textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsGain);
+				
+				(textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flAirAbsorptionGainHF); 
+				
+				(textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempStandardRevProp.flRoomRolloffFactor);
+			
+				thisReverbZone->ChangeStandardReverbZoneProperties(tempStandardRevProp);
+			}
+			else
+			{
+				(textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
+				
+				(textField_flDiffusion->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDiffusion);
+				
+				(textField_flGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGain);
+				
+				(textField_flGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainHF);
+				
+				(textField_flDecayTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayTime);
+				
+				(textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayHFRatio);
+				
+				(textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsDelay);
+				
+				(textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbGain);
+				
+				(textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbDelay);
+				 
+				(textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsGain);
+				
+				(textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flAirAbsorptionGainHF); 
+				
+				(textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempEAXRevProp.flRoomRolloffFactor);
+			
+				thisReverbZone->ChangeEAXReverbZoneProperties(tempEAXRevProp);
+			}
+			
 		}
 	}
 	
@@ -389,7 +446,7 @@ void EditMultipleReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEvent& 
 		
 		if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
 		{
-			ReverbStandardProperties tempStandardRevProp = thisReverbZone->GetStandardReverbZoneProperties();
+			tempStandardRevProp = thisReverbZone->GetStandardReverbZoneProperties();
 		
 			textField_flDensity->Clear();
 			(*textField_flDensity) << tempStandardRevProp.flDensity;
@@ -429,7 +486,7 @@ void EditMultipleReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEvent& 
 		}
 		else
 		{
-			ReverbEAXProperties tempEAXRevProp = thisReverbZone->GetEAXReverbZoneProperties();
+			tempEAXRevProp = thisReverbZone->GetEAXReverbZoneProperties();
 			
 			textField_flDensity->Clear();
 			(*textField_flDensity) << tempEAXRevProp.flDensity;
