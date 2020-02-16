@@ -510,12 +510,6 @@ void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& pr
 	alEffectf(m_effect, AL_REVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
 	alEffecti(m_effect, AL_REVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
 	
-	 /* Tell the effect slot to use the loaded effect object. Note that the this
-     * effectively copies the effect properties. You can modify or delete the
-     * effect object afterward without affecting the effect slot.
-     */
-    //alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, (ALint)m_effect);
-    //assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
     
     m_standard_prop = properties;
 }
@@ -571,13 +565,6 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
         alEffectf(m_effect, AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
         alEffecti(m_effect, AL_EAXREVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
     }
-    
-    /* Tell the effect slot to use the loaded effect object. Note that the this
-     * effectively copies the effect properties. You can modify or delete the
-     * effect object afterward without affecting the effect slot.
-     */
-    //alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, (ALint)m_effect);
-    //assert(alGetError()==AL_NO_ERROR && "Failed to set effect slot");
     
     m_eax_prop = properties;
 }
