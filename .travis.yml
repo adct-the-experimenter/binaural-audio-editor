@@ -4,7 +4,7 @@ sudo: require
 dist: trusty
 
 install:
-    - sudo apt-get -y install automake gcc make libopenal-dev libopenscenegraph-dev libsndfile1-dev libwxgtk3.0-dev
+    - sudo apt-get -y install automake gcc make libopenal-dev libopenscenegraph-dev libsndfile1-dev libwxgtk3.0-dev libboost-math1.58.0
 	
     
 script:
