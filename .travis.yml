@@ -5,7 +5,6 @@ dist: trusty
 
 install:
     - sudo apt-get -y install automake gcc make libopenal-dev libopenscenegraph-dev libsndfile1-dev libwxgtk3.0-dev libboost-math1.58.0
-	
     
 script:
   - bash cmake -DCMAKE_BUILD_TYPE=Debug -DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config-gtk3 .
