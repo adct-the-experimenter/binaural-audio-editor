@@ -9,6 +9,7 @@
 #include "effects-manager.h"
 
 
+
 class CreateEAXReverbZoneDialog : public wxDialog
 {
 
