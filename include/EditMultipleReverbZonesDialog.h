@@ -35,6 +35,12 @@ private:
 	ReverbStandardProperties tempStandardRevProp;
 	ReverbEAXProperties tempEAXRevProp;
 	
+	std::string name;
+	double xPosition;
+	double yPosition;
+	double zPosition;
+	double width;
+	
 	wxButton* okButton;
 	wxButton* cancelButton;
 	wxButton* applyButton;
@@ -50,6 +56,11 @@ private:
 
 	void ReverbZoneSelectedInListBox(wxCommandEvent& event );
 	
+	wxListBox* listboxSoundProducers;
+	int spt_selection_index;
+	
+	void SoundProducerTrackSelectedInListBox(wxCommandEvent& event );
+	
 	//text fields
 	wxTextCtrl* textFieldName;
 
@@ -57,6 +68,8 @@ private:
 	wxTextCtrl* textFieldY;
 	wxTextCtrl* textFieldZ;
 	wxTextCtrl* textFieldWidth;
+	
+	
 	
 	//AL_REVERB_DENSITY, 
 	wxTextCtrl* textField_flDensity;
