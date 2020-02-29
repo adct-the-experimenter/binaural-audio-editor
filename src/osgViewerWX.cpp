@@ -15,6 +15,7 @@
 
 #include "osgViewerWX.h"
 
+
 bool init_listener_once = false;
 
 wxOsgApp::wxOsgApp()
@@ -151,6 +152,7 @@ bool wxOsgApp::OnInit()
 		std::function<void(int&)> func = std::bind( &wxOsgApp::KeyDownLogic, this, _1 );
 
 		canvas->SetReferenceToFunctionToRunKeydown(func);
+		
 
 		GraphicsWindowWX* gw = new GraphicsWindowWX(canvas);
 
@@ -1122,6 +1124,7 @@ void OSGCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
 {
     /* must always be here */
     wxPaintDC dc(this);
+    
 }
 
 void OSGCanvas::OnSize(wxSizeEvent& event)
@@ -1313,6 +1316,7 @@ void GraphicsWindowWX::init()
             getState()->setContextID( osg::GraphicsContext::createNewContextID() );
         }
     }
+    
 }
 
 void GraphicsWindowWX::grabFocus()
