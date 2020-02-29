@@ -343,11 +343,16 @@ void ReverbZone::InitStandardReverbZoneWithGraphicalObject(std::string& thisName
 	//initialize box at certain position
 	m_renderObject->setShape(m_box);
 	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.5f, 0.2f, 1.0f, 0.1f) );
+	m_renderObject->setColor( osg::Vec4(0.9f, 0.8f, 0.0f, 0.3f) );
 
 	m_geode = new osg::Geode;
 	m_geode->addDrawable( m_renderObject.get() );
-
+	
+	//make transparent
+	osg::StateSet* ss = new osg::StateSet();
+	m_geode->setStateSet(ss);
+	m_geode->getStateSet()->setMode( GL_BLEND, osg::StateAttribute::ON );
+	m_geode->getStateSet()->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
 
 	// Create transformation node
 	m_paTransform = new osg::PositionAttitudeTransform;
@@ -456,11 +461,17 @@ void ReverbZone::InitEAXReverbZoneWithGraphicalObject(std::string& thisName,
 	//initialize box at certain position
 	m_renderObject->setShape(m_box);
 	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.6f, 0.0f, 0.1f, 0.1f) );
-
+	m_renderObject->setColor( osg::Vec4(0.6f, 0.0f, 0.1f, 0.3f) );
+	
+	
 	m_geode = new osg::Geode;
 	m_geode->addDrawable( m_renderObject.get() );
-
+	
+	//make transparent
+	osg::StateSet* ss = new osg::StateSet();
+	m_geode->setStateSet(ss);
+	m_geode->getStateSet()->setMode( GL_BLEND, osg::StateAttribute::ON );
+	m_geode->getStateSet()->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
 
 	// Create transformation node
 	m_paTransform = new osg::PositionAttitudeTransform;

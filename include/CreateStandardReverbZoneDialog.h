@@ -10,6 +10,7 @@
 #include "effects-manager.h"
 
 
+
 class CreateStandardReverbZoneDialog : public wxDialog
 {
 
@@ -106,6 +107,8 @@ private:
 	bool okClicked;
 	
 	void SoundProducerTrackSelectedInListBox(wxCommandEvent& event );
+	
+	
 
 };
 
