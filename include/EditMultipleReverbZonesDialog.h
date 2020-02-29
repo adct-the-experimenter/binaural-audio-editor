@@ -21,48 +21,80 @@ public:
 
 	void OnCancel(wxCommandEvent& event);
 
-	void onApply(wxCommandEvent& event);
+	void OnApply(wxCommandEvent& event);
 
-	void OnBrowse(wxCommandEvent& event);
+	void OnPreview(wxCommandEvent& event);
 
 	void Exit();
-
-	enum
-	{
-		ID_OK = wxID_HIGHEST + 1,
-		ID_APPLY,
-		ID_CANCEL,
-		ID_RENAME,
-		ID_LISTBOX
-	};
 
 
 private:
 
-	std::vector <std::unique_ptr <SoundProducer> > *sound_producer_vector_ref; //pointer to vector of sound producers to edit
-
+	EffectsManager* effects_manager_ptr; //pointer to vector of sound producers to edit
+	
+	ReverbStandardProperties tempStandardRevProp;
+	ReverbEAXProperties tempEAXRevProp;
+	
+	std::string name;
+	double xPosition;
+	double yPosition;
+	double zPosition;
+	double width;
+	
 	wxButton* okButton;
 	wxButton* cancelButton;
 	wxButton* applyButton;
+	wxButton* previewButton;
 
-	wxTextCtrl* textFieldName;
-
-	wxTextCtrl* textFieldX;
-	wxTextCtrl* textFieldY;
-	wxTextCtrl* textFieldZ;
-	wxTextCtrl* textFieldWidth;
-	wxTextCtrl* textFieldHeight;
-
-
-	wxListBox* listbox;
+	int m_selection_index;
+	
+	wxListBox* listboxReverbZones;
 
 	void initPrivateVariables();
 
 	void ChangeReverbZoneAttributes();
 
 	void ReverbZoneSelectedInListBox(wxCommandEvent& event );
+	
+	wxListBox* listboxSoundProducers;
+	int spt_selection_index;
+	
+	void SoundProducerTrackSelectedInListBox(wxCommandEvent& event );
+	
+	//text fields
+	wxTextCtrl* textFieldName;
 
-	DECLARE_EVENT_TABLE()
+	wxTextCtrl* textFieldX;
+	wxTextCtrl* textFieldY;
+	wxTextCtrl* textFieldZ;
+	wxTextCtrl* textFieldWidth;
+	
+	
+	
+	//AL_REVERB_DENSITY, 
+	wxTextCtrl* textField_flDensity;
+	//AL_REVERB_DIFFUSION, 
+	wxTextCtrl* textField_flDiffusion;
+	//AL_REVERB_GAIN, 
+	wxTextCtrl* textField_flGain;
+	//AL_REVERB_GAINHF, 
+	wxTextCtrl* textField_flGainHF;
+	//AL_REVERB_DECAY_TIME, 
+	wxTextCtrl* textField_flDecayTime;
+	//AL_REVERB_DECAY_HFRATIO, 
+	wxTextCtrl* textField_flDecayHFRatio;
+	//AL_REVERB_REFLECTIONS_GAIN, 
+	wxTextCtrl* textField_flReflectionsGain;
+	//AL_REVERB_REFLECTIONS_DELAY, 
+	wxTextCtrl* textField_flReflectionsDelay;
+	//AL_REVERB_LATE_REVERB_GAIN, 
+	wxTextCtrl* textField_flLateReverbGain;
+	//AL_REVERB_LATE_REVERB_DELAY, 
+	wxTextCtrl* textField_flLateReverbDelay;
+	//AL_REVERB_AIR_ABSORPTION_GAINHF, 
+	wxTextCtrl* textField_flAirAbsorptionGainHF;
+	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
+	wxTextCtrl* textField_flRoomRolloffFactor;
 
 };
 

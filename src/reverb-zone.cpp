@@ -320,6 +320,9 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	//initialize type to Standard
 	m_type = ReverbZone::Type::STANDARD;
 	
+	//initialize standard properties
+	m_standard_prop = properties;
+	
 }
 
 void ReverbZone::InitStandardReverbZoneWithGraphicalObject(std::string& thisName,
@@ -432,10 +435,11 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	//set width
 	m_width = width;
 	
-	
-	
 	//initialize type to EAX
 	m_type = ReverbZone::Type::EAX;
+	
+	//initialize eax properties
+	m_eax_prop = properties;
 	
 }
 
@@ -475,6 +479,116 @@ void ReverbZone::InitEAXReverbZoneWithGraphicalObject(std::string& thisName,
 	//initialize transform and add geode to it
 	m_paTransform->setPosition( osg::Vec3(x,y,z));
 	m_paTransform->addChild(m_geode);
+}
+
+void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& properties)
+{
+	
+	//initialize reverb property
+	EFXEAXREVERBPROPERTIES reverb = EFX_REVERB_PRESET_GENERIC;
+	
+	//assign custom properties
+	reverb.flDensity = properties.flDensity;
+	reverb.flDiffusion = properties.flDiffusion;
+	reverb.flGain = properties.flGain;
+	reverb.flGainHF = properties.flGainHF;
+	reverb.flDecayTime = properties.flDecayTime;
+	reverb.flDecayHFRatio = properties.flDecayHFRatio;
+	reverb.flReflectionsGain = properties.flReflectionsGain;
+	reverb.flReflectionsDelay = properties.flReflectionsDelay;
+	reverb.flLateReverbGain = properties.flLateReverbGain;
+	reverb.flLateReverbDelay = properties.flLateReverbDelay;
+	reverb.flAirAbsorptionGainHF = properties.flAirAbsorptionGainHF;
+	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
+	
+	printf("Using Standard Reverb\n");
+
+	/* No EAX Reverb. Set the standard reverb effect type then load the
+	 * available reverb properties. */
+	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_REVERB);
+
+	alEffectf(m_effect, AL_REVERB_DENSITY, reverb.flDensity);
+	alEffectf(m_effect, AL_REVERB_DIFFUSION, reverb.flDiffusion);
+	alEffectf(m_effect, AL_REVERB_GAIN, reverb.flGain);
+	alEffectf(m_effect, AL_REVERB_GAINHF, reverb.flGainHF);
+	alEffectf(m_effect, AL_REVERB_DECAY_TIME, reverb.flDecayTime);
+	alEffectf(m_effect, AL_REVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
+	alEffectf(m_effect, AL_REVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
+	alEffectf(m_effect, AL_REVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
+	alEffectf(m_effect, AL_REVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
+	alEffectf(m_effect, AL_REVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
+	alEffectf(m_effect, AL_REVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
+	alEffectf(m_effect, AL_REVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
+	alEffecti(m_effect, AL_REVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
+	
+    
+    m_standard_prop = properties;
+}
+
+void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
+{
+	//initialize reverb property
+	EFXEAXREVERBPROPERTIES reverb = EFX_REVERB_PRESET_GENERIC;
+	
+	//assign custom properties
+	reverb.flDensity = properties.flDensity;
+	reverb.flDiffusion = properties.flDiffusion;
+	reverb.flGain = properties.flGain;
+	reverb.flGainHF = properties.flGainHF;
+	reverb.flDecayTime = properties.flDecayTime;
+	reverb.flDecayHFRatio = properties.flDecayHFRatio;
+	reverb.flReflectionsGain = properties.flReflectionsGain;
+	reverb.flReflectionsDelay = properties.flReflectionsDelay;
+	reverb.flLateReverbGain = properties.flLateReverbGain;
+	reverb.flLateReverbDelay = properties.flLateReverbDelay;
+	reverb.flAirAbsorptionGainHF = properties.flAirAbsorptionGainHF;
+	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
+	
+	if(alGetEnumValue("AL_EFFECT_EAXREVERB") != 0)
+    {
+        printf("Using EAX Reverb\n");
+
+        /* EAX Reverb is available. Set the EAX effect type then load the
+         * reverb properties. */
+        alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB);
+
+        alEffectf(m_effect, AL_EAXREVERB_DENSITY, reverb.flDensity);
+        alEffectf(m_effect, AL_EAXREVERB_DIFFUSION, reverb.flDiffusion);
+        alEffectf(m_effect, AL_EAXREVERB_GAIN, reverb.flGain);
+        alEffectf(m_effect, AL_EAXREVERB_GAINHF, reverb.flGainHF);
+        alEffectf(m_effect, AL_EAXREVERB_GAINLF, reverb.flGainLF);
+        alEffectf(m_effect, AL_EAXREVERB_DECAY_TIME, reverb.flDecayTime);
+        alEffectf(m_effect, AL_EAXREVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
+        alEffectf(m_effect, AL_EAXREVERB_DECAY_LFRATIO, reverb.flDecayLFRatio);
+        alEffectf(m_effect, AL_EAXREVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
+        alEffectf(m_effect, AL_EAXREVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
+        alEffectfv(m_effect, AL_EAXREVERB_REFLECTIONS_PAN, reverb.flReflectionsPan);
+        alEffectf(m_effect, AL_EAXREVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
+        alEffectf(m_effect, AL_EAXREVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
+        alEffectfv(m_effect, AL_EAXREVERB_LATE_REVERB_PAN, reverb.flLateReverbPan);
+        alEffectf(m_effect, AL_EAXREVERB_ECHO_TIME, reverb.flEchoTime);
+        alEffectf(m_effect, AL_EAXREVERB_ECHO_DEPTH, reverb.flEchoDepth);
+        alEffectf(m_effect, AL_EAXREVERB_MODULATION_TIME, reverb.flModulationTime);
+        alEffectf(m_effect, AL_EAXREVERB_MODULATION_DEPTH, reverb.flModulationDepth);
+        alEffectf(m_effect, AL_EAXREVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
+        alEffectf(m_effect, AL_EAXREVERB_HFREFERENCE, reverb.flHFReference);
+        alEffectf(m_effect, AL_EAXREVERB_LFREFERENCE, reverb.flLFReference);
+        alEffectf(m_effect, AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
+        alEffecti(m_effect, AL_EAXREVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
+    }
+    
+    m_eax_prop = properties;
+}
+
+
+ReverbStandardProperties& ReverbZone::GetStandardReverbZoneProperties()
+{
+	return m_standard_prop;
+}
+
+ReverbEAXProperties& ReverbZone::GetEAXReverbZoneProperties()
+{
+	return m_eax_prop;
 }
 
 void ReverbZone::SetNameString(std::string& thisName){ name = thisName;}
