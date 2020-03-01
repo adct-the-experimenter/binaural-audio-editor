@@ -17,7 +17,7 @@ EditMultipleReverbZonesDialog::EditMultipleReverbZonesDialog(const wxString& tit
     validator.SetRange(-10.00,10.00);     // set allowable range
     
     wxFloatingPointValidator <double> validatorWidth(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validatorWidth.SetRange(1.00,10.00);     // set allowable range
+    validatorWidth.SetRange(1.00,30.00);     // set allowable range
     
     wxFloatingPointValidator <double> validator0To10(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
     validator0To10.SetRange(0.00,10.00);     // set allowable range
