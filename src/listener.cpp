@@ -60,7 +60,7 @@ void Listener::initListener()
 					listener_position_vector[POSITION_INDEX::Y], 
 					listener_position_vector[POSITION_INDEX::Z]);
 	
-		//make box
+	//make box
 	//create ShapeDrawable object
 	m_renderObject= new osg::ShapeDrawable;
 	m_box = new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f),1.0f);
@@ -69,7 +69,7 @@ void Listener::initListener()
 	//initialize box at certain position 
 	m_renderObject->setShape( m_box );
 	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.5f, 0.5f, 0.6f, 1.0f) );
+	m_renderObject->setColor( osg::Vec4(0.6f, 1.0f, 0.4f, 1.0f) );
 	
 	//add ShapeDrawable box to geometry root node
 	m_geode = new osg::Geode;

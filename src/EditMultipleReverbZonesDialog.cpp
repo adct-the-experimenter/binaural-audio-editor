@@ -339,9 +339,16 @@ void EditMultipleReverbZonesDialog::ChangeReverbZoneAttributes()
 			( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
 			( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
 			
+			( textFieldWidth->GetLineText(0) ).ToDouble(&width);
+			
 			thisReverbZone->SetPositionX(xPosition);
 			thisReverbZone->SetPositionY(yPosition);
 			thisReverbZone->SetPositionZ(zPosition);
+			
+			if(width != thisReverbZone->GetWidth())
+			{
+				thisReverbZone->ChangeWidth(width);
+			}
 			
 			if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
 			{
@@ -553,11 +560,13 @@ void EditMultipleReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEvent& 
 		textFieldX->Clear();
 		textFieldY->Clear();
 		textFieldZ->Clear();
+		textFieldWidth->Clear();
 		
 		//update position text fields to have current position of sound producer selected
 		(*textFieldX) << thisReverbZone->GetPositionX();
 		(*textFieldY) << thisReverbZone->GetPositionY();
 		(*textFieldZ) << thisReverbZone->GetPositionZ();
+		(*textFieldWidth) << thisReverbZone->GetWidth();
 		
 		
 		

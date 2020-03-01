@@ -42,7 +42,7 @@ This is an audio application that produces binaural audio from 2D mono audio sam
 
 ### Control Listener
   
-  Dark blue cube is you the listener. 
+  Light green cube is you the listener. 
   
   Use WASD keys to move listener(you) forward, back, left, right. Q key moves listener down. E key moves listener up.
   

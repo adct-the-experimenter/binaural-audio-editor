@@ -155,7 +155,8 @@ public:
 
 	osg::PositionAttitudeTransform* getTransformNode();
 	
-	
+	void ChangeWidth(double width);
+	double GetWidth();
 	
 	//OpenAL Soft effects properties
 	

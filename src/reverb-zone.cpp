@@ -654,3 +654,42 @@ void ReverbZone::FreeEffects()
 		 m_slot = 0;
 	}
 }
+
+void ReverbZone::ChangeWidth(double width)
+{
+	
+	m_width = width;
+	
+	//remove drawable of box from geode 
+	m_geode->removeDrawable( m_renderObject.get() );
+	
+	//delete box and drawable object
+	//delete m_box;
+	//delete m_renderObject;
+	
+	
+	//make box with new width
+	//create ShapeDrawable object
+	m_renderObject = new osg::ShapeDrawable;
+	m_box = new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f),m_width);
+
+	//make ShapeDrawable object a box
+	//initialize box at certain position
+	m_renderObject->setShape(m_box);
+	
+	//set color of ShapeDrawable object with box depending on type or reverb zone
+	if(ReverbZone::GetType() == ReverbZone::Type::STANDARD)
+	{
+		m_renderObject->setColor( osg::Vec4(0.9f, 0.8f, 0.0f, 0.3f) );
+	}
+	else if(ReverbZone::GetType() == ReverbZone::Type::EAX)
+	{
+		m_renderObject->setColor( osg::Vec4(0.6f, 0.0f, 0.1f, 0.3f) );
+	}
+	
+	//add new drawable to geode
+	m_geode->addDrawable( m_renderObject.get() );
+	
+}
+
+double ReverbZone::GetWidth(){return m_width;}
