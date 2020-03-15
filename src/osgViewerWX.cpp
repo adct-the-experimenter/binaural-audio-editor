@@ -66,18 +66,10 @@ CheckListenerReverbZoneThread::CheckListenerReverbZoneThread(EffectsManager* man
 	
 	m_ThreadHandler = handler;
 	
-	//intialize thread outside of class
-	/*
-		 CheckListenerReverbZoneThread *thread = new CheckListenerReverbZoneThread(); 
-		 if ( thread->Create() != wxTHREAD_NO_ERROR ) 
-		 {
-			wxLogError(wxT("Can't create thread!")); 
-		 } 
-	*/
 	
 	//call wxThread:: Run virtual function to start thread which runs Entry()
 	
-	//call wxThRead::Delete to destroy thread
+	//call wxThread::Delete to destroy thread
 }
 
 CheckListenerReverbZoneThread::~CheckListenerReverbZoneThread()
@@ -193,6 +185,7 @@ bool wxOsgApp::OnInit()
 		//initialize effects manager
 		effects_manager_ptr = std::unique_ptr <EffectsManager>( new EffectsManager( frame->GetReferenceToSoundProducerTrackManager(), listener.get() ) );
 		
+		//create thread to check if listener is in reverb zone
 		 m_listener_reverb_thread = new CheckListenerReverbZoneThread(effects_manager_ptr.get(),this); 
 		 if ( m_listener_reverb_thread->Create() != wxTHREAD_NO_ERROR ) 
 		 {
@@ -681,7 +674,7 @@ void MainFrame::OnAbout(wxCommandEvent& event)
 	//show message box with ok icon,
 	//window title:About Binaural Audio Editor
 	//message:
-    wxMessageBox( "Version 1.1.1 of Binaural Audio Editor. \n This program is for producing and editing binaural audio from mono samples of audio.",
+    wxMessageBox( "Version 1.2 of Binaural Audio Editor. \n This program is for producing and editing binaural audio from mono samples of audio.",
                   "About Binaural Audio Editor", wxOK | wxICON_INFORMATION );
 }
 

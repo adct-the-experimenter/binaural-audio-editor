@@ -160,7 +160,7 @@ EditMultipleReverbZonesDialog::EditMultipleReverbZonesDialog(const wxString& tit
 	wxStaticText* flAirAbsorptionGainHFText = new wxStaticText(this, -1, wxT("air absorption:"), wxPoint(40, 120));
 	wxStaticText* flRoomRolloffFactorText = new wxStaticText(this, -1, wxT("room rolloff factor:"), wxPoint(40, 120)); 
 
-	wxStaticText* spPreviewText = new wxStaticText(this, -1, wxT("Sound Producer on Track To Preview :"), wxPoint(40, 20));
+	wxStaticText* spPreviewText = new wxStaticText(this, -1, wxT("Reverb Zone, Preview SoundProducerTrack :"), wxPoint(40, 20));
     
     //make horizontal box to put names in
 	wxBoxSizer* hboxReverbZones = new wxBoxSizer(wxHORIZONTAL);
@@ -330,6 +330,7 @@ void EditMultipleReverbZonesDialog::ChangeReverbZoneAttributes()
 	{
 		if(effects_manager_ptr->reverb_zones_vector.size() > 0)
 		{
+			
 			ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
 			
 			//change position of selected reverb zone based on what is in textfields
@@ -440,41 +441,39 @@ void EditMultipleReverbZonesDialog::OnPreview(wxCommandEvent& event)
 				
 				if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
 				{
-					ReverbStandardProperties standard_prop;
 					
-					( textField_flDensity->GetLineText(0) ).ToDouble(&standard_prop.flDensity);
-					( textField_flDiffusion->GetLineText(0) ).ToDouble(&standard_prop.flDiffusion);
-					( textField_flGain->GetLineText(0) ).ToDouble(&standard_prop.flGain);
-					( textField_flGainHF->GetLineText(0) ).ToDouble(&standard_prop.flGainHF);
-					( textField_flDecayTime->GetLineText(0) ).ToDouble(&standard_prop.flDecayTime);
-					( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&standard_prop.flDecayHFRatio);
-					( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&standard_prop.flReflectionsGain);
-					( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&standard_prop.flReflectionsDelay);
-					( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&standard_prop.flLateReverbGain);
-					( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&standard_prop.flLateReverbDelay);
-					( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&standard_prop.flAirAbsorptionGainHF);
-					( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&standard_prop.flRoomRolloffFactor);
+					( textField_flDensity->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDensity);
+					( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDiffusion);
+					( textField_flGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGain);
+					( textField_flGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGainHF);
+					( textField_flDecayTime->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayTime);
+					( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayHFRatio);
+					( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsGain);
+					( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsDelay);
+					( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbGain);
+					( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbDelay);
+					( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flAirAbsorptionGainHF);
+					( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempStandardRevProp.flRoomRolloffFactor);
 					
-					tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,standard_prop);
+					tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,tempStandardRevProp);
 				}
 				else
 				{
-					ReverbEAXProperties eax_prop;
 					
-					( textField_flDensity->GetLineText(0) ).ToDouble(&eax_prop.flDensity);
-					( textField_flDiffusion->GetLineText(0) ).ToDouble(&eax_prop.flDiffusion);
-					( textField_flGain->GetLineText(0) ).ToDouble(&eax_prop.flGain);
-					( textField_flGainHF->GetLineText(0) ).ToDouble(&eax_prop.flGainHF);
-					( textField_flDecayTime->GetLineText(0) ).ToDouble(&eax_prop.flDecayTime);
-					( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&eax_prop.flDecayHFRatio);
-					( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&eax_prop.flReflectionsGain);
-					( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&eax_prop.flReflectionsDelay);
-					( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&eax_prop.flLateReverbGain);
-					( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&eax_prop.flLateReverbDelay);
-					( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&eax_prop.flAirAbsorptionGainHF);
-					( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&eax_prop.flRoomRolloffFactor);
+					( textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
+					( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDiffusion);
+					( textField_flGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGain);
+					( textField_flGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainHF);
+					( textField_flDecayTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayTime);
+					( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayHFRatio);
+					( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsGain);
+					( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsDelay);
+					( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbGain);
+					( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbDelay);
+					( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flAirAbsorptionGainHF);
+					( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempEAXRevProp.flRoomRolloffFactor);
 					
-					tempZone.InitEAXReverbZone(name,xPosition,yPosition,zPosition,width,eax_prop);
+					tempZone.InitEAXReverbZone(name,xPosition,yPosition,zPosition,width,tempEAXRevProp);
 				}
 				
 				

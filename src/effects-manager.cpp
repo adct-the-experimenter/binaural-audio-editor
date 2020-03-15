@@ -111,9 +111,13 @@ void EffectsManager::PerformReverbThreadOperation()
 							}
 						}
 					}
+					
 				}
+				
 			}
+			
 		}
+		
 	}
 }
 
@@ -147,6 +151,7 @@ bool EffectsManager::IsThisSoundProducerInsideReverbZone(SoundProducer* thisSoun
 
 void EffectsManager::ApplyThisReverbZoneEffectToThisTrack(SoundProducerTrack* thisSoundProducerTrack, ReverbZone* thisZone)
 {
+	
 	/* Connect the source to the effect slot. This tells the source to use the
 	 * effect slot 'slot', on send #0 with the AL_FILTER_NULL filter object.
 	 */
@@ -154,7 +159,7 @@ void EffectsManager::ApplyThisReverbZoneEffectToThisTrack(SoundProducerTrack* th
 	ALuint* thisSource = thisSoundProducerTrack->GetReferenceToTrackSource();
 	 
 	alSource3i(*thisSource, AL_AUXILIARY_SEND_FILTER, (ALint)(*thisZone->GetEffectsSlot()), 0, AL_FILTER_NULL);
-	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source");
+	assert(alGetError()== AL_NO_ERROR && "Failed to setup reverb for sound source send 0.");
 	
 	thisSoundProducerTrack->SetStatusReverbApplied(true);
 }
