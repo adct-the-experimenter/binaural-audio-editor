@@ -37,6 +37,9 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
     wxFloatingPointValidator <double> validator0p0To3p16(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
     validator0p0To3p16.SetRange(0.00,3.16);     // set allowable range
     
+    wxFloatingPointValidator <double> airValidator(3,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    airValidator.SetRange(0.892,1.00);     // set allowable range
+    
     textFieldName = new wxTextCtrl(this,-1, "Name", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER);
@@ -129,7 +132,7 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	textField_flAirAbsorptionGainHF = new wxTextCtrl(this,-1, "0.994", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To10,          // associate the text box with the desired validator
+								airValidator,          // associate the text box with the desired validator
 								wxT(""));
 	
 	textField_flRoomRolloffFactor = new wxTextCtrl(this,-1, "0.0", 
