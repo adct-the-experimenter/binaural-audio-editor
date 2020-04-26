@@ -38,6 +38,7 @@ public:
 	friend class CheckListenerReverbZoneThread;
 	friend class CreateEAXReverbZoneDialog;
 	friend class CreateStandardReverbZoneDialog;
+	friend class CreateEchoZoneDialog;
 	friend class EditMultipleStandardReverbZonesDialog;
 	friend class EditMultipleEAXReverbZonesDialog;
 	
