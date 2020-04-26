@@ -501,7 +501,7 @@ void EditMultipleEAXReverbZonesDialog::OnPreview(wxCommandEvent& event)
 				
 				
 				//apply effect to sound producer track
-				effects_manager_ptr->ApplyThisReverbZoneEffectToThisTrack(thisTrack, &tempZone);
+				effects_manager_ptr->ApplyThisEffectZoneEffectToThisTrack(thisTrack, &tempZone);
 				
 				//play track
 				effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(spt_selection_index);

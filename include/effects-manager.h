@@ -66,13 +66,13 @@ private:
 	void PerformReverbThreadOperation();
 	
 	//function to return bool of if a listener is in a reverb zone
-	bool IsListenerInThisReverbZone(ReverbZone* thisZone);
+	bool IsListenerInThisEffectZone(EffectZone* thisZone);
 	
 	//function to return bool of if a sound producer is in a reverb zone
-	bool IsThisSoundProducerInsideReverbZone(SoundProducer* thisSoundProducer,ReverbZone* thisZone);
+	bool IsThisSoundProducerInsideEffectZone(SoundProducer* thisSoundProducer,EffectZone* thisZone);
 	
 	//function to apply reverb effect of a zone to sound producer track
-	void ApplyThisReverbZoneEffectToThisTrack(SoundProducerTrack* thisSoundProducerTrack, ReverbZone* thisZone);
+	void ApplyThisEffectZoneEffectToThisTrack(SoundProducerTrack* thisSoundProducerTrack, EffectZone* thisZone);
 	
 	//function to remove effect applied to the sound producer track
 	void RemoveEffectFromThisTrack(SoundProducerTrack* thisSoundProducerTrack);

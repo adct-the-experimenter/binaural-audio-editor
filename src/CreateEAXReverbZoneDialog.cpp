@@ -450,7 +450,7 @@ void CreateEAXReverbZoneDialog::OnPreview(wxCommandEvent& event)
 				tempZone.InitEAXReverbZone(name,xPosition,yPosition,zPosition,width,properties);
 				
 				//apply effect to sound producer track
-				m_effects_manager_ptr->ApplyThisReverbZoneEffectToThisTrack(thisTrack, &tempZone);
+				m_effects_manager_ptr->ApplyThisEffectZoneEffectToThisTrack(thisTrack, &tempZone);
 				
 				//play track
 

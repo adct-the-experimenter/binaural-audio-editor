@@ -58,7 +58,7 @@ void EffectsManager::PerformReverbThreadOperation()
 			//check if zone is initialized
 			if(thisZone->GetType() != ReverbZone::Type::NONE && thisZone->getTransformNode() != nullptr)
 			{
-				if(EffectsManager::IsListenerInThisReverbZone(thisZone))
+				if(EffectsManager::IsListenerInThisEffectZone(thisZone))
 				{
 					//if listener is in the reverb zone
 					
@@ -78,11 +78,11 @@ void EffectsManager::PerformReverbThreadOperation()
 								if(thisSoundProducer != nullptr)
 								{
 									//if sound producer is inside the zone
-									if(EffectsManager::IsThisSoundProducerInsideReverbZone(thisSoundProducer,thisZone))
+									if(EffectsManager::IsThisSoundProducerInsideEffectZone(thisSoundProducer,thisZone))
 									{
 										//std::cout << "SoundProducer is inside the reverb zone!\n";
 										//apply reverb to source of sound producer track
-										EffectsManager::ApplyThisReverbZoneEffectToThisTrack(thisSoundProducerTrack,thisZone);
+										EffectsManager::ApplyThisEffectZoneEffectToThisTrack(thisSoundProducerTrack,thisZone);
 									}
 								}
 							}
@@ -111,7 +111,7 @@ void EffectsManager::PerformReverbThreadOperation()
 							if(thisSoundProducer != nullptr)
 							{
 								//if sound producer is inside the zone
-								if(EffectsManager::IsThisSoundProducerInsideReverbZone(thisSoundProducer,thisZone)
+								if(EffectsManager::IsThisSoundProducerInsideEffectZone(thisSoundProducer,thisZone)
 								   || thisSoundProducerTrack->IsReverbApplied())
 								{
 									//remove reverb effect from sound producer track
@@ -130,7 +130,7 @@ void EffectsManager::PerformReverbThreadOperation()
 	}
 }
 
-bool EffectsManager::IsListenerInThisReverbZone(ReverbZone* thisZone)
+bool EffectsManager::IsListenerInThisEffectZone(EffectZone* thisZone)
 {
 	osg::BoundingSphere zone_box = thisZone->getTransformNode()->computeBound();
 	osg::BoundingSphere listener_box = m_listener_ptr->getTransformNode()->computeBound();
@@ -144,7 +144,7 @@ bool EffectsManager::IsListenerInThisReverbZone(ReverbZone* thisZone)
 	return false;
 }
 
-bool EffectsManager::IsThisSoundProducerInsideReverbZone(SoundProducer* thisSoundProducer,ReverbZone* thisZone)
+bool EffectsManager::IsThisSoundProducerInsideEffectZone(SoundProducer* thisSoundProducer,EffectZone* thisZone)
 {
 	osg::BoundingSphere zone_box = thisZone->getTransformNode()->computeBound();
 	osg::BoundingSphere sound_producer_box = thisZone->getTransformNode()->computeBound();
@@ -158,7 +158,7 @@ bool EffectsManager::IsThisSoundProducerInsideReverbZone(SoundProducer* thisSoun
 	return false;
 }
 
-void EffectsManager::ApplyThisReverbZoneEffectToThisTrack(SoundProducerTrack* thisSoundProducerTrack, ReverbZone* thisZone)
+void EffectsManager::ApplyThisEffectZoneEffectToThisTrack(SoundProducerTrack* thisSoundProducerTrack, EffectZone* thisZone)
 {
 	
 	/* Connect the source to the effect slot. This tells the source to use the
@@ -168,7 +168,7 @@ void EffectsManager::ApplyThisReverbZoneEffectToThisTrack(SoundProducerTrack* th
 	ALuint* thisSource = thisSoundProducerTrack->GetReferenceToTrackSource();
 	 
 	alSource3i(*thisSource, AL_AUXILIARY_SEND_FILTER, (ALint)(*thisZone->GetEffectsSlotPointer()), 0, AL_FILTER_NULL);
-	assert(alGetError()== AL_NO_ERROR && "Failed to setup reverb for sound source send 0.");
+	assert(alGetError()== AL_NO_ERROR && "Failed to setup effect for sound source send 0.");
 	
 	thisSoundProducerTrack->SetStatusReverbApplied(true);
 }
