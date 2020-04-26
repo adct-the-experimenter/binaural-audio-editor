@@ -32,6 +32,15 @@ void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y
 	reverb_zones_vector.back().InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 }
 
+void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties)
+{
+	EchoZone e_zone;
+	
+	echo_zones_vector.push_back(e_zone);
+	
+	echo_zones_vector.back().InitEchoZoneWithGraphicalObject(name,x,y,z,width,properties);
+}
+
 std::vector <ReverbZone> *EffectsManager::GetReferenceToReverbZoneVector(){return &reverb_zones_vector;}
 
 ReverbZone* EffectsManager::GetPointerToReverbZone(size_t& index){return &reverb_zones_vector[index];}

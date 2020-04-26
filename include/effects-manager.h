@@ -24,6 +24,9 @@ public:
 	//function to create reverb zone that uses EAX effectss
 	void CreateEAXReverbZone(std::string& name, double& x, double& y, double& z, double& width, ReverbEAXProperties& properties);
 	
+	//function to create echo zone
+	void CreateEAXReverbZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties);
+	
 	//function to return a pointer to reverb zone vector
 	std::vector <ReverbZone> *GetReferenceToReverbZoneVector();
 	
@@ -55,6 +58,9 @@ private:
 	
 	//vector to contain many reverb zone objects
 	std::vector <ReverbZone> reverb_zones_vector;
+	
+	//vector to contain echo zone objects
+	std::vector <EchoZone> echo_zones_vector;
 	
 	//function to perform the entire reverb thread operation of checking and setting reverb
 	void PerformReverbThreadOperation();
