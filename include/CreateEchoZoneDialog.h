@@ -34,7 +34,7 @@ public:
 
 	double& getNewWidth();
 	
-	ReverbStandardProperties& getNewProperties();
+	EchoZoneProperties& getNewProperties();
 	
 	enum
 	{
@@ -66,30 +66,17 @@ private:
 	wxTextCtrl* textFieldZ;
 	wxTextCtrl* textFieldWidth;
 	
-	//AL_REVERB_DENSITY, 
-	wxTextCtrl* textField_flDensity;
-	//AL_REVERB_DIFFUSION, 
-	wxTextCtrl* textField_flDiffusion;
-	//AL_REVERB_GAIN, 
-	wxTextCtrl* textField_flGain;
-	//AL_REVERB_GAINHF, 
-	wxTextCtrl* textField_flGainHF;
-	//AL_REVERB_DECAY_TIME, 
-	wxTextCtrl* textField_flDecayTime;
-	//AL_REVERB_DECAY_HFRATIO, 
-	wxTextCtrl* textField_flDecayHFRatio;
-	//AL_REVERB_REFLECTIONS_GAIN, 
-	wxTextCtrl* textField_flReflectionsGain;
-	//AL_REVERB_REFLECTIONS_DELAY, 
-	wxTextCtrl* textField_flReflectionsDelay;
-	//AL_REVERB_LATE_REVERB_GAIN, 
-	wxTextCtrl* textField_flLateReverbGain;
-	//AL_REVERB_LATE_REVERB_DELAY, 
-	wxTextCtrl* textField_flLateReverbDelay;
-	//AL_REVERB_AIR_ABSORPTION_GAINHF, 
-	wxTextCtrl* textField_flAirAbsorptionGainHF;
-	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
-	wxTextCtrl* textField_flRoomRolloffFactor;
+	
+	//AL_ECHO_DELAY
+	wxTextCtrl* textField_flDelay;
+	//AL_ECHO_LRDELAY
+	wxTextCtrl* textField_flLRDelay;
+	//AL_ECHO_DAMPING
+	wxTextCtrl* textField_flDamping;
+	//AL_ECHO_FEEDBACK
+	wxTextCtrl* textField_flFeedback;
+	//AL_ECHO_SPREAD
+	wxTextCtrl* textField_flSpread;
 	
 	//properties of zone to creates
 	
@@ -98,9 +85,8 @@ private:
 	double yPosition;
 	double zPosition;
 	double width;
-	double height;
 	
-	ReverbStandardProperties properties;
+	EchoZoneProperties properties;
 	
 	void initPrivateVariables();
 	

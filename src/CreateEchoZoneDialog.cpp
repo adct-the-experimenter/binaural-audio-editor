@@ -44,82 +44,25 @@ CreateEchoZoneDialog::CreateEchoZoneDialog(const wxString& title,EffectsManager*
 	
 	
 	validatorFloat.SetRange(0.0,1.0);     // set allowable range
-	textField_flDensity = new wxTextCtrl(this,-1, "1.0", 
+	textField_flDelay = new wxTextCtrl(this,-1, "1.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flDiffusion = new wxTextCtrl(this,-1, "1.0", 
+	textField_flLRDelay = new wxTextCtrl(this,-1, "1.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flGain = new wxTextCtrl(this,-1, "0.32", 
+	textField_flFeedback = new wxTextCtrl(this,-1, "0.32", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flGainHF = new wxTextCtrl(this,-1, "0.89", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,          // associate the text box with the desired validator
-								wxT(""));
-	
-	validatorFloat.SetRange(0.1,20.00);     // set allowable range
-	textField_flDecayTime = new wxTextCtrl(this,-1, "1.49", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,          // associate the text box with the desired validator
-								wxT(""));
-	
-	validatorFloat.SetRange(0.0,2.00);     // set allowable range
-	textField_flDecayHFRatio = new wxTextCtrl(this,-1, "0.83", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,          // associate the text box with the desired validator
-								wxT(""));
-	
-	validatorFloat.SetRange(0.0,0.3);     // set allowable range
-	textField_flReflectionsDelay = new wxTextCtrl(this,-1, "0.007", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,
-								wxT(""));
-	
-	validatorFloat.SetRange(0.0,3.16);     // set allowable range
-	textField_flReflectionsGain = new wxTextCtrl(this,-1, "0.05", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,
-								wxT(""));
-								
-	validatorFloat.SetRange(0.0,10.00);     // set allowable range
-	textField_flLateReverbGain = new wxTextCtrl(this,-1, "1.26", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,
-								wxT(""));
-	
-	validatorFloat.SetRange(0.0,0.1);     // set allowable range
-	textField_flLateReverbDelay = new wxTextCtrl(this,-1, "0.011", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,
-								wxT(""));
-								
-	
-	validatorFloat.SetRange(0.892,1.00);     // set allowable range
-	textField_flAirAbsorptionGainHF = new wxTextCtrl(this,-1, "0.994", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,          // associate the text box with the desired validator
-								wxT(""));
-	
-	validatorFloat.SetRange(0.0,10.00);     // set allowable range
-	textField_flRoomRolloffFactor = new wxTextCtrl(this,-1, "0.0", 
+	textField_flSpread = new wxTextCtrl(this,-1, "0.89", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
@@ -135,20 +78,13 @@ CreateEchoZoneDialog::CreateEchoZoneDialog(const wxString& title,EffectsManager*
 	wxStaticText* zPositionText = new wxStaticText(this, -1, wxT("Z :"), wxPoint(40, 100));
 	wxStaticText* widthText = new wxStaticText(this, -1, wxT("Width :"), wxPoint(40, 120));
     
-    wxStaticText* reverbText = new wxStaticText(this, -1, wxT("Reverb Properties"), wxPoint(40, 120));
-    wxStaticText* flDensityText = new wxStaticText(this, -1, wxT("density:"), wxPoint(40, 120));
-	wxStaticText* flDiffusionText = new wxStaticText(this, -1, wxT("diffusion:"), wxPoint(40, 120));
-	wxStaticText* flGainText = new wxStaticText(this, -1, wxT("gain:"), wxPoint(40, 120));
-	wxStaticText* flGainHFText = new wxStaticText(this, -1, wxT("gain HF:"), wxPoint(40, 120));
-	wxStaticText* flDecayTimeText = new wxStaticText(this, -1, wxT("decay time:"), wxPoint(40, 120));
-	wxStaticText* flDecayHFRatioText = new wxStaticText(this, -1, wxT("decay HF ratio:"), wxPoint(40, 120));
-	wxStaticText* flLateReverbGainText = new wxStaticText(this, -1, wxT("late reverb gain:"), wxPoint(40, 120));
-	wxStaticText* flLateReverbDelayText = new wxStaticText(this, -1, wxT("late reverb delay:"), wxPoint(40, 120));						
-	wxStaticText* flReflectionsGainText = new wxStaticText(this, -1, wxT("reflections gain:"), wxPoint(40, 120));
-	wxStaticText* flReflectionsDelayText = new wxStaticText(this, -1, wxT("reflections delay:"), wxPoint(40, 120));
-	wxStaticText* flAirAbsorptionGainHFText = new wxStaticText(this, -1, wxT("air absorption:"), wxPoint(40, 120));
-	wxStaticText* flRoomRolloffFactorText = new wxStaticText(this, -1, wxT("room rolloff factor:"), wxPoint(40, 120)); 
-
+    wxStaticText* echoText = new wxStaticText(this, -1, wxT("Echo Properties"), wxPoint(40, 120));
+    wxStaticText* flDelayText = new wxStaticText(this, -1, wxT("delay:"), wxPoint(40, 120));
+	wxStaticText* flLRDelayText = new wxStaticText(this, -1, wxT("LR delay:"), wxPoint(40, 120));
+	wxStaticText* flDampingText = new wxStaticText(this, -1, wxT("Damping:"), wxPoint(40, 120));
+	wxStaticText* flFeedbackText = new wxStaticText(this, -1, wxT("feedback:"), wxPoint(40, 120));
+	wxStaticText* flSpreadText = new wxStaticText(this, -1, wxT("spread:"), wxPoint(40, 120));
+	
     wxStaticText* spPreviewText = new wxStaticText(this, -1, wxT("Sound Producer on Track To Preview :"), wxPoint(40, 20));
     
     //make horizontal box to put names in
@@ -229,44 +165,24 @@ CreateEchoZoneDialog::CreateEchoZoneDialog(const wxString& title,EffectsManager*
 	
 	vbox->Add(hboxWidth,1, wxEXPAND | wxALL, 10);
 	
-	vbox->Add(reverbText);
+	vbox->Add(echoText);
 	
-	wxBoxSizer *hboxReverbRow1 = new wxBoxSizer(wxHORIZONTAL);
-	hboxReverbRow1->Add(flDensityText); hboxReverbRow1->Add(textField_flDensity); 
-	hboxReverbRow1->Add(flDiffusionText); hboxReverbRow1->Add(textField_flDiffusion);
+	wxBoxSizer *hboxEchoRow1 = new wxBoxSizer(wxHORIZONTAL);
+	hboxEchoRow1->Add(flDelayText); hboxEchoRow1->Add(textField_flDelay); 
+	hboxEchoRow1->Add(flLRDelayText); hboxEchoRow1->Add(textField_flLRDelay);
 	
-	vbox->Add(hboxReverbRow1,1, wxEXPAND | wxALL, 10);
+	vbox->Add(hboxEchoRow1,1, wxEXPAND | wxALL, 10);
 	
-	wxBoxSizer *hboxReverbRow2 = new wxBoxSizer(wxHORIZONTAL);
-	hboxReverbRow2->Add(flGainText); hboxReverbRow2->Add(textField_flGain);
-	hboxReverbRow2->Add(flGainHFText); hboxReverbRow2->Add(textField_flGainHF);
+	wxBoxSizer *hboxEchoRow2 = new wxBoxSizer(wxHORIZONTAL);
+	hboxEchoRow2->Add(flDampingText); hboxEchoRow2->Add(textField_flDamping);
 	
-	vbox->Add(hboxReverbRow2,1, wxEXPAND | wxALL, 10);
+	vbox->Add(hboxEchoRow2,1, wxEXPAND | wxALL, 10);
 	
-	wxBoxSizer *hboxReverbRow3 = new wxBoxSizer(wxHORIZONTAL);
-	hboxReverbRow3->Add(flDecayTimeText); hboxReverbRow3->Add(textField_flDecayTime);
-	hboxReverbRow3->Add(flDecayHFRatioText); hboxReverbRow3->Add(textField_flDecayHFRatio);
+	wxBoxSizer *hboxEchoRow3 = new wxBoxSizer(wxHORIZONTAL);
+	hboxEchoRow3->Add(flFeedbackText); hboxEchoRow3->Add(textField_flFeedback);
+	hboxEchoRow3->Add(flSpreadText); hboxEchoRow3->Add(textField_flSpread);
 	
-	vbox->Add(hboxReverbRow3,1, wxEXPAND | wxALL, 10);
 	
-	wxBoxSizer *hboxReverbRow4 = new wxBoxSizer(wxHORIZONTAL);
-	hboxReverbRow4->Add(flLateReverbGainText); hboxReverbRow4->Add(textField_flLateReverbGain);
-	hboxReverbRow4->Add(flLateReverbDelayText); hboxReverbRow4->Add(textField_flLateReverbDelay);
-	
-	vbox->Add(hboxReverbRow4,1, wxEXPAND | wxALL, 10);
-	
-	wxBoxSizer *hboxReverbRow5 = new wxBoxSizer(wxHORIZONTAL);
-	hboxReverbRow5->Add(flReflectionsGainText); hboxReverbRow5->Add(textField_flReflectionsGain);
-	hboxReverbRow5->Add(flReflectionsDelayText); hboxReverbRow5->Add(textField_flReflectionsDelay);
-	
-	vbox->Add(hboxReverbRow5,1, wxEXPAND | wxALL, 10);
-	
-	wxBoxSizer *hboxReverbRow6 = new wxBoxSizer(wxHORIZONTAL);
-	
-	hboxReverbRow6->Add(flAirAbsorptionGainHFText); hboxReverbRow6->Add(textField_flAirAbsorptionGainHF);
-	hboxReverbRow6->Add(flRoomRolloffFactorText); hboxReverbRow6->Add(textField_flRoomRolloffFactor);
-	
-	vbox->Add(hboxReverbRow6,1, wxEXPAND | wxALL, 10);
 	
 	vbox->Add(spPreviewText);
 	vbox->Add(hboxSoundProducers,1, wxEXPAND | wxALL, 10);
@@ -294,7 +210,7 @@ void CreateEchoZoneDialog::getNewPosition(double& x, double& y, double& z)
 
 double& CreateEchoZoneDialog::getNewWidth(){return width;}
 	
-ReverbStandardProperties& CreateEchoZoneDialog::getNewProperties(){return properties;}
+EchoZoneProperties& CreateEchoZoneDialog::getNewProperties(){return properties;}
 
 void CreateEchoZoneDialog::OnOk(wxCommandEvent& event )
 {
@@ -308,18 +224,16 @@ void CreateEchoZoneDialog::OnOk(wxCommandEvent& event )
 	( textFieldWidth->GetLineText(0) ).ToDouble(&width);
 	
 
-	( textField_flDensity->GetLineText(0) ).ToDouble(&properties.flDensity);
-	( textField_flDiffusion->GetLineText(0) ).ToDouble(&properties.flDiffusion);
-	( textField_flGain->GetLineText(0) ).ToDouble(&properties.flGain);
-	( textField_flGainHF->GetLineText(0) ).ToDouble(&properties.flGainHF);
-	( textField_flDecayTime->GetLineText(0) ).ToDouble(&properties.flDecayTime);
-	( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&properties.flDecayHFRatio);
-	( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&properties.flReflectionsGain);
-	( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&properties.flReflectionsDelay);
-	( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&properties.flLateReverbGain);
-	( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&properties.flLateReverbDelay);
-	( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&properties.flAirAbsorptionGainHF);
-	( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&properties.flRoomRolloffFactor);
+	( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
+	( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
+	( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+	( textFieldWidth->GetLineText(0) ).ToDouble(&width);
+	
+	( textField_flDelay->GetLineText(0) ).ToDouble(&properties.flDelay);
+	( textField_flLRDelay->GetLineText(0) ).ToDouble(&properties.flLRDelay);
+	( textField_flDamping->GetLineText(0) ).ToDouble(&properties.flDamping);
+	( textField_flFeedback->GetLineText(0) ).ToDouble(&properties.flFeedback);
+	( textField_flSpread->GetLineText(0) ).ToDouble(&properties.flSpread);
 	
 	CreateEchoZoneDialog::Exit();
 }
@@ -340,7 +254,7 @@ void CreateEchoZoneDialog::OnPreview(wxCommandEvent& event)
 			if(thisTrack->GetReferenceToSoundProducerManipulated() != nullptr)
 			{
 				//Create temporary reverb zone
-				ReverbZone tempZone;
+				EchoZone tempZone;
 				
 				name = textFieldName->GetLineText(0).ToStdString();
 				( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
@@ -348,23 +262,16 @@ void CreateEchoZoneDialog::OnPreview(wxCommandEvent& event)
 				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
 				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
 				
-				( textField_flDensity->GetLineText(0) ).ToDouble(&properties.flDensity);
-				( textField_flDiffusion->GetLineText(0) ).ToDouble(&properties.flDiffusion);
-				( textField_flGain->GetLineText(0) ).ToDouble(&properties.flGain);
-				( textField_flGainHF->GetLineText(0) ).ToDouble(&properties.flGainHF);
-				( textField_flDecayTime->GetLineText(0) ).ToDouble(&properties.flDecayTime);
-				( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&properties.flDecayHFRatio);
-				( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&properties.flReflectionsGain);
-				( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&properties.flReflectionsDelay);
-				( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&properties.flLateReverbGain);
-				( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&properties.flLateReverbDelay);
-				( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&properties.flAirAbsorptionGainHF);
-				( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&properties.flRoomRolloffFactor);
+				( textField_flDelay->GetLineText(0) ).ToDouble(&properties.flDelay);
+				( textField_flLRDelay->GetLineText(0) ).ToDouble(&properties.flLRDelay);
+				( textField_flDamping->GetLineText(0) ).ToDouble(&properties.flDamping);
+				( textField_flFeedback->GetLineText(0) ).ToDouble(&properties.flFeedback);
+				( textField_flSpread->GetLineText(0) ).ToDouble(&properties.flSpread);
 				
-				tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,properties);
+				tempZone.InitEchoZone(name,xPosition,yPosition,zPosition,width,properties);
 				
 				//apply effect to sound producer track
-				m_effects_manager_ptr->ApplyThisReverbZoneEffectToThisTrack(thisTrack, &tempZone);
+				//m_effects_manager_ptr->ApplyThisReverbZoneEffectToThisTrack(thisTrack, &tempZone);
 				
 				//play track
 

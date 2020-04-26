@@ -4,6 +4,7 @@
 #include "listener.h"
 #include "soundproducer-track-manager.h"
 #include "reverb-zone.h"
+#include "echo-zone.h"
 
 #include <wx/wx.h>
 
@@ -36,9 +37,11 @@ public:
 	void FreeEffects();
 	
 	friend class CheckListenerReverbZoneThread;
+	
 	friend class CreateEAXReverbZoneDialog;
 	friend class CreateStandardReverbZoneDialog;
 	friend class CreateEchoZoneDialog;
+
 	friend class EditMultipleStandardReverbZonesDialog;
 	friend class EditMultipleEAXReverbZonesDialog;
 	
