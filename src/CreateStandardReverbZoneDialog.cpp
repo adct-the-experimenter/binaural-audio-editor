@@ -207,11 +207,6 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	
 	//add panel of text fields in vertical box
 	
-	wxBoxSizer *hboxName = new wxBoxSizer(wxHORIZONTAL);
-	hboxName->Add(NameText); hboxName->Add(textFieldName);
-	
-	vbox->Add(hboxName, 1, wxEXPAND | wxALL, 10);
-	
 	vbox->Add(positionText);
 	
 	wxBoxSizer *hboxX = new wxBoxSizer(wxHORIZONTAL);
