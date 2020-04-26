@@ -68,7 +68,9 @@ static LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
 
 ReverbZone::ReverbZone()
-{	
+{
+	m_effect = 0;
+	m_slot = 0;
 	
 	m_type = ReverbZone::Type::NONE;
 	
@@ -86,7 +88,10 @@ ReverbZone::ReverbZone()
 
 ReverbZone::~ReverbZone()
 {
-	
+	if(m_effect != 0 && m_slot != 0)
+	{	
+		FreeEffects();
+	}
 }
 
 /* LoadEffect loads the given reverb properties into a new OpenAL effect
@@ -288,18 +293,18 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
 	
 	//load effect based on type
-	EffectZone::SetEffect(LoadStandardReverbEffect(&reverb));
+	m_effect = LoadStandardReverbEffect(&reverb);
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */
-    alGenAuxiliaryEffectSlots(1, EffectZone::GetEffectsSlotPointer());
+    alGenAuxiliaryEffectSlots(1, &m_slot);
 
     /* Tell the effect slot to use the loaded effect object. Note that the this
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
-    alAuxiliaryEffectSloti(EffectZone::GetEffectReference(), AL_EFFECTSLOT_EFFECT, i_effect);
+    ALint i_effect = (ALint)(m_effect);
+    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
     
 	EffectZone::InitEffectZone(thisName,x,y,z,width);
@@ -372,19 +377,23 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
 	
 	//load effect based on type
-	EffectZone::SetEffect(LoadEAXReverbEffect(&reverb));
+	ALuint effect = LoadStandardReverbEffect(&reverb);
+	
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */
-    alGenAuxiliaryEffectSlots(1, EffectZone::GetEffectsSlotPointer() );
+    alGenAuxiliaryEffectSlots(1, &m_slot );
 
     /* Tell the effect slot to use the loaded effect object. Note that the this
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
-    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT,i_effect );
+    ALint i_effect = (ALint)(effect);
+    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT,i_effect );
     assert(alGetError()==AL_NO_ERROR && "Failed to set effect slot");
+    
+    alDeleteEffects(1, &effect);
+    effect = 0;
     
 	EffectZone::InitEffectZone(thisName,x,y,z,width);
 	
@@ -432,21 +441,21 @@ void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& pr
 
 	/* No EAX Reverb. Set the standard reverb effect type then load the
 	 * available reverb properties. */
-	alEffecti(EffectZone::GetEffectReference(), AL_EFFECT_TYPE, AL_EFFECT_REVERB);
+	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_REVERB);
 
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_DENSITY, reverb.flDensity);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_DIFFUSION, reverb.flDiffusion);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_GAIN, reverb.flGain);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_GAINHF, reverb.flGainHF);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_DECAY_TIME, reverb.flDecayTime);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
-	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
-	alEffecti(EffectZone::GetEffectReference(), AL_REVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
+	alEffectf(m_effect, AL_REVERB_DENSITY, reverb.flDensity);
+	alEffectf(m_effect, AL_REVERB_DIFFUSION, reverb.flDiffusion);
+	alEffectf(m_effect, AL_REVERB_GAIN, reverb.flGain);
+	alEffectf(m_effect, AL_REVERB_GAINHF, reverb.flGainHF);
+	alEffectf(m_effect, AL_REVERB_DECAY_TIME, reverb.flDecayTime);
+	alEffectf(m_effect, AL_REVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
+	alEffectf(m_effect, AL_REVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
+	alEffectf(m_effect, AL_REVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
+	alEffectf(m_effect, AL_REVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
+	alEffectf(m_effect, AL_REVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
+	alEffectf(m_effect, AL_REVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
+	alEffectf(m_effect, AL_REVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
+	alEffecti(m_effect, AL_REVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
 	
     
     m_standard_prop = properties;
@@ -457,8 +466,8 @@ void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& pr
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
-    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT, i_effect);
+    ALint i_effect = (ALint)(m_effect);
+    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
 }
 
@@ -497,31 +506,31 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
 
         /* EAX Reverb is available. Set the EAX effect type then load the
          * reverb properties. */
-        alEffecti(EffectZone::GetEffectReference(), AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB);
+        alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB);
 
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DENSITY, reverb.flDensity);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DIFFUSION, reverb.flDiffusion);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_GAIN, reverb.flGain);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_GAINHF, reverb.flGainHF);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_GAINLF, reverb.flGainLF);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DECAY_TIME, reverb.flDecayTime);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DECAY_LFRATIO, reverb.flDecayLFRatio);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
-        alEffectfv(EffectZone::GetEffectReference(), AL_EAXREVERB_REFLECTIONS_PAN, reverb.flReflectionsPan);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
-        alEffectfv(EffectZone::GetEffectReference(), AL_EAXREVERB_LATE_REVERB_PAN, reverb.flLateReverbPan);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_ECHO_TIME, reverb.flEchoTime);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_ECHO_DEPTH, reverb.flEchoDepth);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_MODULATION_TIME, reverb.flModulationTime);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_MODULATION_DEPTH, reverb.flModulationDepth);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_HFREFERENCE, reverb.flHFReference);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_LFREFERENCE, reverb.flLFReference);
-        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
-        alEffecti(EffectZone::GetEffectReference(), AL_EAXREVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
+        alEffectf(m_effect, AL_EAXREVERB_DENSITY, reverb.flDensity);
+        alEffectf(m_effect, AL_EAXREVERB_DIFFUSION, reverb.flDiffusion);
+        alEffectf(m_effect, AL_EAXREVERB_GAIN, reverb.flGain);
+        alEffectf(m_effect, AL_EAXREVERB_GAINHF, reverb.flGainHF);
+        alEffectf(m_effect, AL_EAXREVERB_GAINLF, reverb.flGainLF);
+        alEffectf(m_effect, AL_EAXREVERB_DECAY_TIME, reverb.flDecayTime);
+        alEffectf(m_effect, AL_EAXREVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
+        alEffectf(m_effect, AL_EAXREVERB_DECAY_LFRATIO, reverb.flDecayLFRatio);
+        alEffectf(m_effect, AL_EAXREVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
+        alEffectf(m_effect, AL_EAXREVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
+        alEffectfv(m_effect, AL_EAXREVERB_REFLECTIONS_PAN, reverb.flReflectionsPan);
+        alEffectf(m_effect, AL_EAXREVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
+        alEffectf(m_effect, AL_EAXREVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
+        alEffectfv(m_effect, AL_EAXREVERB_LATE_REVERB_PAN, reverb.flLateReverbPan);
+        alEffectf(m_effect, AL_EAXREVERB_ECHO_TIME, reverb.flEchoTime);
+        alEffectf(m_effect, AL_EAXREVERB_ECHO_DEPTH, reverb.flEchoDepth);
+        alEffectf(m_effect, AL_EAXREVERB_MODULATION_TIME, reverb.flModulationTime);
+        alEffectf(m_effect, AL_EAXREVERB_MODULATION_DEPTH, reverb.flModulationDepth);
+        alEffectf(m_effect, AL_EAXREVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
+        alEffectf(m_effect, AL_EAXREVERB_HFREFERENCE, reverb.flHFReference);
+        alEffectf(m_effect, AL_EAXREVERB_LFREFERENCE, reverb.flLFReference);
+        alEffectf(m_effect, AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
+        alEffecti(m_effect, AL_EAXREVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
     }
     
     m_eax_prop = properties;
@@ -532,8 +541,8 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
-    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT, i_effect);
+    ALint i_effect = (ALint)(m_effect);
+    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
 }
 
@@ -552,3 +561,23 @@ ReverbEAXProperties& ReverbZone::GetEAXReverbZoneProperties()
 void ReverbZone::SetType(ReverbZone::Type& type){m_type = type;}
 ReverbZone::Type& ReverbZone::GetType(){return m_type;}
 
+
+ALuint* ReverbZone::GetEffectPointer(){ return &m_effect;}
+ALuint* ReverbZone::GetEffectsSlotPointer(){return &m_slot;}
+
+ALuint ReverbZone::GetEffect(){return m_effect;}
+ALuint ReverbZone::GetEffectsSlot(){return m_slot;}
+
+void ReverbZone::FreeEffects()
+{
+	if(m_effect != 0)
+	{
+		alDeleteEffects(1, &m_effect);
+		m_effect = 0;
+	}
+	if(m_slot != 0)
+	{
+		 alDeleteAuxiliaryEffectSlots(1, &m_slot);
+		 m_slot = 0;
+	}
+}

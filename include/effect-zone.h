@@ -73,27 +73,20 @@ public:
 	
 	//OpenAL Soft effects properties
 	
-	void SetEffect(ALuint thisEffect);
 	
-	ALuint* GetEffectPointer();
-	ALuint* GetEffectsSlotPointer();
+	virtual ALuint* GetEffectPointer() = 0;
+	virtual ALuint* GetEffectsSlotPointer() = 0;
 	
-	ALuint& GetEffectReference();
-	ALuint& GetEffectsSlotReference();
+	virtual ALuint GetEffect() = 0;
+	virtual ALuint GetEffectsSlot() = 0;
 	
-	void FreeEffects();
+	virtual void FreeEffects() = 0;
 	
 	
     
    
 
 private:
-
-    //effect
-    ALuint m_effect; 
-    
-    //what play effect in source of soundproducer 
-    ALuint m_slot;
     
 	//Name of echo Zone
 	std::string name;

@@ -69,10 +69,6 @@ static LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
 EffectZone::EffectZone()
 {	
-	//initialize OpenAL soft effects properties
-	
-	m_effect = 0;
-	m_slot = 0;
 	
 	//initialize position vector
 	position_vector.resize(3);
@@ -85,10 +81,7 @@ EffectZone::EffectZone()
 
 EffectZone::~EffectZone()
 {
-	if(m_effect != 0 && m_slot != 0)
-	{	
-		FreeEffects();
-	}
+	
 }
 
 void EffectZone::InitEffectZone(std::string& thisName,
@@ -188,30 +181,6 @@ osg::Geode* EffectZone::getGeodeNode(){return m_geode;}
 osg::PositionAttitudeTransform* EffectZone::getTransformNode(){return m_paTransform;}
 
 
-ALuint* EffectZone::GetEffectPointer(){return &m_effect;}
-ALuint* EffectZone::GetEffectsSlotPointer(){return &m_slot;}
-
-ALuint& EffectZone::GetEffectReference(){return m_effect;}
-ALuint& EffectZone::GetEffectsSlotReference(){return m_slot;}
-
-void EffectZone::SetEffect(ALuint thisEffect)
-{
-	m_effect = thisEffect;
-}
-
-void EffectZone::FreeEffects()
-{
-	if(m_effect)
-	{
-		alDeleteEffects(1, &m_effect);
-		m_effect = 0;
-	}
-	if(m_slot)
-	{
-		 alDeleteAuxiliaryEffectSlots(1, &m_slot);
-		 m_slot = 0;
-	}
-}
 
 void EffectZone::ChangeWidth(double width)
 {
@@ -232,7 +201,7 @@ void EffectZone::ChangeWidth(double width)
 	m_renderObject->setShape(m_box);
 	
 	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.4f, 0.3f, 0.0f, 0.3f) );
+	m_renderObject->setColor( osg::Vec4(m_color.r, m_color.g, m_color.b, m_color.alpha) );
 	
 	//add new drawable to geode
 	m_geode->addDrawable( m_renderObject.get() );

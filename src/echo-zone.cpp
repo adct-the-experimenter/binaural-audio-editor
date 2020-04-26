@@ -68,7 +68,10 @@ static LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
 
 EchoZone::EchoZone()
-{	
+{
+	m_effect = 0;
+	m_slot = 0;
+	
 	echoZoneColor.r = 0.4f;
 	echoZoneColor.g = 0.3f;
 	echoZoneColor.b = 0.0f;
@@ -77,7 +80,10 @@ EchoZone::EchoZone()
 
 EchoZone::~EchoZone()
 {
-	
+	if(m_effect != 0 && m_slot != 0)
+	{	
+		FreeEffects();
+	}
 }
 
 void EchoZone::InitEchoZone(std::string& thisName,
@@ -113,26 +119,26 @@ void EchoZone::InitEchoZone(std::string& thisName,
 	
 	
 	/* Create the effect object. */
-	alGenEffects(1, EffectZone::GetEffectPointer());
+	alGenEffects(1, &m_effect);
 	
-	alEffecti(EffectZone::GetEffectReference(), AL_EFFECT_TYPE, AL_EFFECT_ECHO);
+	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_ECHO);
 
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_DELAY, properties.flDelay);
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_LRDELAY, properties.flLRDelay);
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_DAMPING, properties.flDamping);
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_FEEDBACK, properties.flFeedback);
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_SPREAD, properties.flSpread);
+	alEffectf(m_effect, AL_ECHO_DELAY, properties.flDelay);
+	alEffectf(m_effect, AL_ECHO_LRDELAY, properties.flLRDelay);
+	alEffectf(m_effect, AL_ECHO_DAMPING, properties.flDamping);
+	alEffectf(m_effect, AL_ECHO_FEEDBACK, properties.flFeedback);
+	alEffectf(m_effect, AL_ECHO_SPREAD, properties.flSpread);
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */
-    alGenAuxiliaryEffectSlots(1, EffectZone::GetEffectsSlotPointer());
+    alGenAuxiliaryEffectSlots(1, &m_slot);
 
     /* Tell the effect slot to use the loaded effect object. Note that the this
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
-    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT, i_effect);
+    ALint i_effect = (ALint)(m_effect);
+    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
     
 	EffectZone::InitEffectZone(thisName,x,y,z,width);
@@ -158,13 +164,13 @@ void EchoZone::ChangeEchoZoneProperties(EchoZoneProperties& properties)
 {
 
 	/* Set new porperties */
-	alEffecti(EffectZone::GetEffectReference(), AL_EFFECT_TYPE, AL_EFFECT_ECHO);
+	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_ECHO);
 
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_DELAY, properties.flDelay);
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_LRDELAY, properties.flLRDelay);
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_DAMPING, properties.flDamping);
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_FEEDBACK, properties.flFeedback);
-	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_SPREAD, properties.flSpread);
+	alEffectf(m_effect, AL_ECHO_DELAY, properties.flDelay);
+	alEffectf(m_effect, AL_ECHO_LRDELAY, properties.flLRDelay);
+	alEffectf(m_effect, AL_ECHO_DAMPING, properties.flDamping);
+	alEffectf(m_effect, AL_ECHO_FEEDBACK, properties.flFeedback);
+	alEffectf(m_effect, AL_ECHO_SPREAD, properties.flSpread);
 	
     
     m_echo_prop = properties;
@@ -175,8 +181,8 @@ void EchoZone::ChangeEchoZoneProperties(EchoZoneProperties& properties)
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
-    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT, i_effect);
+    ALint i_effect = (ALint)(m_effect);
+    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
 }
 
@@ -187,4 +193,23 @@ EchoZoneProperties& EchoZone::GetEchoZoneProperties()
 }
 
 
+ALuint* EchoZone::GetEffectPointer(){ return &m_effect;}
+ALuint* EchoZone::GetEffectsSlotPointer(){return &m_slot;}
+
+ALuint EchoZone::GetEffect(){return m_effect;}
+ALuint EchoZone::GetEffectsSlot(){return m_slot;}
+
+void EchoZone::FreeEffects()
+{
+	if(m_effect != 0)
+	{
+		alDeleteEffects(1, &m_effect);
+		m_effect = 0;
+	}
+	if(m_slot != 0)
+	{
+		 alDeleteAuxiliaryEffectSlots(1, &m_slot);
+		 m_slot = 0;
+	}
+}
 

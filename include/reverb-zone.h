@@ -120,8 +120,19 @@ public:
 	ReverbEAXProperties& GetEAXReverbZoneProperties();
 	
 	
+	virtual ALuint* GetEffectPointer();
+	virtual ALuint* GetEffectsSlotPointer();
+	
+	virtual ALuint GetEffect();
+	virtual ALuint GetEffectsSlot();
+	
+	virtual void FreeEffects();
+	
 private:
 
+	ALuint m_effect;
+	ALuint m_slot;
+	
 	//type of reverb zone
 	ReverbZone::Type m_type;
 	

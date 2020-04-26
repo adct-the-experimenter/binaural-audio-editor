@@ -41,8 +41,18 @@ public:
 	
 	EchoZoneProperties& GetEchoZoneProperties();
 	
+	virtual ALuint* GetEffectPointer();
+	virtual ALuint* GetEffectsSlotPointer();
+	
+	virtual ALuint GetEffect();
+	virtual ALuint GetEffectsSlot();
+	
+	virtual void FreeEffects();
 	
 private:
+
+	ALuint m_effect;
+	ALuint m_slot;
 	
 	ALuint LoadStandardReverbEffect(const EFXEAXREVERBPROPERTIES *reverb);
 	ALuint LoadEAXReverbEffect(const EFXEAXREVERBPROPERTIES *reverb);

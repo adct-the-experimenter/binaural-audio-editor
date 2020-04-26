@@ -472,11 +472,6 @@ void CreateEAXReverbZoneDialog::OnPreview(wxCommandEvent& event)
 				
 				//free effect
 				tempZone.FreeEffects();
-				
-				//remove effect from sound producer track
-				m_effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
-				
-				tempZone.FreeEffects();
 			}
 			
 		}
