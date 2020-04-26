@@ -69,26 +69,15 @@ static LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
 EchoZone::EchoZone()
 {	
-	//initialize OpenAL soft effects properties
-	
-	m_effect = 0;
-	m_slot = 0;
-	
-	//initialize position vector
-	position_vector.resize(3);
-	position_vector[POSITION_INDEX::X] = 0;
-	position_vector[POSITION_INDEX::Y] = 0;
-	position_vector[POSITION_INDEX::Z] = 0;
-	
-	
+	echoZoneColor.r = 0.4f;
+	echoZoneColor.g = 0.3f;
+	echoZoneColor.b = 0.0f;
+	echoZoneColor.alpha = 0.3f;
 }
 
 EchoZone::~EchoZone()
 {
-	if(m_effect != 0 && m_slot != 0)
-	{	
-		FreeEffects();
-	}
+	
 }
 
 void EchoZone::InitEchoZone(std::string& thisName,
@@ -124,39 +113,29 @@ void EchoZone::InitEchoZone(std::string& thisName,
 	
 	
 	/* Create the effect object. */
-	m_effect = 0;
-	alGenEffects(1, &m_effect);
+	alGenEffects(1, EffectZone::GetEffectPointer());
 	
-	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_ECHO);
+	alEffecti(EffectZone::GetEffectReference(), AL_EFFECT_TYPE, AL_EFFECT_ECHO);
 
-	alEffectf(m_effect, AL_ECHO_DELAY, properties.flDelay);
-	alEffectf(m_effect, AL_ECHO_LRDELAY, properties.flLRDelay);
-	alEffectf(m_effect, AL_ECHO_DAMPING, properties.flDamping);
-	alEffectf(m_effect, AL_ECHO_FEEDBACK, properties.flFeedback);
-	alEffectf(m_effect, AL_ECHO_SPREAD, properties.flSpread);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_DELAY, properties.flDelay);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_LRDELAY, properties.flLRDelay);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_DAMPING, properties.flDamping);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_FEEDBACK, properties.flFeedback);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_SPREAD, properties.flSpread);
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */
-    m_slot = 0;
-    alGenAuxiliaryEffectSlots(1, &m_slot);
+    alGenAuxiliaryEffectSlots(1, EffectZone::GetEffectsSlotPointer());
 
     /* Tell the effect slot to use the loaded effect object. Note that the this
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, (ALint)m_effect);
+    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
+    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
     
-	//set name
-	name = thisName;
-	
-	//set position
-	position_vector[POSITION_INDEX::X] = x;
-	position_vector[POSITION_INDEX::Y] = y;
-	position_vector[POSITION_INDEX::Z] = z;
-	
-	//set width
-	m_width = width;
+	EffectZone::InitEffectZone(thisName,x,y,z,width);
 	
 	//initialize standard properties
 	m_echo_prop = properties;
@@ -172,45 +151,20 @@ void EchoZone::InitEchoZoneWithGraphicalObject(std::string& thisName,
 									x, y, z, width,
 									properties);
 	
-	//make box
-	//create ShapeDrawable object
-	m_renderObject = new osg::ShapeDrawable;
-	m_box = new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f),m_width);
-
-	//make ShapeDrawable object a box
-	//initialize box at certain position
-	m_renderObject->setShape(m_box);
-	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.4f, 0.3f, 0.0f, 0.3f) );
-
-	m_geode = new osg::Geode;
-	m_geode->addDrawable( m_renderObject.get() );
-	
-	//make transparent
-	osg::StateSet* ss = new osg::StateSet();
-	m_geode->setStateSet(ss);
-	m_geode->getStateSet()->setMode( GL_BLEND, osg::StateAttribute::ON );
-	m_geode->getStateSet()->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
-
-	// Create transformation node
-	m_paTransform = new osg::PositionAttitudeTransform;
-
-	//initialize transform and add geode to it
-	m_paTransform->setPosition( osg::Vec3(x,y,z));
-	m_paTransform->addChild(m_geode);
+	EffectZone::InitEffectZoneWithGraphicalObject(thisName,x,y,z,width,echoZoneColor);
 }
 
 void EchoZone::ChangeEchoZoneProperties(EchoZoneProperties& properties)
 {
 
 	/* Set new porperties */
-	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_ECHO);
+	alEffecti(EffectZone::GetEffectReference(), AL_EFFECT_TYPE, AL_EFFECT_ECHO);
 
-	alEffectf(m_effect, AL_ECHO_DELAY, properties.flDelay);
-	alEffectf(m_effect, AL_ECHO_LRDELAY, properties.flLRDelay);
-	alEffectf(m_effect, AL_ECHO_DAMPING, properties.flDamping);
-	alEffectf(m_effect, AL_ECHO_FEEDBACK, properties.flFeedback);
-	alEffectf(m_effect, AL_ECHO_SPREAD, properties.flSpread);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_DELAY, properties.flDelay);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_LRDELAY, properties.flLRDelay);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_DAMPING, properties.flDamping);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_FEEDBACK, properties.flFeedback);
+	alEffectf(EffectZone::GetEffectReference(), AL_ECHO_SPREAD, properties.flSpread);
 	
     
     m_echo_prop = properties;
@@ -221,7 +175,8 @@ void EchoZone::ChangeEchoZoneProperties(EchoZoneProperties& properties)
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, (ALint)m_effect);
+    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
+    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
 }
 
@@ -232,92 +187,4 @@ EchoZoneProperties& EchoZone::GetEchoZoneProperties()
 }
 
 
-void EchoZone::SetNameString(std::string& thisName){ name = thisName;}
-std::string EchoZone::GetNameString(){ return name;}
 
-
-void EchoZone::SetPositionX(double& x)
-{
-	position_vector[POSITION_INDEX::X] = x;
-
-	m_paTransform->setPosition(osg::Vec3(x,
-								position_vector[POSITION_INDEX::Y],
-								position_vector[POSITION_INDEX::Z]));
-}
-
-double EchoZone::GetPositionX(){return position_vector[POSITION_INDEX::X];}
-
-void EchoZone::SetPositionY(double& y)
-{
-	position_vector[POSITION_INDEX::Y] = y;
-
-	m_paTransform->setPosition(osg::Vec3(position_vector[POSITION_INDEX::X],
-								y,
-								position_vector[POSITION_INDEX::Z]));
-}
-
-double EchoZone::GetPositionY(){return position_vector[POSITION_INDEX::Y];}
-
-void EchoZone::SetPositionZ(double& z)
-{
-	position_vector[POSITION_INDEX::Z] = z;
-
-	m_paTransform->setPosition(osg::Vec3(position_vector[POSITION_INDEX::X],
-								position_vector[POSITION_INDEX::Y],
-								z));
-}
-
-double EchoZone::GetPositionZ(){return position_vector[POSITION_INDEX::Z];}
-
-
-osg::ShapeDrawable* EchoZone::getRenderObject(){return m_renderObject;}
-
-osg::Geode* EchoZone::getGeodeNode(){return m_geode;}
-
-osg::PositionAttitudeTransform* EchoZone::getTransformNode(){return m_paTransform;}
-
-
-ALuint* EchoZone::GetEffect(){return &m_effect;}
-ALuint* EchoZone::GetEffectsSlot(){return &m_slot;}
-
-void EchoZone::FreeEffects()
-{
-	if(m_effect)
-	{
-		alDeleteEffects(1, &m_effect);
-		m_effect = 0;
-	}
-	if(m_slot)
-	{
-		 alDeleteAuxiliaryEffectSlots(1, &m_slot);
-		 m_slot = 0;
-	}
-}
-
-void EchoZone::ChangeWidth(double width)
-{
-	
-	m_width = width;
-	
-	//remove drawable of box from geode 
-	m_geode->removeDrawable( m_renderObject.get() );
-	
-	
-	//make box with new width
-	//create ShapeDrawable object
-	m_renderObject = new osg::ShapeDrawable;
-	m_box = new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f),m_width);
-
-	//make ShapeDrawable object a box
-	//initialize box at certain position
-	m_renderObject->setShape(m_box);
-	
-	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.4f, 0.3f, 0.0f, 0.3f) );
-	
-	//add new drawable to geode
-	m_geode->addDrawable( m_renderObject.get() );
-	
-}
-
-double EchoZone::GetWidth(){return m_width;}

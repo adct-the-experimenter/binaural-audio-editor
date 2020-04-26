@@ -25,7 +25,7 @@ public:
 	void CreateEAXReverbZone(std::string& name, double& x, double& y, double& z, double& width, ReverbEAXProperties& properties);
 	
 	//function to create echo zone
-	void CreateEAXReverbZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties);
+	void CreateEchoReverbZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties);
 	
 	//function to return a pointer to reverb zone vector
 	std::vector <ReverbZone> *GetReferenceToReverbZoneVector();

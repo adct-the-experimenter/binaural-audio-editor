@@ -69,27 +69,24 @@ static LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
 ReverbZone::ReverbZone()
 {	
-	//initialize OpenAL soft effects properties
-	
-	m_effect = 0;
-	m_slot = 0;
-	
-	//initialize position vector
-	position_vector.resize(3);
-	position_vector[POSITION_INDEX::X] = 0;
-	position_vector[POSITION_INDEX::Y] = 0;
-	position_vector[POSITION_INDEX::Z] = 0;
 	
 	m_type = ReverbZone::Type::NONE;
+	
+	standardColor.r = 0.9f;
+	standardColor.g = 0.8f;
+	standardColor.b = 0.0f;
+	standardColor.alpha = 0.3f;
+	
+	eaxColor.r = 0.6f;
+	eaxColor.g = 0.0f;
+	eaxColor.b = 0.1f;
+	eaxColor.alpha = 0.3f;
 	
 }
 
 ReverbZone::~ReverbZone()
 {
-	if(m_effect != 0 && m_slot != 0)
-	{	
-		FreeEffects();
-	}
+	
 }
 
 /* LoadEffect loads the given reverb properties into a new OpenAL effect
@@ -291,31 +288,21 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
 	
 	//load effect based on type
-	m_effect = 0;
-	m_effect = LoadStandardReverbEffect(&reverb);
+	EffectZone::SetEffect(LoadStandardReverbEffect(&reverb));
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */
-    m_slot = 0;
-    alGenAuxiliaryEffectSlots(1, &m_slot);
+    alGenAuxiliaryEffectSlots(1, EffectZone::GetEffectsSlotPointer());
 
     /* Tell the effect slot to use the loaded effect object. Note that the this
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, (ALint)m_effect);
+    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
+    alAuxiliaryEffectSloti(EffectZone::GetEffectReference(), AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
     
-	//set name
-	name = thisName;
-	
-	//set position
-	position_vector[POSITION_INDEX::X] = x;
-	position_vector[POSITION_INDEX::Y] = y;
-	position_vector[POSITION_INDEX::Z] = z;
-	
-	//set width
-	m_width = width;
+	EffectZone::InitEffectZone(thisName,x,y,z,width);
 	
 	//initialize type to Standard
 	m_type = ReverbZone::Type::STANDARD;
@@ -334,32 +321,7 @@ void ReverbZone::InitStandardReverbZoneWithGraphicalObject(std::string& thisName
 									x, y, z, width,
 									properties);
 	
-	//make box
-	//create ShapeDrawable object
-	m_renderObject = new osg::ShapeDrawable;
-	m_box = new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f),m_width);
-
-	//make ShapeDrawable object a box
-	//initialize box at certain position
-	m_renderObject->setShape(m_box);
-	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.9f, 0.8f, 0.0f, 0.3f) );
-
-	m_geode = new osg::Geode;
-	m_geode->addDrawable( m_renderObject.get() );
-	
-	//make transparent
-	osg::StateSet* ss = new osg::StateSet();
-	m_geode->setStateSet(ss);
-	m_geode->getStateSet()->setMode( GL_BLEND, osg::StateAttribute::ON );
-	m_geode->getStateSet()->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
-
-	// Create transformation node
-	m_paTransform = new osg::PositionAttitudeTransform;
-
-	//initialize transform and add geode to it
-	m_paTransform->setPosition( osg::Vec3(x,y,z));
-	m_paTransform->addChild(m_geode);
+	EffectZone::InitEffectZoneWithGraphicalObject(thisName,x,y,z,width,standardColor);
 }
 
 void ReverbZone::InitEAXReverbZone(std::string& thisName,
@@ -410,30 +372,21 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
 	
 	//load effect based on type
-	m_effect = LoadEAXReverbEffect(&reverb);
+	EffectZone::SetEffect(LoadEAXReverbEffect(&reverb));
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */
-    m_slot = 0;
-    alGenAuxiliaryEffectSlots(1, &m_slot);
+    alGenAuxiliaryEffectSlots(1, EffectZone::GetEffectsSlotPointer() );
 
     /* Tell the effect slot to use the loaded effect object. Note that the this
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, (ALint)m_effect);
+    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
+    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT,i_effect );
     assert(alGetError()==AL_NO_ERROR && "Failed to set effect slot");
     
-	//set name
-	name = thisName;
-	
-	//set position
-	position_vector[POSITION_INDEX::X] = x;
-	position_vector[POSITION_INDEX::Y] = y;
-	position_vector[POSITION_INDEX::Z] = z;
-	
-	//set width
-	m_width = width;
+	EffectZone::InitEffectZone(thisName,x,y,z,width);
 	
 	//initialize type to EAX
 	m_type = ReverbZone::Type::EAX;
@@ -452,33 +405,7 @@ void ReverbZone::InitEAXReverbZoneWithGraphicalObject(std::string& thisName,
 									x, y, z, width,
 									properties);
 	
-	//make box
-	//create ShapeDrawable object
-	m_renderObject = new osg::ShapeDrawable;
-	m_box = new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f),m_width);
-
-	//make ShapeDrawable object a box
-	//initialize box at certain position
-	m_renderObject->setShape(m_box);
-	//set color of ShapeDrawable object with box
-	m_renderObject->setColor( osg::Vec4(0.6f, 0.0f, 0.1f, 0.3f) );
-	
-	
-	m_geode = new osg::Geode;
-	m_geode->addDrawable( m_renderObject.get() );
-	
-	//make transparent
-	osg::StateSet* ss = new osg::StateSet();
-	m_geode->setStateSet(ss);
-	m_geode->getStateSet()->setMode( GL_BLEND, osg::StateAttribute::ON );
-	m_geode->getStateSet()->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
-
-	// Create transformation node
-	m_paTransform = new osg::PositionAttitudeTransform;
-
-	//initialize transform and add geode to it
-	m_paTransform->setPosition( osg::Vec3(x,y,z));
-	m_paTransform->addChild(m_geode);
+	EffectZone::InitEffectZoneWithGraphicalObject(thisName,x,y,z,width,eaxColor);
 }
 
 void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& properties)
@@ -505,21 +432,21 @@ void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& pr
 
 	/* No EAX Reverb. Set the standard reverb effect type then load the
 	 * available reverb properties. */
-	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_REVERB);
+	alEffecti(EffectZone::GetEffectReference(), AL_EFFECT_TYPE, AL_EFFECT_REVERB);
 
-	alEffectf(m_effect, AL_REVERB_DENSITY, reverb.flDensity);
-	alEffectf(m_effect, AL_REVERB_DIFFUSION, reverb.flDiffusion);
-	alEffectf(m_effect, AL_REVERB_GAIN, reverb.flGain);
-	alEffectf(m_effect, AL_REVERB_GAINHF, reverb.flGainHF);
-	alEffectf(m_effect, AL_REVERB_DECAY_TIME, reverb.flDecayTime);
-	alEffectf(m_effect, AL_REVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
-	alEffectf(m_effect, AL_REVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
-	alEffectf(m_effect, AL_REVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
-	alEffectf(m_effect, AL_REVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
-	alEffectf(m_effect, AL_REVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
-	alEffectf(m_effect, AL_REVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
-	alEffectf(m_effect, AL_REVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
-	alEffecti(m_effect, AL_REVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_DENSITY, reverb.flDensity);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_DIFFUSION, reverb.flDiffusion);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_GAIN, reverb.flGain);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_GAINHF, reverb.flGainHF);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_DECAY_TIME, reverb.flDecayTime);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
+	alEffectf(EffectZone::GetEffectReference(), AL_REVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
+	alEffecti(EffectZone::GetEffectReference(), AL_REVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
 	
     
     m_standard_prop = properties;
@@ -530,7 +457,8 @@ void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& pr
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, (ALint)m_effect);
+    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
+    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
 }
 
@@ -559,31 +487,31 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
 
         /* EAX Reverb is available. Set the EAX effect type then load the
          * reverb properties. */
-        alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB);
+        alEffecti(EffectZone::GetEffectReference(), AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB);
 
-        alEffectf(m_effect, AL_EAXREVERB_DENSITY, reverb.flDensity);
-        alEffectf(m_effect, AL_EAXREVERB_DIFFUSION, reverb.flDiffusion);
-        alEffectf(m_effect, AL_EAXREVERB_GAIN, reverb.flGain);
-        alEffectf(m_effect, AL_EAXREVERB_GAINHF, reverb.flGainHF);
-        alEffectf(m_effect, AL_EAXREVERB_GAINLF, reverb.flGainLF);
-        alEffectf(m_effect, AL_EAXREVERB_DECAY_TIME, reverb.flDecayTime);
-        alEffectf(m_effect, AL_EAXREVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
-        alEffectf(m_effect, AL_EAXREVERB_DECAY_LFRATIO, reverb.flDecayLFRatio);
-        alEffectf(m_effect, AL_EAXREVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
-        alEffectf(m_effect, AL_EAXREVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
-        alEffectfv(m_effect, AL_EAXREVERB_REFLECTIONS_PAN, reverb.flReflectionsPan);
-        alEffectf(m_effect, AL_EAXREVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
-        alEffectf(m_effect, AL_EAXREVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
-        alEffectfv(m_effect, AL_EAXREVERB_LATE_REVERB_PAN, reverb.flLateReverbPan);
-        alEffectf(m_effect, AL_EAXREVERB_ECHO_TIME, reverb.flEchoTime);
-        alEffectf(m_effect, AL_EAXREVERB_ECHO_DEPTH, reverb.flEchoDepth);
-        alEffectf(m_effect, AL_EAXREVERB_MODULATION_TIME, reverb.flModulationTime);
-        alEffectf(m_effect, AL_EAXREVERB_MODULATION_DEPTH, reverb.flModulationDepth);
-        alEffectf(m_effect, AL_EAXREVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
-        alEffectf(m_effect, AL_EAXREVERB_HFREFERENCE, reverb.flHFReference);
-        alEffectf(m_effect, AL_EAXREVERB_LFREFERENCE, reverb.flLFReference);
-        alEffectf(m_effect, AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
-        alEffecti(m_effect, AL_EAXREVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DENSITY, reverb.flDensity);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DIFFUSION, reverb.flDiffusion);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_GAIN, reverb.flGain);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_GAINHF, reverb.flGainHF);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_GAINLF, reverb.flGainLF);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DECAY_TIME, reverb.flDecayTime);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_DECAY_LFRATIO, reverb.flDecayLFRatio);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_REFLECTIONS_DELAY, reverb.flReflectionsDelay);
+        alEffectfv(EffectZone::GetEffectReference(), AL_EAXREVERB_REFLECTIONS_PAN, reverb.flReflectionsPan);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_LATE_REVERB_GAIN, reverb.flLateReverbGain);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_LATE_REVERB_DELAY, reverb.flLateReverbDelay);
+        alEffectfv(EffectZone::GetEffectReference(), AL_EAXREVERB_LATE_REVERB_PAN, reverb.flLateReverbPan);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_ECHO_TIME, reverb.flEchoTime);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_ECHO_DEPTH, reverb.flEchoDepth);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_MODULATION_TIME, reverb.flModulationTime);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_MODULATION_DEPTH, reverb.flModulationDepth);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_AIR_ABSORPTION_GAINHF, reverb.flAirAbsorptionGainHF);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_HFREFERENCE, reverb.flHFReference);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_LFREFERENCE, reverb.flLFReference);
+        alEffectf(EffectZone::GetEffectReference(), AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
+        alEffecti(EffectZone::GetEffectReference(), AL_EAXREVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
     }
     
     m_eax_prop = properties;
@@ -594,7 +522,8 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, (ALint)m_effect);
+    ALint i_effect = (ALint)(*(EffectZone::GetEffectPointer()));
+    alAuxiliaryEffectSloti(EffectZone::GetEffectsSlotReference(), AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
 }
 
@@ -609,105 +538,7 @@ ReverbEAXProperties& ReverbZone::GetEAXReverbZoneProperties()
 	return m_eax_prop;
 }
 
-void ReverbZone::SetNameString(std::string& thisName){ name = thisName;}
-std::string ReverbZone::GetNameString(){ return name;}
-
-
-void ReverbZone::SetPositionX(double& x)
-{
-	position_vector[POSITION_INDEX::X] = x;
-
-	m_paTransform->setPosition(osg::Vec3(x,
-								position_vector[POSITION_INDEX::Y],
-								position_vector[POSITION_INDEX::Z]));
-}
-
-double ReverbZone::GetPositionX(){return position_vector[POSITION_INDEX::X];}
-
-void ReverbZone::SetPositionY(double& y)
-{
-	position_vector[POSITION_INDEX::Y] = y;
-
-	m_paTransform->setPosition(osg::Vec3(position_vector[POSITION_INDEX::X],
-								y,
-								position_vector[POSITION_INDEX::Z]));
-}
-
-double ReverbZone::GetPositionY(){return position_vector[POSITION_INDEX::Y];}
-
-void ReverbZone::SetPositionZ(double& z)
-{
-	position_vector[POSITION_INDEX::Z] = z;
-
-	m_paTransform->setPosition(osg::Vec3(position_vector[POSITION_INDEX::X],
-								position_vector[POSITION_INDEX::Y],
-								z));
-}
-
-double ReverbZone::GetPositionZ(){return position_vector[POSITION_INDEX::Z];}
-
-
-osg::ShapeDrawable* ReverbZone::getRenderObject(){return m_renderObject;}
-
-osg::Geode* ReverbZone::getGeodeNode(){return m_geode;}
-
-osg::PositionAttitudeTransform* ReverbZone::getTransformNode(){return m_paTransform;}
 
 void ReverbZone::SetType(ReverbZone::Type& type){m_type = type;}
 ReverbZone::Type& ReverbZone::GetType(){return m_type;}
 
-ALuint* ReverbZone::GetEffect(){return &m_effect;}
-ALuint* ReverbZone::GetEffectsSlot(){return &m_slot;}
-
-void ReverbZone::FreeEffects()
-{
-	if(m_effect)
-	{
-		alDeleteEffects(1, &m_effect);
-		m_effect = 0;
-	}
-	if(m_slot)
-	{
-		 alDeleteAuxiliaryEffectSlots(1, &m_slot);
-		 m_slot = 0;
-	}
-}
-
-void ReverbZone::ChangeWidth(double width)
-{
-	
-	m_width = width;
-	
-	//remove drawable of box from geode 
-	m_geode->removeDrawable( m_renderObject.get() );
-	
-	//delete box and drawable object
-	//delete m_box;
-	//delete m_renderObject;
-	
-	
-	//make box with new width
-	//create ShapeDrawable object
-	m_renderObject = new osg::ShapeDrawable;
-	m_box = new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f),m_width);
-
-	//make ShapeDrawable object a box
-	//initialize box at certain position
-	m_renderObject->setShape(m_box);
-	
-	//set color of ShapeDrawable object with box depending on type or reverb zone
-	if(ReverbZone::GetType() == ReverbZone::Type::STANDARD)
-	{
-		m_renderObject->setColor( osg::Vec4(0.9f, 0.8f, 0.0f, 0.3f) );
-	}
-	else if(ReverbZone::GetType() == ReverbZone::Type::EAX)
-	{
-		m_renderObject->setColor( osg::Vec4(0.6f, 0.0f, 0.1f, 0.3f) );
-	}
-	
-	//add new drawable to geode
-	m_geode->addDrawable( m_renderObject.get() );
-	
-}
-
-double ReverbZone::GetWidth(){return m_width;}

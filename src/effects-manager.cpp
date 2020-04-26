@@ -32,7 +32,7 @@ void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y
 	reverb_zones_vector.back().InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 }
 
-void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties)
+void EffectsManager::CreateEchoReverbZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties)
 {
 	EchoZone e_zone;
 	
@@ -167,7 +167,7 @@ void EffectsManager::ApplyThisReverbZoneEffectToThisTrack(SoundProducerTrack* th
 	
 	ALuint* thisSource = thisSoundProducerTrack->GetReferenceToTrackSource();
 	 
-	alSource3i(*thisSource, AL_AUXILIARY_SEND_FILTER, (ALint)(*thisZone->GetEffectsSlot()), 0, AL_FILTER_NULL);
+	alSource3i(*thisSource, AL_AUXILIARY_SEND_FILTER, (ALint)(*thisZone->GetEffectsSlotPointer()), 0, AL_FILTER_NULL);
 	assert(alGetError()== AL_NO_ERROR && "Failed to setup reverb for sound source send 0.");
 	
 	thisSoundProducerTrack->SetStatusReverbApplied(true);
