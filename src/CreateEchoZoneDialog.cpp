@@ -43,26 +43,36 @@ CreateEchoZoneDialog::CreateEchoZoneDialog(const wxString& title,EffectsManager*
 								wxT("")); 
 	
 	
+	validatorFloat.SetRange(0.0,0.207);     // set allowable range
+	textField_flDelay = new wxTextCtrl(this,-1, "0.1", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,          // associate the text box with the desired validator
+								wxT(""));
+	
+	validatorFloat.SetRange(0.0,0.404);     // set allowable range
+	textField_flLRDelay = new wxTextCtrl(this,-1, "0.1", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,          // associate the text box with the desired validator
+								wxT(""));
+								
+	validatorFloat.SetRange(0.0,0.99);     // set allowable range
+	textField_flDamping = new wxTextCtrl(this,-1, "0.5", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,          // associate the text box with the desired validator
+								wxT(""));
+								
 	validatorFloat.SetRange(0.0,1.0);     // set allowable range
-	textField_flDelay = new wxTextCtrl(this,-1, "1.0", 
+	textField_flFeedback = new wxTextCtrl(this,-1, "0.5", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_flLRDelay = new wxTextCtrl(this,-1, "1.0", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,          // associate the text box with the desired validator
-								wxT(""));
-	
-	textField_flFeedback = new wxTextCtrl(this,-1, "0.32", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,          // associate the text box with the desired validator
-								wxT(""));
-	
-	textField_flSpread = new wxTextCtrl(this,-1, "0.89", 
+	validatorFloat.SetRange(-1.0,1.0);     // set allowable range
+	textField_flSpread = new wxTextCtrl(this,-1, "-1.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
