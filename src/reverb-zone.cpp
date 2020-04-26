@@ -478,6 +478,16 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
 	reverb.flReflectionsDelay = properties.flReflectionsDelay;
 	reverb.flLateReverbGain = properties.flLateReverbGain;
 	reverb.flLateReverbDelay = properties.flLateReverbDelay;
+	
+	reverb.flGainLF = properties.flGainLF;
+	reverb.flDecayLFRatio = properties.flDecayLFRatio;
+	reverb.flEchoDepth = properties.flEchoDepth;
+	reverb.flEchoTime = properties.flEchoTime;
+	reverb.flModulationDepth = properties.flModulationDepth;
+	reverb.flModulationTime = properties.flModulationTime;
+	reverb.flLFReference = properties.flLFReference;
+	reverb.flHFReference = properties.flHFReference;
+	
 	reverb.flAirAbsorptionGainHF = properties.flAirAbsorptionGainHF;
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
 	
