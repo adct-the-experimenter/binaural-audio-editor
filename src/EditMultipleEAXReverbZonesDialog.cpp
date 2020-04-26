@@ -221,14 +221,19 @@ EditMultipleEAXReverbZonesDialog::EditMultipleEAXReverbZonesDialog(const wxStrin
 	listboxReverbZones->Bind(wxEVT_LISTBOX,&EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox,this);
 	
 	//add contents of reverb zones to listbox
-	for(size_t i = 0; i < effects_manager_ptr->GetReferenceToReverbZoneVector()->size(); i++)
+	for(size_t i = 0; i < effects_manager_ptr->GetReferenceToEffectZoneVector()->size(); i++)
 	{
-		ReverbZone* thisRevZone = effects_manager_ptr->GetPointerToReverbZone(i);
+		EffectZone* thisZone = effects_manager_ptr->GetPointerToEffectZone(i);
 		
-		if(thisRevZone->GetType() == ReverbZone::Type::EAX)
+		if (dynamic_cast<ReverbZone*>(thisZone))
 		{
-			wxString mystring( thisRevZone->GetNameString() );
-			listboxReverbZones->Append(mystring);
+			ReverbZone* thisRevZone = dynamic_cast<ReverbZone*>(thisZone);
+		
+			if(thisRevZone->GetType() == ReverbZone::Type::EAX)
+			{
+				wxString mystring( thisRevZone->GetNameString() );
+				listboxReverbZones->Append(mystring);
+			}
 		}
 		
 	}
@@ -397,57 +402,64 @@ void EditMultipleEAXReverbZonesDialog::ChangeReverbZoneAttributes()
 {
 	if(m_selection_index != -1)
 	{
-		if(effects_manager_ptr->reverb_zones_vector.size() > 0)
+		if(effects_manager_ptr->effect_zones_vector.size() > 0)
 		{
 			
-			ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
-			
-			//change position of selected reverb zone based on what is in textfields
-			double xPosition, yPosition, zPosition;
-			
-			( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
-			( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
-			( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
-			
-			( textFieldWidth->GetLineText(0) ).ToDouble(&width);
-			
-			thisReverbZone->SetPositionX(xPosition);
-			thisReverbZone->SetPositionY(yPosition);
-			thisReverbZone->SetPositionZ(zPosition);
-			
-			if(width != thisReverbZone->GetWidth())
+			EffectZone* thisZone = &effects_manager_ptr->effect_zones_vector.at(m_selection_index);
+		
+			if (dynamic_cast<ReverbZone*>(thisZone))
 			{
-				thisReverbZone->ChangeWidth(width);
+				ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
+				
+				//change position of selected reverb zone based on what is in textfields
+				double xPosition, yPosition, zPosition;
+				
+				( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
+				( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
+				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+				
+				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
+				
+				thisReverbZone->SetPositionX(xPosition);
+				thisReverbZone->SetPositionY(yPosition);
+				thisReverbZone->SetPositionZ(zPosition);
+				
+				if(width != thisReverbZone->GetWidth())
+				{
+					thisReverbZone->ChangeWidth(width);
+				}
+				
+				if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
+				{
+					(textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
+					
+					(textField_flDiffusion->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDiffusion);
+					
+					(textField_flGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGain);
+					
+					(textField_flGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainHF);
+					
+					(textField_flDecayTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayTime);
+					
+					(textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayHFRatio);
+					
+					(textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsDelay);
+					
+					(textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbGain);
+					
+					(textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbDelay);
+					 
+					(textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsGain);
+					
+					(textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flAirAbsorptionGainHF); 
+					
+					(textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempEAXRevProp.flRoomRolloffFactor);
+				
+					thisReverbZone->ChangeEAXReverbZoneProperties(tempEAXRevProp);
+				}
 			}
 			
-			if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
-			{
-				(textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
-				
-				(textField_flDiffusion->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDiffusion);
-				
-				(textField_flGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGain);
-				
-				(textField_flGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainHF);
-				
-				(textField_flDecayTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayTime);
-				
-				(textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayHFRatio);
-				
-				(textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsDelay);
-				
-				(textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbGain);
-				
-				(textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbDelay);
-				 
-				(textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsGain);
-				
-				(textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flAirAbsorptionGainHF); 
-				
-				(textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempEAXRevProp.flRoomRolloffFactor);
 			
-				thisReverbZone->ChangeEAXReverbZoneProperties(tempEAXRevProp);
-			}
 			
 		}
 	}
@@ -478,50 +490,58 @@ void EditMultipleEAXReverbZonesDialog::OnPreview(wxCommandEvent& event)
 				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
 				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
 				
-				ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
-				
-				if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
+				EffectZone* thisZone = &effects_manager_ptr->effect_zones_vector.at(m_selection_index);
+		
+				if (dynamic_cast<ReverbZone*>(thisZone))
 				{
+					ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
 					
-					( textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
-					( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDiffusion);
-					( textField_flGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGain);
-					( textField_flGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainHF);
-					( textField_flDecayTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayTime);
-					( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayHFRatio);
-					( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsGain);
-					( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsDelay);
-					( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbGain);
-					( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbDelay);
-					( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flAirAbsorptionGainHF);
-					( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempEAXRevProp.flRoomRolloffFactor);
+					if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
+					{
+						
+						( textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
+						( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDiffusion);
+						( textField_flGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGain);
+						( textField_flGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainHF);
+						( textField_flDecayTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayTime);
+						( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayHFRatio);
+						( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsGain);
+						( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsDelay);
+						( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbGain);
+						( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbDelay);
+						( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flAirAbsorptionGainHF);
+						( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempEAXRevProp.flRoomRolloffFactor);
+						
+						tempZone.InitEAXReverbZone(name,xPosition,yPosition,zPosition,width,tempEAXRevProp);
+					}
 					
-					tempZone.InitEAXReverbZone(name,xPosition,yPosition,zPosition,width,tempEAXRevProp);
+					
+					//apply effect to sound producer track
+					effects_manager_ptr->ApplyThisEffectZoneEffectToThisTrack(thisTrack, &tempZone);
+					
+					//play track
+					effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(spt_selection_index);
+					
+					//delay for a few seconds 				
+					double duration = 4; //seconds
+					long endtime = ::wxGetLocalTime() + duration;
+					while( ::wxGetLocalTime() < endtime )
+					{	
+						::wxMilliSleep(100);
+					}
+					
+					//pause instead of stop to avoid crash with stopping source with effect applied
+					effects_manager_ptr->m_track_manager_ptr->PauseThisTrackFromSoundProducerTrackVector(spt_selection_index);
+					
+					//remove effect from sound producer track
+					effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
+					
+					//free effect
+					tempZone.FreeEffects();
 				}
 				
 				
-				//apply effect to sound producer track
-				effects_manager_ptr->ApplyThisEffectZoneEffectToThisTrack(thisTrack, &tempZone);
 				
-				//play track
-				effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(spt_selection_index);
-				
-				//delay for a few seconds 				
-				double duration = 4; //seconds
-				long endtime = ::wxGetLocalTime() + duration;
-				while( ::wxGetLocalTime() < endtime )
-				{	
-					::wxMilliSleep(100);
-				}
-				
-				//pause instead of stop to avoid crash with stopping source with effect applied
-				effects_manager_ptr->m_track_manager_ptr->PauseThisTrackFromSoundProducerTrackVector(spt_selection_index);
-				
-				//remove effect from sound producer track
-				effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
-				
-				//free effect
-				tempZone.FreeEffects();
 			}
 			else
 			{
@@ -572,68 +592,73 @@ void EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEven
 	m_selection_index = listboxReverbZones->GetSelection();
 	
 	
-	if(effects_manager_ptr->reverb_zones_vector.size() > 0)
+	if(effects_manager_ptr->effect_zones_vector.size() > 0)
 	{
-		ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
-		//wxString mystring( thisSoundProducer->GetNameString() );
-		//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;
+		EffectZone* thisZone = &effects_manager_ptr->effect_zones_vector.at(m_selection_index);
 		
-		//reset text fields
-		textFieldX->Clear();
-		textFieldY->Clear();
-		textFieldZ->Clear();
-		textFieldWidth->Clear();
-		
-		//update position text fields to have current position of sound producer selected
-		(*textFieldX) << thisReverbZone->GetPositionX();
-		(*textFieldY) << thisReverbZone->GetPositionY();
-		(*textFieldZ) << thisReverbZone->GetPositionZ();
-		(*textFieldWidth) << thisReverbZone->GetWidth();
-		
-		
-		
-		if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
+		if (dynamic_cast<ReverbZone*>(thisZone))
 		{
-			tempEAXRevProp = thisReverbZone->GetEAXReverbZoneProperties();
+			ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
 			
-			textField_flDensity->Clear();
-			(*textField_flDensity) << tempEAXRevProp.flDensity;
+			//wxString mystring( thisSoundProducer->GetNameString() );
+			//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;
 			
-			textField_flDiffusion->Clear();
-			(*textField_flDiffusion) << tempEAXRevProp.flDiffusion;
+			//reset text fields
+			textFieldX->Clear();
+			textFieldY->Clear();
+			textFieldZ->Clear();
+			textFieldWidth->Clear();
 			
-			textField_flGain->Clear();
-			(*textField_flGain) << tempEAXRevProp.flGain;
+			//update position text fields to have current position of sound producer selected
+			(*textFieldX) << thisReverbZone->GetPositionX();
+			(*textFieldY) << thisReverbZone->GetPositionY();
+			(*textFieldZ) << thisReverbZone->GetPositionZ();
+			(*textFieldWidth) << thisReverbZone->GetWidth();
 			
-			textField_flGainHF->Clear();
-			(*textField_flGainHF) << tempEAXRevProp.flGainHF;
 			
-			textField_flDecayTime->Clear();
-			(*textField_flDecayTime) << tempEAXRevProp.flDecayTime;
 			
-			textField_flDecayHFRatio->Clear();
-			(*textField_flDecayHFRatio) << tempEAXRevProp.flDecayHFRatio;
-			
-			textField_flReflectionsDelay->Clear(); 
-			(*textField_flReflectionsDelay) << tempEAXRevProp.flReflectionsDelay;
-			
-			textField_flLateReverbGain->Clear(); 
-			(*textField_flLateReverbGain) << tempEAXRevProp.flLateReverbGain;
-			
-			textField_flLateReverbDelay->Clear();
-			(*textField_flLateReverbDelay) << tempEAXRevProp.flLateReverbDelay;
-			 
-			textField_flReflectionsGain->Clear();
-			(*textField_flReflectionsGain) << tempEAXRevProp.flReflectionsGain;
-			
-			textField_flAirAbsorptionGainHF->Clear(); 
-			(*textField_flAirAbsorptionGainHF) << tempEAXRevProp.flAirAbsorptionGainHF; 
-			
-			textField_flRoomRolloffFactor->Clear();
-			(*textField_flRoomRolloffFactor) << tempEAXRevProp.flRoomRolloffFactor;
+			if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
+			{
+				tempEAXRevProp = thisReverbZone->GetEAXReverbZoneProperties();
+				
+				textField_flDensity->Clear();
+				(*textField_flDensity) << tempEAXRevProp.flDensity;
+				
+				textField_flDiffusion->Clear();
+				(*textField_flDiffusion) << tempEAXRevProp.flDiffusion;
+				
+				textField_flGain->Clear();
+				(*textField_flGain) << tempEAXRevProp.flGain;
+				
+				textField_flGainHF->Clear();
+				(*textField_flGainHF) << tempEAXRevProp.flGainHF;
+				
+				textField_flDecayTime->Clear();
+				(*textField_flDecayTime) << tempEAXRevProp.flDecayTime;
+				
+				textField_flDecayHFRatio->Clear();
+				(*textField_flDecayHFRatio) << tempEAXRevProp.flDecayHFRatio;
+				
+				textField_flReflectionsDelay->Clear(); 
+				(*textField_flReflectionsDelay) << tempEAXRevProp.flReflectionsDelay;
+				
+				textField_flLateReverbGain->Clear(); 
+				(*textField_flLateReverbGain) << tempEAXRevProp.flLateReverbGain;
+				
+				textField_flLateReverbDelay->Clear();
+				(*textField_flLateReverbDelay) << tempEAXRevProp.flLateReverbDelay;
+				 
+				textField_flReflectionsGain->Clear();
+				(*textField_flReflectionsGain) << tempEAXRevProp.flReflectionsGain;
+				
+				textField_flAirAbsorptionGainHF->Clear(); 
+				(*textField_flAirAbsorptionGainHF) << tempEAXRevProp.flAirAbsorptionGainHF; 
+				
+				textField_flRoomRolloffFactor->Clear();
+				(*textField_flRoomRolloffFactor) << tempEAXRevProp.flRoomRolloffFactor;
+			}
 		}
-		
-		
+
 	}
 }
 

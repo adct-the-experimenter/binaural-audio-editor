@@ -28,13 +28,13 @@ public:
 	void CreateEchoReverbZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties);
 	
 	//function to return a pointer to reverb zone vector
-	std::vector <ReverbZone> *GetReferenceToReverbZoneVector();
+	std::vector <EffectZone> *GetReferenceToEffectZoneVector();
 	
 	//function to return a pointer to reverb zone from index in vector
-	ReverbZone* GetPointerToReverbZone(size_t& index);
+	EffectZone* GetPointerToEffectZone(size_t& index);
 	
 	//function to run to apply reverb zone effect if listener is in reverb zone
-	void RunListenerInReverbZoneOperation();
+	void RunListenerInEffectZoneOperation();
 	
 	//function to free reverb zone effects
 	void FreeEffects();
@@ -57,10 +57,7 @@ private:
 	Listener* m_listener_ptr;
 	
 	//vector to contain many reverb zone objects
-	std::vector <ReverbZone> reverb_zones_vector;
-	
-	//vector to contain echo zone objects
-	std::vector <EchoZone> echo_zones_vector;
+	std::vector <EffectZone> effect_zones_vector;
 	
 	//function to perform the entire reverb thread operation of checking and setting reverb
 	void PerformReverbThreadOperation();

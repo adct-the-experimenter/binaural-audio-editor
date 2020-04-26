@@ -154,15 +154,21 @@ EditMultipleStandardReverbZonesDialog::EditMultipleStandardReverbZonesDialog(con
 	listboxReverbZones->Bind(wxEVT_LISTBOX,&EditMultipleStandardReverbZonesDialog::ReverbZoneSelectedInListBox,this);
 	
 	//add contents of reverb zones to listbox
-	for(size_t i = 0; i < effects_manager_ptr->GetReferenceToReverbZoneVector()->size(); i++)
+	for(size_t i = 0; i < effects_manager_ptr->GetReferenceToEffectZoneVector()->size(); i++)
 	{
-		ReverbZone* thisRevZone = effects_manager_ptr->GetPointerToReverbZone(i);
+		EffectZone* thisZone = effects_manager_ptr->GetPointerToEffectZone(i);
 		
-		if(thisRevZone->GetType() == ReverbZone::Type::STANDARD)
+		if (dynamic_cast<ReverbZone*>(thisZone))
 		{
-			wxString mystring( thisRevZone->GetNameString() );
-			listboxReverbZones->Append(mystring);
+			ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
+			
+			if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
+			{
+				wxString mystring( thisReverbZone->GetNameString() );
+				listboxReverbZones->Append(mystring);
+			}
 		}
+		
 	}
 	
 	//list box to contain names of Sound Producers to edit, single selection by default 
@@ -309,61 +315,69 @@ void EditMultipleStandardReverbZonesDialog::ChangeReverbZoneAttributes()
 {
 	if(m_selection_index != -1)
 	{
-		if(effects_manager_ptr->reverb_zones_vector.size() > 0)
+		if(effects_manager_ptr->effect_zones_vector.size() > 0)
 		{
 			
-			ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
-			
-			//change position of selected reverb zone based on what is in textfields
-			double xPosition, yPosition, zPosition;
-			
-			( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
-			( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
-			( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
-			
-			( textFieldWidth->GetLineText(0) ).ToDouble(&width);
-			
-			thisReverbZone->SetPositionX(xPosition);
-			thisReverbZone->SetPositionY(yPosition);
-			thisReverbZone->SetPositionZ(zPosition);
-			
-			if(width != thisReverbZone->GetWidth())
+			EffectZone* thisZone = &effects_manager_ptr->effect_zones_vector.at(m_selection_index);
+		
+			if (dynamic_cast<ReverbZone*>(thisZone))
 			{
-				thisReverbZone->ChangeWidth(width);
+				ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
+				
+				//change position of selected reverb zone based on what is in textfields
+				double xPosition, yPosition, zPosition;
+				
+				( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
+				( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
+				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+				
+				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
+				
+				thisReverbZone->SetPositionX(xPosition);
+				thisReverbZone->SetPositionY(yPosition);
+				thisReverbZone->SetPositionZ(zPosition);
+				
+				if(width != thisReverbZone->GetWidth())
+				{
+					thisReverbZone->ChangeWidth(width);
+				}
+				
+				if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
+				{
+					(textField_flDensity->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDensity);
+					
+					(textField_flDiffusion->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDiffusion);
+					
+					(textField_flGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGain);
+					
+					(textField_flGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGainHF);
+					
+					(textField_flDecayTime->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayTime);
+					
+					(textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayHFRatio);
+					
+					(textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsDelay);
+					
+					(textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbGain);
+					
+					(textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbDelay);
+					 
+					(textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsGain);
+					
+					(textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flAirAbsorptionGainHF); 
+					
+					(textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempStandardRevProp.flRoomRolloffFactor);
+				
+					thisReverbZone->ChangeStandardReverbZoneProperties(tempStandardRevProp);
+				}
+				else
+				{
+					//do nothing
+				}
+			
 			}
 			
-			if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
-			{
-				(textField_flDensity->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDensity);
-				
-				(textField_flDiffusion->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDiffusion);
-				
-				(textField_flGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGain);
-				
-				(textField_flGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGainHF);
-				
-				(textField_flDecayTime->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayTime);
-				
-				(textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayHFRatio);
-				
-				(textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsDelay);
-				
-				(textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbGain);
-				
-				(textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbDelay);
-				 
-				(textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsGain);
-				
-				(textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flAirAbsorptionGainHF); 
-				
-				(textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempStandardRevProp.flRoomRolloffFactor);
 			
-				thisReverbZone->ChangeStandardReverbZoneProperties(tempStandardRevProp);
-			}
-			else
-			{
-				//do nothing
-			}
 			
 		}
 	}
@@ -394,55 +408,64 @@ void EditMultipleStandardReverbZonesDialog::OnPreview(wxCommandEvent& event)
 				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
 				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
 				
-				ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
-				
-				if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
+				EffectZone* thisZone = &effects_manager_ptr->effect_zones_vector.at(m_selection_index);
+		
+				if (dynamic_cast<ReverbZone*>(thisZone))
 				{
+					ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
 					
-					( textField_flDensity->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDensity);
-					( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDiffusion);
-					( textField_flGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGain);
-					( textField_flGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGainHF);
-					( textField_flDecayTime->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayTime);
-					( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayHFRatio);
-					( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsGain);
-					( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsDelay);
-					( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbGain);
-					( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbDelay);
-					( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flAirAbsorptionGainHF);
-					( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempStandardRevProp.flRoomRolloffFactor);
+					if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
+					{
+						
+						( textField_flDensity->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDensity);
+						( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDiffusion);
+						( textField_flGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGain);
+						( textField_flGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGainHF);
+						( textField_flDecayTime->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayTime);
+						( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayHFRatio);
+						( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsGain);
+						( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsDelay);
+						( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbGain);
+						( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbDelay);
+						( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flAirAbsorptionGainHF);
+						( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempStandardRevProp.flRoomRolloffFactor);
+						
+						tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,tempStandardRevProp);
+					}
+					else
+					{
+						
+						//do nothing
+					}
 					
-					tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,tempStandardRevProp);
-				}
-				else
-				{
 					
-					//do nothing
+					//apply effect to sound producer track
+					effects_manager_ptr->ApplyThisEffectZoneEffectToThisTrack(thisTrack, &tempZone);
+					
+					//play track
+					effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(spt_selection_index);
+					
+					//delay for a few seconds 				
+					double duration = 4; //seconds
+					long endtime = ::wxGetLocalTime() + duration;
+					while( ::wxGetLocalTime() < endtime )
+					{	
+						::wxMilliSleep(100);
+					}
+					
+					//pause instead of stop to avoid crash with stopping source with effect applied
+					effects_manager_ptr->m_track_manager_ptr->PauseThisTrackFromSoundProducerTrackVector(spt_selection_index);
+					
+					//remove effect from sound producer track
+					effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
+					
+					//free effect
+					tempZone.FreeEffects();
+					
 				}
 				
 				
-				//apply effect to sound producer track
-				effects_manager_ptr->ApplyThisEffectZoneEffectToThisTrack(thisTrack, &tempZone);
 				
-				//play track
-				effects_manager_ptr->m_track_manager_ptr->PlayThisTrackFromSoundProducerTrackVector(spt_selection_index);
-				
-				//delay for a few seconds 				
-				double duration = 4; //seconds
-				long endtime = ::wxGetLocalTime() + duration;
-				while( ::wxGetLocalTime() < endtime )
-				{	
-					::wxMilliSleep(100);
-				}
-				
-				//pause instead of stop to avoid crash with stopping source with effect applied
-				effects_manager_ptr->m_track_manager_ptr->PauseThisTrackFromSoundProducerTrackVector(spt_selection_index);
-				
-				//remove effect from sound producer track
-				effects_manager_ptr->RemoveEffectFromThisTrack(thisTrack);
-				
-				//free effect
-				tempZone.FreeEffects();
 			}
 			else
 			{
@@ -493,70 +516,77 @@ void EditMultipleStandardReverbZonesDialog::ReverbZoneSelectedInListBox(wxComman
 	m_selection_index = listboxReverbZones->GetSelection();
 	
 	
-	if(effects_manager_ptr->reverb_zones_vector.size() > 0)
+	if(effects_manager_ptr->effect_zones_vector.size() > 0)
 	{
-		ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
-		//wxString mystring( thisSoundProducer->GetNameString() );
-		//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;
+		EffectZone* thisZone = &effects_manager_ptr->effect_zones_vector.at(m_selection_index);
 		
-		//reset text fields
-		textFieldX->Clear();
-		textFieldY->Clear();
-		textFieldZ->Clear();
-		textFieldWidth->Clear();
-		
-		//update position text fields to have current position of sound producer selected
-		(*textFieldX) << thisReverbZone->GetPositionX();
-		(*textFieldY) << thisReverbZone->GetPositionY();
-		(*textFieldZ) << thisReverbZone->GetPositionZ();
-		(*textFieldWidth) << thisReverbZone->GetWidth();
-		
-		
-		
-		if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
+		if (dynamic_cast<ReverbZone*>(thisZone))
 		{
-			tempStandardRevProp = thisReverbZone->GetStandardReverbZoneProperties();
+			ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
+			//wxString mystring( thisSoundProducer->GetNameString() );
+			//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;
+			
+			//reset text fields
+			textFieldX->Clear();
+			textFieldY->Clear();
+			textFieldZ->Clear();
+			textFieldWidth->Clear();
+			
+			//update position text fields to have current position of sound producer selected
+			(*textFieldX) << thisReverbZone->GetPositionX();
+			(*textFieldY) << thisReverbZone->GetPositionY();
+			(*textFieldZ) << thisReverbZone->GetPositionZ();
+			(*textFieldWidth) << thisReverbZone->GetWidth();
+			
+			
+			
+			if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
+			{
+				tempStandardRevProp = thisReverbZone->GetStandardReverbZoneProperties();
+			
+				textField_flDensity->Clear();
+				(*textField_flDensity) << tempStandardRevProp.flDensity;
+				
+				textField_flDiffusion->Clear();
+				(*textField_flDiffusion) << tempStandardRevProp.flDiffusion;
+				
+				textField_flGain->Clear();
+				(*textField_flGain) << tempStandardRevProp.flGain;
+				
+				textField_flGainHF->Clear();
+				(*textField_flGainHF) << tempStandardRevProp.flGainHF;
+				
+				textField_flDecayTime->Clear();
+				(*textField_flDecayTime) << tempStandardRevProp.flDecayTime;
+				
+				textField_flDecayHFRatio->Clear();
+				(*textField_flDecayHFRatio) << tempStandardRevProp.flDecayHFRatio;
+				
+				textField_flReflectionsDelay->Clear(); 
+				(*textField_flReflectionsDelay) << tempStandardRevProp.flReflectionsDelay;
+				
+				textField_flLateReverbGain->Clear(); 
+				(*textField_flLateReverbGain) << tempStandardRevProp.flLateReverbGain;
+				
+				textField_flLateReverbDelay->Clear();
+				(*textField_flLateReverbDelay) << tempStandardRevProp.flLateReverbDelay;
+				 
+				textField_flReflectionsGain->Clear();
+				(*textField_flReflectionsGain) << tempStandardRevProp.flReflectionsGain;
+				
+				textField_flAirAbsorptionGainHF->Clear(); 
+				(*textField_flAirAbsorptionGainHF) << tempStandardRevProp.flAirAbsorptionGainHF; 
+				
+				textField_flRoomRolloffFactor->Clear();
+				(*textField_flRoomRolloffFactor) << tempStandardRevProp.flRoomRolloffFactor;
+			}
+			else
+			{
+				//do nothing
+			}
+		}
 		
-			textField_flDensity->Clear();
-			(*textField_flDensity) << tempStandardRevProp.flDensity;
-			
-			textField_flDiffusion->Clear();
-			(*textField_flDiffusion) << tempStandardRevProp.flDiffusion;
-			
-			textField_flGain->Clear();
-			(*textField_flGain) << tempStandardRevProp.flGain;
-			
-			textField_flGainHF->Clear();
-			(*textField_flGainHF) << tempStandardRevProp.flGainHF;
-			
-			textField_flDecayTime->Clear();
-			(*textField_flDecayTime) << tempStandardRevProp.flDecayTime;
-			
-			textField_flDecayHFRatio->Clear();
-			(*textField_flDecayHFRatio) << tempStandardRevProp.flDecayHFRatio;
-			
-			textField_flReflectionsDelay->Clear(); 
-			(*textField_flReflectionsDelay) << tempStandardRevProp.flReflectionsDelay;
-			
-			textField_flLateReverbGain->Clear(); 
-			(*textField_flLateReverbGain) << tempStandardRevProp.flLateReverbGain;
-			
-			textField_flLateReverbDelay->Clear();
-			(*textField_flLateReverbDelay) << tempStandardRevProp.flLateReverbDelay;
-			 
-			textField_flReflectionsGain->Clear();
-			(*textField_flReflectionsGain) << tempStandardRevProp.flReflectionsGain;
-			
-			textField_flAirAbsorptionGainHF->Clear(); 
-			(*textField_flAirAbsorptionGainHF) << tempStandardRevProp.flAirAbsorptionGainHF; 
-			
-			textField_flRoomRolloffFactor->Clear();
-			(*textField_flRoomRolloffFactor) << tempStandardRevProp.flRoomRolloffFactor;
-		}
-		else
-		{
-			//do nothing
-		}
+		
 		
 		
 	}

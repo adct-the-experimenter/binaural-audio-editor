@@ -220,4 +220,10 @@ void EffectZone::SetColor(ZoneColor color)
 	}
 }
 
-
+ALuint* EffectZone::GetEffectPointer(){return nullptr;}
+ALuint* EffectZone::GetEffectsSlotPointer(){return nullptr;}
+	
+ALuint EffectZone::GetEffect(){return 0;}
+ALuint EffectZone::GetEffectsSlot(){return 0;}
+	
+void EffectZone::FreeEffects(){}

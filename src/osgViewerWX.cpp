@@ -824,7 +824,7 @@ void MainFrame::OnCreateStandardReverbZone(wxCommandEvent& event)
 		effectsManagerPtr->CreateStandardReverbZone(name,x,y,z,width,properties);
 		
 		//add position attitude transform to root group of nodes
-		_rootNode->addChild( (effectsManagerPtr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back().getTransformNode() );
 	}
 
 }
@@ -853,7 +853,7 @@ void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
 		effectsManagerPtr->CreateEAXReverbZone(name,x,y,z,width,properties);
 		
 		//add position attitude transform to root group of nodes
-		_rootNode->addChild( (effectsManagerPtr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back().getTransformNode() );
 	}
 
 }

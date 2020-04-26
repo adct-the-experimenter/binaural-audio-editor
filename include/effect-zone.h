@@ -74,13 +74,13 @@ public:
 	//OpenAL Soft effects properties
 	
 	
-	virtual ALuint* GetEffectPointer() = 0;
-	virtual ALuint* GetEffectsSlotPointer() = 0;
+	virtual ALuint* GetEffectPointer();
+	virtual ALuint* GetEffectsSlotPointer();
 	
-	virtual ALuint GetEffect() = 0;
-	virtual ALuint GetEffectsSlot() = 0;
+	virtual ALuint GetEffect();
+	virtual ALuint GetEffectsSlot();
 	
-	virtual void FreeEffects() = 0;
+	virtual void FreeEffects();
 	
 	
     

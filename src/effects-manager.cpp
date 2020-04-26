@@ -17,9 +17,10 @@ void EffectsManager::CreateStandardReverbZone(std::string& name, double& x, doub
 {
 	ReverbZone r_zone;
 	
-	reverb_zones_vector.push_back(r_zone);
+	r_zone.InitStandardReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 	
-	reverb_zones_vector.back().InitStandardReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
+	effect_zones_vector.push_back(r_zone);
+	
 }
 
 
@@ -27,36 +28,38 @@ void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y
 {
 	ReverbZone r_zone;
 	
-	reverb_zones_vector.push_back(r_zone);
+	r_zone.InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 	
-	reverb_zones_vector.back().InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
+	effect_zones_vector.push_back(r_zone);
+	
 }
 
 void EffectsManager::CreateEchoReverbZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties)
 {
 	EchoZone e_zone;
 	
-	echo_zones_vector.push_back(e_zone);
+	e_zone.InitEchoZoneWithGraphicalObject(name,x,y,z,width,properties);
 	
-	echo_zones_vector.back().InitEchoZoneWithGraphicalObject(name,x,y,z,width,properties);
+	effect_zones_vector.push_back(e_zone);
+	
 }
 
-std::vector <ReverbZone> *EffectsManager::GetReferenceToReverbZoneVector(){return &reverb_zones_vector;}
+std::vector <EffectZone> *EffectsManager::GetReferenceToEffectZoneVector(){return &effect_zones_vector;}
 
-ReverbZone* EffectsManager::GetPointerToReverbZone(size_t& index){return &reverb_zones_vector[index];}
+EffectZone* EffectsManager::GetPointerToEffectZone(size_t& index){return &effect_zones_vector[index];}
 
 void EffectsManager::PerformReverbThreadOperation()
 {
 	//if sound is being played and there are reverb zones
-	if(m_track_manager_ptr->IsSoundBeingPlayed() && reverb_zones_vector.size() > 0)
+	if(m_track_manager_ptr->IsSoundBeingPlayed() && effect_zones_vector.size() > 0)
 	{
-		for(size_t i = 0; i < reverb_zones_vector.size(); i++)
+		for(size_t i = 0; i < effect_zones_vector.size(); i++)
 		{
 			//check if listener is in reverb zone
-			ReverbZone* thisZone = &reverb_zones_vector[i];
+			EffectZone* thisZone = &effect_zones_vector[i];
 			
 			//check if zone is initialized
-			if(thisZone->GetType() != ReverbZone::Type::NONE && thisZone->getTransformNode() != nullptr)
+			if( thisZone->getTransformNode() != nullptr)
 			{
 				if(EffectsManager::IsListenerInThisEffectZone(thisZone))
 				{
@@ -166,7 +169,7 @@ void EffectsManager::ApplyThisEffectZoneEffectToThisTrack(SoundProducerTrack* th
 	 */
 	
 	ALuint* thisSource = thisSoundProducerTrack->GetReferenceToTrackSource();
-	 
+	
 	alSource3i(*thisSource, AL_AUXILIARY_SEND_FILTER, (ALint)(*thisZone->GetEffectsSlotPointer()), 0, AL_FILTER_NULL);
 	assert(alGetError()== AL_NO_ERROR && "Failed to setup effect for sound source send 0.");
 	
@@ -191,8 +194,8 @@ std::vector <SoundProducerTrack*> *EffectsManager::GetReferenceToSoundProducerTr
 void EffectsManager::FreeEffects()
 {
 	std::cout << "Freeing effects...\n";
-	for(size_t i=0; i < reverb_zones_vector.size(); i++)
+	for(size_t i=0; i < effect_zones_vector.size(); i++)
 	{
-		reverb_zones_vector[i].FreeEffects();
+		effect_zones_vector[i].FreeEffects();
 	}
 }
