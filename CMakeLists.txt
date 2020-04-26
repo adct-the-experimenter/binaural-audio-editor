@@ -43,6 +43,7 @@ set(SOURCES src/osgViewerWX.cpp
 			src/CreateStandardReverbZoneDialog.cpp src/EditMultipleStandardReverbZonesDialog.cpp 
 			src/CreateEAXReverbZoneDialog.cpp src/EditMultipleEAXReverbZonesDialog.cpp 
 			src/CreateEchoZoneDialog.cpp
+			src/echo-zone.cpp
 			src/reverb-zone.cpp
 			src/effects-manager.cpp
 			src/soundproducer-track-manager.cpp
