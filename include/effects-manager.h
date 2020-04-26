@@ -38,7 +38,8 @@ public:
 	friend class CheckListenerReverbZoneThread;
 	friend class CreateEAXReverbZoneDialog;
 	friend class CreateStandardReverbZoneDialog;
-	friend class EditMultipleReverbZonesDialog;
+	friend class EditMultipleStandardReverbZonesDialog;
+	friend class EditMultipleEAXReverbZonesDialog;
 	
 private:
 	

@@ -1,10 +1,10 @@
-#include "EditMultipleStandardReverbZonesDialog.h"
+#include "EditMultipleEAXReverbZonesDialog.h"
 
-EditMultipleStandardReverbZonesDialog::EditMultipleStandardReverbZonesDialog(const wxString& title,EffectsManager* effects_manager)
+EditMultipleEAXReverbZonesDialog::EditMultipleEAXReverbZonesDialog(const wxString& title,EffectsManager* effects_manager)
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
 {
 	
-	EditMultipleStandardReverbZonesDialog::initPrivateVariables();
+	EditMultipleEAXReverbZonesDialog::initPrivateVariables();
 	
 	effects_manager_ptr = effects_manager;
 
@@ -168,20 +168,25 @@ EditMultipleStandardReverbZonesDialog::EditMultipleStandardReverbZonesDialog(con
 	//list box to contain names of Sound Producers to edit, single selection by default 
 	listboxReverbZones = new wxListBox(this, wxID_ANY, wxPoint(0, 0), wxSize(100, 20)); 
 	
-	listboxReverbZones->Bind(wxEVT_LISTBOX,&EditMultipleStandardReverbZonesDialog::ReverbZoneSelectedInListBox,this);
+	listboxReverbZones->Bind(wxEVT_LISTBOX,&EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox,this);
 	
 	//add contents of reverb zones to listbox
 	for(size_t i = 0; i < effects_manager_ptr->GetReferenceToReverbZoneVector()->size(); i++)
 	{
 		ReverbZone* thisRevZone = effects_manager_ptr->GetPointerToReverbZone(i);
-		wxString mystring( thisRevZone->GetNameString() );
-		listboxReverbZones->Append(mystring);
+		
+		if(thisRevZone->GetType() == ReverbZone::Type::EAX)
+		{
+			wxString mystring( thisRevZone->GetNameString() );
+			listboxReverbZones->Append(mystring);
+		}
+		
 	}
 	
 	//list box to contain names of Sound Producers to edit, single selection by default 
 	listboxSoundProducers = new wxListBox(this, wxID_ANY,wxPoint(0, 0), wxSize(100, 20)); 
 	
-	listboxSoundProducers->Bind(wxEVT_LISTBOX,&EditMultipleStandardReverbZonesDialog::SoundProducerTrackSelectedInListBox,this);
+	listboxSoundProducers->Bind(wxEVT_LISTBOX,&EditMultipleEAXReverbZonesDialog::SoundProducerTrackSelectedInListBox,this);
 	
 	//add contents of soundproducers to listbox
 	if(effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size() > 0)
@@ -206,22 +211,22 @@ EditMultipleStandardReverbZonesDialog::EditMultipleStandardReverbZonesDialog(con
 	okButton = new wxButton(this, wxID_ANY, wxT("Ok"), 
 							wxDefaultPosition, wxSize(70, 30));
 	
-	okButton->Bind(wxEVT_BUTTON,&EditMultipleStandardReverbZonesDialog::OnOk,this);
+	okButton->Bind(wxEVT_BUTTON,&EditMultipleEAXReverbZonesDialog::OnOk,this);
 	
 	applyButton = new wxButton(this, wxID_ANY, wxT("Apply"), 
 							wxDefaultPosition, wxSize(70, 30));
 	
-	applyButton->Bind(wxEVT_BUTTON,&EditMultipleStandardReverbZonesDialog::OnApply,this);
+	applyButton->Bind(wxEVT_BUTTON,&EditMultipleEAXReverbZonesDialog::OnApply,this);
 	
 	cancelButton = new wxButton(this, wxID_ANY, wxT("Cancel"), 
 								wxDefaultPosition, wxSize(70, 30));
 	
-	cancelButton->Bind(wxEVT_BUTTON,&EditMultipleStandardReverbZonesDialog::OnCancel,this);
+	cancelButton->Bind(wxEVT_BUTTON,&EditMultipleEAXReverbZonesDialog::OnCancel,this);
 	
 	previewButton = new wxButton(this, wxID_ANY, wxT("Preview"), 
 								wxDefaultPosition, wxSize(70, 30));
 	
-	previewButton->Bind(wxEVT_BUTTON,&EditMultipleStandardReverbZonesDialog::OnPreview,this);
+	previewButton->Bind(wxEVT_BUTTON,&EditMultipleEAXReverbZonesDialog::OnPreview,this);
 
 	//Make vertical box to put horizontal boxes in
 	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
@@ -312,7 +317,7 @@ EditMultipleStandardReverbZonesDialog::EditMultipleStandardReverbZonesDialog(con
 	Destroy(); 
 }
 
-void EditMultipleStandardReverbZonesDialog::initPrivateVariables()
+void EditMultipleEAXReverbZonesDialog::initPrivateVariables()
 {
 	m_selection_index = -1;
 	spt_selection_index = -1;
@@ -324,7 +329,7 @@ void EditMultipleStandardReverbZonesDialog::initPrivateVariables()
 }
 
 
-void EditMultipleStandardReverbZonesDialog::ChangeReverbZoneAttributes()
+void EditMultipleEAXReverbZonesDialog::ChangeReverbZoneAttributes()
 {
 	if(m_selection_index != -1)
 	{
@@ -351,35 +356,7 @@ void EditMultipleStandardReverbZonesDialog::ChangeReverbZoneAttributes()
 				thisReverbZone->ChangeWidth(width);
 			}
 			
-			if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
-			{
-				(textField_flDensity->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDensity);
-				
-				(textField_flDiffusion->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDiffusion);
-				
-				(textField_flGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGain);
-				
-				(textField_flGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGainHF);
-				
-				(textField_flDecayTime->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayTime);
-				
-				(textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayHFRatio);
-				
-				(textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsDelay);
-				
-				(textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbGain);
-				
-				(textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbDelay);
-				 
-				(textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsGain);
-				
-				(textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flAirAbsorptionGainHF); 
-				
-				(textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempStandardRevProp.flRoomRolloffFactor);
-			
-				thisReverbZone->ChangeStandardReverbZoneProperties(tempStandardRevProp);
-			}
-			else
+			if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
 			{
 				(textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
 				
@@ -413,7 +390,7 @@ void EditMultipleStandardReverbZonesDialog::ChangeReverbZoneAttributes()
 	
 }
 
-void EditMultipleStandardReverbZonesDialog::OnPreview(wxCommandEvent& event)
+void EditMultipleEAXReverbZonesDialog::OnPreview(wxCommandEvent& event)
 {
 	
 	if(effects_manager_ptr->GetReferenceToSoundProducerTracksVector()->size() > 0)
@@ -439,25 +416,7 @@ void EditMultipleStandardReverbZonesDialog::OnPreview(wxCommandEvent& event)
 				
 				ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
 				
-				if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
-				{
-					
-					( textField_flDensity->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDensity);
-					( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDiffusion);
-					( textField_flGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGain);
-					( textField_flGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flGainHF);
-					( textField_flDecayTime->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayTime);
-					( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDecayHFRatio);
-					( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsGain);
-					( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flReflectionsDelay);
-					( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbGain);
-					( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempStandardRevProp.flLateReverbDelay);
-					( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempStandardRevProp.flAirAbsorptionGainHF);
-					( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempStandardRevProp.flRoomRolloffFactor);
-					
-					tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,tempStandardRevProp);
-				}
-				else
+				if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
 				{
 					
 					( textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
@@ -512,24 +471,24 @@ void EditMultipleStandardReverbZonesDialog::OnPreview(wxCommandEvent& event)
 	}
 }
 
-void EditMultipleStandardReverbZonesDialog::OnApply(wxCommandEvent& event)
+void EditMultipleEAXReverbZonesDialog::OnApply(wxCommandEvent& event)
 {
-	EditMultipleStandardReverbZonesDialog::ChangeReverbZoneAttributes();	
+	EditMultipleEAXReverbZonesDialog::ChangeReverbZoneAttributes();	
 }
 
-void EditMultipleStandardReverbZonesDialog::OnOk(wxCommandEvent& event )
+void EditMultipleEAXReverbZonesDialog::OnOk(wxCommandEvent& event )
 {
-	EditMultipleStandardReverbZonesDialog::ChangeReverbZoneAttributes();
+	EditMultipleEAXReverbZonesDialog::ChangeReverbZoneAttributes();
 	
-	EditMultipleStandardReverbZonesDialog::Exit();
+	EditMultipleEAXReverbZonesDialog::Exit();
 }
 
-void EditMultipleStandardReverbZonesDialog::OnCancel(wxCommandEvent& event)
+void EditMultipleEAXReverbZonesDialog::OnCancel(wxCommandEvent& event)
 {
-	EditMultipleStandardReverbZonesDialog::Exit();
+	EditMultipleEAXReverbZonesDialog::Exit();
 }
 
-void EditMultipleStandardReverbZonesDialog::Exit()
+void EditMultipleEAXReverbZonesDialog::Exit()
 {
 	if(okButton != nullptr){ delete okButton;}
 	if(applyButton != nullptr){ delete applyButton;}
@@ -543,7 +502,7 @@ void EditMultipleStandardReverbZonesDialog::Exit()
     Close( true ); //close window
 }
 
-void EditMultipleStandardReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEvent& event )
+void EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEvent& event )
 {
 	//std::cout << "\nSelected sound producer! " <<  listboxReverbZones->GetSelection() << " item on the list.\n";
 	m_selection_index = listboxReverbZones->GetSelection();
@@ -569,47 +528,7 @@ void EditMultipleStandardReverbZonesDialog::ReverbZoneSelectedInListBox(wxComman
 		
 		
 		
-		if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
-		{
-			tempStandardRevProp = thisReverbZone->GetStandardReverbZoneProperties();
-		
-			textField_flDensity->Clear();
-			(*textField_flDensity) << tempStandardRevProp.flDensity;
-			
-			textField_flDiffusion->Clear();
-			(*textField_flDiffusion) << tempStandardRevProp.flDiffusion;
-			
-			textField_flGain->Clear();
-			(*textField_flGain) << tempStandardRevProp.flGain;
-			
-			textField_flGainHF->Clear();
-			(*textField_flGainHF) << tempStandardRevProp.flGainHF;
-			
-			textField_flDecayTime->Clear();
-			(*textField_flDecayTime) << tempStandardRevProp.flDecayTime;
-			
-			textField_flDecayHFRatio->Clear();
-			(*textField_flDecayHFRatio) << tempStandardRevProp.flDecayHFRatio;
-			
-			textField_flReflectionsDelay->Clear(); 
-			(*textField_flReflectionsDelay) << tempStandardRevProp.flReflectionsDelay;
-			
-			textField_flLateReverbGain->Clear(); 
-			(*textField_flLateReverbGain) << tempStandardRevProp.flLateReverbGain;
-			
-			textField_flLateReverbDelay->Clear();
-			(*textField_flLateReverbDelay) << tempStandardRevProp.flLateReverbDelay;
-			 
-			textField_flReflectionsGain->Clear();
-			(*textField_flReflectionsGain) << tempStandardRevProp.flReflectionsGain;
-			
-			textField_flAirAbsorptionGainHF->Clear(); 
-			(*textField_flAirAbsorptionGainHF) << tempStandardRevProp.flAirAbsorptionGainHF; 
-			
-			textField_flRoomRolloffFactor->Clear();
-			(*textField_flRoomRolloffFactor) << tempStandardRevProp.flRoomRolloffFactor;
-		}
-		else
+		if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
 		{
 			tempEAXRevProp = thisReverbZone->GetEAXReverbZoneProperties();
 			
@@ -654,7 +573,7 @@ void EditMultipleStandardReverbZonesDialog::ReverbZoneSelectedInListBox(wxComman
 	}
 }
 
-void EditMultipleStandardReverbZonesDialog::SoundProducerTrackSelectedInListBox(wxCommandEvent& event )
+void EditMultipleEAXReverbZonesDialog::SoundProducerTrackSelectedInListBox(wxCommandEvent& event )
 {
 	spt_selection_index = listboxSoundProducers->GetSelection();
 }
