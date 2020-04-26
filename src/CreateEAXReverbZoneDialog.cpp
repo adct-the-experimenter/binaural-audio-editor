@@ -9,135 +9,174 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 	
 	//initialize text fields
 	
-	wxFloatingPointValidator <double> validator(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator.SetRange(-10.00,10.00);     // set allowable range
+	wxFloatingPointValidator <double> validatorFloat(3,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    validatorFloat.SetRange(0.00,10.00);     // set allowable range
     
-    wxFloatingPointValidator <double> validatorWidth(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validatorWidth.SetRange(1.00,30.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0To10(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0To10.SetRange(0.00,10.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0To1(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0To1.SetRange(0.00,1.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p1To20(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p1To20.SetRange(0.10,20.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p1To2p0(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p1To2p0.SetRange(0.10,2.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p0To0p3(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p0To0p3.SetRange(0.00,0.30);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p0To0p1(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p0To0p1.SetRange(0.00,0.10);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p0To3p16(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p0To3p16.SetRange(0.00,3.16);     // set allowable range
-    
-    wxFloatingPointValidator <double> airValidator(3,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    airValidator.SetRange(0.892,1.00);     // set allowable range
     
     textFieldName = new wxTextCtrl(this,-1, "Name", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER);
     
+    validatorFloat.SetRange(0.00,100.00);     // set allowable range
 	textFieldX = new wxTextCtrl(this,-1, "0.00", 
 								wxPoint(95, 60), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
-								
+	
 	textFieldY = new wxTextCtrl(this,-1, "0.00", 
 								wxPoint(95, 80), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 								
 	textFieldZ = new wxTextCtrl(this,-1, "0.00", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT("")); 
 	
+	validatorFloat.SetRange(0.00,30.00);     // set allowable range
 	textFieldWidth = new wxTextCtrl(this,-1, "2.00", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validatorWidth,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	 
+	validatorFloat.SetRange(0.0,1.0);     // set allowable range
 	textField_flDensity = new wxTextCtrl(this,-1, "1.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To1,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
 	textField_flDiffusion = new wxTextCtrl(this,-1, "1.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To1,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
+	
 	
 	textField_flGain = new wxTextCtrl(this,-1, "0.32", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To1,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
 	textField_flGainHF = new wxTextCtrl(this,-1, "0.89", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To1,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
+	textField_flGainLF = new wxTextCtrl(this,-1, "0.89", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,          // associate the text box with the desired validator
+								wxT(""));
+	
+	validatorFloat.SetRange(0.00,20.00);     // set allowable range
 	textField_flDecayTime = new wxTextCtrl(this,-1, "1.49", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0p1To20,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
 	textField_flDecayHFRatio = new wxTextCtrl(this,-1, "0.83", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0p1To2p0,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
+	textField_flDecayLFRatio = new wxTextCtrl(this,-1, "0.83", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,          // associate the text box with the desired validator
+								wxT(""));
+	
+	validatorFloat.SetRange(0.00,3.16);     // set allowable range
 	textField_flReflectionsDelay = new wxTextCtrl(this,-1, "0.007", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0p0To0p3,
+								validatorFloat,
 								wxT(""));
 	
-	textField_flLateReverbGain = new wxTextCtrl(this,-1, "1.26", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validator0To10,
-								wxT(""));
-	
-	textField_flLateReverbDelay = new wxTextCtrl(this,-1, "0.011", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validator0p0To0p1,
-								wxT(""));
-								
+	validatorFloat.SetRange(0.00,0.3);     // set allowable range
 	textField_flReflectionsGain = new wxTextCtrl(this,-1, "0.05", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0p0To3p16,
+								validatorFloat,
 								wxT(""));
 	
+	validatorFloat.SetRange(0.00,10.0);     // set allowable range
+	textField_flLateReverbGain = new wxTextCtrl(this,-1, "1.26", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
+								wxT(""));
+	
+	validatorFloat.SetRange(0.00,0.1);     // set allowable range
+	textField_flLateReverbDelay = new wxTextCtrl(this,-1, "0.011", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
+								wxT(""));
+
+	validatorFloat.SetRange(0.075,0.25);     // set allowable range
+	textField_flEchoTime = new wxTextCtrl(this,-1, "0.05", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
+								wxT(""));
+
+	validatorFloat.SetRange(0.00,1.0);     // set allowable range							
+	textField_flEchoDepth = new wxTextCtrl(this,-1, "0.05", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
+								wxT(""));
+    
+    validatorFloat.SetRange(0.004,4.0);     // set allowable range									
+	textField_flModulationTime = new wxTextCtrl(this,-1, "0.05", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
+								wxT(""));
+	
+	
+	validatorFloat.SetRange(0.00,1.0);     // set allowable range
+	textField_flModulationDepth = new wxTextCtrl(this,-1, "0.05", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
+								wxT(""));
+	
+	validatorFloat.SetRange(1000.00,20000.0);     // set allowable range
+	textField_flHFReference = new wxTextCtrl(this,-1, "1000", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
+								wxT(""));
+								
+    validatorFloat.SetRange(20.0,1000.0);     // set allowable range								
+	textField_flLFReference = new wxTextCtrl(this,-1, "250.0", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
+								wxT(""));
+	
+	validatorFloat.SetRange(0.892,1.0);     // set allowable range
 	textField_flAirAbsorptionGainHF = new wxTextCtrl(this,-1, "0.994", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								airValidator,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
+	validatorFloat.SetRange(0.00,10.0);     // set allowable range
 	textField_flRoomRolloffFactor = new wxTextCtrl(this,-1, "0.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To10,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
 	
@@ -155,10 +194,20 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 	wxStaticText* flDiffusionText = new wxStaticText(this, -1, wxT("diffusion:"), wxPoint(40, 120));
 	wxStaticText* flGainText = new wxStaticText(this, -1, wxT("gain:"), wxPoint(40, 120));
 	wxStaticText* flGainHFText = new wxStaticText(this, -1, wxT("gain HF:"), wxPoint(40, 120));
+	wxStaticText* flGainLFText = new wxStaticText(this, -1, wxT("gain LF:"), wxPoint(40, 120));
 	wxStaticText* flDecayTimeText = new wxStaticText(this, -1, wxT("decay time:"), wxPoint(40, 120));
 	wxStaticText* flDecayHFRatioText = new wxStaticText(this, -1, wxT("decay HF ratio:"), wxPoint(40, 120));
+	wxStaticText* flDecayLFRatioText = new wxStaticText(this, -1, wxT("decay LF ratio:"), wxPoint(40, 120));
 	wxStaticText* flLateReverbGainText = new wxStaticText(this, -1, wxT("late reverb gain:"), wxPoint(40, 120));
 	wxStaticText* flLateReverbDelayText = new wxStaticText(this, -1, wxT("late reverb delay:"), wxPoint(40, 120));						
+	
+	wxStaticText* flEchoTimeText = new wxStaticText(this, -1, wxT("echo time:"), wxPoint(40, 120));						
+	wxStaticText* flEchoDepthText = new wxStaticText(this, -1, wxT("echo depth:"), wxPoint(40, 120));						
+	wxStaticText* flModulationTimeText = new wxStaticText(this, -1, wxT("modulation time:"), wxPoint(40, 120));						
+	wxStaticText* flModulationDepthText = new wxStaticText(this, -1, wxT("modulation depth:"), wxPoint(40, 120));						
+	wxStaticText* flHFReferenceText = new wxStaticText(this, -1, wxT("HF Reference:"), wxPoint(40, 120));						
+	wxStaticText* flLFReferenceText = new wxStaticText(this, -1, wxT("LF Reference:"), wxPoint(40, 120));						
+	
 	wxStaticText* flReflectionsGainText = new wxStaticText(this, -1, wxT("reflections gain:"), wxPoint(40, 120));
 	wxStaticText* flReflectionsDelayText = new wxStaticText(this, -1, wxT("reflections delay:"), wxPoint(40, 120));
 	wxStaticText* flAirAbsorptionGainHFText = new wxStaticText(this, -1, wxT("air absorption:"), wxPoint(40, 120));
@@ -260,12 +309,14 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 	wxBoxSizer *hboxReverbRow2 = new wxBoxSizer(wxHORIZONTAL);
 	hboxReverbRow2->Add(flGainText); hboxReverbRow2->Add(textField_flGain);
 	hboxReverbRow2->Add(flGainHFText); hboxReverbRow2->Add(textField_flGainHF);
+	hboxReverbRow2->Add(flGainLFText); hboxReverbRow2->Add(textField_flGainLF);
 	
 	vbox->Add(hboxReverbRow2,1, wxEXPAND | wxALL, 10);
 	
 	wxBoxSizer *hboxReverbRow3 = new wxBoxSizer(wxHORIZONTAL);
 	hboxReverbRow3->Add(flDecayTimeText); hboxReverbRow3->Add(textField_flDecayTime);
 	hboxReverbRow3->Add(flDecayHFRatioText); hboxReverbRow3->Add(textField_flDecayHFRatio);
+	hboxReverbRow3->Add(flDecayLFRatioText); hboxReverbRow3->Add(textField_flDecayLFRatio);
 	
 	vbox->Add(hboxReverbRow3,1, wxEXPAND | wxALL, 10);
 	
@@ -274,6 +325,24 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 	hboxReverbRow4->Add(flLateReverbDelayText); hboxReverbRow4->Add(textField_flLateReverbDelay);
 	
 	vbox->Add(hboxReverbRow4,1, wxEXPAND | wxALL, 10);
+	
+	wxBoxSizer *hBoxEAXRow1 = new wxBoxSizer(wxHORIZONTAL);
+	hBoxEAXRow1->Add(flEchoDepthText); hBoxEAXRow1->Add(textField_flEchoDepth);
+	hBoxEAXRow1->Add(flEchoTimeText); hBoxEAXRow1->Add(textField_flEchoTime);
+	
+	vbox->Add(hBoxEAXRow1,1, wxEXPAND | wxALL, 10);
+	
+	wxBoxSizer *hBoxEAXRow2 = new wxBoxSizer(wxHORIZONTAL);
+	hBoxEAXRow2->Add(flModulationDepthText); hBoxEAXRow2->Add(textField_flModulationDepth);
+	hBoxEAXRow2->Add(flModulationTimeText); hBoxEAXRow2->Add(textField_flModulationTime);
+	
+	vbox->Add(hBoxEAXRow2,1, wxEXPAND | wxALL, 10);
+	
+	wxBoxSizer *hBoxEAXRow3 = new wxBoxSizer(wxHORIZONTAL);
+	hBoxEAXRow3->Add(flLFReferenceText); hBoxEAXRow3->Add(textField_flLFReference);
+	hBoxEAXRow3->Add(flHFReferenceText); hBoxEAXRow3->Add(textField_flHFReference);
+	
+	vbox->Add(hBoxEAXRow3,1, wxEXPAND | wxALL, 10);
 	
 	wxBoxSizer *hboxReverbRow5 = new wxBoxSizer(wxHORIZONTAL);
 	hboxReverbRow5->Add(flReflectionsGainText); hboxReverbRow5->Add(textField_flReflectionsGain);

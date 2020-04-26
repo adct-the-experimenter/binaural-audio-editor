@@ -75,10 +75,14 @@ private:
 	wxTextCtrl* textField_flGain;
 	//AL_REVERB_GAINHF, 
 	wxTextCtrl* textField_flGainHF;
+	//AL_EAXREVERB_GAINLF, 
+	wxTextCtrl* textField_flGainLF;
 	//AL_REVERB_DECAY_TIME, 
 	wxTextCtrl* textField_flDecayTime;
 	//AL_REVERB_DECAY_HFRATIO, 
 	wxTextCtrl* textField_flDecayHFRatio;
+	//AL_EAXREVERB_DECAY_LFRATIO, 
+	wxTextCtrl* textField_flDecayLFRatio;
 	//AL_REVERB_REFLECTIONS_GAIN, 
 	wxTextCtrl* textField_flReflectionsGain;
 	//AL_REVERB_REFLECTIONS_DELAY, 
@@ -87,6 +91,18 @@ private:
 	wxTextCtrl* textField_flLateReverbGain;
 	//AL_REVERB_LATE_REVERB_DELAY, 
 	wxTextCtrl* textField_flLateReverbDelay;
+	//AL_EAXREVERB_ECHO_TIME, 
+	wxTextCtrl* textField_flEchoTime;
+	//AL_EAXREVERB_ECHO_DEPTH, 
+	wxTextCtrl* textField_flEchoDepth;
+	//AL_EAXREVERB_MODULATION_TIME, 
+	wxTextCtrl* textField_flModulationTime;
+	//AL_EAXREVERB_MODULATION_DEPTH, 
+	wxTextCtrl* textField_flModulationDepth;
+	//AL_EAXREVERB_HFREFERENCE, 
+	wxTextCtrl* textField_flHFReference;
+	//AL_EAXREVERB_LFREFERENCE, 
+	wxTextCtrl* textField_flLFReference;
 	//AL_REVERB_AIR_ABSORPTION_GAINHF, 
 	wxTextCtrl* textField_flAirAbsorptionGainHF;
 	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
