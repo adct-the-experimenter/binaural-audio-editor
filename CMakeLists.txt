@@ -42,7 +42,7 @@ include_directories(/usr/include /usr/local/include ./include ./src/timeline-tra
 set(SOURCES src/osgViewerWX.cpp
 			src/CreateStandardReverbZoneDialog.cpp src/EditMultipleStandardReverbZonesDialog.cpp 
 			src/CreateEAXReverbZoneDialog.cpp src/EditMultipleEAXReverbZonesDialog.cpp 
-			src/CreateEchoZoneDialog.cpp
+			src/CreateEchoZoneDialog.cpp src/EditMultipleEchoZonesDialog.cpp
 			src/echo-zone.cpp
 			src/reverb-zone.cpp
 			src/effect-zone.cpp

@@ -49,6 +49,7 @@ public:
 
 	friend class EditMultipleStandardReverbZonesDialog;
 	friend class EditMultipleEAXReverbZonesDialog;
+	friend class EditMultipleEchoZonesDialog;
 	
 private:
 	

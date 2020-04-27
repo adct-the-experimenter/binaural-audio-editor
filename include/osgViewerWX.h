@@ -192,7 +192,8 @@ private:
 		ID_CREATE_EAX_REVERB_ZONE,
 		ID_CREATE_ECHO_ZONE,
 		ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,
-		ID_EDIT_MULTIPLE_EAX_REVERB_ZONES
+		ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,
+		ID_EDIT_MULTIPLE_ECHO_ZONES
 		
 	};
     
@@ -229,11 +230,10 @@ private:
     void OnCreateEAXReverbZone(wxCommandEvent& event); //function for menu to create and place EAX reverb zone
     void OnCreateEchoZone(wxCommandEvent& event); //function for menu to create and place echo zone
     
-    void CreateStandardReverbZone();
-    void CreateEAXReverbZone();
     
     void OnEditMultipleStandardReverbZones(wxCommandEvent& event); //function for menu to edit current available reverb zones
     void OnEditMultipleEAXReverbZones(wxCommandEvent& event); //function for menu to edit current available reverb zones
+    void OnEditMultipleEchoZones(wxCommandEvent& event); //function for menu to edit current available echo zones
     
     SoundProducerRegistry soundproducer_registry;
     

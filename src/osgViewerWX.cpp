@@ -21,6 +21,7 @@
 
 #include "EditMultipleStandardReverbZonesDialog.h"
 #include "EditMultipleEAXReverbZonesDialog.h"
+#include "EditMultipleEchoZonesDialog.h"
 
 bool init_listener_once = false;
 
@@ -335,6 +336,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_CREATE_ECHO_ZONE, MainFrame::OnCreateEchoZone)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES, MainFrame::OnEditMultipleStandardReverbZones)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_EAX_REVERB_ZONES, MainFrame::OnEditMultipleEAXReverbZones)
+    EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_ECHO_ZONES, MainFrame::OnEditMultipleEchoZones)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -383,6 +385,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     
     menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,"&Edit Standard Reverb Zones");
     menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,"&Edit EAX Reverb Zones");
+    menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_ECHO_ZONES,"&Edit Echo Zones");
     
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
@@ -904,6 +907,15 @@ void MainFrame::OnEditMultipleEAXReverbZones(wxCommandEvent& event)
 
     reverbZoneEditDialog->Show(true);
 
+}
+
+void MainFrame::OnEditMultipleEchoZones(wxCommandEvent& event)
+{
+	
+	std::unique_ptr <EditMultipleEchoZonesDialog> echoZoneEditDialog(new EditMultipleEchoZonesDialog( wxT("Edit Echo Zones"),
+																													effectsManagerPtr));																			
+
+    echoZoneEditDialog->Show(true);
 }
 
 void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
