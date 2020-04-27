@@ -221,15 +221,14 @@ EditMultipleEAXReverbZonesDialog::EditMultipleEAXReverbZonesDialog(const wxStrin
 	listboxReverbZones->Bind(wxEVT_LISTBOX,&EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox,this);
 	
 	//add contents of reverb zones to listbox
-	for(size_t i = 0; i < effects_manager_ptr->reverb_zones_vector.size(); i++)
+	for(size_t i = 0; i < effects_manager_ptr->eax_reverb_zones_vector.size(); i++)
 	{
-		ReverbZone* thisReverbZone = effects_manager_ptr->GetPointerToReverbZone(i);
+		ReverbZone* thisReverbZone = effects_manager_ptr->GetPointerToEAXReverbZone(i);
 		
-		if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
-		{
+		
 			wxString mystring( thisReverbZone->GetNameString() );
 			listboxReverbZones->Append(mystring);
-		}
+		
 		
 	}
 	
@@ -397,10 +396,10 @@ void EditMultipleEAXReverbZonesDialog::ChangeReverbZoneAttributes()
 {
 	if(m_selection_index != -1)
 	{
-		if(effects_manager_ptr->reverb_zones_vector.size() > 0)
+		if(effects_manager_ptr->eax_reverb_zones_vector.size() > 0)
 		{
 			
-			ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
+			ReverbZone* thisReverbZone = &effects_manager_ptr->eax_reverb_zones_vector.at(m_selection_index);
 				
 				//change position of selected reverb zone based on what is in textfields
 				double xPosition, yPosition, zPosition;
@@ -478,7 +477,7 @@ void EditMultipleEAXReverbZonesDialog::OnPreview(wxCommandEvent& event)
 				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
 				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
 				
-				ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
+				ReverbZone* thisReverbZone = &effects_manager_ptr->eax_reverb_zones_vector.at(m_selection_index);
 					
 					if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
 					{
@@ -576,9 +575,9 @@ void EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEven
 	m_selection_index = listboxReverbZones->GetSelection();
 	
 	
-	if(effects_manager_ptr->reverb_zones_vector.size() > 0)
+	if(effects_manager_ptr->eax_reverb_zones_vector.size() > 0)
 	{
-		ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
+		ReverbZone* thisReverbZone = &effects_manager_ptr->eax_reverb_zones_vector.at(m_selection_index);
 			
 			//wxString mystring( thisSoundProducer->GetNameString() );
 			//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;

@@ -32,7 +32,8 @@ public:
 	
 	//function to return a pointer to reverb zone from index in vector
 	EffectZone* GetPointerToEffectZone(size_t& index);
-	ReverbZone* GetPointerToReverbZone(size_t& index);
+	ReverbZone* GetPointerToStandardReverbZone(size_t& index);
+	ReverbZone* GetPointerToEAXReverbZone(size_t& index);
 	EchoZone* GetPointerToEchoZone(size_t& index);
 	
 	//function to run to apply reverb zone effect if listener is in reverb zone
@@ -62,7 +63,9 @@ private:
 	//vector to contain many reverb zone objects
 	std::vector <EffectZone*> effect_zones_vector;
 	
-	std::vector <ReverbZone> reverb_zones_vector;
+	std::vector <ReverbZone> standard_reverb_zones_vector;
+	std::vector <ReverbZone> eax_reverb_zones_vector;
+	
 	std::vector <EchoZone> echo_zones_vector;
 	
 	//function to perform the entire reverb thread operation of checking and setting reverb

@@ -154,16 +154,14 @@ EditMultipleStandardReverbZonesDialog::EditMultipleStandardReverbZonesDialog(con
 	listboxReverbZones->Bind(wxEVT_LISTBOX,&EditMultipleStandardReverbZonesDialog::ReverbZoneSelectedInListBox,this);
 	
 	//add contents of reverb zones to listbox
-	for(size_t i = 0; i < effects_manager_ptr->reverb_zones_vector.size(); i++)
+	for(size_t i = 0; i < effects_manager_ptr->standard_reverb_zones_vector.size(); i++)
 	{
-		ReverbZone* thisReverbZone = effects_manager_ptr->GetPointerToReverbZone(i);
+		ReverbZone* thisReverbZone = effects_manager_ptr->GetPointerToStandardReverbZone(i);
 			
-		if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
-		{
+		
 			wxString mystring( thisReverbZone->GetNameString() );
 			listboxReverbZones->Append(mystring);
-		}
-		
+				
 	}
 	
 	//list box to contain names of Sound Producers to edit, single selection by default 
@@ -310,10 +308,10 @@ void EditMultipleStandardReverbZonesDialog::ChangeReverbZoneAttributes()
 {
 	if(m_selection_index != -1)
 	{
-		if(effects_manager_ptr->reverb_zones_vector.size() > 0)
+		if(effects_manager_ptr->standard_reverb_zones_vector.size() > 0)
 		{
 			
-			ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
+			ReverbZone* thisReverbZone = &effects_manager_ptr->standard_reverb_zones_vector.at(m_selection_index);
 				
 			//change position of selected reverb zone based on what is in textfields
 			double xPosition, yPosition, zPosition;
@@ -399,10 +397,9 @@ void EditMultipleStandardReverbZonesDialog::OnPreview(wxCommandEvent& event)
 				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
 				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
 				
-				ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
+				ReverbZone* thisReverbZone = &effects_manager_ptr->standard_reverb_zones_vector.at(m_selection_index);
 					
-				if(thisReverbZone->GetType() == ReverbZone::Type::STANDARD)
-				{
+				
 					
 					( textField_flDensity->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDensity);
 					( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempStandardRevProp.flDiffusion);
@@ -418,12 +415,7 @@ void EditMultipleStandardReverbZonesDialog::OnPreview(wxCommandEvent& event)
 					( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempStandardRevProp.flRoomRolloffFactor);
 					
 					tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,tempStandardRevProp);
-				}
-				else
-				{
-					
-					//do nothing
-				}
+				
 				
 				
 				//apply effect to sound producer track
@@ -503,9 +495,9 @@ void EditMultipleStandardReverbZonesDialog::ReverbZoneSelectedInListBox(wxComman
 	m_selection_index = listboxReverbZones->GetSelection();
 	
 	
-	if(effects_manager_ptr->reverb_zones_vector.size() > 0)
+	if(effects_manager_ptr->standard_reverb_zones_vector.size() > 0)
 	{
-		ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
+		ReverbZone* thisReverbZone = &effects_manager_ptr->standard_reverb_zones_vector.at(m_selection_index);
 			//wxString mystring( thisSoundProducer->GetNameString() );
 			//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;
 			

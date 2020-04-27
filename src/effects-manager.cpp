@@ -18,11 +18,11 @@ void EffectsManager::CreateStandardReverbZone(std::string& name, double& x, doub
 	ReverbZone r_zone;
 	
 
-	reverb_zones_vector.push_back(r_zone);
+	standard_reverb_zones_vector.push_back(r_zone);
 	
-	reverb_zones_vector.back().InitStandardReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
+	standard_reverb_zones_vector.back().InitStandardReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 	
-	effect_zones_vector.push_back(&reverb_zones_vector.back());
+	effect_zones_vector.push_back(&standard_reverb_zones_vector.back());
 	
 }
 
@@ -32,11 +32,11 @@ void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y
 	ReverbZone r_zone;
 	
 	
-	reverb_zones_vector.push_back(r_zone);
+	eax_reverb_zones_vector.push_back(r_zone);
 	
-	reverb_zones_vector.back().InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
+	eax_reverb_zones_vector.back().InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 	
-	effect_zones_vector.push_back(&reverb_zones_vector.back());
+	effect_zones_vector.push_back(&eax_reverb_zones_vector.back());
 	
 	
 }
@@ -57,7 +57,8 @@ std::vector <EffectZone*> *EffectsManager::GetReferenceToEffectZoneVector(){retu
 
 EffectZone* EffectsManager::GetPointerToEffectZone(size_t& index){return effect_zones_vector[index];}
 
-ReverbZone* EffectsManager::GetPointerToReverbZone(size_t& index){return &reverb_zones_vector[index];}
+ReverbZone* EffectsManager::GetPointerToStandardReverbZone(size_t& index){return &standard_reverb_zones_vector[index];}
+ReverbZone* EffectsManager::GetPointerToEAXReverbZone(size_t& index){return &eax_reverb_zones_vector[index];}
 
 EchoZone* EffectsManager::GetPointerToEchoZone(size_t& index){return &echo_zones_vector[index];}
 
@@ -207,9 +208,15 @@ std::vector <SoundProducerTrack*> *EffectsManager::GetReferenceToSoundProducerTr
 void EffectsManager::FreeEffects()
 {
 	std::cout << "Freeing effects...\n";
-	for(size_t i=0; i < reverb_zones_vector.size(); i++)
+	for(size_t i=0; i < standard_reverb_zones_vector.size(); i++)
 	{
-		reverb_zones_vector[i].FreeEffects();
+		standard_reverb_zones_vector[i].FreeEffects();
+		
+	}
+	
+	for(size_t i=0; i < eax_reverb_zones_vector.size(); i++)
+	{
+		eax_reverb_zones_vector[i].FreeEffects();
 		
 	}
 	
