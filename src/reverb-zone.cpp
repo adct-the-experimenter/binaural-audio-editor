@@ -327,6 +327,7 @@ void ReverbZone::InitStandardReverbZoneWithGraphicalObject(std::string& thisName
 									x, y, z, width,
 									properties);
 	
+	EffectZone::SetColor(standardColor);
 	EffectZone::InitEffectZoneWithGraphicalObject(thisName,x,y,z,width,standardColor);
 }
 
@@ -414,6 +415,7 @@ void ReverbZone::InitEAXReverbZoneWithGraphicalObject(std::string& thisName,
 									x, y, z, width,
 									properties);
 	
+	EffectZone::SetColor(eaxColor);
 	EffectZone::InitEffectZoneWithGraphicalObject(thisName,x,y,z,width,eaxColor);
 }
 

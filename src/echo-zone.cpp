@@ -76,6 +76,8 @@ EchoZone::EchoZone() : EffectZone()
 	echoZoneColor.g = 0.3f;
 	echoZoneColor.b = 0.0f;
 	echoZoneColor.alpha = 0.3f;
+	
+	EffectZone::SetColor(echoZoneColor);
 }
 
 EchoZone::~EchoZone()
