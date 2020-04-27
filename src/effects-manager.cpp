@@ -17,9 +17,12 @@ void EffectsManager::CreateStandardReverbZone(std::string& name, double& x, doub
 {
 	ReverbZone r_zone;
 	
-	r_zone.InitStandardReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
+
+	reverb_zones_vector.push_back(r_zone);
 	
-	effect_zones_vector.push_back(r_zone);
+	reverb_zones_vector.back().InitStandardReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
+	
+	effect_zones_vector.push_back(&reverb_zones_vector.back());
 	
 }
 
@@ -28,25 +31,34 @@ void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y
 {
 	ReverbZone r_zone;
 	
-	r_zone.InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 	
-	effect_zones_vector.push_back(r_zone);
+	reverb_zones_vector.push_back(r_zone);
+	
+	reverb_zones_vector.back().InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
+	
+	effect_zones_vector.push_back(&reverb_zones_vector.back());
+	
 	
 }
 
-void EffectsManager::CreateEchoReverbZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties)
+void EffectsManager::CreateEchoZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties)
 {
 	EchoZone e_zone;
 	
 	e_zone.InitEchoZoneWithGraphicalObject(name,x,y,z,width,properties);
 	
-	effect_zones_vector.push_back(e_zone);
+	echo_zones_vector.push_back(e_zone);
+	effect_zones_vector.push_back(&echo_zones_vector.back());
 	
 }
 
-std::vector <EffectZone> *EffectsManager::GetReferenceToEffectZoneVector(){return &effect_zones_vector;}
+std::vector <EffectZone*> *EffectsManager::GetReferenceToEffectZoneVector(){return &effect_zones_vector;}
 
-EffectZone* EffectsManager::GetPointerToEffectZone(size_t& index){return &effect_zones_vector[index];}
+EffectZone* EffectsManager::GetPointerToEffectZone(size_t& index){return effect_zones_vector[index];}
+
+ReverbZone* EffectsManager::GetPointerToReverbZone(size_t& index){return &reverb_zones_vector[index];}
+
+EchoZone* EffectsManager::GetPointerToEchoZone(size_t& index){return &echo_zones_vector[index];}
 
 void EffectsManager::PerformReverbThreadOperation()
 {
@@ -56,7 +68,7 @@ void EffectsManager::PerformReverbThreadOperation()
 		for(size_t i = 0; i < effect_zones_vector.size(); i++)
 		{
 			//check if listener is in reverb zone
-			EffectZone* thisZone = &effect_zones_vector[i];
+			EffectZone* thisZone = effect_zones_vector[i];
 			
 			//check if zone is initialized
 			if( thisZone->getTransformNode() != nullptr)
@@ -194,8 +206,14 @@ std::vector <SoundProducerTrack*> *EffectsManager::GetReferenceToSoundProducerTr
 void EffectsManager::FreeEffects()
 {
 	std::cout << "Freeing effects...\n";
-	for(size_t i=0; i < effect_zones_vector.size(); i++)
+	for(size_t i=0; i < reverb_zones_vector.size(); i++)
 	{
-		effect_zones_vector[i].FreeEffects();
+		reverb_zones_vector[i].FreeEffects();
+		
+	}
+	
+	for(size_t i=0; i < echo_zones_vector.size(); i++)
+	{
+		echo_zones_vector[i].FreeEffects();
 	}
 }

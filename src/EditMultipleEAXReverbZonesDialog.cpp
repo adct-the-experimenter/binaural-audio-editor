@@ -221,19 +221,14 @@ EditMultipleEAXReverbZonesDialog::EditMultipleEAXReverbZonesDialog(const wxStrin
 	listboxReverbZones->Bind(wxEVT_LISTBOX,&EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox,this);
 	
 	//add contents of reverb zones to listbox
-	for(size_t i = 0; i < effects_manager_ptr->GetReferenceToEffectZoneVector()->size(); i++)
+	for(size_t i = 0; i < effects_manager_ptr->reverb_zones_vector.size(); i++)
 	{
-		EffectZone* thisZone = effects_manager_ptr->GetPointerToEffectZone(i);
+		ReverbZone* thisReverbZone = effects_manager_ptr->GetPointerToReverbZone(i);
 		
-		if (dynamic_cast<ReverbZone*>(thisZone))
+		if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
 		{
-			ReverbZone* thisRevZone = dynamic_cast<ReverbZone*>(thisZone);
-		
-			if(thisRevZone->GetType() == ReverbZone::Type::EAX)
-			{
-				wxString mystring( thisRevZone->GetNameString() );
-				listboxReverbZones->Append(mystring);
-			}
+			wxString mystring( thisReverbZone->GetNameString() );
+			listboxReverbZones->Append(mystring);
 		}
 		
 	}
@@ -402,14 +397,10 @@ void EditMultipleEAXReverbZonesDialog::ChangeReverbZoneAttributes()
 {
 	if(m_selection_index != -1)
 	{
-		if(effects_manager_ptr->effect_zones_vector.size() > 0)
+		if(effects_manager_ptr->reverb_zones_vector.size() > 0)
 		{
 			
-			EffectZone* thisZone = &effects_manager_ptr->effect_zones_vector.at(m_selection_index);
-		
-			if (dynamic_cast<ReverbZone*>(thisZone))
-			{
-				ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
+			ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
 				
 				//change position of selected reverb zone based on what is in textfields
 				double xPosition, yPosition, zPosition;
@@ -459,9 +450,6 @@ void EditMultipleEAXReverbZonesDialog::ChangeReverbZoneAttributes()
 				}
 			}
 			
-			
-			
-		}
 	}
 	
 }
@@ -490,11 +478,7 @@ void EditMultipleEAXReverbZonesDialog::OnPreview(wxCommandEvent& event)
 				( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
 				( textFieldWidth->GetLineText(0) ).ToDouble(&width);
 				
-				EffectZone* thisZone = &effects_manager_ptr->effect_zones_vector.at(m_selection_index);
-		
-				if (dynamic_cast<ReverbZone*>(thisZone))
-				{
-					ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
+				ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
 					
 					if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
 					{
@@ -538,11 +522,11 @@ void EditMultipleEAXReverbZonesDialog::OnPreview(wxCommandEvent& event)
 					
 					//free effect
 					tempZone.FreeEffects();
-				}
-				
-				
-				
 			}
+				
+				
+				
+			
 			else
 			{
 				wxMessageBox( wxT("Create a soundproducer. Set it to a track. Load audio to it with browse button!") );	
@@ -592,13 +576,9 @@ void EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEven
 	m_selection_index = listboxReverbZones->GetSelection();
 	
 	
-	if(effects_manager_ptr->effect_zones_vector.size() > 0)
+	if(effects_manager_ptr->reverb_zones_vector.size() > 0)
 	{
-		EffectZone* thisZone = &effects_manager_ptr->effect_zones_vector.at(m_selection_index);
-		
-		if (dynamic_cast<ReverbZone*>(thisZone))
-		{
-			ReverbZone* thisReverbZone = dynamic_cast<ReverbZone*>(thisZone);
+		ReverbZone* thisReverbZone = &effects_manager_ptr->reverb_zones_vector.at(m_selection_index);
 			
 			//wxString mystring( thisSoundProducer->GetNameString() );
 			//std::cout << "Sound Producer Name: " << thisSoundProducer->GetNameString() << std::endl;
@@ -657,7 +637,6 @@ void EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEven
 				textField_flRoomRolloffFactor->Clear();
 				(*textField_flRoomRolloffFactor) << tempEAXRevProp.flRoomRolloffFactor;
 			}
-		}
 
 	}
 }
