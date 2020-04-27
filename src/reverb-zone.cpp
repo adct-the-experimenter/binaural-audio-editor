@@ -67,7 +67,7 @@ static LPALGETAUXILIARYEFFECTSLOTF alGetAuxiliaryEffectSlotf;
 static LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
 
-ReverbZone::ReverbZone()
+ReverbZone::ReverbZone() : EffectZone()
 {
 	m_effect = 0;
 	m_slot = 0;
@@ -298,6 +298,7 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */
     alGenAuxiliaryEffectSlots(1, &m_slot);
+    EffectZone::SetEffectsSlotPointer(&m_slot);
 
     /* Tell the effect slot to use the loaded effect object. Note that the this
      * effectively copies the effect properties. You can modify or delete the
@@ -383,6 +384,8 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */
     alGenAuxiliaryEffectSlots(1, &m_slot );
+    
+    EffectZone::SetEffectsSlotPointer(&m_slot);
 
     /* Tell the effect slot to use the loaded effect object. Note that the this
      * effectively copies the effect properties. You can modify or delete the
@@ -391,9 +394,6 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
     ALint i_effect = (ALint)(effect);
     alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT,i_effect );
     assert(alGetError()==AL_NO_ERROR && "Failed to set effect slot");
-    
-    alDeleteEffects(1, &effect);
-    effect = 0;
     
 	EffectZone::InitEffectZone(thisName,x,y,z,width);
 	
@@ -563,7 +563,7 @@ ReverbZone::Type& ReverbZone::GetType(){return m_type;}
 
 
 ALuint* ReverbZone::GetEffectPointer(){ return &m_effect;}
-ALuint* ReverbZone::GetEffectsSlotPointer(){return &m_slot;}
+ALuint* ReverbZone::GetEffectsSlotPointer(){std::cout << "Derived class called! \n"; return &m_slot;}
 
 ALuint ReverbZone::GetEffect(){return m_effect;}
 ALuint ReverbZone::GetEffectsSlot(){return m_slot;}

@@ -169,7 +169,7 @@ void EffectsManager::ApplyThisEffectZoneEffectToThisTrack(SoundProducerTrack* th
 	 */
 	
 	ALuint* thisSource = thisSoundProducerTrack->GetReferenceToTrackSource();
-	
+	 
 	alSource3i(*thisSource, AL_AUXILIARY_SEND_FILTER, (ALint)(*thisZone->GetEffectsSlotPointer()), 0, AL_FILTER_NULL);
 	assert(alGetError()== AL_NO_ERROR && "Failed to setup effect for sound source send 0.");
 	

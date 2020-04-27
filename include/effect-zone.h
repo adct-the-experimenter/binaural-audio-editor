@@ -73,6 +73,7 @@ public:
 	
 	//OpenAL Soft effects properties
 	
+	void SetEffectsSlotPointer(ALuint* slot_ptr);
 	
 	virtual ALuint* GetEffectPointer();
 	virtual ALuint* GetEffectsSlotPointer();
@@ -82,11 +83,10 @@ public:
 	
 	virtual void FreeEffects();
 	
-	
-    
-   
 
 private:
+
+	ALuint* m_slot_ptr;
     
 	//Name of echo Zone
 	std::string name;

@@ -67,7 +67,7 @@ static LPALGETAUXILIARYEFFECTSLOTF alGetAuxiliaryEffectSlotf;
 static LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
 
-EchoZone::EchoZone()
+EchoZone::EchoZone() : EffectZone()
 {
 	m_effect = 0;
 	m_slot = 0;
@@ -132,7 +132,8 @@ void EchoZone::InitEchoZone(std::string& thisName,
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */
     alGenAuxiliaryEffectSlots(1, &m_slot);
-
+	EffectZone::SetEffectsSlotPointer(&m_slot);
+	
     /* Tell the effect slot to use the loaded effect object. Note that the this
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.

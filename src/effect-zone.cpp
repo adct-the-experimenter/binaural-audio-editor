@@ -220,10 +220,14 @@ void EffectZone::SetColor(ZoneColor color)
 	}
 }
 
+void EffectZone::SetEffectsSlotPointer(ALuint* slot_ptr){m_slot_ptr = slot_ptr;}
+
 ALuint* EffectZone::GetEffectPointer(){return nullptr;}
-ALuint* EffectZone::GetEffectsSlotPointer(){return nullptr;}
+ALuint* EffectZone::GetEffectsSlotPointer(){ std::cout << "Base class called! slot ptr:" << m_slot_ptr << std::endl; return m_slot_ptr;}
 	
 ALuint EffectZone::GetEffect(){return 0;}
 ALuint EffectZone::GetEffectsSlot(){return 0;}
 	
 void EffectZone::FreeEffects(){}
+
+
