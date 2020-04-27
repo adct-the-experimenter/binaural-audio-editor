@@ -190,6 +190,7 @@ private:
 		ID_SETUP_SERIAL,
 		ID_CREATE_STANDARD_REVERB_ZONE,
 		ID_CREATE_EAX_REVERB_ZONE,
+		ID_CREATE_ECHO_ZONE,
 		ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,
 		ID_EDIT_MULTIPLE_EAX_REVERB_ZONES
 		
@@ -226,6 +227,7 @@ private:
     
     void OnCreateStandardReverbZone(wxCommandEvent& event); //function for menu to create and place standard reverb zone
     void OnCreateEAXReverbZone(wxCommandEvent& event); //function for menu to create and place EAX reverb zone
+    void OnCreateEchoZone(wxCommandEvent& event); //function for menu to create and place echo zone
     
     void CreateStandardReverbZone();
     void CreateEAXReverbZone();

@@ -153,6 +153,11 @@ CreateEchoZoneDialog::CreateEchoZoneDialog(const wxString& title,EffectsManager*
 	
 	//add panel of text fields in vertical box
 	
+	wxBoxSizer *hboxName = new wxBoxSizer(wxHORIZONTAL);
+	hboxName->Add(NameText); hboxName->Add(textFieldName);
+	
+	vbox->Add(hboxName, 1, wxEXPAND | wxALL, 10);
+	
 	vbox->Add(positionText);
 	
 	wxBoxSizer *hboxX = new wxBoxSizer(wxHORIZONTAL);
@@ -192,7 +197,7 @@ CreateEchoZoneDialog::CreateEchoZoneDialog(const wxString& title,EffectsManager*
 	hboxEchoRow3->Add(flFeedbackText); hboxEchoRow3->Add(textField_flFeedback);
 	hboxEchoRow3->Add(flSpreadText); hboxEchoRow3->Add(textField_flSpread);
 	
-	
+	vbox->Add(hboxEchoRow3,1, wxEXPAND | wxALL, 10);
 	
 	vbox->Add(spPreviewText);
 	vbox->Add(hboxSoundProducers,1, wxEXPAND | wxALL, 10);

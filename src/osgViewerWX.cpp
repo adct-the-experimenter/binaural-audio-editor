@@ -17,6 +17,8 @@
 
 #include "CreateStandardReverbZoneDialog.h"
 #include "CreateEAXReverbZoneDialog.h"
+#include "CreateEchoZoneDialog.h"
+
 #include "EditMultipleStandardReverbZonesDialog.h"
 #include "EditMultipleEAXReverbZonesDialog.h"
 
@@ -330,6 +332,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_CHANGE_HRTF, MainFrame::OnChangeHRTF)
     EVT_MENU				(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE, MainFrame::OnCreateStandardReverbZone)
     EVT_MENU				(MainFrame::ID_CREATE_EAX_REVERB_ZONE, MainFrame::OnCreateEAXReverbZone)
+    EVT_MENU				(MainFrame::ID_CREATE_ECHO_ZONE, MainFrame::OnCreateEchoZone)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES, MainFrame::OnEditMultipleStandardReverbZones)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_EAX_REVERB_ZONES, MainFrame::OnEditMultipleEAXReverbZones)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
@@ -376,6 +379,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	wxMenu* menuEffects = new wxMenu;
     menuEffects->Append(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE,"&Create Standard Reverb Zone");
     menuEffects->Append(MainFrame::ID_CREATE_EAX_REVERB_ZONE,"&Create EAX Reverb Zone");
+    menuEffects->Append(MainFrame::ID_CREATE_ECHO_ZONE,"&Create Echo Zone");
+    
     menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,"&Edit Standard Reverb Zones");
     menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,"&Edit EAX Reverb Zones");
     
@@ -856,6 +861,29 @@ void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
 		_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back()->getTransformNode() );
 	}
 
+}
+
+void MainFrame::OnCreateEchoZone(wxCommandEvent& event)
+{
+	std::unique_ptr <CreateEchoZoneDialog> echoZoneNewDialog(new CreateEchoZoneDialog(wxT("Create New Echo Zone"),
+																									effectsManagerPtr) );
+    echoZoneNewDialog->Show(true);
+
+    if(echoZoneNewDialog->OkClicked())
+    {
+		double x,y,z,width;
+		EchoZoneProperties properties;
+		
+		echoZoneNewDialog->getNewPosition(x,y,z);
+		std::string name = echoZoneNewDialog->getNewName();
+		width = echoZoneNewDialog->getNewWidth();
+		properties = echoZoneNewDialog->getNewProperties();
+		
+		effectsManagerPtr->CreateEchoZone(name,x,y,z,width,properties);
+		
+		//add position attitude transform to root group of nodes
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back()->getTransformNode() );
+	}
 }
 
 void MainFrame::OnEditMultipleStandardReverbZones(wxCommandEvent& event)
