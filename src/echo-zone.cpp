@@ -91,7 +91,7 @@ void EchoZone::InitEchoZone(std::string& thisName,
 									EchoZoneProperties& properties)
 {
 	#define LOAD_PROC(T, x)  ((x) = (T)alGetProcAddress(#x))
-		
+		LOAD_PROC(LPALGENEFFECTS, alGenEffects);
 		LOAD_PROC(LPALDELETEEFFECTS, alDeleteEffects);
 		LOAD_PROC(LPALISEFFECT, alIsEffect);
 		LOAD_PROC(LPALEFFECTI, alEffecti);
@@ -116,18 +116,28 @@ void EchoZone::InitEchoZone(std::string& thisName,
 		LOAD_PROC(LPALGETAUXILIARYEFFECTSLOTFV, alGetAuxiliaryEffectSlotfv);
 	#undef LOAD_PROC
 	
-	
-	
 	/* Create the effect object. */
 	alGenEffects(1, &m_effect);
 	
 	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_ECHO);
+
 
 	alEffectf(m_effect, AL_ECHO_DELAY, properties.flDelay);
 	alEffectf(m_effect, AL_ECHO_LRDELAY, properties.flLRDelay);
 	alEffectf(m_effect, AL_ECHO_DAMPING, properties.flDamping);
 	alEffectf(m_effect, AL_ECHO_FEEDBACK, properties.flFeedback);
 	alEffectf(m_effect, AL_ECHO_SPREAD, properties.flSpread);
+	
+	/* Check if an error occured, and clean up if so. */
+	ALenum err = alGetError();
+	if(err != AL_NO_ERROR)
+	{
+		if(alIsEffect(m_effect))
+			alDeleteEffects(1, &m_effect);
+			
+		fprintf(stderr, "OpenAL error: %s\n", alGetString(err));
+		return;
+	}
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
      * that connect to it. */

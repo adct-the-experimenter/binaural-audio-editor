@@ -45,9 +45,10 @@ void EffectsManager::CreateEchoZone(std::string& name, double& x, double& y, dou
 {
 	EchoZone e_zone;
 	
-	e_zone.InitEchoZoneWithGraphicalObject(name,x,y,z,width,properties);
-	
 	echo_zones_vector.push_back(e_zone);
+	
+	echo_zones_vector.back().InitEchoZoneWithGraphicalObject(name,x,y,z,width,properties);
+	
 	effect_zones_vector.push_back(&echo_zones_vector.back());
 	
 }
