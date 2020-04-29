@@ -400,12 +400,20 @@ void CreateEAXReverbZoneDialog::OnOk(wxCommandEvent& event )
 	( textField_flDiffusion->GetLineText(0) ).ToDouble(&properties.flDiffusion);
 	( textField_flGain->GetLineText(0) ).ToDouble(&properties.flGain);
 	( textField_flGainHF->GetLineText(0) ).ToDouble(&properties.flGainHF);
+	( textField_flGainLF->GetLineText(0) ).ToDouble(&properties.flGainLF);
 	( textField_flDecayTime->GetLineText(0) ).ToDouble(&properties.flDecayTime);
 	( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&properties.flDecayHFRatio);
+	( textField_flDecayLFRatio->GetLineText(0) ).ToDouble(&properties.flDecayLFRatio);
 	( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&properties.flReflectionsGain);
 	( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&properties.flReflectionsDelay);
 	( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&properties.flLateReverbGain);
 	( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&properties.flLateReverbDelay);
+	( textField_flEchoDepth->GetLineText(0) ).ToDouble(&properties.flEchoDepth);
+	( textField_flEchoTime->GetLineText(0) ).ToDouble(&properties.flEchoTime);
+	( textField_flModulationDepth->GetLineText(0) ).ToDouble(&properties.flModulationDepth);
+	( textField_flModulationTime->GetLineText(0) ).ToDouble(&properties.flModulationTime);
+	( textField_flHFReference->GetLineText(0) ).ToDouble(&properties.flHFReference);
+	( textField_flLFReference->GetLineText(0) ).ToDouble(&properties.flLFReference);
 	( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&properties.flAirAbsorptionGainHF);
 	( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&properties.flRoomRolloffFactor);
 	
@@ -438,12 +446,20 @@ void CreateEAXReverbZoneDialog::OnPreview(wxCommandEvent& event)
 				( textField_flDiffusion->GetLineText(0) ).ToDouble(&properties.flDiffusion);
 				( textField_flGain->GetLineText(0) ).ToDouble(&properties.flGain);
 				( textField_flGainHF->GetLineText(0) ).ToDouble(&properties.flGainHF);
+				( textField_flGainLF->GetLineText(0) ).ToDouble(&properties.flGainLF);
 				( textField_flDecayTime->GetLineText(0) ).ToDouble(&properties.flDecayTime);
 				( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&properties.flDecayHFRatio);
+				( textField_flDecayLFRatio->GetLineText(0) ).ToDouble(&properties.flDecayLFRatio);
 				( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&properties.flReflectionsGain);
 				( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&properties.flReflectionsDelay);
 				( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&properties.flLateReverbGain);
 				( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&properties.flLateReverbDelay);
+				( textField_flEchoDepth->GetLineText(0) ).ToDouble(&properties.flEchoDepth);
+				( textField_flEchoTime->GetLineText(0) ).ToDouble(&properties.flEchoTime);
+				( textField_flModulationDepth->GetLineText(0) ).ToDouble(&properties.flModulationDepth);
+				( textField_flModulationTime->GetLineText(0) ).ToDouble(&properties.flModulationTime);
+				( textField_flHFReference->GetLineText(0) ).ToDouble(&properties.flHFReference);
+				( textField_flLFReference->GetLineText(0) ).ToDouble(&properties.flLFReference);
 				( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&properties.flAirAbsorptionGainHF);
 				( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&properties.flRoomRolloffFactor);
 				

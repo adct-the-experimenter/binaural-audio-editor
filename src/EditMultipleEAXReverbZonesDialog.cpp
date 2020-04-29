@@ -72,7 +72,7 @@ EditMultipleEAXReverbZonesDialog::EditMultipleEAXReverbZonesDialog(const wxStrin
 								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
-	validatorFloat.SetRange(0.00,20.00);     // set allowable range
+	validatorFloat.SetRange(0.1,20.00);     // set allowable range
 	textField_flDecayTime = new wxTextCtrl(this,-1, "1.49", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
@@ -85,6 +85,7 @@ EditMultipleEAXReverbZonesDialog::EditMultipleEAXReverbZonesDialog(const wxStrin
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
+	
 	
 	textField_flDecayLFRatio = new wxTextCtrl(this,-1, "0.83", 
 								wxPoint(95, 20), wxSize(80,20),
@@ -421,29 +422,26 @@ void EditMultipleEAXReverbZonesDialog::ChangeReverbZoneAttributes()
 				
 				if(thisReverbZone->GetType() == ReverbZone::Type::EAX)
 				{
-					(textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
-					
-					(textField_flDiffusion->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDiffusion);
-					
-					(textField_flGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGain);
-					
-					(textField_flGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainHF);
-					
-					(textField_flDecayTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayTime);
-					
-					(textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayHFRatio);
-					
-					(textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsDelay);
-					
-					(textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbGain);
-					
-					(textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbDelay);
-					 
-					(textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsGain);
-					
-					(textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flAirAbsorptionGainHF); 
-					
-					(textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempEAXRevProp.flRoomRolloffFactor);
+					( textField_flDensity->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDensity);
+					( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDiffusion);
+					( textField_flGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGain);
+					( textField_flGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainHF);
+					( textField_flGainLF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainLF);
+					( textField_flDecayTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayTime);
+					( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayHFRatio);
+					( textField_flDecayLFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayLFRatio);
+					( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsGain);
+					( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsDelay);
+					( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbGain);
+					( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbDelay);
+					( textField_flEchoDepth->GetLineText(0) ).ToDouble(&tempEAXRevProp.flEchoDepth);
+					( textField_flEchoTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flEchoTime);
+					( textField_flModulationDepth->GetLineText(0) ).ToDouble(&tempEAXRevProp.flModulationDepth);
+					( textField_flModulationTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flModulationTime);
+					( textField_flHFReference->GetLineText(0) ).ToDouble(&tempEAXRevProp.flHFReference);
+					( textField_flLFReference->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLFReference);
+					( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flAirAbsorptionGainHF);
+					( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempEAXRevProp.flRoomRolloffFactor);
 				
 					thisReverbZone->ChangeEAXReverbZoneProperties(tempEAXRevProp);
 				}
@@ -486,12 +484,20 @@ void EditMultipleEAXReverbZonesDialog::OnPreview(wxCommandEvent& event)
 						( textField_flDiffusion->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDiffusion);
 						( textField_flGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGain);
 						( textField_flGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainHF);
+						( textField_flGainLF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flGainLF);
 						( textField_flDecayTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayTime);
 						( textField_flDecayHFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayHFRatio);
+						( textField_flDecayLFRatio->GetLineText(0) ).ToDouble(&tempEAXRevProp.flDecayLFRatio);
 						( textField_flReflectionsGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsGain);
 						( textField_flReflectionsDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flReflectionsDelay);
 						( textField_flLateReverbGain->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbGain);
 						( textField_flLateReverbDelay->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLateReverbDelay);
+						( textField_flEchoDepth->GetLineText(0) ).ToDouble(&tempEAXRevProp.flEchoDepth);
+						( textField_flEchoTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flEchoTime);
+						( textField_flModulationDepth->GetLineText(0) ).ToDouble(&tempEAXRevProp.flModulationDepth);
+						( textField_flModulationTime->GetLineText(0) ).ToDouble(&tempEAXRevProp.flModulationTime);
+						( textField_flHFReference->GetLineText(0) ).ToDouble(&tempEAXRevProp.flHFReference);
+						( textField_flLFReference->GetLineText(0) ).ToDouble(&tempEAXRevProp.flLFReference);
 						( textField_flAirAbsorptionGainHF->GetLineText(0) ).ToDouble(&tempEAXRevProp.flAirAbsorptionGainHF);
 						( textField_flRoomRolloffFactor->GetLineText(0) ).ToDouble(&tempEAXRevProp.flRoomRolloffFactor);
 						

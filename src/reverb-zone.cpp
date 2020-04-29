@@ -379,7 +379,7 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
 	
 	//load effect based on type
-	ALuint effect = LoadStandardReverbEffect(&reverb);
+	ALuint effect = LoadEAXReverbEffect(&reverb);
 	
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
