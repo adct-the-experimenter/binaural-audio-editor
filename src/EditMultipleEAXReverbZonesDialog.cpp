@@ -122,7 +122,7 @@ EditMultipleEAXReverbZonesDialog::EditMultipleEAXReverbZonesDialog(const wxStrin
 								wxT(""));
 
 	validatorFloat.SetRange(0.075,0.25);     // set allowable range
-	textField_flEchoTime = new wxTextCtrl(this,-1, "0.05", 
+	textField_flEchoTime = new wxTextCtrl(this,-1, "0.2", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,
@@ -618,11 +618,17 @@ void EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEven
 				textField_flGainHF->Clear();
 				(*textField_flGainHF) << tempEAXRevProp.flGainHF;
 				
+				textField_flGainLF->Clear();
+				(*textField_flGainLF) << tempEAXRevProp.flGainLF;
+				
 				textField_flDecayTime->Clear();
 				(*textField_flDecayTime) << tempEAXRevProp.flDecayTime;
 				
 				textField_flDecayHFRatio->Clear();
 				(*textField_flDecayHFRatio) << tempEAXRevProp.flDecayHFRatio;
+				
+				textField_flDecayLFRatio->Clear();
+				(*textField_flDecayLFRatio) << tempEAXRevProp.flDecayLFRatio;
 				
 				textField_flReflectionsDelay->Clear(); 
 				(*textField_flReflectionsDelay) << tempEAXRevProp.flReflectionsDelay;
@@ -632,6 +638,24 @@ void EditMultipleEAXReverbZonesDialog::ReverbZoneSelectedInListBox(wxCommandEven
 				
 				textField_flLateReverbDelay->Clear();
 				(*textField_flLateReverbDelay) << tempEAXRevProp.flLateReverbDelay;
+				
+				textField_flEchoDepth->Clear();
+				(*textField_flEchoDepth) << tempEAXRevProp.flEchoDepth;
+				
+				textField_flEchoTime->Clear();
+				(*textField_flEchoTime) << tempEAXRevProp.flEchoTime;
+				
+				textField_flModulationDepth->Clear();
+				(*textField_flModulationDepth) << tempEAXRevProp.flModulationDepth;
+				
+				textField_flModulationTime->Clear();
+				(*textField_flModulationTime) << tempEAXRevProp.flModulationTime;
+				
+				textField_flHFReference->Clear();
+				(*textField_flHFReference) << tempEAXRevProp.flHFReference;
+				
+				textField_flLFReference->Clear();
+				(*textField_flLFReference) << tempEAXRevProp.flLFReference;
 				 
 				textField_flReflectionsGain->Clear();
 				(*textField_flReflectionsGain) << tempEAXRevProp.flReflectionsGain;

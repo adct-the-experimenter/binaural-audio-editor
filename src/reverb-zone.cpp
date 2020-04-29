@@ -375,11 +375,21 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	reverb.flReflectionsDelay = properties.flReflectionsDelay;
 	reverb.flLateReverbGain = properties.flLateReverbGain;
 	reverb.flLateReverbDelay = properties.flLateReverbDelay;
+	
+	reverb.flGainLF = properties.flGainLF;
+	reverb.flDecayLFRatio = properties.flDecayLFRatio;
+	reverb.flEchoDepth = properties.flEchoDepth;
+	reverb.flEchoTime = properties.flEchoTime;
+	reverb.flModulationDepth = properties.flModulationDepth;
+	reverb.flModulationTime = properties.flModulationTime;
+	reverb.flLFReference = properties.flLFReference;
+	reverb.flHFReference = properties.flHFReference;
+	
 	reverb.flAirAbsorptionGainHF = properties.flAirAbsorptionGainHF;
 	reverb.flRoomRolloffFactor = properties.flRoomRolloffFactor;
 	
 	//load effect based on type
-	ALuint effect = LoadEAXReverbEffect(&reverb);
+	m_effect = LoadEAXReverbEffect(&reverb);
 	
 	
 	/* Create the effect slot object. This is what "plays" an effect on sources
@@ -392,7 +402,7 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
      * effectively copies the effect properties. You can modify or delete the
      * effect object afterward without affecting the effect slot.
      */
-    ALint i_effect = (ALint)(effect);
+    ALint i_effect = (ALint)(m_effect);
     alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT,i_effect );
     assert(alGetError()==AL_NO_ERROR && "Failed to set effect slot");
     
@@ -443,8 +453,8 @@ void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& pr
 
 	/* No EAX Reverb. Set the standard reverb effect type then load the
 	 * available reverb properties. */
-	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_REVERB);
-
+	alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_REVERB); 
+	
 	alEffectf(m_effect, AL_REVERB_DENSITY, reverb.flDensity);
 	alEffectf(m_effect, AL_REVERB_DIFFUSION, reverb.flDiffusion);
 	alEffectf(m_effect, AL_REVERB_GAIN, reverb.flGain);
@@ -470,11 +480,13 @@ void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& pr
      */
     ALint i_effect = (ALint)(m_effect);
     alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
-    assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
+    
 }
 
 void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
 {
+	
+	
 	//initialize reverb property
 	EFXEAXREVERBPROPERTIES reverb = EFX_REVERB_PRESET_GENERIC;
 	
@@ -508,14 +520,14 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
 
         /* EAX Reverb is available. Set the EAX effect type then load the
          * reverb properties. */
-        alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB);
+        //alEffecti(m_effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB); assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
 
-        alEffectf(m_effect, AL_EAXREVERB_DENSITY, reverb.flDensity);
-        alEffectf(m_effect, AL_EAXREVERB_DIFFUSION, reverb.flDiffusion);
-        alEffectf(m_effect, AL_EAXREVERB_GAIN, reverb.flGain);
-        alEffectf(m_effect, AL_EAXREVERB_GAINHF, reverb.flGainHF);
-        alEffectf(m_effect, AL_EAXREVERB_GAINLF, reverb.flGainLF);
-        alEffectf(m_effect, AL_EAXREVERB_DECAY_TIME, reverb.flDecayTime);
+        alEffectf(m_effect, AL_EAXREVERB_DENSITY, reverb.flDensity); assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
+        alEffectf(m_effect, AL_EAXREVERB_DIFFUSION, reverb.flDiffusion); assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
+        alEffectf(m_effect, AL_EAXREVERB_GAIN, reverb.flGain); assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
+        alEffectf(m_effect, AL_EAXREVERB_GAINHF, reverb.flGainHF); assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
+        alEffectf(m_effect, AL_EAXREVERB_GAINLF, reverb.flGainLF); assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
+        alEffectf(m_effect, AL_EAXREVERB_DECAY_TIME, reverb.flDecayTime); assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
         alEffectf(m_effect, AL_EAXREVERB_DECAY_HFRATIO, reverb.flDecayHFRatio);
         alEffectf(m_effect, AL_EAXREVERB_DECAY_LFRATIO, reverb.flDecayLFRatio);
         alEffectf(m_effect, AL_EAXREVERB_REFLECTIONS_GAIN, reverb.flReflectionsGain);
@@ -533,19 +545,21 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
         alEffectf(m_effect, AL_EAXREVERB_LFREFERENCE, reverb.flLFReference);
         alEffectf(m_effect, AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
         alEffecti(m_effect, AL_EAXREVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
+        
+        m_eax_prop = properties;
+    
+		 //load the newly modified effect into the effect slot
+		
+		/* Tell the effect slot to use the loaded effect object. Note that the this
+		 * effectively copies the effect properties. You can modify or delete the
+		 * effect object afterward without affecting the effect slot.
+		 */
+		ALint i_effect = (ALint)(m_effect);
+		alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
+		assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
     }
     
-    m_eax_prop = properties;
     
-     //load the newly modified effect into the effect slot
-	
-	/* Tell the effect slot to use the loaded effect object. Note that the this
-     * effectively copies the effect properties. You can modify or delete the
-     * effect object afterward without affecting the effect slot.
-     */
-    ALint i_effect = (ALint)(m_effect);
-    alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
-    assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
 }
 
 

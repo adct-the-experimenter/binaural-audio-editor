@@ -124,7 +124,7 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 								wxT(""));
 
 	validatorFloat.SetRange(0.075,0.25);     // set allowable range
-	textField_flEchoTime = new wxTextCtrl(this,-1, "0.05", 
+	textField_flEchoTime = new wxTextCtrl(this,-1, "0.2", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,
