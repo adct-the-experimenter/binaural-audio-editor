@@ -10,35 +10,8 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	
 	//initialize text fields
 	
-	wxFloatingPointValidator <double> validator(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator.SetRange(-10.00,10.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validatorWidth(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validatorWidth.SetRange(1.00,30.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0To10(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0To10.SetRange(0.00,10.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0To1(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0To1.SetRange(0.00,1.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p1To20(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p1To20.SetRange(0.10,20.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p1To2p0(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p1To2p0.SetRange(0.10,2.00);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p0To0p3(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p0To0p3.SetRange(0.00,0.30);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p0To0p1(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p0To0p1.SetRange(0.00,0.10);     // set allowable range
-    
-    wxFloatingPointValidator <double> validator0p0To3p16(2,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    validator0p0To3p16.SetRange(0.00,3.16);     // set allowable range
-    
-    wxFloatingPointValidator <double> airValidator(3,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
-    airValidator.SetRange(0.892,1.00);     // set allowable range
+	wxFloatingPointValidator <double> validatorFloat(3,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
+    validatorFloat.SetRange(-100.00,100.00);     // set allowable range
     
     textFieldName = new wxTextCtrl(this,-1, "Name", 
 								wxPoint(95, 20), wxSize(80,20),
@@ -47,98 +20,109 @@ CreateStandardReverbZoneDialog::CreateStandardReverbZoneDialog(const wxString& t
 	textFieldX = new wxTextCtrl(this,-1, "0.00", 
 								wxPoint(95, 60), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 								
 	textFieldY = new wxTextCtrl(this,-1, "0.00", 
 								wxPoint(95, 80), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 								
 	textFieldZ = new wxTextCtrl(this,-1, "0.00", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT("")); 
 	
+	validatorFloat.SetRange(2.0,30.00);     // set allowable range
 	textFieldWidth = new wxTextCtrl(this,-1, "2.00", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validatorWidth,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	 
+	
+	validatorFloat.SetRange(0.0,1.0);     // set allowable range
 	textField_flDensity = new wxTextCtrl(this,-1, "1.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To1,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
 	textField_flDiffusion = new wxTextCtrl(this,-1, "1.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To1,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
 	textField_flGain = new wxTextCtrl(this,-1, "0.32", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To1,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
 	textField_flGainHF = new wxTextCtrl(this,-1, "0.89", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To1,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
+	validatorFloat.SetRange(0.1,20.00);     // set allowable range
 	textField_flDecayTime = new wxTextCtrl(this,-1, "1.49", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0p1To20,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
+	validatorFloat.SetRange(0.0,2.00);     // set allowable range
 	textField_flDecayHFRatio = new wxTextCtrl(this,-1, "0.83", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0p1To2p0,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
+	validatorFloat.SetRange(0.0,0.3);     // set allowable range
 	textField_flReflectionsDelay = new wxTextCtrl(this,-1, "0.007", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0p0To0p3,
+								validatorFloat,
 								wxT(""));
 	
-	textField_flLateReverbGain = new wxTextCtrl(this,-1, "1.26", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validator0To10,
-								wxT(""));
-	
-	textField_flLateReverbDelay = new wxTextCtrl(this,-1, "0.011", 
-								wxPoint(95, 20), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validator0p0To0p1,
-								wxT(""));
-								
+	validatorFloat.SetRange(0.0,3.16);     // set allowable range
 	textField_flReflectionsGain = new wxTextCtrl(this,-1, "0.05", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0p0To3p16,
+								validatorFloat,
+								wxT(""));
+								
+	validatorFloat.SetRange(0.0,10.00);     // set allowable range
+	textField_flLateReverbGain = new wxTextCtrl(this,-1, "1.26", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
 								wxT(""));
 	
+	validatorFloat.SetRange(0.0,0.1);     // set allowable range
+	textField_flLateReverbDelay = new wxTextCtrl(this,-1, "0.011", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER,
+								validatorFloat,
+								wxT(""));
+								
+	
+	validatorFloat.SetRange(0.892,1.00);     // set allowable range
 	textField_flAirAbsorptionGainHF = new wxTextCtrl(this,-1, "0.994", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								airValidator,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
+	validatorFloat.SetRange(0.0,10.00);     // set allowable range
 	textField_flRoomRolloffFactor = new wxTextCtrl(this,-1, "0.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validator0To10,          // associate the text box with the desired validator
+								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
 	
@@ -385,7 +369,7 @@ void CreateStandardReverbZoneDialog::OnPreview(wxCommandEvent& event)
 				tempZone.InitStandardReverbZone(name,xPosition,yPosition,zPosition,width,properties);
 				
 				//apply effect to sound producer track
-				m_effects_manager_ptr->ApplyThisReverbZoneEffectToThisTrack(thisTrack, &tempZone);
+				m_effects_manager_ptr->ApplyThisEffectZoneEffectToThisTrack(thisTrack, &tempZone);
 				
 				//play track
 

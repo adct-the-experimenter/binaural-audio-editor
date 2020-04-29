@@ -1,5 +1,5 @@
-#ifndef EDIT_MULTIPLE_EAX_REVERB_ZONES_DIALOG_H
-#define EDIT_MULTIPLE_EAX_REVERB_ZONES_DIALOG_H
+#ifndef EDIT_MULTIPLE_STANDARD_REVERB_ZONES_DIALOG_H
+#define EDIT_MULTIPLE_STANDARD_REVERB_ZONES_DIALOG_H
 
 #include <memory>
 #include <wx/wx.h>
@@ -10,11 +10,11 @@
 
 #include "effects-manager.h"
 
-class EditMultipleEAXReverbZonesDialog : public wxDialog
+class EditMultipleStandardReverbZonesDialog : public wxDialog
 {
 
 public:
-	EditMultipleEAXReverbZonesDialog(const wxString& title,EffectsManager* effects_manager);
+	EditMultipleStandardReverbZonesDialog(const wxString& title,EffectsManager* effects_manager);
 
 
 	void OnOk(wxCommandEvent& event );
@@ -32,8 +32,8 @@ private:
 
 	EffectsManager* effects_manager_ptr; //pointer to vector of sound producers to edit
 	
-	//ReverbStandardProperties tempStandardRevProp;
-	ReverbEAXProperties tempEAXRevProp;
+	ReverbStandardProperties tempStandardRevProp;
+	//ReverbEAXProperties tempEAXRevProp;
 	
 	std::string name;
 	double xPosition;

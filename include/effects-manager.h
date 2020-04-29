@@ -4,6 +4,7 @@
 #include "listener.h"
 #include "soundproducer-track-manager.h"
 #include "reverb-zone.h"
+#include "echo-zone.h"
 
 #include <wx/wx.h>
 
@@ -23,22 +24,33 @@ public:
 	//function to create reverb zone that uses EAX effectss
 	void CreateEAXReverbZone(std::string& name, double& x, double& y, double& z, double& width, ReverbEAXProperties& properties);
 	
+	//function to create echo zone
+	void CreateEchoZone(std::string& name, double& x, double& y, double& z, double& width, EchoZoneProperties& properties);
+	
 	//function to return a pointer to reverb zone vector
-	std::vector <ReverbZone> *GetReferenceToReverbZoneVector();
+	std::vector <EffectZone*> *GetReferenceToEffectZoneVector();
 	
 	//function to return a pointer to reverb zone from index in vector
-	ReverbZone* GetPointerToReverbZone(size_t& index);
+	EffectZone* GetPointerToEffectZone(size_t& index);
+	ReverbZone* GetPointerToStandardReverbZone(size_t& index);
+	ReverbZone* GetPointerToEAXReverbZone(size_t& index);
+	EchoZone* GetPointerToEchoZone(size_t& index);
 	
 	//function to run to apply reverb zone effect if listener is in reverb zone
-	void RunListenerInReverbZoneOperation();
+	void RunListenerInEffectZoneOperation();
 	
 	//function to free reverb zone effects
 	void FreeEffects();
 	
 	friend class CheckListenerReverbZoneThread;
+	
 	friend class CreateEAXReverbZoneDialog;
 	friend class CreateStandardReverbZoneDialog;
-	friend class EditMultipleReverbZonesDialog;
+	friend class CreateEchoZoneDialog;
+
+	friend class EditMultipleStandardReverbZonesDialog;
+	friend class EditMultipleEAXReverbZonesDialog;
+	friend class EditMultipleEchoZonesDialog;
 	
 private:
 	
@@ -49,19 +61,24 @@ private:
 	Listener* m_listener_ptr;
 	
 	//vector to contain many reverb zone objects
-	std::vector <ReverbZone> reverb_zones_vector;
+	std::vector <EffectZone*> effect_zones_vector;
+	
+	std::vector <ReverbZone> standard_reverb_zones_vector;
+	std::vector <ReverbZone> eax_reverb_zones_vector;
+	
+	std::vector <EchoZone> echo_zones_vector;
 	
 	//function to perform the entire reverb thread operation of checking and setting reverb
 	void PerformReverbThreadOperation();
 	
 	//function to return bool of if a listener is in a reverb zone
-	bool IsListenerInThisReverbZone(ReverbZone* thisZone);
+	bool IsListenerInThisEffectZone(EffectZone* thisZone);
 	
 	//function to return bool of if a sound producer is in a reverb zone
-	bool IsThisSoundProducerInsideReverbZone(SoundProducer* thisSoundProducer,ReverbZone* thisZone);
+	bool IsThisSoundProducerInsideEffectZone(SoundProducer* thisSoundProducer,EffectZone* thisZone);
 	
 	//function to apply reverb effect of a zone to sound producer track
-	void ApplyThisReverbZoneEffectToThisTrack(SoundProducerTrack* thisSoundProducerTrack, ReverbZone* thisZone);
+	void ApplyThisEffectZoneEffectToThisTrack(SoundProducerTrack* thisSoundProducerTrack, EffectZone* thisZone);
 	
 	//function to remove effect applied to the sound producer track
 	void RemoveEffectFromThisTrack(SoundProducerTrack* thisSoundProducerTrack);

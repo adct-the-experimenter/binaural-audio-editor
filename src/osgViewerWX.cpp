@@ -15,6 +15,13 @@
 
 #include "osgViewerWX.h"
 
+#include "CreateStandardReverbZoneDialog.h"
+#include "CreateEAXReverbZoneDialog.h"
+#include "CreateEchoZoneDialog.h"
+
+#include "EditMultipleStandardReverbZonesDialog.h"
+#include "EditMultipleEAXReverbZonesDialog.h"
+#include "EditMultipleEchoZonesDialog.h"
 
 bool init_listener_once = false;
 
@@ -326,7 +333,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_CHANGE_HRTF, MainFrame::OnChangeHRTF)
     EVT_MENU				(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE, MainFrame::OnCreateStandardReverbZone)
     EVT_MENU				(MainFrame::ID_CREATE_EAX_REVERB_ZONE, MainFrame::OnCreateEAXReverbZone)
-    EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_REVERB_ZONES, MainFrame::OnEditMultipleReverbZones)
+    EVT_MENU				(MainFrame::ID_CREATE_ECHO_ZONE, MainFrame::OnCreateEchoZone)
+    EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES, MainFrame::OnEditMultipleStandardReverbZones)
+    EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_EAX_REVERB_ZONES, MainFrame::OnEditMultipleEAXReverbZones)
+    EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_ECHO_ZONES, MainFrame::OnEditMultipleEchoZones)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -371,7 +381,11 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	wxMenu* menuEffects = new wxMenu;
     menuEffects->Append(MainFrame::ID_CREATE_STANDARD_REVERB_ZONE,"&Create Standard Reverb Zone");
     menuEffects->Append(MainFrame::ID_CREATE_EAX_REVERB_ZONE,"&Create EAX Reverb Zone");
-    menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_REVERB_ZONES,"&Edit Multiple Reverb Zones");
+    menuEffects->Append(MainFrame::ID_CREATE_ECHO_ZONE,"&Create Echo Zone");
+    
+    menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,"&Edit Standard Reverb Zones");
+    menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,"&Edit EAX Reverb Zones");
+    menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_ECHO_ZONES,"&Edit Echo Zones");
     
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
@@ -818,7 +832,7 @@ void MainFrame::OnCreateStandardReverbZone(wxCommandEvent& event)
 		effectsManagerPtr->CreateStandardReverbZone(name,x,y,z,width,properties);
 		
 		//add position attitude transform to root group of nodes
-		_rootNode->addChild( (effectsManagerPtr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back()->getTransformNode() );
 	}
 
 }
@@ -847,19 +861,61 @@ void MainFrame::OnCreateEAXReverbZone(wxCommandEvent& event)
 		effectsManagerPtr->CreateEAXReverbZone(name,x,y,z,width,properties);
 		
 		//add position attitude transform to root group of nodes
-		_rootNode->addChild( (effectsManagerPtr->GetReferenceToReverbZoneVector())->back().getTransformNode() );
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back()->getTransformNode() );
 	}
 
 }
 
-void MainFrame::OnEditMultipleReverbZones(wxCommandEvent& event)
+void MainFrame::OnCreateEchoZone(wxCommandEvent& event)
 {
-	std::unique_ptr <EditMultipleReverbZonesDialog> reverbZoneEditDialog(new EditMultipleReverbZonesDialog( wxT("Edit Reverb Zones"),
+	std::unique_ptr <CreateEchoZoneDialog> echoZoneNewDialog(new CreateEchoZoneDialog(wxT("Create New Echo Zone"),
+																									effectsManagerPtr) );
+    echoZoneNewDialog->Show(true);
+
+    if(echoZoneNewDialog->OkClicked())
+    {
+		double x,y,z,width;
+		EchoZoneProperties properties;
+		
+		echoZoneNewDialog->getNewPosition(x,y,z);
+		std::string name = echoZoneNewDialog->getNewName();
+		width = echoZoneNewDialog->getNewWidth();
+		properties = echoZoneNewDialog->getNewProperties();
+		
+		effectsManagerPtr->CreateEchoZone(name,x,y,z,width,properties);
+		
+		//add position attitude transform to root group of nodes
+		_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back()->getTransformNode() );
+	}
+}
+
+void MainFrame::OnEditMultipleStandardReverbZones(wxCommandEvent& event)
+{
+	std::unique_ptr <EditMultipleStandardReverbZonesDialog> reverbZoneEditDialog(new EditMultipleStandardReverbZonesDialog( wxT("Edit Reverb Zones"),
 																													effectsManagerPtr));
 																				
 
     reverbZoneEditDialog->Show(true);
 
+}
+
+void MainFrame::OnEditMultipleEAXReverbZones(wxCommandEvent& event)
+{
+	std::unique_ptr <EditMultipleEAXReverbZonesDialog> reverbZoneEditDialog(new EditMultipleEAXReverbZonesDialog( wxT("Edit Reverb Zones"),
+																													effectsManagerPtr));
+																				
+
+    reverbZoneEditDialog->Show(true);
+
+}
+
+void MainFrame::OnEditMultipleEchoZones(wxCommandEvent& event)
+{
+	
+	std::unique_ptr <EditMultipleEchoZonesDialog> echoZoneEditDialog(new EditMultipleEchoZonesDialog( wxT("Edit Echo Zones"),
+																													effectsManagerPtr));																			
+
+    echoZoneEditDialog->Show(true);
 }
 
 void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)

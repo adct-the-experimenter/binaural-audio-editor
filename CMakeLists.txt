@@ -40,32 +40,37 @@ set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIR
 include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
 
 set(SOURCES src/osgViewerWX.cpp
-			src/CreateStandardReverbZoneDialog.cpp src/CreateEAXReverbZoneDialog.cpp src/EditMultipleReverbZonesDialog.cpp src/reverb-zone.cpp
-			 src/effects-manager.cpp
-			 src/soundproducer-track-manager.cpp
-			 src/soundproducer-track.cpp
-			 src/listener-track.cpp
-			 src/soundproducer-registry.cpp
-			 src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp 
-			 src/Change-HRTF-Dialog.cpp src/HRTF-Test-Dialog.cpp 
-			 src/EditListenerDialog.cpp
-			 src/setup-serial-dialog.cpp
-			 src/listener-external.cpp
-			 src/openalsoftaudioengine.cpp src/soundproducer.cpp src/listener.cpp
-			 src/external-orientation-device-serial.cpp
-			 
-			 src/timeline-track-editor/src/timeline-frame.cpp
-			 src/timeline-track-editor/src/timeline-window.cpp
-			 src/timeline-track-editor/src/playback-controls.cpp
-			 src/timeline-track-editor/src/stereo-audio-track.cpp
-			 src/timeline-track-editor/src/mono-audio-track.cpp
-			 src/timeline-track-editor/src/audio-track.cpp
-			 src/timeline-track-editor/src/audio-graph.cpp
-			 src/timeline-track-editor/src/audio-stream-container.cpp
-			 src/timeline-track-editor/src/openalsoft-player.cpp
-			 src/timeline-track-editor/src/double-track.cpp
-			 src/timeline-track-editor/src/editor-graph.cpp
-			 src/timeline-track-editor/src/track.cpp
+			src/CreateStandardReverbZoneDialog.cpp src/EditMultipleStandardReverbZonesDialog.cpp 
+			src/CreateEAXReverbZoneDialog.cpp src/EditMultipleEAXReverbZonesDialog.cpp 
+			src/CreateEchoZoneDialog.cpp src/EditMultipleEchoZonesDialog.cpp
+			src/echo-zone.cpp
+			src/reverb-zone.cpp
+			src/effect-zone.cpp
+			src/effects-manager.cpp
+			src/soundproducer-track-manager.cpp
+			src/soundproducer-track.cpp
+			src/listener-track.cpp
+			src/soundproducer-registry.cpp
+			src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp 
+			src/Change-HRTF-Dialog.cpp src/HRTF-Test-Dialog.cpp 
+			src/EditListenerDialog.cpp
+			src/setup-serial-dialog.cpp
+			src/listener-external.cpp
+			src/openalsoftaudioengine.cpp src/soundproducer.cpp src/listener.cpp
+			src/external-orientation-device-serial.cpp
+
+			src/timeline-track-editor/src/timeline-frame.cpp
+			src/timeline-track-editor/src/timeline-window.cpp
+			src/timeline-track-editor/src/playback-controls.cpp
+			src/timeline-track-editor/src/stereo-audio-track.cpp
+			src/timeline-track-editor/src/mono-audio-track.cpp
+			src/timeline-track-editor/src/audio-track.cpp
+			src/timeline-track-editor/src/audio-graph.cpp
+			src/timeline-track-editor/src/audio-stream-container.cpp
+			src/timeline-track-editor/src/openalsoft-player.cpp
+			src/timeline-track-editor/src/double-track.cpp
+			src/timeline-track-editor/src/editor-graph.cpp
+			src/timeline-track-editor/src/track.cpp
 			 )
 
 #get_cmake_property(_variableNames VARIABLES)

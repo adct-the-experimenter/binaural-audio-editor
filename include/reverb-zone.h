@@ -1,21 +1,7 @@
 #ifndef REVERB_ZONE_H
 #define REVERB_ZONE_H
 
-#include "AL/al.h" //header for OpenAL Soft
-#include "AL/alc.h" //header for OpenAL Soft
-#include "AL/alext.h" //header for OpenAL Soft
-#include "AL/efx.h"
-#include "AL/efx-presets.h"
-
-#include <cassert>
-#include <string>
-#include <cstdint>
-#include <vector>
-#include <iostream>
-
-#include <osg/ShapeDrawable> //for object to render on screen
-#include <osg/PositionAttitudeTransform> //for matrix transform that moves object rendered
-#include <osg/Geode> //for object rendered to be moved on screen by matrix transform
+#include "effect-zone.h"
 
 struct ReverbEAXProperties
 {
@@ -95,32 +81,17 @@ struct ReverbStandardProperties
 	//int iDecayHFLimit;
 };
 
-class ReverbZone
+class ReverbZone : public EffectZone
 {
 public:
 	ReverbZone();
 	~ReverbZone();
-	
-	//name of reverb zone
-	
-	void SetNameString(std::string& thisName);
-	std::string GetNameString();
 	
 	//type of reverb to use for zone
 	enum class Type: std::int8_t {NONE=0, STANDARD, EAX};
 	
 	void SetType(ReverbZone::Type& type);
 	ReverbZone::Type& GetType();
-	
-	//Position
-	
-	void SetPositionX(double& x); //set x position of sound producer
-	double GetPositionX(); //get x position of sound producer
-	void SetPositionY(double& y); //set y position of sound producer
-	double GetPositionY(); //get y position of sound producer
-	void SetPositionZ(double& z); //set z position of sound producer
-	double GetPositionZ(); //get z position of sound producer
-	
 	
 	//functions to initialize reverb zones based on type
 	
@@ -148,59 +119,31 @@ public:
 	ReverbStandardProperties& GetStandardReverbZoneProperties();
 	ReverbEAXProperties& GetEAXReverbZoneProperties();
 	
-	//3d Object properties
-	osg::ShapeDrawable* getRenderObject();
-
-	osg::Geode* getGeodeNode();
-
-	osg::PositionAttitudeTransform* getTransformNode();
 	
-	void ChangeWidth(double width);
-	double GetWidth();
+	virtual ALuint* GetEffectPointer();
+	virtual ALuint* GetEffectsSlotPointer();
 	
-	//OpenAL Soft effects properties
+	virtual ALuint GetEffect();
+	virtual ALuint GetEffectsSlot();
 	
-	ALuint* GetEffect();
-	ALuint* GetEffectsSlot();
-	
-	void FreeEffects();
+	virtual void FreeEffects();
 	
 private:
-    
-    //effect
-    ALuint m_effect; 
-    
-    //what play effect in source of soundproducer 
-    ALuint m_slot;
-    
-	//Name of Reverb Zone
-	std::string name;
+
+	ALuint m_effect;
+	ALuint m_slot;
 	
 	//type of reverb zone
 	ReverbZone::Type m_type;
-
-	//position of reverb zone
-	std::vector <double> position_vector;
-	enum POSITION_INDEX { X=0,Y=1,Z=2 };
-	
-	double m_width;
-	
-	//ShapeDrawable object to render
-	osg::ref_ptr<osg::ShapeDrawable> m_renderObject;
-
-	osg::ref_ptr<osg::Box> m_box;
-
-	//holds geometry information for rendering, moved by transform of matrix
-	osg::ref_ptr<osg::Geode> m_geode;
-
-	//moves the geode
-	osg::ref_ptr<osg::PositionAttitudeTransform> m_paTransform;
 	
 	ALuint LoadStandardReverbEffect(const EFXEAXREVERBPROPERTIES *reverb);
 	ALuint LoadEAXReverbEffect(const EFXEAXREVERBPROPERTIES *reverb);
 	
 	ReverbStandardProperties m_standard_prop;
 	ReverbEAXProperties m_eax_prop;
+	
+	ZoneColor standardColor;
+	ZoneColor eaxColor;
 };
 
 #endif

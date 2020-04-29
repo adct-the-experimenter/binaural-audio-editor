@@ -1,60 +1,67 @@
-#ifndef CREATE_EAX_REVERB_ZONE_H
-#define CREATE_EAX_REVERB_ZONE_H
+#ifndef EDIT_MULTIPLE_EAX_REVERB_ZONES_DIALOG_H
+#define EDIT_MULTIPLE_EAX_REVERB_ZONES_DIALOG_H
 
+#include <memory>
 #include <wx/wx.h>
 
 #include <wx/valnum.h> //for wxFloatingPointValidator
 #include <wx/textctrl.h> //for wxTextCtrl
+#include <wx/listbox.h> //for list box
 
 #include "effects-manager.h"
 
-
-
-class CreateEAXReverbZoneDialog : public wxDialog
+class EditMultipleEAXReverbZonesDialog : public wxDialog
 {
 
 public:
-	CreateEAXReverbZoneDialog(const wxString& title,EffectsManager* effects_manager);
-	
+	EditMultipleEAXReverbZonesDialog(const wxString& title,EffectsManager* effects_manager);
 
-	void OnOk(wxCommandEvent& event);
+
+	void OnOk(wxCommandEvent& event );
 
 	void OnCancel(wxCommandEvent& event);
-	
+
+	void OnApply(wxCommandEvent& event);
+
 	void OnPreview(wxCommandEvent& event);
 
 	void Exit();
 
 
-	//function to return position of new sound producer object
-	void getNewPosition(double& x, double& y, double& z);
-
-	std::string getNewName();
-
-	double& getNewWidth();
-	
-	ReverbEAXProperties& getNewProperties();
-	
-	enum
-	{
-		ID_OK = wxID_HIGHEST + 1,
-		ID_PREVIEW,
-		ID_APPLY,
-		ID_CANCEL,
-		ID_RENAME,
-		ID_LISTBOX
-	};
-	
-	bool OkClicked();
-	
 private:
-	EffectsManager* m_effects_manager_ptr;
+
+	EffectsManager* effects_manager_ptr; //pointer to vector of sound producers to edit
+	
+	//ReverbStandardProperties tempStandardRevProp;
+	ReverbEAXProperties tempEAXRevProp;
+	
+	std::string name;
+	double xPosition;
+	double yPosition;
+	double zPosition;
+	double width;
 	
 	wxButton* okButton;
 	wxButton* cancelButton;
+	wxButton* applyButton;
 	wxButton* previewButton;
+
+	int m_selection_index;
 	
+	wxListBox* listboxReverbZones;
+
+	void initPrivateVariables();
+
+	void ChangeReverbZoneAttributes();
+
+	void ReverbZoneSelectedInListBox(wxCommandEvent& event );
 	
+	wxListBox* listboxSoundProducers;
+	int spt_selection_index;
+	
+	void SoundProducerTrackSelectedInListBox(wxCommandEvent& event );
+	
+	//text fields
 	wxTextCtrl* textFieldName;
 
 	wxTextCtrl* textFieldX;
@@ -62,10 +69,7 @@ private:
 	wxTextCtrl* textFieldZ;
 	wxTextCtrl* textFieldWidth;
 	
-	wxListBox* listboxSoundProducers;
-	int spt_selection_index;
 	
-	void SoundProducerTrackSelectedInListBox(wxCommandEvent& event );
 	
 	//AL_REVERB_DENSITY, 
 	wxTextCtrl* textField_flDensity;
@@ -108,20 +112,6 @@ private:
 	//AL_REVERB_ROOM_ROLLOFF_FACTOR, 
 	wxTextCtrl* textField_flRoomRolloffFactor;
 
-	std::string name;
-	double xPosition;
-	double yPosition;
-	double zPosition;
-	double width;
-	
-	ReverbEAXProperties properties;
-
-	void initPrivateVariables();
-	
-	bool okClicked;
-
 };
-
-
 
 #endif
