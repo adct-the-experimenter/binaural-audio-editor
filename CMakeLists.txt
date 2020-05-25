@@ -26,20 +26,25 @@ set(BOOST_LIBS date_time system)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 find_package(Threads REQUIRED)
 
+#Pugi XML parsing
+find_path(pugixml_INCLUDE_DIRS pugixml.hpp)
+find_library(pugixml_LIBRARIES NAMES pugixml)
+
 #FreeBSD and linux specific include and libs
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${pugixml_LIBRARIES})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
-set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} )
+set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} ${pugixml_INCLUDE_DIRS})
 
 #for where to find header files for source and library
-include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
+include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR} )
 
 set(SOURCES src/osgViewerWX.cpp
+			src/SaveSystem.cpp src/LoadSystem.cpp src/SaveData.cpp src/XMLCreator.cpp src/XMLReader.cpp
 			src/CreateStandardReverbZoneDialog.cpp src/EditMultipleStandardReverbZonesDialog.cpp 
 			src/CreateEAXReverbZoneDialog.cpp src/EditMultipleEAXReverbZonesDialog.cpp 
 			src/CreateEchoZoneDialog.cpp src/EditMultipleEchoZonesDialog.cpp

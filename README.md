@@ -17,6 +17,8 @@ Resize the window if unable to move timeline.
 
 - Boost Math Quaternion headers and Boost ASIO serial https://www.boost.org/users/history/version_1_70_0.html
 
+- PugiXML https://github.com/zeux/pugixml/
+
 ## How to Install
 
 1. Install required libraries.
