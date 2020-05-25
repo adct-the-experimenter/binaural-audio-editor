@@ -10,7 +10,7 @@ LoadSystem::~LoadSystem()
 	
 }
 	
-void LoadSystem::LoadProject()
+void LoadSystem::LoadProject(std::string path)
 {
 	
 }

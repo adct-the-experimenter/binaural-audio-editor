@@ -52,6 +52,8 @@
 
 #include "effects-manager.h"
 
+#include "SaveSystem.h"
+#include "LoadSystem.h"
 
 #include <iostream>
 #include <memory> //for unique_ptr use
@@ -164,6 +166,7 @@ public:
     
     // Mainframe menu operations
     
+    
     void OnOpen(wxCommandEvent& WXUNUSED(event));
     void OnIdle(wxIdleEvent& event);
 	void OnExit(wxCommandEvent& event);
@@ -173,7 +176,7 @@ public:
 	void OnListRightClick(wxListEvent &evt);
 	void OnPopupClick(wxCommandEvent &evt);
 	
-	
+	void OnSaveProject(wxCommandEvent& WXUNUSED(event));
 	
 	void OnKeyDown(wxKeyEvent& event); //where camera viewer gets manipulated
 	
@@ -193,7 +196,8 @@ private:
 		ID_CREATE_ECHO_ZONE,
 		ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,
 		ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,
-		ID_EDIT_MULTIPLE_ECHO_ZONES
+		ID_EDIT_MULTIPLE_ECHO_ZONES,
+		ID_SAVE_PROJECT
 		
 	};
     
@@ -246,6 +250,9 @@ private:
     int sound_producer_track_count;
     wxButton* m_remove_soundproducertrack_button;
     void OnRemoveSoundProducerTrack(wxCommandEvent& event);
+    
+    //Save System
+    std::unique_ptr <SaveSystem> save_system_ptr;
     
     DECLARE_EVENT_TABLE()
 };

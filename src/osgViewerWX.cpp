@@ -337,6 +337,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES, MainFrame::OnEditMultipleStandardReverbZones)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_EAX_REVERB_ZONES, MainFrame::OnEditMultipleEAXReverbZones)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_ECHO_ZONES, MainFrame::OnEditMultipleEchoZones)
+    EVT_MENU				(MainFrame::ID_SAVE_PROJECT, MainFrame::OnSaveProject)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -350,8 +351,10 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
 	//create file menu item
     wxMenu *menuFile = new wxMenu;
+    
+    menuFile->Append(MainFrame::ID_SAVE_PROJECT,"&Save");
     menuFile->Append(wxID_EXIT);
-
+	
     //create help menu item
     wxMenu *menuHelp = new wxMenu;
     menuHelp->Append(wxID_ABOUT);
@@ -400,6 +403,9 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
     CreateStatusBar();
     SetStatusText( "Welcome to Binaural Audio Editor!" );
+    
+    //initliaze save system
+    save_system_ptr = std::unique_ptr <SaveSystem> (new SaveSystem());
 
     //Code to initialize timeline track editor part of GUI
 
@@ -702,6 +708,27 @@ void MainFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 		//use this path in your app
 	}
 
+}
+
+void MainFrame::OnSaveProject(wxCommandEvent& WXUNUSED(event))
+{
+	wxFileDialog fileDlg(this, _("Save XML file"), "", "",
+                       "XML files (*.xml)|*.xml", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (fileDlg.ShowModal() == wxID_OK)
+	{
+		//clear and free any current data 
+		
+		wxString path = fileDlg.GetPath();
+		//use this path in your app
+		std::string saveFilePath = std::string(path.mb_str());
+		
+		saveFilePath.append(".xml");
+		
+		std::cout << "Input Sound file path:" << saveFilePath << std::endl;
+		
+		save_system_ptr->SetSaveFilePath(saveFilePath);
+		save_system_ptr->SaveProjectToSetFile(effectsManagerPtr);
+	} 
 }
 
 void MainFrame::OnPlayAudio(wxCommandEvent& event)

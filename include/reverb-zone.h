@@ -51,6 +51,21 @@ struct ReverbEAXProperties
 	//int iDecayHFLimit; 
 };
 
+struct EAXReverbZoneSaveData
+{
+	//position
+	double x;
+	double y;
+	double z;
+	
+	//size
+	double width;
+	
+	//properties
+	ReverbEAXProperties properties;
+	
+};
+
 struct ReverbStandardProperties
 {
 	//AL_REVERB_DENSITY, 
@@ -79,6 +94,20 @@ struct ReverbStandardProperties
 	double flRoomRolloffFactor;
 	//AL_REVERB_DECAY_HFLIMIT, 
 	//int iDecayHFLimit;
+};
+
+struct StandardReverbZoneSaveData
+{
+	//position
+	double x;
+	double y;
+	double z;
+	
+	//size
+	double width;
+	
+	//properties
+	ReverbStandardProperties properties;
 };
 
 class ReverbZone : public EffectZone
@@ -128,6 +157,15 @@ public:
 	
 	virtual void FreeEffects();
 	
+	StandardReverbZoneSaveData GetStandardReverbZoneSaveData();
+	EAXReverbZoneSaveData GetEAXReverbZoneSaveData();
+	
+	//changed from effect zone to implement save data
+	void SetPositionX(double& x); 
+	void SetPositionY(double& y); 
+	void SetPositionZ(double& z); 
+	void ChangeWidth(double width);
+	
 private:
 
 	ALuint m_effect;
@@ -144,6 +182,9 @@ private:
 	
 	ZoneColor standardColor;
 	ZoneColor eaxColor;
+	
+	StandardReverbZoneSaveData m_saveDataStandard;
+	EAXReverbZoneSaveData m_saveDataEAX;
 };
 
 #endif

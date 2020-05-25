@@ -17,6 +17,21 @@ struct EchoZoneProperties
 	double flSpread;
 };
 
+struct EchoZoneSaveData
+{
+	//position
+	double x;
+	double y;
+	double z;
+	
+	//size
+	double width;
+	
+	//properties
+	
+	EchoZoneProperties properties;
+};
+
 class EchoZone : public EffectZone
 {
 public:
@@ -33,11 +48,17 @@ public:
 	void InitEchoZoneWithGraphicalObject(std::string& thisName,
 							double& x, double& y, double& z, double& width,
 							EchoZoneProperties& properties);
-							
+
+	//changed from effect zone to implement save data
+	void SetPositionX(double& x); 
+	void SetPositionY(double& y); 
+	void SetPositionZ(double& z); 
+	void ChangeWidth(double width);
 	
-							
 	//function to change reverb properties 
 	void ChangeEchoZoneProperties(EchoZoneProperties& properties);
+	
+	EchoZoneSaveData GetEchoZoneSaveData();
 	
 	EchoZoneProperties& GetEchoZoneProperties();
 	
@@ -60,6 +81,8 @@ private:
 	EchoZoneProperties m_echo_prop;
 	
 	ZoneColor echoZoneColor;
+	
+	EchoZoneSaveData m_saveData;
 };
 
 #endif

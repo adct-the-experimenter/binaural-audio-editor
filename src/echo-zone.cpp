@@ -158,6 +158,7 @@ void EchoZone::InitEchoZone(std::string& thisName,
 	
 	//initialize standard properties
 	m_echo_prop = properties;
+	m_saveData.properties = properties;
 	
 }
 
@@ -197,6 +198,9 @@ void EchoZone::ChangeEchoZoneProperties(EchoZoneProperties& properties)
     ALint i_effect = (ALint)(m_effect);
     alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
     assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
+    
+    m_echo_prop = properties;
+    m_saveData.properties = properties;
 }
 
 
@@ -226,3 +230,15 @@ void EchoZone::FreeEffects()
 	}
 }
 
+EchoZoneSaveData EchoZone::GetEchoZoneSaveData()
+{
+	return m_saveData;
+}
+
+void EchoZone::SetPositionX(double& x){m_saveData.x = x; EffectZone::SetPositionX(x);}
+
+void EchoZone::SetPositionY(double& y){m_saveData.y = y; EffectZone::SetPositionY(y);} 
+
+void EchoZone::SetPositionZ(double& z){m_saveData.z = z; EffectZone::SetPositionZ(z);} 
+
+void EchoZone::ChangeWidth(double width){m_saveData.width = width; EffectZone::ChangeWidth(width);}

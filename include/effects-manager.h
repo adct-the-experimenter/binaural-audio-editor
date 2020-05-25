@@ -42,6 +42,7 @@ public:
 	//function to free reverb zone effects
 	void FreeEffects();
 	
+	
 	friend class CheckListenerReverbZoneThread;
 	
 	friend class CreateEAXReverbZoneDialog;
@@ -51,6 +52,9 @@ public:
 	friend class EditMultipleStandardReverbZonesDialog;
 	friend class EditMultipleEAXReverbZonesDialog;
 	friend class EditMultipleEchoZonesDialog;
+	
+	friend class SaveSystem;
+	friend class LoadSystem;
 	
 private:
 	

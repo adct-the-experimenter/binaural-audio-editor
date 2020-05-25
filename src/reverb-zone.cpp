@@ -316,6 +316,13 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	//initialize standard properties
 	m_standard_prop = properties;
 	
+	
+	//save data
+	m_saveDataStandard.x = x;
+	m_saveDataStandard.y = y;
+	m_saveDataStandard.z = z;
+	m_saveDataStandard.width = width;
+	m_saveDataStandard.properties = properties;
 }
 
 void ReverbZone::InitStandardReverbZoneWithGraphicalObject(std::string& thisName,
@@ -414,6 +421,13 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	//initialize eax properties
 	m_eax_prop = properties;
 	
+	//save data
+	m_saveDataEAX.x = x;
+	m_saveDataEAX.y = y;
+	m_saveDataEAX.z = z;
+	m_saveDataEAX.width = width;
+	m_saveDataEAX.properties = properties;
+	
 }
 
 void ReverbZone::InitEAXReverbZoneWithGraphicalObject(std::string& thisName,
@@ -470,7 +484,7 @@ void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& pr
 	alEffecti(m_effect, AL_REVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
 	
     
-    m_standard_prop = properties;
+    
     
     //load the newly modified effect into the effect slot
 	
@@ -480,6 +494,9 @@ void ReverbZone::ChangeStandardReverbZoneProperties(ReverbStandardProperties& pr
      */
     ALint i_effect = (ALint)(m_effect);
     alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
+    
+    m_standard_prop = properties;
+    m_saveDataStandard.properties = properties;
     
 }
 
@@ -546,7 +563,6 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
         alEffectf(m_effect, AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, reverb.flRoomRolloffFactor);
         alEffecti(m_effect, AL_EAXREVERB_DECAY_HFLIMIT, reverb.iDecayHFLimit);
         
-        m_eax_prop = properties;
     
 		 //load the newly modified effect into the effect slot
 		
@@ -557,6 +573,9 @@ void ReverbZone::ChangeEAXReverbZoneProperties(ReverbEAXProperties& properties)
 		ALint i_effect = (ALint)(m_effect);
 		alAuxiliaryEffectSloti(m_slot, AL_EFFECTSLOT_EFFECT, i_effect);
 		assert(alGetError()== AL_NO_ERROR && "Failed to set effect slot");
+		
+		m_eax_prop = properties;
+		m_saveDataEAX.properties = properties;
     }
     
     
@@ -596,4 +615,43 @@ void ReverbZone::FreeEffects()
 		 alDeleteAuxiliaryEffectSlots(1, &m_slot);
 		 m_slot = 0;
 	}
+}
+
+
+StandardReverbZoneSaveData ReverbZone::GetStandardReverbZoneSaveData()
+{
+	return m_saveDataStandard;
+}
+
+EAXReverbZoneSaveData ReverbZone::GetEAXReverbZoneSaveData()
+{
+	return m_saveDataEAX;
+}
+
+void ReverbZone::SetPositionX(double& x)
+{
+	m_saveDataStandard.x = x; 
+	m_saveDataEAX.x = x; 
+	EffectZone::SetPositionX(x);
+}
+
+void ReverbZone::SetPositionY(double& y)
+{
+	m_saveDataStandard.y = y; 
+	m_saveDataEAX.y = y; 
+	EffectZone::SetPositionY(y);
+} 
+
+void ReverbZone::SetPositionZ(double& z)
+{
+	m_saveDataStandard.z = z; 
+	m_saveDataEAX.z = z; 
+	EffectZone::SetPositionZ(z);
+} 
+
+void ReverbZone::ChangeWidth(double width)
+{
+	m_saveDataStandard.width = width; 
+	m_saveDataEAX.width = width; 
+	EffectZone::ChangeWidth(width);
 }
