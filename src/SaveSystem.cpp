@@ -30,8 +30,12 @@ void SaveSystem::SaveProject(EffectsManager* effectsManagerPtr, std::string path
 
 void SaveSystem::SaveEffectsZones(EffectsManager* effectsManagerPtr, std::string path)
 {
+	
 	//for each specific effect zone type
-	//xml_creator
+	xml_creator.SaveDataToXMLFile(&effectsManagerPtr->echo_zones_vector,
+								&effectsManagerPtr->standard_reverb_zones_vector,
+								&effectsManagerPtr->eax_reverb_zones_vector,
+								path);
 	
 }
 
