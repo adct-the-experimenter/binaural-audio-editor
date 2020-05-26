@@ -159,6 +159,11 @@ void EchoZone::InitEchoZone(std::string& thisName,
 	//initialize standard properties
 	m_echo_prop = properties;
 	m_saveData.properties = properties;
+	m_saveData.name = thisName;
+	m_saveData.x = x;
+	m_saveData.y = y;
+	m_saveData.z = z;
+	m_saveData.width = width;
 	
 }
 

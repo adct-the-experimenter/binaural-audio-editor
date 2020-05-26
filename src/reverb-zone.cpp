@@ -318,6 +318,7 @@ void ReverbZone::InitStandardReverbZone(std::string& thisName,
 	
 	
 	//save data
+	m_saveDataStandard.name = thisName;
 	m_saveDataStandard.x = x;
 	m_saveDataStandard.y = y;
 	m_saveDataStandard.z = z;
@@ -422,6 +423,7 @@ void ReverbZone::InitEAXReverbZone(std::string& thisName,
 	m_eax_prop = properties;
 	
 	//save data
+	m_saveDataEAX.name = thisName;
 	m_saveDataEAX.x = x;
 	m_saveDataEAX.y = y;
 	m_saveDataEAX.z = z;

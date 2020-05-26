@@ -19,6 +19,9 @@ struct EchoZoneProperties
 
 struct EchoZoneSaveData
 {
+	//name
+	std::string name;
+	
 	//position
 	double x;
 	double y;
@@ -30,6 +33,7 @@ struct EchoZoneSaveData
 	//properties
 	
 	EchoZoneProperties properties;
+	
 };
 
 class EchoZone : public EffectZone

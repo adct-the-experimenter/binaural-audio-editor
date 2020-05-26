@@ -53,6 +53,9 @@ struct ReverbEAXProperties
 
 struct EAXReverbZoneSaveData
 {
+	//name
+	std::string name;
+	
 	//position
 	double x;
 	double y;
@@ -98,6 +101,9 @@ struct ReverbStandardProperties
 
 struct StandardReverbZoneSaveData
 {
+	//name
+	std::string name;
+	
 	//position
 	double x;
 	double y;
