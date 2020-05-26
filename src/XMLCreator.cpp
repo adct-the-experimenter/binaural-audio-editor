@@ -1,7 +1,6 @@
 #include "XMLCreator.h"
 
-#include "pugixml.hpp"
-#include <iostream>
+
 
 XMLCreator::XMLCreator()
 {
@@ -13,7 +12,8 @@ XMLCreator::~XMLCreator()
 	
 }
 
-void XMLCreator::SaveDataToXMLFile(std::vector <EchoZone> *echoZones,
+void XMLCreator::SaveDataToXMLFile(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr,
+						   std::vector <EchoZone> *echoZones,
 						   std::vector <ReverbZone> *standardRevZones,
 						   std::vector <ReverbZone> *eaxRevZones,
 						   std::string path)
@@ -29,15 +29,37 @@ void XMLCreator::SaveDataToXMLFile(std::vector <EchoZone> *echoZones,
     declarationNode.append_attribute("standalone") = "yes";
     
     // A valid XML doc must contain a single root node of any name
-    auto root = doc.append_child("BAEXMLRoot");
+    pugi::xml_node root = doc.append_child("BAEXMLRoot");
     
-    //create effects zones nodes
+   
+	XMLCreator::SaveDataXML_EffectZones(root,
+								echoZones,
+							    standardRevZones,
+							    eaxRevZones);
+	
+	XMLCreator::SaveDataXML_SoundProducers(root,
+											sound_producer_vector_ptr);				
+	
+	//write to file
+	
+	// Save XML tree to file.
+    // Remark: second optional param is indent string to be used;
+    // default indentation is tab character.
+	bool saveSucceeded = doc.save_file(path.c_str(), PUGIXML_TEXT("  "));
+	assert(saveSucceeded);
+}
+
+void XMLCreator::SaveDataXML_EffectZones(pugi::xml_node& root,
+								std::vector <EchoZone> *echoZones,
+							    std::vector <ReverbZone> *standardRevZones,
+							    std::vector <ReverbZone> *eaxRevZones)
+{
+	
+	 //create effects zones nodes
     pugi::xml_node effectsNode = root.append_child("EffectZones");
 	
 	
-	
 	//get each effect zones save data and put it into xml file
-	
 	if(echoZones->size() > 0)
 	{
 		pugi::xml_node echoZonesNode = effectsNode.append_child("EchoZones");
@@ -111,12 +133,32 @@ void XMLCreator::SaveDataToXMLFile(std::vector <EchoZone> *echoZones,
 		}
 		
 	}
+}
+
+void XMLCreator::SaveDataXML_SoundProducers(pugi::xml_node& root,
+									std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr)
+{
 	
-	//write to file
+	if( sound_producer_vector_ptr->size() > 0)
+	{
+		//create sound producers node
+		pugi::xml_node spNode = root.append_child("SoundProducers");
+
+		for(size_t i = 0; i < sound_producer_vector_ptr->size(); i++)
+		{
+			pugi::xml_node spNodeChild = spNode.append_child("SoundProducerChild");
+			
+			pugi::xml_node nameNodeChild = spNodeChild.append_child("Name");
+			nameNodeChild.append_attribute("name") = sound_producer_vector_ptr->at(i)->GetSoundProducerSaveData().name.c_str();
+			
+			pugi::xml_node positionNodeChild = spNodeChild.append_child("Position");
+			positionNodeChild.append_attribute("x") = sound_producer_vector_ptr->at(i)->GetSoundProducerSaveData().x;
+			positionNodeChild.append_attribute("y") = sound_producer_vector_ptr->at(i)->GetSoundProducerSaveData().y;
+			positionNodeChild.append_attribute("z") = sound_producer_vector_ptr->at(i)->GetSoundProducerSaveData().z;
+			
+		}
+				
+	}
 	
-	// Save XML tree to file.
-    // Remark: second optional param is indent string to be used;
-    // default indentation is tab character.
-	bool saveSucceeded = doc.save_file(path.c_str(), PUGIXML_TEXT("  "));
-	assert(saveSucceeded);
+	
 }

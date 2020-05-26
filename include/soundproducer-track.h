@@ -14,6 +14,15 @@
 #include "soundproducer-registry.h"
 #include "soundproducer.h"
 
+struct SoundProducerTrackSaveData
+{
+	//name of sound producer
+	std::string soundproducer_name;
+	
+	//double track save data
+	
+};
+
 //class to manipulate x,y z position of sound producer
 class SoundProducerTrack : public Track
 {

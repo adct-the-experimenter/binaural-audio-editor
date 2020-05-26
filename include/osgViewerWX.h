@@ -171,7 +171,6 @@ public:
     void OnIdle(wxIdleEvent& event);
 	void OnExit(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
-	void OnPlayAudio(wxCommandEvent& event);
 	
 	void OnListRightClick(wxListEvent &evt);
 	void OnPopupClick(wxCommandEvent &evt);

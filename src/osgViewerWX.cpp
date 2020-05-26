@@ -326,7 +326,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_CREATE_SOUND_PRODUCER, MainFrame::OnCreateSoundProducer)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_SOUND_PRODUCERS, MainFrame::OnEditMultipleSoundProducers)
     EVT_BUTTON				(wxEVT_CONTEXT_MENU, MainFrame::OnPopupClick)
-    EVT_MENU				(MainFrame::ID_PLAY_AUDIO, MainFrame::OnPlayAudio)
     EVT_MENU				(MainFrame::ID_TEST_HRTF, MainFrame::OnTestHRTF)
     EVT_MENU				(MainFrame::ID_LISTENER_EDIT, MainFrame::OnEditListener)
     EVT_MENU				(MainFrame::ID_SETUP_SERIAL, MainFrame::OnSetupSerial)
@@ -727,22 +726,10 @@ void MainFrame::OnSaveProject(wxCommandEvent& WXUNUSED(event))
 		std::cout << "Input Sound file path:" << saveFilePath << std::endl;
 		
 		save_system_ptr->SetSaveFilePath(saveFilePath);
-		save_system_ptr->SaveProjectToSetFile(effectsManagerPtr);
+		save_system_ptr->SaveProjectToSetFile(sound_producer_vector_ref,effectsManagerPtr);
 	} 
 }
 
-void MainFrame::OnPlayAudio(wxCommandEvent& event)
-{
-	if(sound_producer_vector_ref != nullptr)
-	{
-		//play all sounds of sound producers at same time for now
-		for(size_t i = 0; i < sound_producer_vector_ref->size(); i++)
-		{
-			SoundProducer* thisSoundProducer = sound_producer_vector_ref->at(i).get();
-			audioEnginePtr->playSound( thisSoundProducer->getSource() );
-		}
-	}
-}
 
 void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 {
