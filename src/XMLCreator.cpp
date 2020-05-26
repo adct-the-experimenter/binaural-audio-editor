@@ -81,8 +81,11 @@ void XMLCreator::SaveDataXML_EffectZones(pugi::xml_node& root,
 			sizeNodeChild.append_attribute("width") = echoZones->at(i).GetEchoZoneSaveData().width;
 			
 			pugi::xml_node propertyNodeChild = nodeChild.append_child("Property");
-			
-			
+			propertyNodeChild.append_attribute("delay") = echoZones->at(i).GetEchoZoneSaveData().properties.flDelay;
+			propertyNodeChild.append_attribute("lrdelay") = echoZones->at(i).GetEchoZoneSaveData().properties.flLRDelay;
+			propertyNodeChild.append_attribute("damping") = echoZones->at(i).GetEchoZoneSaveData().properties.flDamping;
+			propertyNodeChild.append_attribute("feedback") = echoZones->at(i).GetEchoZoneSaveData().properties.flFeedback;
+			propertyNodeChild.append_attribute("spread") = echoZones->at(i).GetEchoZoneSaveData().properties.flSpread;
 		}
 	}
 	
@@ -106,6 +109,18 @@ void XMLCreator::SaveDataXML_EffectZones(pugi::xml_node& root,
 			sizeNodeChild.append_attribute("width") = standardRevZones->at(i).GetStandardReverbZoneSaveData().width;
 			
 			pugi::xml_node propertyNodeChild = nodeChild.append_child("Property");
+			propertyNodeChild.append_attribute("density") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flDensity;
+			propertyNodeChild.append_attribute("diffusion") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flDiffusion;
+			propertyNodeChild.append_attribute("gain") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flGain;
+			propertyNodeChild.append_attribute("gainhf") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flGainHF;
+			propertyNodeChild.append_attribute("decaytime") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flDecayTime;
+			propertyNodeChild.append_attribute("decayhfratio") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flDecayHFRatio;
+			propertyNodeChild.append_attribute("reflectgain") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flReflectionsGain;
+			propertyNodeChild.append_attribute("reflectdelay") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flReflectionsDelay;
+			propertyNodeChild.append_attribute("latereverbgain") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flLateReverbGain;
+			propertyNodeChild.append_attribute("latereverbdelay") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flLateReverbDelay;
+			propertyNodeChild.append_attribute("airgainhf") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flAirAbsorptionGainHF;
+			propertyNodeChild.append_attribute("roomrolloff") = standardRevZones->at(i).GetStandardReverbZoneSaveData().properties.flRoomRolloffFactor;
 		}
 		
 	}
@@ -130,6 +145,27 @@ void XMLCreator::SaveDataXML_EffectZones(pugi::xml_node& root,
 			sizeNodeChild.append_attribute("width") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().width;
 			
 			pugi::xml_node propertyNodeChild = nodeChild.append_child("Property");
+			
+			propertyNodeChild.append_attribute("density") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flDensity;
+			propertyNodeChild.append_attribute("diffusion") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flDiffusion;
+			propertyNodeChild.append_attribute("gain") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flGain;
+			propertyNodeChild.append_attribute("gainhf") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flGainHF;
+			propertyNodeChild.append_attribute("gainlf") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flGainLF;
+			propertyNodeChild.append_attribute("decaytime") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flDecayTime;
+			propertyNodeChild.append_attribute("decayhfratio") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flDecayHFRatio;
+			propertyNodeChild.append_attribute("decaylfratio") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flDecayLFRatio;
+			propertyNodeChild.append_attribute("reflectgain") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flReflectionsGain;
+			propertyNodeChild.append_attribute("reflectdelay") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flReflectionsDelay;
+			propertyNodeChild.append_attribute("latereverbgain") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flLateReverbGain;
+			propertyNodeChild.append_attribute("latereverbdelay") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flLateReverbDelay;
+			propertyNodeChild.append_attribute("echotime") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flEchoTime;
+			propertyNodeChild.append_attribute("echodepth") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flEchoDepth;
+			propertyNodeChild.append_attribute("modtime") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flModulationTime;
+			propertyNodeChild.append_attribute("moddepth") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flModulationDepth;
+			propertyNodeChild.append_attribute("hfref") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flHFReference;
+			propertyNodeChild.append_attribute("lfref") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flLFReference;
+			propertyNodeChild.append_attribute("airgainhf") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flAirAbsorptionGainHF;
+			propertyNodeChild.append_attribute("roomrolloff") = eaxRevZones->at(i).GetEAXReverbZoneSaveData().properties.flRoomRolloffFactor;
 		}
 		
 	}
