@@ -31,6 +31,7 @@ void SaveSystem::SaveProject(std::vector < std::unique_ptr <SoundProducer> > *so
 	
 	//for each specific effect zone type
 	xml_creator.SaveDataToXMLFile(sound_producer_vector_ptr,
+								effectsManagerPtr->GetReferenceToSoundProducerTracksVector(),
 								&effectsManagerPtr->echo_zones_vector,
 								&effectsManagerPtr->standard_reverb_zones_vector,
 								&effectsManagerPtr->eax_reverb_zones_vector,

@@ -21,6 +21,8 @@ struct SoundProducerTrackSaveData
 	
 	//double track save data
 	
+	//file name of sound file
+	std::string soundfilepath;
 };
 
 //class to manipulate x,y z position of sound producer
@@ -91,6 +93,8 @@ public:
 	//Audio DAW 
 	void SetReferenceToImportAudioDAWButton(wxButton* thisButton);
 	
+	SoundProducerTrackSaveData GetSoundProducerTrackSaveData();
+	
 private:
 	SoundProducer* soundProducerToManipulatePtr;
 
@@ -127,6 +131,8 @@ private:
 	void OnImportAudioDAWButtonClick(wxCommandEvent& event);
 	
 	std::string streamSoundFilePath;
+	
+	SoundProducerTrackSaveData m_saveData;
 };
 
 #endif

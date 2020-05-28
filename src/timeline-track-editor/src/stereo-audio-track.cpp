@@ -425,3 +425,5 @@ PlaybackControls* StereoAudioTrack::GetReferenceToPlaybackControls(){return play
 
 void StereoAudioTrack::SetTrackOption(int thisOption){track_options = thisOption;}
 int StereoAudioTrack::GetTrackOption(){return track_options;}
+
+std::string StereoAudioTrack::GetInputSoundFilePath(){return inputSoundFilePath;}

@@ -91,6 +91,8 @@ public:
     void render(wxDC& dc);
     void logic_left_click();
     void logic_right_click();
+    
+    std::string GetInputSoundFilePath();
 	
 private:
 	

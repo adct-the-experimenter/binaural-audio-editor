@@ -143,6 +143,7 @@ void SoundProducerTrack::FunctionToCallInNullState()
 void SoundProducerTrack::SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer)
 {
 	soundProducerToManipulatePtr = thisSoundProducer;
+	m_saveData.soundproducer_name = soundProducerToManipulatePtr->GetNameString();
 }
 
 StereoAudioTrack* SoundProducerTrack::GetReferenceToStereoAudioTrack(){return audioTrack;}
@@ -156,7 +157,7 @@ void SoundProducerTrack::UpdateComboBoxListFromSoundProducerRegistry()
 {
 	//get current name selected
 	std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
-	
+		
 	//clear current list and append new one from sound producer registry
 	m_combo_box->Clear();
 	m_combo_box->Append(soundproducer_registry_ptr->GetSoundProducersToEditList());
@@ -176,7 +177,7 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 	if(m_combo_box != nullptr)
 	{
 		std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
-	
+		
 		SoundProducerTrack::SelectSoundProducerByName(thisStringName);
 		
 	}
@@ -189,6 +190,8 @@ void SoundProducerTrack::SelectSoundProducerByName(std::string name)
 	
 	if(thisSoundProducer)
 	{
+		m_saveData.soundproducer_name = name;
+		
 		thisSoundProducer->SetReferenceToTrackSource(&track_source);
 		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
 		
@@ -196,7 +199,7 @@ void SoundProducerTrack::SelectSoundProducerByName(std::string name)
 		tempY = thisSoundProducer->GetPositionY();
 		tempZ = thisSoundProducer->GetPositionZ();
 		
-		if(soundproducer_registry_ptr == nullptr)
+		if(soundproducer_registry_ptr != nullptr)
 		{
 			soundproducer_registry_ptr->RemoveThisNameFromAllComboBoxesExceptThisOne(name,m_combo_box);
 		}
@@ -369,4 +372,12 @@ void SoundProducerTrack::OnImportAudioDAWButtonClick(wxCommandEvent& event)
 	
 	std::cout << "\nFinished importing audio from DAW!\n";
 	event.Skip();
+}
+
+SoundProducerTrackSaveData SoundProducerTrack::GetSoundProducerTrackSaveData()
+{
+	//work around for getting file path info from stereo track for saving
+	m_saveData.soundfilepath = audioTrack->GetInputSoundFilePath();
+	
+	return m_saveData;
 }

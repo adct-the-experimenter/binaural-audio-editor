@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "soundproducer.h"
+#include "soundproducer-track.h"
 #include "echo-zone.h"
 #include "reverb-zone.h"
 
@@ -22,12 +23,17 @@ public:
 	
 	//function to save data to xml file
 	void SaveDataToXMLFile(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr,
+						   std::vector <SoundProducerTrack*> *ptrSPTracksVec,
 						   std::vector <EchoZone> *echoZones,
 						   std::vector <ReverbZone> *standardRevZones,
 						   std::vector <ReverbZone> *eaxRevZones,
 						   std::string path);
 	
 private:
+	
+	//function to save data from sound producer tracks
+	void SaveDataXML_SPTracks(pugi::xml_node& root,
+								std::vector <SoundProducerTrack*> *ptrSPTracksVec);
 	
 	//function to save data from effect zones to xml file
 	void SaveDataXML_EffectZones(pugi::xml_node& root,

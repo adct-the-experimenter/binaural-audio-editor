@@ -89,7 +89,6 @@ void SoundProducer::InitSoundProducer(std::string& thisName,std::string& filepat
 	
 	//init save data
 	m_saveData.name = thisName;
-	m_saveData.file_path = filepath;
 	m_saveData.x = x;
 	m_saveData.y = y;
 	m_saveData.z = z;
@@ -163,7 +162,7 @@ void SoundProducer::SetPositionZ(double& z)
 
 double SoundProducer::GetPositionZ(){return producer_position_vector[POSITION_INDEX::Z];}
 
-void SoundProducer::setFilepathToSound(std::string& filepath){m_filepath = filepath; m_saveData.file_path = filepath;}
+void SoundProducer::setFilepathToSound(std::string& filepath){m_filepath = filepath;}
 
 std::string& SoundProducer::getFilepathToSound(){return m_filepath;}
 
