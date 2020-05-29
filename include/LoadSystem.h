@@ -14,12 +14,14 @@ public:
 	~LoadSystem();
 	
 	//function used to load project
-	void LoadProject(std::string path);
+	void LoadProject(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr,
+							 EffectsManager* effectsManagerPtr, 
+							 std::string path);
 	
 private:
 	
-	//function to create effect zones based on XML file content
-	void LoadEffectsZones(EffectsManager* effectsManagerPtr, std::string path);
+	//xml file reader
+	XMLReader xml_reader;
 	
 };
 

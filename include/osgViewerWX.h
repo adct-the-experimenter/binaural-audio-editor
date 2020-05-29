@@ -176,6 +176,7 @@ public:
 	void OnPopupClick(wxCommandEvent &evt);
 	
 	void OnSaveProject(wxCommandEvent& WXUNUSED(event));
+	void OnLoadProject(wxCommandEvent& WXUNUSED(event));
 	
 	void OnKeyDown(wxKeyEvent& event); //where camera viewer gets manipulated
 	
@@ -196,8 +197,8 @@ private:
 		ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,
 		ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,
 		ID_EDIT_MULTIPLE_ECHO_ZONES,
-		ID_SAVE_PROJECT
-		
+		ID_SAVE_PROJECT,
+		ID_LOAD_PROJECT
 	};
     
     osg::ref_ptr<osgViewer::Viewer> _viewer;
@@ -252,6 +253,9 @@ private:
     
     //Save System
     std::unique_ptr <SaveSystem> save_system_ptr;
+    
+    //Load System
+    std::unique_ptr <LoadSystem> load_system_ptr;
     
     DECLARE_EVENT_TABLE()
 };

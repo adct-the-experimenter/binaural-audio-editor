@@ -26,7 +26,8 @@ public:
 	void SetSaveFilePath(std::string path);
 	
 private:
-		
+	
+	//xml file writer
 	XMLCreator xml_creator;
 	
 	std::string m_saveFilePath;
