@@ -30,8 +30,11 @@ public:
 	
 private:
 	
-	void LoadData_SoundProducers();
-	
+	void LoadData_SoundProducers(pugi::xml_node& root, std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr);
+	void LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <SoundProducerTrack*> *ptrSPTracksVec);
+	void LoadData_EchoZones(pugi::xml_node& root,std::vector <EchoZone> *echoZones);
+	void LoadData_StandardRevZones(pugi::xml_node& root,std::vector <ReverbZone> *standardRevZones);
+	void LoadData_EAXRevZones(pugi::xml_node& root,std::vector <ReverbZone> *eaxRevZones);
 };
 
 #endif

@@ -33,6 +33,13 @@ void XMLReader::LoadDataFromXMLFile(std::vector < std::unique_ptr <SoundProducer
     }
     
     pugi::xml_node root = doc.child("BAEXMLRoot");
+    
+    XMLReader::LoadData_SoundProducers(root, sound_producer_vector_ptr);
+	XMLReader::LoadData_SoundProducerTracks(root,ptrSPTracksVec);
+	XMLReader::LoadData_EchoZones(root,echoZones);
+	XMLReader::LoadData_StandardRevZones(root,standardRevZones);
+	XMLReader::LoadData_EAXRevZones(root,eaxRevZones);
+	
     //pugi::xml_node tileRoot = doc.child("BAEXMLRoot").child("Tiles");
 	
 	/*
@@ -46,5 +53,30 @@ void XMLReader::LoadDataFromXMLFile(std::vector < std::unique_ptr <SoundProducer
 		
 	}
 	*/
+	
+}
+
+void XMLReader::LoadData_SoundProducers(pugi::xml_node& root, std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr)
+{
+	
+}
+
+void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <SoundProducerTrack*> *ptrSPTracksVec)
+{
+	
+}
+
+void XMLReader::LoadData_EchoZones(pugi::xml_node& root,std::vector <EchoZone> *echoZones)
+{
+	
+}
+
+void XMLReader::LoadData_StandardRevZones(pugi::xml_node& root,std::vector <ReverbZone> *standardRevZones)
+{
+	
+}
+
+void XMLReader::LoadData_EAXRevZones(pugi::xml_node& root,std::vector <ReverbZone> *eaxRevZones)
+{
 	
 }

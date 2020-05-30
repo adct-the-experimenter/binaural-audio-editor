@@ -211,3 +211,8 @@ void DoubleTrack::SetReferenceToPlaybackControls(PlaybackControls* controls){pla
 PlaybackControls* DoubleTrack::GetReferenceToPlaybackControls(){return playbackControlsPtr;}
 
 DDMap* DoubleTrack::GetPointerToTimeValueMap(){return &map_time_output;}
+
+void DoubleTrack::LoadDataFromThisTimeValueMap(DDMap& map)
+{
+	
+}

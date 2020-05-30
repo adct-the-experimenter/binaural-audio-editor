@@ -56,6 +56,8 @@ public:
     
     DDMap* GetPointerToTimeValueMap();
     
+    void LoadDataFromThisTimeValueMap(DDMap& map);
+    
 private:
 
 	double* varToManipulatePtr;

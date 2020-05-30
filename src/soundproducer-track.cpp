@@ -45,6 +45,10 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	//initialize reverb applied status
 	SoundProducerTrack::SetStatusReverbApplied(false);
 	
+	m_saveData.time_value_map_x_ptr = xTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_y_ptr = yTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_z_ptr = zTrack->GetPointerToTimeValueMap();
+	
 	
 	Connect(wxEVT_PAINT, wxPaintEventHandler(Track::OnPaint));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(Track::OnSize));

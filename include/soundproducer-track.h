@@ -20,6 +20,9 @@ struct SoundProducerTrackSaveData
 	std::string soundproducer_name;
 	
 	//double track save data
+	DDMap* time_value_map_x_ptr;
+	DDMap* time_value_map_y_ptr;
+	DDMap* time_value_map_z_ptr;
 	
 	//file name of sound file
 	std::string soundfilepath;
