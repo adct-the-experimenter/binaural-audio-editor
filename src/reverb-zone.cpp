@@ -625,9 +625,21 @@ StandardReverbZoneSaveData ReverbZone::GetStandardReverbZoneSaveData()
 	return m_saveDataStandard;
 }
 
+void ReverbZone::LoadStandardReverbZoneSaveData(StandardReverbZoneSaveData& data)
+{
+	m_saveDataStandard = data;
+}
+
 EAXReverbZoneSaveData ReverbZone::GetEAXReverbZoneSaveData()
 {
 	return m_saveDataEAX;
+}
+
+void ReverbZone::LoadEAXReverbZoneSaveData(EAXReverbZoneSaveData& data)
+{
+	m_saveDataEAX = data;
+	
+	
 }
 
 void ReverbZone::SetPositionX(double& x)

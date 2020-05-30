@@ -164,7 +164,10 @@ public:
 	virtual void FreeEffects();
 	
 	StandardReverbZoneSaveData GetStandardReverbZoneSaveData();
+	void LoadStandardReverbZoneSaveData(StandardReverbZoneSaveData& data);
+	
 	EAXReverbZoneSaveData GetEAXReverbZoneSaveData();
+	void LoadEAXReverbZoneSaveData(EAXReverbZoneSaveData& data);
 	
 	//changed from effect zone to implement save data
 	void SetPositionX(double& x); 

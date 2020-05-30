@@ -722,7 +722,12 @@ void MainFrame::OnSaveProject(wxCommandEvent& WXUNUSED(event))
 		//use this path in your app
 		std::string saveFilePath = std::string(path.mb_str());
 		
-		saveFilePath.append(".xml");
+		//if .xml is not in ending of file name
+		if(saveFilePath.substr(saveFilePath.length() - 4,saveFilePath.length() - 1) != ".xml")
+		{
+			saveFilePath.append(".xml");
+			
+		}
 		
 		std::cout << "Input save file path:" << saveFilePath << std::endl;
 		

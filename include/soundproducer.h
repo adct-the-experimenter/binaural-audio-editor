@@ -73,7 +73,8 @@ class SoundProducer
 		osg::PositionAttitudeTransform* getTransformNode();
 		
 		SoundProducerSaveData GetSoundProducerSaveData();
-
+		void LoadSoundProducerSaveData(SoundProducerSaveData& data);
+		
 	private:
 		//Name of Sound Producer
 		std::string name;

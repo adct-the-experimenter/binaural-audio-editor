@@ -198,3 +198,9 @@ osg::PositionAttitudeTransform* SoundProducer::getTransformNode(){return m_paTra
 void SoundProducer::SetReferenceToTrackSource(ALuint* thisSource){track_source_ptr = thisSource;}
 
 SoundProducerSaveData SoundProducer::GetSoundProducerSaveData(){return m_saveData;}
+
+void SoundProducer::LoadSoundProducerSaveData(SoundProducerSaveData& data)
+{
+	m_saveData = data;
+	
+}

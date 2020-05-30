@@ -7,6 +7,7 @@
 #include <functional>   // std::function, std::negate
 #include "playback-controls.h"
 
+typedef std::unordered_map<double, double> DDMap;
 
 class DoubleTrack : public Track
 {
@@ -52,6 +53,8 @@ public:
     void render(wxDC& dc);
     void logic_left_click();
     void logic_right_click();
+    
+    DDMap* GetPointerToTimeValueMap();
     
 private:
 

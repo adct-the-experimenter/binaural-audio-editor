@@ -94,6 +94,7 @@ public:
 	void SetReferenceToImportAudioDAWButton(wxButton* thisButton);
 	
 	SoundProducerTrackSaveData GetSoundProducerTrackSaveData();
+	void LoadSoundProducerTrackSaveData(SoundProducerTrackSaveData& data);
 	
 private:
 	SoundProducer* soundProducerToManipulatePtr;
