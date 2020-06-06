@@ -1,5 +1,7 @@
 #include "XMLReader.h"
 
+#include <cstdlib>
+
 XMLReader::XMLReader()
 {
 	
@@ -49,13 +51,26 @@ void XMLReader::LoadData_SoundProducers(pugi::xml_node& root, std::vector <Sound
 	
 	
 	//go through each sound producer node
-	for (pugi::xml_node sp_node = root.first_child(); sp_node; sp_node = sp_node.next_sibling() )
+	for (pugi::xml_node sp_node = spRoot.first_child(); sp_node; sp_node = sp_node.next_sibling() )
 	{	
 		//DungeonTile::TileType type = DungeonTile::TileType::RED;
+		SoundProducerSaveData data;
 		
-		//std::string valString = tileType.first_child().value();
-		//std::cout << valString << std::endl;
+		std::string valString; 
 		
+		valString = sp_node.child("Name").attribute("name").value();
+		data.name = valString;
+		
+		valString = sp_node.child("Position").attribute("x").value();
+		data.x = atof(valString.c_str());
+		
+		valString = sp_node.child("Position").attribute("y").value();
+		data.y = atof(valString.c_str());
+		
+		valString = sp_node.child("Position").attribute("z").value();
+		data.z = atof(valString.c_str());
+		
+		sound_producer_save_data->push_back(data);		
 	}
 		
 	

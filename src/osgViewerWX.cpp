@@ -743,6 +743,8 @@ void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
                        
 	if (fileDlg.ShowModal() == wxID_OK)
 	{
+		//TODO free everything
+		
 		
 		wxString path = fileDlg.GetPath();
 		//use this path in your app
@@ -762,6 +764,19 @@ void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
 							   &standardRevZonesSaveData,
 							   &eaxRevZonesSaveData,
 							   loadFilePath);
+		
+		//initialize sound producers from save data
+		if(sound_producer_save_data.size() > 0)
+		{
+			for(size_t i = 0; i < sound_producer_save_data.size(); i++)
+			{
+				std::string null_str = "";
+				ALuint empty_buffer = 0;
+				MainFrame::CreateSoundProducer(sound_producer_save_data[i].name, 
+												null_str, empty_buffer,
+												sound_producer_save_data[i].x, sound_producer_save_data[i].y, sound_producer_save_data[i].z);
+			}
+		}
 	}
 }
 
