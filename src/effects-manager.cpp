@@ -208,13 +208,11 @@ void EffectsManager::FreeEffects()
 	for(size_t i=0; i < standard_reverb_zones_vector.size(); i++)
 	{
 		standard_reverb_zones_vector[i].FreeEffects();
-		
 	}
 	
 	for(size_t i=0; i < eax_reverb_zones_vector.size(); i++)
 	{
-		eax_reverb_zones_vector[i].FreeEffects();
-		
+		eax_reverb_zones_vector[i].FreeEffects();	
 	}
 	
 	for(size_t i=0; i < echo_zones_vector.size(); i++)

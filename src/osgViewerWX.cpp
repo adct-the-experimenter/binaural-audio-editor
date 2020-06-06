@@ -750,7 +750,18 @@ void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
 				
 		std::cout << "Input open file path:" << loadFilePath << std::endl;
 		
-		load_system_ptr->LoadProject(sound_producer_vector_ref,effectsManagerPtr,loadFilePath);
+		std::vector <SoundProducerSaveData> sound_producer_save_data;
+		std::vector <SoundProducerTrackSaveData> ptrSPTracksSaveDataVec;
+		std::vector <EchoZoneSaveData> echoZonesSaveData;
+		std::vector <StandardReverbZoneSaveData> standardRevZonesSaveData;
+		std::vector <EAXReverbZoneSaveData> eaxRevZonesSaveData;
+		
+		load_system_ptr->LoadProject(&sound_producer_save_data,
+							   &ptrSPTracksSaveDataVec,
+							   &echoZonesSaveData,
+							   &standardRevZonesSaveData,
+							   &eaxRevZonesSaveData,
+							   loadFilePath);
 	}
 }
 
@@ -781,7 +792,6 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 
 void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z)
 {
-
 	sound_producer_vector_ref->push_back( std::unique_ptr <SoundProducer>(new SoundProducer()) );
 
 	sound_producer_vector_ref->back()->InitSoundProducer(name,filePath,buffer,x,y,z);

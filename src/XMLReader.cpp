@@ -10,12 +10,12 @@ XMLReader::~XMLReader()
 	
 }
 	
-void XMLReader::LoadDataFromXMLFile(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr,
-								   std::vector <SoundProducerTrack*> *ptrSPTracksVec,
-								   std::vector <EchoZone> *echoZones,
-								   std::vector <ReverbZone> *standardRevZones,
-								   std::vector <ReverbZone> *eaxRevZones,
-								   std::string path)
+void XMLReader::LoadDataFromXMLFile(std::vector <SoundProducerSaveData> *sound_producer_save_data,
+							   std::vector <SoundProducerTrackSaveData> *ptrSPTracksSaveDataVec,
+							   std::vector <EchoZoneSaveData> *echoZonesSaveData,
+							   std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData,
+							   std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData,
+							   std::string path)
 {
 	// Create empty XML document within memory
     pugi::xml_document doc;
@@ -34,49 +34,49 @@ void XMLReader::LoadDataFromXMLFile(std::vector < std::unique_ptr <SoundProducer
     
     pugi::xml_node root = doc.child("BAEXMLRoot");
     
-    XMLReader::LoadData_SoundProducers(root, sound_producer_vector_ptr);
-	XMLReader::LoadData_SoundProducerTracks(root,ptrSPTracksVec);
-	XMLReader::LoadData_EchoZones(root,echoZones);
-	XMLReader::LoadData_StandardRevZones(root,standardRevZones);
-	XMLReader::LoadData_EAXRevZones(root,eaxRevZones);
+    XMLReader::LoadData_SoundProducers(root, sound_producer_save_data);
+	XMLReader::LoadData_SoundProducerTracks(root,ptrSPTracksSaveDataVec);
+	XMLReader::LoadData_EchoZones(root,echoZonesSaveData);
+	XMLReader::LoadData_StandardRevZones(root,standardRevZonesSaveData);
+	XMLReader::LoadData_EAXRevZones(root,eaxRevZonesSaveData);
 	
-    //pugi::xml_node tileRoot = doc.child("BAEXMLRoot").child("Tiles");
 	
-	/*
-	//go through each tile type in tiles node
-	for (pugi::xml_node tileType = root.first_child(); tileType; tileType = tileType.next_sibling())
+}
+
+void XMLReader::LoadData_SoundProducers(pugi::xml_node& root, std::vector <SoundProducerSaveData> *sound_producer_save_data)
+{
+	pugi::xml_node spRoot = root.child("SoundProducers");
+	
+	
+	//go through each sound producer node
+	for (pugi::xml_node sp_node = root.first_child(); sp_node; sp_node = sp_node.next_sibling() )
 	{	
-		DungeonTile::TileType type = DungeonTile::TileType::RED;
+		//DungeonTile::TileType type = DungeonTile::TileType::RED;
 		
-		std::string valString = tileType.first_child().value();
+		//std::string valString = tileType.first_child().value();
 		//std::cout << valString << std::endl;
 		
 	}
-	*/
+		
 	
 }
 
-void XMLReader::LoadData_SoundProducers(pugi::xml_node& root, std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr)
+void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <SoundProducerTrackSaveData> *ptrSPTracksSaveDataVec)
 {
 	
 }
 
-void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <SoundProducerTrack*> *ptrSPTracksVec)
+void XMLReader::LoadData_EchoZones(pugi::xml_node& root,std::vector <EchoZoneSaveData> *echoZonesSaveData)
 {
 	
 }
 
-void XMLReader::LoadData_EchoZones(pugi::xml_node& root,std::vector <EchoZone> *echoZones)
+void XMLReader::LoadData_StandardRevZones(pugi::xml_node& root,std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData)
 {
 	
 }
 
-void XMLReader::LoadData_StandardRevZones(pugi::xml_node& root,std::vector <ReverbZone> *standardRevZones)
-{
-	
-}
-
-void XMLReader::LoadData_EAXRevZones(pugi::xml_node& root,std::vector <ReverbZone> *eaxRevZones)
+void XMLReader::LoadData_EAXRevZones(pugi::xml_node& root,std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData)
 {
 	
 }

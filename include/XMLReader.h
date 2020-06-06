@@ -21,20 +21,21 @@ public:
 	XMLReader();
 	~XMLReader();
 	
-	void LoadDataFromXMLFile(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr,
-							   std::vector <SoundProducerTrack*> *ptrSPTracksVec,
-							   std::vector <EchoZone> *echoZones,
-							   std::vector <ReverbZone> *standardRevZones,
-							   std::vector <ReverbZone> *eaxRevZones,
+	void LoadDataFromXMLFile(std::vector <SoundProducerSaveData> *sound_producer_save_data,
+							   std::vector <SoundProducerTrackSaveData> *ptrSPTracksVec,
+							   std::vector <EchoZoneSaveData> *echoZonesSaveData,
+							   std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData,
+							   std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData,
 							   std::string path);
 	
 private:
 	
-	void LoadData_SoundProducers(pugi::xml_node& root, std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr);
-	void LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <SoundProducerTrack*> *ptrSPTracksVec);
-	void LoadData_EchoZones(pugi::xml_node& root,std::vector <EchoZone> *echoZones);
-	void LoadData_StandardRevZones(pugi::xml_node& root,std::vector <ReverbZone> *standardRevZones);
-	void LoadData_EAXRevZones(pugi::xml_node& root,std::vector <ReverbZone> *eaxRevZones);
+	void LoadData_SoundProducers(pugi::xml_node& root, std::vector <SoundProducerSaveData> *sound_producer_save_data);
+	void LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <SoundProducerTrackSaveData> *ptrSPTracksVec);
+	void LoadData_EchoZones(pugi::xml_node& root,std::vector <EchoZoneSaveData> *echoZonesSaveData);
+	void LoadData_StandardRevZones(pugi::xml_node& root,std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData);
+	void LoadData_EAXRevZones(pugi::xml_node& root,std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData);
+	
 };
 
 #endif

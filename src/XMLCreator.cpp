@@ -66,8 +66,20 @@ void XMLCreator::SaveDataXML_SPTracks(pugi::xml_node& root,
 		pugi::xml_node nameNodeChild = nodeChild.append_child("Name");
 		nameNodeChild.append_attribute("name") = ptrSPTracksVec->at(i)->GetSoundProducerTrackSaveData().soundproducer_name.c_str();
 		
-		pugi::xml_node positionNodeChild = nodeChild.append_child("Filepath");
-		positionNodeChild.append_attribute("filepath") = ptrSPTracksVec->at(i)->GetSoundProducerTrackSaveData().soundfilepath.c_str();
+		pugi::xml_node filepathNodeChild = nodeChild.append_child("Filepath");
+		filepathNodeChild.append_attribute("filepath") = ptrSPTracksVec->at(i)->GetSoundProducerTrackSaveData().soundfilepath.c_str();
+		
+		//Get position x time map
+		
+		//DDMap* mapXTime = ptrSPTracksVec->at(i)->GetSoundProducerTrackSaveData().time_value_map_x_ptr
+		//pugi::xml_node positionXTimeNodeChild = nodeChild.append_child("PositionXTimes");
+		
+		//for each position x time pair
+		
+			//pugi::xml_node pTNodeChild = positionXTimeNodeChild.append_child("Position Time");
+			//positionXTimeNodeChild.append_attribute("time") = ;
+			//positionXTimeNodeChild.append_attribute("x") = ;
+			
 		
 	}
 	
@@ -219,10 +231,7 @@ void XMLCreator::SaveDataXML_SoundProducers(pugi::xml_node& root,
 			positionNodeChild.append_attribute("x") = sound_producer_vector_ptr->at(i)->GetSoundProducerSaveData().x;
 			positionNodeChild.append_attribute("y") = sound_producer_vector_ptr->at(i)->GetSoundProducerSaveData().y;
 			positionNodeChild.append_attribute("z") = sound_producer_vector_ptr->at(i)->GetSoundProducerSaveData().z;
-			
-			//filename
-			
-			
+						
 		}
 				
 	}
