@@ -83,15 +83,202 @@ void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <S
 
 void XMLReader::LoadData_EchoZones(pugi::xml_node& root,std::vector <EchoZoneSaveData> *echoZonesSaveData)
 {
-	
+	pugi::xml_node echoZonesNodeRoot = root.child("EffectZones").child("EchoZones");
+			
+	for(pugi::xml_node ez_node = echoZonesNodeRoot.first_child(); ez_node; ez_node = ez_node.next_sibling() )
+	{
+		EchoZoneSaveData data;
+		
+		std::string valString;
+		
+		valString = ez_node.child("Name").attribute("name").value();
+		data.name = valString;
+		
+		
+		valString = ez_node.child("Position").attribute("x").value();
+		data.x = atof(valString.c_str());
+		
+		valString = ez_node.child("Position").attribute("y").value();
+		data.y = atof(valString.c_str());
+		
+		valString = ez_node.child("Position").attribute("z").value();
+		data.z = atof(valString.c_str());
+		
+		valString = ez_node.child("Size").attribute("width").value();
+		data.width = atof(valString.c_str());
+		
+		valString = ez_node.child("Property").attribute("delay").value();
+		data.properties.flDelay = atof(valString.c_str());
+		
+		valString = ez_node.child("Property").attribute("lrdelay").value();
+		data.properties.flLRDelay = atof(valString.c_str());
+		
+		valString = ez_node.child("Property").attribute("damping").value();
+		data.properties.flDamping = atof(valString.c_str());
+		
+		valString = ez_node.child("Property").attribute("feedback").value();
+		data.properties.flFeedback = atof(valString.c_str());
+		
+		valString = ez_node.child("Property").attribute("spread").value();
+		data.properties.flSpread = atof(valString.c_str());
+		
+		echoZonesSaveData->push_back(data);
+	}
 }
 
 void XMLReader::LoadData_StandardRevZones(pugi::xml_node& root,std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData)
 {
-	
+	pugi::xml_node standardRevZonesNodeRoot = root.child("EffectZones").child("StandardZones");
+			
+	for(pugi::xml_node srz_node = standardRevZonesNodeRoot.first_child(); srz_node; srz_node = srz_node.next_sibling() )
+	{
+		StandardReverbZoneSaveData data;
+		
+		std::string valString;
+		
+		valString = srz_node.child("Name").attribute("name").value();
+		data.name = valString;
+		
+		
+		valString = srz_node.child("Position").attribute("x").value();
+		data.x = atof(valString.c_str());
+		
+		valString = srz_node.child("Position").attribute("y").value();
+		data.y = atof(valString.c_str());
+		
+		valString = srz_node.child("Position").attribute("z").value();
+		data.z = atof(valString.c_str());
+		
+		valString = srz_node.child("Size").attribute("width").value();
+		data.width = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("density").value();
+		data.properties.flDensity = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("diffusion").value();
+		data.properties.flDiffusion = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("gain").value();
+		data.properties.flGain = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("gainhf").value();
+		data.properties.flGainHF = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("decaytime").value();
+		data.properties.flDecayTime = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("decayhfratio").value();
+		data.properties.flDecayHFRatio = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("reflectgain").value();
+		data.properties.flReflectionsGain = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("reflectdelay").value();
+		data.properties.flReflectionsDelay = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("latereverbgain").value();
+		data.properties.flLateReverbGain = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("latereverbdelay").value();
+		data.properties.flLateReverbDelay = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("airgainhf").value();
+		data.properties.flAirAbsorptionGainHF = atof(valString.c_str());
+		
+		valString = srz_node.child("Property").attribute("roomrolloff").value();
+		data.properties.flRoomRolloffFactor = atof(valString.c_str());
+		
+		standardRevZonesSaveData->push_back(data);
+	}
 }
 
 void XMLReader::LoadData_EAXRevZones(pugi::xml_node& root,std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData)
 {
-	
+	pugi::xml_node eaxRevZonesNodeRoot = root.child("EffectZones").child("EAXZones");
+			
+	for(pugi::xml_node erz_node = eaxRevZonesNodeRoot.first_child(); erz_node; erz_node = erz_node.next_sibling() )
+	{
+		EAXReverbZoneSaveData data;
+		
+		std::string valString;
+		
+		valString = erz_node.child("Name").attribute("name").value();
+		data.name = valString;
+		
+		
+		valString = erz_node.child("Position").attribute("x").value();
+		data.x = atof(valString.c_str());
+		
+		valString = erz_node.child("Position").attribute("y").value();
+		data.y = atof(valString.c_str());
+		
+		valString = erz_node.child("Position").attribute("z").value();
+		data.z = atof(valString.c_str());
+		
+		valString = erz_node.child("Size").attribute("width").value();
+		data.width = atof(valString.c_str());
+		
+		
+		valString = erz_node.child("Property").attribute("density").value();
+		data.properties.flDensity = atof(valString.c_str()); 
+		
+		valString = erz_node.child("Property").attribute("diffusion").value();
+		data.properties.flDiffusion = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("gain").value();
+		data.properties.flGain = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("gainhf").value(); 
+		data.properties.flGainHF = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("gainlf").value(); 
+		data.properties.flGainLF = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("decaytime").value(); 
+		data.properties.flDecayTime = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("decayhfratio").value(); 
+		data.properties.flDecayHFRatio = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("decaylfratio").value(); 
+		data.properties.flDecayLFRatio = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("reflectgain").value(); 
+		data.properties.flReflectionsGain = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("reflectdelay").value(); 
+		data.properties.flReflectionsDelay = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("latereverbgain").value(); 
+		data.properties.flLateReverbGain = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("latereverbdelay").value(); 
+		data.properties.flLateReverbDelay = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("echotime").value(); 
+		data.properties.flEchoTime = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("echodepth").value(); 
+		data.properties.flEchoDepth = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("modtime").value(); 
+		data.properties.flModulationTime = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("moddepth").value(); 
+		data.properties.flModulationDepth = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("hfref").value(); 
+		data.properties.flHFReference = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("lfref").value(); 
+		data.properties.flLFReference = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("airgainhf").value(); 
+		data.properties.flAirAbsorptionGainHF = atof(valString.c_str());
+		
+		valString = erz_node.child("Property").attribute("roomrolloff").value(); 
+		data.properties.flRoomRolloffFactor = atof(valString.c_str());
+		
+		eaxRevZonesSaveData->push_back(data);
+	}
 }

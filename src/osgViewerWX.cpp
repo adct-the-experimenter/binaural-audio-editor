@@ -777,6 +777,57 @@ void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
 												sound_producer_save_data[i].x, sound_producer_save_data[i].y, sound_producer_save_data[i].z);
 			}
 		}
+		
+		if(echoZonesSaveData.size() > 0)
+		{
+			for(size_t i = 0; i < echoZonesSaveData.size(); i++)
+			{
+				
+				effectsManagerPtr->CreateEchoZone(echoZonesSaveData[i].name,
+												 echoZonesSaveData[i].x,
+												 echoZonesSaveData[i].y,
+												 echoZonesSaveData[i].z,
+												 echoZonesSaveData[i].width,
+												 echoZonesSaveData[i].properties);
+		
+				//add position attitude transform to root group of nodes
+				_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back()->getTransformNode() );
+			}
+		}
+		
+		if(standardRevZonesSaveData.size() > 0)
+		{
+			for(size_t i = 0; i < standardRevZonesSaveData.size(); i++)
+			{
+				
+				effectsManagerPtr->CreateStandardReverbZone(standardRevZonesSaveData[i].name,
+												 standardRevZonesSaveData[i].x,
+												 standardRevZonesSaveData[i].y,
+												 standardRevZonesSaveData[i].z,
+												 standardRevZonesSaveData[i].width,
+												 standardRevZonesSaveData[i].properties);
+		
+				//add position attitude transform to root group of nodes
+				_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back()->getTransformNode() );
+			}
+		}
+		
+		if(eaxRevZonesSaveData.size() > 0)
+		{
+			for(size_t i = 0; i < eaxRevZonesSaveData.size(); i++)
+			{
+				
+				effectsManagerPtr->CreateEAXReverbZone(eaxRevZonesSaveData[i].name,
+												 eaxRevZonesSaveData[i].x,
+												 eaxRevZonesSaveData[i].y,
+												 eaxRevZonesSaveData[i].z,
+												 eaxRevZonesSaveData[i].width,
+												 eaxRevZonesSaveData[i].properties);
+		
+				//add position attitude transform to root group of nodes
+				_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back()->getTransformNode() );
+			}
+		}
 	}
 }
 
