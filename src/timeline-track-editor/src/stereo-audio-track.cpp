@@ -395,11 +395,11 @@ void StereoAudioTrack::LoadAudioFromFileToTrack(std::string path)
 	m_left_channel_track->ClearGraph();
 	m_right_channel_track->ClearGraph();
 		
-	std::cout << "Input Sound file path:" << inputSoundFilePath << std::endl;
+	std::cout << "Input Sound file path:" << path << std::endl;
 	
 	std::cout << "Stream sound file path: " << streamSoundFilePath << std::endl;
 	
-	int channels = m_left_channel_track->GetNumberOfChannelsInAudioFile(inputSoundFilePath,input_sfinfo);
+	int channels = m_left_channel_track->GetNumberOfChannelsInAudioFile(path,input_sfinfo);
 	std::cout << "channels:" << channels << std::endl;
 	
 	
@@ -407,7 +407,7 @@ void StereoAudioTrack::LoadAudioFromFileToTrack(std::string path)
 	{
 		//create a copy of file to reference for editing
 		//also put data into stream
-		m_left_channel_track->ReadAndCopyDataFromInputFile(&audio_data_input_copy,inputSoundFilePath,input_sfinfo);
+		m_left_channel_track->ReadAndCopyDataFromInputFile(&audio_data_input_copy,path,input_sfinfo);
 		m_left_channel_track->CopyInputDataIntoAudioDataStream(&audio_data_input_copy,&audio_data_stream,streamSoundFilePath,input_sfinfo);
 		//graph all data in channel to one graph
 		m_left_channel_track->PlotOneChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
@@ -416,7 +416,7 @@ void StereoAudioTrack::LoadAudioFromFileToTrack(std::string path)
 	{
 		//create a copy of file to reference for editing
 		//also put data into stream
-		m_left_channel_track->ReadAndCopyDataFromInputFile(&audio_data_input_copy,inputSoundFilePath,input_sfinfo);
+		m_left_channel_track->ReadAndCopyDataFromInputFile(&audio_data_input_copy,path,input_sfinfo);
 		m_left_channel_track->CopyInputDataIntoAudioDataStream(&audio_data_input_copy,&audio_data_stream,streamSoundFilePath,input_sfinfo);
 			
 		//plot left channel data to one graph 

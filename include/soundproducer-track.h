@@ -99,6 +99,10 @@ public:
 	SoundProducerTrackSaveData GetSoundProducerTrackSaveData();
 	void LoadSoundProducerTrackSaveData(SoundProducerTrackSaveData& data);
 	
+	void SelectSoundProducerByName(std::string name);
+	
+	void SetComboBoxToThisSelectionName(std::string name);
+	
 private:
 	SoundProducer* soundProducerToManipulatePtr;
 
@@ -124,7 +128,6 @@ private:
 
 	void OnSelectedSoundProducerInComboBox(wxCommandEvent& event);
 
-	void SelectSoundProducerByName(std::string name);
 	
 	//bool to tell if reverb is applied to the source of the track
 	bool reverbApplied;

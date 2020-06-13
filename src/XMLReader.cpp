@@ -78,7 +78,22 @@ void XMLReader::LoadData_SoundProducers(pugi::xml_node& root, std::vector <Sound
 
 void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <SoundProducerTrackSaveData> *ptrSPTracksSaveDataVec)
 {
+	pugi::xml_node spTrackRoot = root.child("SoundProducerTracks");
 	
+	for(pugi::xml_node track_node = spTrackRoot.first_child(); track_node; track_node = track_node.next_sibling() )
+	{
+		
+		SoundProducerTrackSaveData data;
+		std::string valString;
+		
+		valString = track_node.child("Name").attribute("name").value();
+		data.soundproducer_name = valString;
+		
+		valString = track_node.child("Filepath").attribute("filepath").value();
+		data.soundfilepath = valString;
+		
+		ptrSPTracksSaveDataVec->push_back(data);
+	}
 }
 
 void XMLReader::LoadData_EchoZones(pugi::xml_node& root,std::vector <EchoZoneSaveData> *echoZonesSaveData)

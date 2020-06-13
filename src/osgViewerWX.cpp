@@ -828,6 +828,38 @@ void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
 				_rootNode->addChild( (effectsManagerPtr->GetReferenceToEffectZoneVector())->back()->getTransformNode() );
 			}
 		}
+		
+		//
+		
+		if(ptrSPTracksSaveDataVec.size() > 0)
+		{
+			for(size_t i = 0; i < ptrSPTracksSaveDataVec.size(); i++)
+			{
+				
+				if(i > 1)
+				{
+					//detach sizer containing add/rm soundproducertrack buttons from window, add it back later
+					timeFrame->GetTimelineWindow()->GetSizer()->Detach(m_add_rm_box_sizer);
+
+					//create new sound producer track and add it to vector of sound producer tracks in MainFrame
+					MainFrame::CreateNewSoundProducerTrack();
+
+					//move add sound producer track button to bottom of new sound producer track
+
+					//add sizer containing add/rm soundproducer track buttons to bottom of window
+					timeFrame->GetTimelineWindow()->GetSizer()->Add(m_add_rm_box_sizer);
+
+					timeFrame->Layout();
+				}
+				
+				m_soundproducer_track_vec.at(i)->LoadSoundProducerTrackSaveData(ptrSPTracksSaveDataVec.at(i));
+				
+				m_soundproducer_track_vec.at(i)->GetReferenceToStereoAudioTrack()->LoadAudioFromFileToTrack(ptrSPTracksSaveDataVec.at(i).soundfilepath);
+				m_soundproducer_track_vec.at(i)->SelectSoundProducerByName(ptrSPTracksSaveDataVec.at(i).soundproducer_name);
+				m_soundproducer_track_vec.at(i)->SetComboBoxToThisSelectionName(ptrSPTracksSaveDataVec.at(i).soundproducer_name);
+			}
+		}
+		
 	}
 }
 

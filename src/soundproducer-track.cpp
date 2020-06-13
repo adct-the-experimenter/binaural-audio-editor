@@ -389,9 +389,10 @@ SoundProducerTrackSaveData SoundProducerTrack::GetSoundProducerTrackSaveData()
 void SoundProducerTrack::LoadSoundProducerTrackSaveData(SoundProducerTrackSaveData& data)
 {
 	m_saveData = data;
-	
-	//set sound producer to edit based on name in save data
-	SoundProducerTrack::SelectSoundProducerByName(data.soundproducer_name);
-	
-	//load audio from file in stereo audio track
+}
+
+void SoundProducerTrack::SetComboBoxToThisSelectionName(std::string name)
+{
+	int select_index = m_combo_box->FindString(name,true); //case sensitive = true
+	m_combo_box->SetSelection(select_index);
 }
