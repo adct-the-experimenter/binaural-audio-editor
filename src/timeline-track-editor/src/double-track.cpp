@@ -214,5 +214,5 @@ DDMap* DoubleTrack::GetPointerToTimeValueMap(){return &map_time_output;}
 
 void DoubleTrack::LoadDataFromThisTimeValueMap(DDMap& map)
 {
-	
+	map_time_output = map;
 }

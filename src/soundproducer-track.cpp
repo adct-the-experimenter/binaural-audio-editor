@@ -389,6 +389,14 @@ SoundProducerTrackSaveData SoundProducerTrack::GetSoundProducerTrackSaveData()
 void SoundProducerTrack::LoadSoundProducerTrackSaveData(SoundProducerTrackSaveData& data)
 {
 	m_saveData = data;
+	
+	if(data.time_value_map_x_ptr)
+	{
+		xTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_x_ptr);
+	}
+	
+	//yTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_y_ptr);
+	//zTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_z_ptr);
 }
 
 void SoundProducerTrack::SetComboBoxToThisSelectionName(std::string name)

@@ -71,14 +71,24 @@ void XMLCreator::SaveDataXML_SPTracks(pugi::xml_node& root,
 		
 		//Get position x time map
 		
-		//DDMap* mapXTime = ptrSPTracksVec->at(i)->GetSoundProducerTrackSaveData().time_value_map_x_ptr
-		//pugi::xml_node positionXTimeNodeChild = nodeChild.append_child("PositionXTimes");
+		DDMap* mapXTime = ptrSPTracksVec->at(i)->GetSoundProducerTrackSaveData().time_value_map_x_ptr;
 		
-		//for each position x time pair
+		if(mapXTime)
+		{
+			pugi::xml_node positionXTimeNodeChild = nodeChild.append_child("PositionXTimes");
 		
-			//pugi::xml_node pTNodeChild = positionXTimeNodeChild.append_child("Position Time");
-			//positionXTimeNodeChild.append_attribute("time") = ;
-			//positionXTimeNodeChild.append_attribute("x") = ;
+			//for each position x time pair
+			for (DDMap::iterator it = mapXTime->begin(); it!= mapXTime->end(); ++it)
+			{
+				 //std::cout << it->first << " => " << it->second << '\n';
+				 pugi::xml_node pTNodeChild = positionXTimeNodeChild.append_child("PT");
+				 positionXTimeNodeChild.append_attribute("time") = it->first;
+				 positionXTimeNodeChild.append_attribute("x") = it->second;
+			}
+			
+		}
+		
+			
 			
 		
 	}
