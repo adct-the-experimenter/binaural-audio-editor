@@ -82,8 +82,8 @@ void XMLCreator::SaveDataXML_SPTracks(pugi::xml_node& root,
 			{
 				 //std::cout << it->first << " => " << it->second << '\n';
 				 pugi::xml_node pTNodeChild = positionXTimeNodeChild.append_child("PT");
-				 positionXTimeNodeChild.append_attribute("time") = it->first;
-				 positionXTimeNodeChild.append_attribute("x") = it->second;
+				 pTNodeChild.append_attribute("time") = it->first;
+				 pTNodeChild.append_attribute("x") = it->second;
 			}
 			
 		}

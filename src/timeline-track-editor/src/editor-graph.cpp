@@ -195,3 +195,26 @@ void EditorGraph::DrawCurrentPointsOnGraph(wxDC& dc)
 	}
     
 }
+
+template <typename T>
+void EditorGraph::PlacePointsFromThisMap(DDMap& thisMap,T& vertStart, T& vertEnd, T& vertRes)
+{
+	for (DDMap::iterator it = thisMap.begin(); it!= thisMap.end(); ++it)
+	{
+		
+		double thisTime = it->first; 
+		thisTime = round (thisTime / (double(TIME_RESOLUTION) / 1000)) * (double(TIME_RESOLUTION) / 1000);
+		
+		double xPoint = thisTime / ((double)TIME_END_VALUE / (double)TRACK_WIDTH);
+		std::cout << "x point:" << xPoint << std::endl;
+		double yPoint = it->second;
+		
+		yPoint = round(yPoint * ( (vertEnd - vertStart) / double(TRACK_HEIGHT) ) * ( 1 / vertRes) ) * vertRes * ( double(TRACK_HEIGHT) / (vertEnd - vertStart) );
+		std::cout << "y point:" << xPoint << std::endl;
+		
+		map_time.emplace(thisTime, wxPoint(xPoint,yPoint));
+		
+	}
+}
+
+template void EditorGraph::PlacePointsFromThisMap<double>( DDMap& thisMap,double& vertStart, double& vertEnd, double& vertRes);

@@ -26,6 +26,12 @@ private:
 	//xml file reader
 	XMLReader xml_reader;
 	
+	//for sound producer tracks 
+	std::vector <DDMap*> tmp_DDXMaps;
+	std::vector <DDMap*> tmp_DDYMaps;
+	std::vector <DDMap*> tmp_DDZMaps;
+	
+	
 };
 
 #endif

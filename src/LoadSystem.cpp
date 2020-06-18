@@ -28,5 +28,4 @@ void LoadSystem::LoadProject(std::vector <SoundProducerSaveData> *sound_producer
 							   eaxRevZonesSaveData,
 							   path);
 	
-	
 }

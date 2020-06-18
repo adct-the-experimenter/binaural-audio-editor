@@ -76,7 +76,8 @@ void XMLReader::LoadData_SoundProducers(pugi::xml_node& root, std::vector <Sound
 	
 }
 
-void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <SoundProducerTrackSaveData> *ptrSPTracksSaveDataVec)
+void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,
+											 std::vector <SoundProducerTrackSaveData> *ptrSPTracksSaveDataVec)
 {
 	pugi::xml_node spTrackRoot = root.child("SoundProducerTracks");
 	
@@ -91,6 +92,25 @@ void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <S
 		
 		valString = track_node.child("Filepath").attribute("filepath").value();
 		data.soundfilepath = valString;
+
+		pugi::xml_node positionXTimeNodeChild = track_node.child("PositionXTimes");
+		
+		DDMap* ddMapX = new DDMap();
+		
+		for(pugi::xml_node ddtrack_node = positionXTimeNodeChild.first_child(); ddtrack_node; ddtrack_node = ddtrack_node.next_sibling() )
+		{
+			std::string valIn, valOut;
+			
+			valIn = ddtrack_node.child("time").value();
+			valOut = ddtrack_node.child("x").value();
+			
+			double in = atof(valIn.c_str());
+			double out = atof(valOut.c_str());
+			
+			ddMapX->emplace(in,out);
+		}
+		
+		data.time_value_map_x_ptr = ddMapX;
 		
 		ptrSPTracksSaveDataVec->push_back(data);
 	}

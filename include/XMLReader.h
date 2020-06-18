@@ -31,7 +31,8 @@ public:
 private:
 	
 	void LoadData_SoundProducers(pugi::xml_node& root, std::vector <SoundProducerSaveData> *sound_producer_save_data);
-	void LoadData_SoundProducerTracks(pugi::xml_node& root,std::vector <SoundProducerTrackSaveData> *ptrSPTracksVec);
+	void LoadData_SoundProducerTracks(pugi::xml_node& root,
+									std::vector <SoundProducerTrackSaveData> *ptrSPTracksVec);
 	void LoadData_EchoZones(pugi::xml_node& root,std::vector <EchoZoneSaveData> *echoZonesSaveData);
 	void LoadData_StandardRevZones(pugi::xml_node& root,std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData);
 	void LoadData_EAXRevZones(pugi::xml_node& root,std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData);

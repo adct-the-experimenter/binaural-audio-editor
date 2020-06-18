@@ -390,9 +390,15 @@ void SoundProducerTrack::LoadSoundProducerTrackSaveData(SoundProducerTrackSaveDa
 {
 	m_saveData = data;
 	
+	m_saveData.time_value_map_x_ptr = xTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_y_ptr = yTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_z_ptr = zTrack->GetPointerToTimeValueMap();
+	
 	if(data.time_value_map_x_ptr)
 	{
 		xTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_x_ptr);
+		delete data.time_value_map_x_ptr;
+		data.time_value_map_x_ptr = nullptr;
 	}
 	
 	//yTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_y_ptr);

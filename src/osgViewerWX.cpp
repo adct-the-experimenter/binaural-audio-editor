@@ -852,11 +852,18 @@ void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
 					timeFrame->Layout();
 				}
 				
+				
+				
 				m_soundproducer_track_vec.at(i)->LoadSoundProducerTrackSaveData(ptrSPTracksSaveDataVec.at(i));
 				
 				m_soundproducer_track_vec.at(i)->GetReferenceToStereoAudioTrack()->LoadAudioFromFileToTrack(ptrSPTracksSaveDataVec.at(i).soundfilepath);
-				m_soundproducer_track_vec.at(i)->SelectSoundProducerByName(ptrSPTracksSaveDataVec.at(i).soundproducer_name);
-				m_soundproducer_track_vec.at(i)->SetComboBoxToThisSelectionName(ptrSPTracksSaveDataVec.at(i).soundproducer_name);
+				
+				if(ptrSPTracksSaveDataVec.at(i).soundproducer_name != "")
+				{
+					m_soundproducer_track_vec.at(i)->SelectSoundProducerByName(ptrSPTracksSaveDataVec.at(i).soundproducer_name);
+					m_soundproducer_track_vec.at(i)->SetComboBoxToThisSelectionName(ptrSPTracksSaveDataVec.at(i).soundproducer_name);
+				}
+				
 			}
 		}
 		
