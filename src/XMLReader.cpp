@@ -101,8 +101,8 @@ void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,
 		{
 			std::string valIn, valOut;
 			
-			valIn = ddtrack_node.child("time").value();
-			valOut = ddtrack_node.child("x").value();
+			valIn = ddtrack_node.attribute("time").value();
+			valOut = ddtrack_node.attribute("x").value();
 			
 			double in = atof(valIn.c_str());
 			double out = atof(valOut.c_str());

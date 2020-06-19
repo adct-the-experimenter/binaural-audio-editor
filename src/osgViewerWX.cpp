@@ -739,7 +739,7 @@ void MainFrame::OnSaveProject(wxCommandEvent& WXUNUSED(event))
 void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
 {
 	wxFileDialog fileDlg(this, _("Open XML file"), "", "",
-                       "XYZ files (*.xml)|*.xml", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+                       "XML files (*.xml)|*.xml", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
                        
 	if (fileDlg.ShowModal() == wxID_OK)
 	{
@@ -856,7 +856,11 @@ void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
 				
 				m_soundproducer_track_vec.at(i)->LoadSoundProducerTrackSaveData(ptrSPTracksSaveDataVec.at(i));
 				
-				m_soundproducer_track_vec.at(i)->GetReferenceToStereoAudioTrack()->LoadAudioFromFileToTrack(ptrSPTracksSaveDataVec.at(i).soundfilepath);
+				if(ptrSPTracksSaveDataVec.at(i).soundfilepath != "")
+				{
+					m_soundproducer_track_vec.at(i)->GetReferenceToStereoAudioTrack()->LoadAudioFromFileToTrack(ptrSPTracksSaveDataVec.at(i).soundfilepath);
+				}
+				
 				
 				if(ptrSPTracksSaveDataVec.at(i).soundproducer_name != "")
 				{
