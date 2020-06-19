@@ -112,6 +112,45 @@ void XMLReader::LoadData_SoundProducerTracks(pugi::xml_node& root,
 		
 		data.time_value_map_x_ptr = ddMapX;
 		
+		
+		pugi::xml_node positionYTimeNodeChild = track_node.child("PositionYTimes");
+		
+		DDMap* ddMapY = new DDMap();
+		
+		for(pugi::xml_node ddtrack_node = positionYTimeNodeChild.first_child(); ddtrack_node; ddtrack_node = ddtrack_node.next_sibling() )
+		{
+			std::string valIn, valOut;
+			
+			valIn = ddtrack_node.attribute("time").value();
+			valOut = ddtrack_node.attribute("y").value();
+			
+			double in = atof(valIn.c_str());
+			double out = atof(valOut.c_str());
+			
+			ddMapY->emplace(in,out);
+		}
+		
+		data.time_value_map_y_ptr = ddMapY;
+		
+		pugi::xml_node positionZTimeNodeChild = track_node.child("PositionZTimes");
+		
+		DDMap* ddMapZ = new DDMap();
+		
+		for(pugi::xml_node ddtrack_node = positionZTimeNodeChild.first_child(); ddtrack_node; ddtrack_node = ddtrack_node.next_sibling() )
+		{
+			std::string valIn, valOut;
+			
+			valIn = ddtrack_node.attribute("time").value();
+			valOut = ddtrack_node.attribute("z").value();
+			
+			double in = atof(valIn.c_str());
+			double out = atof(valOut.c_str());
+			
+			ddMapZ->emplace(in,out);
+		}
+		
+		data.time_value_map_z_ptr = ddMapZ;
+		
 		ptrSPTracksSaveDataVec->push_back(data);
 	}
 }

@@ -401,8 +401,20 @@ void SoundProducerTrack::LoadSoundProducerTrackSaveData(SoundProducerTrackSaveDa
 		data.time_value_map_x_ptr = nullptr;
 	}
 	
-	//yTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_y_ptr);
-	//zTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_z_ptr);
+	if(data.time_value_map_y_ptr)
+	{
+		yTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_y_ptr);
+		delete data.time_value_map_y_ptr;
+		data.time_value_map_y_ptr = nullptr;
+	}
+	
+	if(data.time_value_map_z_ptr)
+	{
+		zTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_z_ptr);
+		delete data.time_value_map_z_ptr;
+		data.time_value_map_z_ptr = nullptr;
+	}
+	
 }
 
 void SoundProducerTrack::SetComboBoxToThisSelectionName(std::string name)

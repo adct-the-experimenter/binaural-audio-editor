@@ -89,7 +89,43 @@ void XMLCreator::SaveDataXML_SPTracks(pugi::xml_node& root,
 		}
 		
 			
+		//Get position y time map
+		
+		DDMap* mapYTime = ptrSPTracksVec->at(i)->GetSoundProducerTrackSaveData().time_value_map_y_ptr;
+		
+		if(mapYTime)
+		{
+			pugi::xml_node positionYTimeNodeChild = nodeChild.append_child("PositionYTimes");
+		
+			//for each position y time pair
+			for (DDMap::iterator it = mapYTime->begin(); it!= mapYTime->end(); ++it)
+			{
+				 //std::cout << it->first << " => " << it->second << '\n';
+				 pugi::xml_node pTNodeChild = positionYTimeNodeChild.append_child("PT");
+				 pTNodeChild.append_attribute("time") = it->first;
+				 pTNodeChild.append_attribute("y") = it->second;
+			}
 			
+		}
+		
+		//Get position z time map
+		
+		DDMap* mapZTime = ptrSPTracksVec->at(i)->GetSoundProducerTrackSaveData().time_value_map_z_ptr;
+		
+		if(mapZTime)
+		{
+			pugi::xml_node positionZTimeNodeChild = nodeChild.append_child("PositionZTimes");
+		
+			//for each position z time pair
+			for (DDMap::iterator it = mapZTime->begin(); it!= mapZTime->end(); ++it)
+			{
+				 //std::cout << it->first << " => " << it->second << '\n';
+				 pugi::xml_node pTNodeChild = positionZTimeNodeChild.append_child("PT");
+				 pTNodeChild.append_attribute("time") = it->first;
+				 pTNodeChild.append_attribute("z") = it->second;
+			}
+			
+		}
 		
 	}
 	

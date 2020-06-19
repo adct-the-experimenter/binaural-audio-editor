@@ -204,11 +204,11 @@ void EditorGraph::PlacePointsFromThisMap(DDMap& thisMap,T& vertStart, T& vertEnd
 		thisTime = round (thisTime / (double(TIME_RESOLUTION) / 1000)) * (double(TIME_RESOLUTION) / 1000);
 		
 		double xPoint = thisTime * ( (double)TRACK_WIDTH / (double)TIME_END_VALUE );
-		std::cout << "x point:" << xPoint << std::endl;
+		//std::cout << "x point:" << xPoint << std::endl;
 		
 		double out = it->second;
 		double yPoint = round( (vertEnd - out) * ( double(TRACK_HEIGHT) / (vertEnd - vertStart) ) *  vertRes ) * (1 / vertRes) ;
-		std::cout << "y point:" << yPoint << std::endl;
+		//std::cout << "y point:" << yPoint << std::endl;
 		
 		map_time.emplace(thisTime, wxPoint(xPoint,yPoint));
 		
