@@ -180,6 +180,9 @@ public:
 	
 	void OnKeyDown(wxKeyEvent& event); //where camera viewer gets manipulated
 	
+	//freees all that needs to be freed before load
+	void UnloadAll();
+	
 private:
     
     enum

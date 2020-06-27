@@ -744,7 +744,7 @@ void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
 	if (fileDlg.ShowModal() == wxID_OK)
 	{
 		//TODO free everything
-		
+		MainFrame::UnloadAll();;
 		
 		wxString path = fileDlg.GetPath();
 		//use this path in your app
@@ -874,6 +874,16 @@ void MainFrame::OnLoadProject(wxCommandEvent& WXUNUSED(event))
 	}
 }
 
+void MainFrame::UnloadAll()
+{
+	//clear vector of sound producers
+	sound_producer_vector_ref->clear();
+	
+	//free effects
+	effectsManagerPtr->FreeEffects();
+	
+	//free contents of sound producer tracks
+}
 
 void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 {
