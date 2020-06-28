@@ -1,10 +1,10 @@
 language: cpp
 compiler: gcc
 sudo: require
-dist: trusty
+dist: xenial
 
 install:
-  - sudo apt-get -y install automake gcc make libopenal-dev libopenscenegraph-dev libsndfile1-dev libwxgtk3.0-dev libboost-dev
+  - sudo apt-get -y install automake gcc make libopenal-dev libopenscenegraph-dev libsndfile-dev libwxgtk3.0-dev libboost-dev
 
     
 script:
