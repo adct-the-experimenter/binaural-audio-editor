@@ -4,7 +4,7 @@ sudo: require
 dist: xenial
 
 install:
-  - sudo apt-get -y install automake gcc g++ make libopenal-dev libopenscenegraph-dev libsndfile-dev libwxgtk3.0-dev libboost-dev libasio-dev
+  - sudo apt-get -y install automake gcc g++ make libopenal-dev libopenscenegraph-dev libsndfile-dev libwxgtk3.0-dev libboost-dev libasio-dev libboost-date-time-dev
 
     
 script:
