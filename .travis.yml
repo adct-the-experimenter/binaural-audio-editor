@@ -13,7 +13,7 @@ script:
   - mkdir AppDir
   - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config
   - make -j$(nproc)
-  - make install INSTALL_ROOT=AppDir
+  - sudo make install INSTALL_ROOT=AppDir
   - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt*.AppImage
   - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
