@@ -4,18 +4,18 @@ sudo: require
 dist: xenial
 
 install:
-  - sudo apt-get -y install automake gcc make libopenal-dev libopenscenegraph-dev libsndfile-dev libwxgtk3.0-dev libboost-dev
+  - sudo apt-get -y install automake gcc g++ make libopenal-dev libopenscenegraph-dev libsndfile-dev libwxgtk3.0-dev libboost-dev
 
     
 script:
-  - bash cmake -DCMAKE_BUILD_TYPE=Debug -DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config-gtk3 .
-  - make
-  - make install DESTDIR=$(readlink -f appdir) ; find appdir/
+  - mkdir AppDir
+  - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config-gtk3
+  - make -j$(nproc)
+  - make install INSTALL_ROOT=AppDir
   - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt*.AppImage
   - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
-  - ./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -bundle-non-qt-libs
-  - ./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -appimage
+  - ./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -bundle-non-qt-libs --output appimage
 
 after_success:
   - find ./appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
