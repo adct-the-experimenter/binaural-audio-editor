@@ -83,3 +83,12 @@ set(SOURCES src/osgViewerWX.cpp
 add_executable(${PROJECT_NAME} ${SOURCES})
 #link libraries
 target_link_libraries(${PROJECT_NAME} ${PROJECT_LINK_LIBS})
+
+#make install operations
+
+#declare files to install
+install(TARGETS binaural-audio-editor
+    DESTINATION ${CMAKE_INSTALL_PREFIX}
+    )
+install(DIRECTORY DESTINATION ../src/timeline-track-editor/resources/)
+
