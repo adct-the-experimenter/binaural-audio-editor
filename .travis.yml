@@ -8,6 +8,8 @@ install:
 
     
 script:
+  - mkdir build
+  - cd build
   - mkdir AppDir
   - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config-gtk3
   - make -j$(nproc)
