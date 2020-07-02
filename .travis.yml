@@ -11,18 +11,21 @@ script:
   - mkdir build
   - cd build
   - mkdir AppDir
-  - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config
+  - mkdir AppDir
+  - cp ../app_image_resources/binaural-audio-editor.png ./AppDir
+  - cp ../app_image_resources/binaural-audio-editor.desktop ./AppDir
+  - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config -DDATAPATH=${HOME}/.binaural-audio-editor/resources/
   - make -j$(nproc)
-  - sudo make install INSTALL_ROOT=AppDir
-  - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-  - chmod a+x linuxdeployqt*.AppImage
-  - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
-  - ./linuxdeployqt*.AppImage ./binaural-audio-editor -bundle-non-qt-libs -unsupported-allow-new-glibc -appimage
+  - make install DESTDIR=AppDir
+  - wget -c "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
+  - chmod a+x linuxdeploy*.AppImage
+  - ./linuxdeploy*.AppImage --appdir AppDir --icon-file ./AppDir/binaural-audio-editor.png --desktop-file ./AppDir/binaural-audio-editor.desktop  --output appimage
 
 after_success:
   - find ./AppDir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
+  - wget -c "https://github.com/probonopd/uploadtool/raw/master/upload.sh"
   - chmod a+x upload.sh
-  - bash ./upload.sh ./binaural-audio-editor*.AppImage
+  - bash ./upload.sh ./Binaural*.AppImage
 
 branches:
   except:
