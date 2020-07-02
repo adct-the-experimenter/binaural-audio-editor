@@ -100,6 +100,14 @@ wxThread::ExitCode CheckListenerReverbZoneThread::Entry()
 	return nullptr;  
 }
 
+
+
+#include <cstdio>
+#include <cstdlib>
+#include <bits/stdc++.h>
+#include <sys/stat.h> 
+#include <sys/types.h> 
+
 // `Main program' equivalent, creating windows and returning main app frame
 bool wxOsgApp::OnInit()
 {
@@ -110,6 +118,11 @@ bool wxOsgApp::OnInit()
         return false;
     }
 	*/
+	
+	//create directory in home if not already made, if not windows
+#ifndef WIN32
+	system("mkdir -p $HOME/.binaural-audio-editor/resources");
+#endif
 
     //initialize openalsoft audio engine class
     if(!audio_engine.initOpenALSoft())

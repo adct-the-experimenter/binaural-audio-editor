@@ -1,0 +1,12 @@
+
+[Desktop Entry]
+Name=Binaural Audio Editor
+StartupWMClass=Binaural-Audio-Editor
+Comment=Produce 3D audio
+GenericName=Audio Editor
+Exec=binaural-audio-editor
+Icon=binaural-audio-editor
+Type=Application
+Categories=Audio;
+MimeType=text/xml;application/xhtml+xml;application/xml;
+Keywords=Binaural;Audio;Editor;
