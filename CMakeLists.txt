@@ -6,10 +6,9 @@ set(PROJECT_NAME binaural-audio-editor)
 project (${PROJECT_NAME} LANGUAGES C CXX)
 
 
-
 #-DCMAKE_BUILD_TYPE=Release
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -Wall -fPIE")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -fPIE")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -DDATADIR=${DATAPATH} -g -Wall -fPIE")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DDATADIR=${DATAPATH} -Wall -fPIE")
 
 #wxWidget specific stuff
 SET(wxWidgets_USE_LIBS)
@@ -83,3 +82,7 @@ set(SOURCES src/osgViewerWX.cpp
 add_executable(${PROJECT_NAME} ${SOURCES})
 #link libraries
 target_link_libraries(${PROJECT_NAME} ${PROJECT_LINK_LIBS})
+
+#make install ops
+install(TARGETS binaural-audio-editor DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+

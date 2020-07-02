@@ -1,5 +1,20 @@
 #include "soundproducer-track.h"
 
+
+#define QUOTE(name) #name
+#define STR(macro) QUOTE(macro)
+
+
+#ifndef DATADIR
+    #define DATADIR "../src/timeline-track-editor/resources/"
+#endif
+
+#define DATADIR_NAME STR(DATADIR)
+
+std::string DATADIR_STR = DATADIR_NAME;
+
+#include <unistd.h>
+
 SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudioDevice,ALCcontext* thisAudioContext) : Track(title)
 {
 	track_source = 0;
@@ -32,7 +47,7 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	
 	audioTrack->SetReferenceToSourceToManipulate(&track_source);
 	
-	std::string filepath_stream = "../src/timeline-track-editor/resources/" + title.ToStdString() + ".wav";
+	std::string filepath_stream = DATADIR_STR + title.ToStdString() + ".wav";
 	audioTrack->SetStreamAudioFilePath(filepath_stream);
 	streamSoundFilePath = filepath_stream;
 	
