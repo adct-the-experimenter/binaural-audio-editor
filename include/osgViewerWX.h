@@ -89,7 +89,7 @@ public:
     void OnMouseUp(wxMouseEvent &event);
     void OnMouseMotion(wxMouseEvent &event);
     void OnMouseWheel(wxMouseEvent &event);
-
+	
     void UseCursor(bool value);
 
 	void SetContextCurrent();
@@ -193,7 +193,8 @@ private:
 		ID_CREATE_ECHO_ZONE,
 		ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,
 		ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,
-		ID_EDIT_MULTIPLE_ECHO_ZONES
+		ID_EDIT_MULTIPLE_ECHO_ZONES,
+		ID_PLAY_LCC_OUTPUT
 		
 	};
     
@@ -234,6 +235,8 @@ private:
     void OnEditMultipleStandardReverbZones(wxCommandEvent& event); //function for menu to edit current available reverb zones
     void OnEditMultipleEAXReverbZones(wxCommandEvent& event); //function for menu to edit current available reverb zones
     void OnEditMultipleEchoZones(wxCommandEvent& event); //function for menu to edit current available echo zones
+    
+    void OnPlayLCCOutput(wxCommandEvent& event);
     
     SoundProducerRegistry soundproducer_registry;
     

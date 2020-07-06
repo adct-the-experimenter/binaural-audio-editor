@@ -23,6 +23,8 @@
 #include "EditMultipleEAXReverbZonesDialog.h"
 #include "EditMultipleEchoZonesDialog.h"
 
+#include "lcc-output-dialog.h"
+
 bool init_listener_once = false;
 
 wxOsgApp::wxOsgApp()
@@ -350,6 +352,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES, MainFrame::OnEditMultipleStandardReverbZones)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_EAX_REVERB_ZONES, MainFrame::OnEditMultipleEAXReverbZones)
     EVT_MENU				(MainFrame::ID_EDIT_MULTIPLE_ECHO_ZONES, MainFrame::OnEditMultipleEchoZones)
+    EVT_MENU				(MainFrame::ID_PLAY_LCC_OUTPUT, MainFrame::OnPlayLCCOutput)
     //EVT_KEY_DOWN			(MainFrame::OnKeyDown)
 END_EVENT_TABLE()
 
@@ -400,15 +403,20 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,"&Edit EAX Reverb Zones");
     menuEffects->Append(MainFrame::ID_EDIT_MULTIPLE_ECHO_ZONES,"&Edit Echo Zones");
     
+    //create output menu items
+    wxMenu* menuOutput = new wxMenu;
+    menuOutput->Append(MainFrame::ID_PLAY_LCC_OUTPUT,"&LCC Output");
+    
     //create and set menu bar with items file and help
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append( menuFile, "&File" ); //connect file menu item to bar
     menuBar->Append(menuListener, "&Listener"); //connecte listener menu item to bar
     menuBar->Append( menuSoundProducers, "&Sound Producers"); //connect Sound Producers menu item to bar
     menuBar->Append( menuEffects, "&Effects");
-    menuBar->Append( menuHRTF, "&HRTF"); //connect HRTF menu item to bar	
+    menuBar->Append( menuHRTF, "&HRTF"); //connect HRTF menu item to bar
+    menuBar->Append( menuOutput, "&Output"); //connect output menu item to bar
     menuBar->Append( menuHelp, "&Help" ); //connect help menu item  to bar
-
+	
     SetMenuBar( menuBar );
 
     CreateStatusBar();
@@ -929,6 +937,14 @@ void MainFrame::OnEditMultipleEchoZones(wxCommandEvent& event)
 																													effectsManagerPtr));																			
 
     echoZoneEditDialog->Show(true);
+}
+
+void MainFrame::OnPlayLCCOutput(wxCommandEvent& event)
+{
+	std::unique_ptr <LCCOutputDialog> lccOutputDialog(new LCCOutputDialog( wxT("LCC Output")));																			
+
+    lccOutputDialog->Show(true);
+	
 }
 
 void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)

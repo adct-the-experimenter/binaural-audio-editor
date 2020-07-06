@@ -28,6 +28,68 @@ find_package(Threads REQUIRED)
 #FreeBSD and linux specific include and libs
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
+#RTAudio speicifc stuff
+
+# Check for Jack (any OS)
+find_library(JACK_LIB jack)
+find_package(PkgConfig)
+pkg_check_modules(jack jack)
+if(JACK_LIB OR jack_FOUND)
+  set(HAVE_JACK TRUE)
+endif()
+
+# Check for Pulse (any OS)
+pkg_check_modules(pulse libpulse-simple)
+
+# API Options
+option(RTAUDIO_API_DS "Build DirectSound API" OFF)
+option(RTAUDIO_API_ASIO "Build ASIO API" OFF)
+option(RTAUDIO_API_WASAPI "Build WASAPI API" ${WIN32})
+option(RTAUDIO_API_OSS "Build OSS4 API" ${xBSD})
+option(RTAUDIO_API_ALSA "Build ALSA API" ${LINUX})
+option(RTAUDIO_API_PULSE "Build PulseAudio API" ${pulse_FOUND})
+option(RTAUDIO_API_JACK "Build JACK audio server API" ${HAVE_JACK})
+option(RTAUDIO_API_CORE "Build CoreAudio API" ${APPLE})
+
+# CoreAudio
+if(RTAUDIO_API_CORE)
+  find_library(COREAUDIO_LIB CoreAudio)
+  find_library(COREFOUNDATION_LIB CoreFoundation)
+  list(APPEND LINKLIBS ${COREAUDIO_LIB} ${COREFOUNDATION_LIB})
+  list(APPEND API_DEFS "-D__MACOSX_CORE__")
+  list(APPEND API_LIST "core")
+endif()
+
+# ASIO
+if(RTAUDIO_API_ASIO)
+  set(NEED_WIN32LIBS ON)
+  include_directories(include)
+  list(APPEND rtaudio_SOURCES
+    include/asio.cpp
+    include/asiodrivers.cpp
+    include/asiolist.cpp
+    include/iasiothiscallresolver.cpp)
+  list(APPEND API_DEFS "-D__WINDOWS_ASIO__")
+  list(APPEND API_LIST "asio")
+endif()
+
+# DSound
+if(RTAUDIO_API_DS)
+  set(NEED_WIN32LIBS ON)
+  list(APPEND LINKLIBS dsound)
+  list(APPEND API_DEFS "-D__WINDOWS_DS__")
+  list(APPEND API_LIST "ds")
+endif()
+
+# WASAPI
+if(RTAUDIO_API_WASAPI)
+  include_directories(include)
+  set(NEED_WIN32LIBS ON)
+  list(APPEND LINKLIBS ksuser mfplat mfuuid wmcodecdspuuid)
+  list(APPEND API_DEFS "-D__WINDOWS_WASAPI__")
+  list(APPEND API_LIST "wasapi")
+endif()
+
 #For the shared library:
 set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 #where to find library files .so 
@@ -39,6 +101,7 @@ set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIR
 include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
 
 set(SOURCES src/osgViewerWX.cpp
+			src/lcc-output-dialog.cpp src/RtAudio.cpp
 			src/CreateStandardReverbZoneDialog.cpp src/EditMultipleStandardReverbZonesDialog.cpp 
 			src/CreateEAXReverbZoneDialog.cpp src/EditMultipleEAXReverbZonesDialog.cpp 
 			src/CreateEchoZoneDialog.cpp src/EditMultipleEchoZonesDialog.cpp
