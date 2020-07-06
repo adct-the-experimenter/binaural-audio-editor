@@ -1227,9 +1227,9 @@ void OSGCanvas::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
 void OSGCanvas::OnChar(wxKeyEvent &event)
 {
 #if wxUSE_UNICODE
-    int key = event.GetUnicodeKey();
+    //int key = event.GetUnicodeKey();
 #else
-    int key = event.GetKeyCode();
+   // int key = event.GetKeyCode();
 #endif
 
     //if (_graphics_window.valid())
