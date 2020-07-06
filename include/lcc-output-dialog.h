@@ -45,6 +45,10 @@ private:
 	 * {LCC_Decaygain} 
 	 * {LCC_Delay_in_microseconds} \n");
 	*/
+	
+	wxTextCtrl* textField_exec;
+	wxTextCtrl* textField_dataDir;
+	
 	wxTextCtrl* textField_inputDevice;
 	wxTextCtrl* textField_outputDevice;
 	

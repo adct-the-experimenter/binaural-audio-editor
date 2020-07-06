@@ -13,6 +13,15 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
     
     
     validatorFloat.SetRange(-100.00,100.00);     // set allowable range
+    
+    wxTextCtrl* textField_exec = new wxTextCtrl(this,-1, "path to lcc_audio executable", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER);
+								
+	wxTextCtrl* textField_dataDir = new wxTextCtrl(this,-1, "Path to lcc_audio data directory", 
+								wxPoint(95, 20), wxSize(80,20),
+								wxTE_PROCESS_ENTER);
+	
 	textField_samplerate = new wxTextCtrl(this,-1, "0.00", 
 								wxPoint(95, 60), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
@@ -64,6 +73,8 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 								wxT(""));
 	
 	//initialize text to the left of text fields
+    wxStaticText* execFPText = new wxStaticText(this, -1, wxT("Executable"), wxPoint(40, 120));
+    wxStaticText* dataDirFPText = new wxStaticText(this, -1, wxT("Data Directory"), wxPoint(40, 120));
     wxStaticText* devicesText = new wxStaticText(this, -1, wxT("Devices"), wxPoint(40, 120));
     wxStaticText* inputDeviceText = new wxStaticText(this, -1, wxT("Input Device:"), wxPoint(40, 120));
     wxStaticText* outputDeviceText = new wxStaticText(this, -1, wxT("Output Device:"), wxPoint(40, 120));
@@ -74,7 +85,6 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 	wxStaticText* decayGainText = new wxStaticText(this, -1, wxT("Decay Gain:"), wxPoint(40, 120));
 	wxStaticText* delayUSText = new wxStaticText(this, -1, wxT("Delay (microseconds):"), wxPoint(40, 120));
 	
-    
     
 	
 	//list box to contain names of input devices
@@ -126,6 +136,18 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 	hbox5->Add(exitButton, 1, wxLEFT, 5);
 	
 	//add panel of text fields in vertical box
+	
+	wxBoxSizer *hBoxExecutable = new wxBoxSizer(wxHORIZONTAL);
+	hBoxExecutable->Add(execFPText);
+	hBoxExecutable->Add(textField_exec);
+	
+	vbox->Add(hBoxExecutable,1);
+	
+	wxBoxSizer *hBoxDataDir = new wxBoxSizer(wxHORIZONTAL);
+	hBoxDataDir->Add(dataDirFPText);
+	hBoxDataDir->Add(textField_dataDir);
+	
+	vbox->Add(hBoxDataDir,1);
 	
 	vbox->Add(devicesText);
 	vbox->Add(hboxDeviceNames);
