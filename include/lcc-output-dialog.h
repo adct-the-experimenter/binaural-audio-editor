@@ -25,13 +25,22 @@ public:
 
 	void ChangeAttributes();
 	
+	void OnBrowseDataDir(wxCommandEvent& event);
+	void OnBrowseExec(wxCommandEvent& event);
+	
 private:
+	
+	std::string filePathExec;
+	std::string filePathDataDir;
 	
 	wxButton* startButton;
 	wxButton* stopButton;
 	wxButton* exitButton;
+	
+	wxButton* browseDataDirectoryButton;
+	wxButton* browseExecButton;
 		
-	wxListBox* listboxDevices;
+	//wxListBox* listboxDevices;
 
 	
 	//Inputs
@@ -58,6 +67,8 @@ private:
 	wxTextCtrl* textField_endgain;
 	wxTextCtrl* textField_decaygain;
 	wxTextCtrl* textField_delay_us;
+	
+	void BrowseForInputFilePath(std::string inputFilePath);
 };
 
 #endif

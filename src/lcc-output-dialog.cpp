@@ -1,32 +1,32 @@
 #include "lcc-output-dialog.h"
 
-#include "RtAudio.h"
-
 LCCOutputDialog::LCCOutputDialog(const wxString& title)
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
 {	
 
 	//initialize text fields
-
+	
+	wxIntegerValidator<unsigned long> validatorInt(NULL, wxNUM_VAL_THOUSANDS_SEPARATOR);
+	validatorInt.SetRange(0,20);
+	
+	
 	wxFloatingPointValidator <double> validatorFloat(3,nullptr,wxNUM_VAL_ZERO_AS_BLANK);
     validatorFloat.SetRange(0.00,10.00);     // set allowable range
     
     
     validatorFloat.SetRange(-100.00,100.00);     // set allowable range
     
-    wxTextCtrl* textField_exec = new wxTextCtrl(this,-1, "path to lcc_audio executable", 
+    textField_exec = new wxTextCtrl(this,-1, " executable", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER);
 								
-	wxTextCtrl* textField_dataDir = new wxTextCtrl(this,-1, "Path to lcc_audio data directory", 
+	textField_dataDir = new wxTextCtrl(this,-1, " data", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER);
 	
-	textField_samplerate = new wxTextCtrl(this,-1, "0.00", 
+	textField_samplerate = new wxTextCtrl(this,-1, "44000", 
 								wxPoint(95, 60), wxSize(80,20),
-								wxTE_PROCESS_ENTER,
-								validatorFloat,          // associate the text box with the desired validator
-								wxT(""));
+								wxTE_PROCESS_ENTER);
 	
 	textField_inputgain = new wxTextCtrl(this,-1, "0.00", 
 								wxPoint(95, 80), wxSize(80,20),
@@ -40,14 +40,12 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 								validatorFloat,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	validatorFloat.SetRange(2.00,30.00);     // set allowable range
 	textField_endgain = new wxTextCtrl(this,-1, "2.00", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT("")); 
-	
-	validatorFloat.SetRange(0.0,1.0);     // set allowable range
+								
 	textField_decaygain = new wxTextCtrl(this,-1, "1.0", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
@@ -60,22 +58,22 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_inputDevice = new wxTextCtrl(this,-1, "1.0", 
+	textField_inputDevice = new wxTextCtrl(this,-1, "5", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validatorFloat,          // associate the text box with the desired validator
+								validatorInt,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_outputDevice = new wxTextCtrl(this,-1, "1.0", 
+	textField_outputDevice = new wxTextCtrl(this,-1, "2", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
-								validatorFloat,          // associate the text box with the desired validator
+								validatorInt,          // associate the text box with the desired validator
 								wxT(""));
 	
 	//initialize text to the left of text fields
     wxStaticText* execFPText = new wxStaticText(this, -1, wxT("Executable"), wxPoint(40, 120));
     wxStaticText* dataDirFPText = new wxStaticText(this, -1, wxT("Data Directory"), wxPoint(40, 120));
-    wxStaticText* devicesText = new wxStaticText(this, -1, wxT("Devices"), wxPoint(40, 120));
+    //wxStaticText* devicesText = new wxStaticText(this, -1, wxT("Devices"), wxPoint(40, 120));
     wxStaticText* inputDeviceText = new wxStaticText(this, -1, wxT("Input Device:"), wxPoint(40, 120));
     wxStaticText* outputDeviceText = new wxStaticText(this, -1, wxT("Output Device:"), wxPoint(40, 120));
     wxStaticText* sampleRateText = new wxStaticText(this, -1, wxT("Sample Rate:"), wxPoint(40, 120));
@@ -88,9 +86,9 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
     
 	
 	//list box to contain names of input devices
-	listboxDevices = new wxListBox(this, wxID_ANY, wxPoint(0, 0), wxSize(100, 20)); 
+	//listboxDevices = new wxListBox(this, wxID_ANY, wxPoint(0, 0), wxSize(100, 20)); 
 	
-	
+	/*
 	RtAudio audio;
 	RtAudio::DeviceInfo info;
 	
@@ -103,11 +101,11 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 		wxString mystring( name_and_index );
 		listboxDevices->Append(mystring);
 	}
-	
+	*/
 	
 	//make horizontal box to put names in
-	wxBoxSizer* hboxDeviceNames = new wxBoxSizer(wxHORIZONTAL);
-	hboxDeviceNames->Add(listboxDevices, 1, wxEXPAND | wxALL, 20);
+	//wxBoxSizer* hboxDeviceNames = new wxBoxSizer(wxHORIZONTAL);
+	//hboxDeviceNames->Add(listboxDevices, 1, wxEXPAND | wxALL, 20);
     
     //initialize Ok and Cancel buttons 
 	startButton = new wxButton(this, wxID_ANY, wxT("Start"), 
@@ -125,6 +123,16 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 	
 	exitButton->Bind(wxEVT_BUTTON,&LCCOutputDialog::OnExit,this);
 	
+	browseDataDirectoryButton = new wxButton(this, wxID_ANY, wxT("Browse Data"), 
+							wxDefaultPosition, wxSize(70, 30));
+							
+	browseDataDirectoryButton->Bind(wxEVT_BUTTON,&LCCOutputDialog::OnBrowseDataDir,this);
+							
+	browseExecButton = new wxButton(this, wxID_ANY, wxT("Browse Exec"), 
+							wxDefaultPosition, wxSize(70, 30));
+							
+	browseExecButton->Bind(wxEVT_BUTTON,&LCCOutputDialog::OnBrowseExec,this);
+	
 	//Make vertical box to put horizontal boxes in
 	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
 	
@@ -140,17 +148,19 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 	wxBoxSizer *hBoxExecutable = new wxBoxSizer(wxHORIZONTAL);
 	hBoxExecutable->Add(execFPText);
 	hBoxExecutable->Add(textField_exec);
+	hBoxExecutable->Add(browseExecButton);
 	
 	vbox->Add(hBoxExecutable,1);
 	
 	wxBoxSizer *hBoxDataDir = new wxBoxSizer(wxHORIZONTAL);
 	hBoxDataDir->Add(dataDirFPText);
 	hBoxDataDir->Add(textField_dataDir);
+	hBoxDataDir->Add(browseDataDirectoryButton);
 	
 	vbox->Add(hBoxDataDir,1);
 	
-	vbox->Add(devicesText);
-	vbox->Add(hboxDeviceNames);
+	//vbox->Add(devicesText);
+	//vbox->Add(hboxDeviceNames);
 	
 	wxBoxSizer *hBoxDeviceParam = new wxBoxSizer(wxHORIZONTAL);
 	
@@ -236,11 +246,37 @@ void LCCOutputDialog::OnExit(wxCommandEvent& event)
 	LCCOutputDialog::Exit();
 }
 
+void LCCOutputDialog::OnBrowseDataDir(wxCommandEvent& event)
+{
+	LCCOutputDialog::BrowseForInputFilePath(filePathDataDir);
+	
+	if(textField_dataDir)
+	{
+		textField_dataDir->Clear();
+		(*textField_dataDir) << filePathDataDir;
+	}
+	
+}
+
+void LCCOutputDialog::OnBrowseExec(wxCommandEvent& event)
+{
+	LCCOutputDialog::BrowseForInputFilePath(filePathExec);
+	
+	if(textField_exec)
+	{
+		textField_exec->Clear();
+		(*textField_exec) << filePathExec;
+	}
+	
+}
+
 void LCCOutputDialog::Exit()
 {
 	if(startButton != nullptr){ delete startButton;}
 	if(stopButton != nullptr){ delete stopButton;}
 	if(exitButton != nullptr){delete exitButton;}
+	if(browseDataDirectoryButton != nullptr){delete browseDataDirectoryButton;}
+	if(browseExecButton != nullptr){delete browseExecButton;}
 
 	if(textField_inputDevice != nullptr){ delete textField_inputDevice;}
 	if(textField_outputDevice != nullptr){ delete textField_outputDevice;}
@@ -251,8 +287,21 @@ void LCCOutputDialog::Exit()
 	if(textField_delay_us != nullptr){ delete textField_delay_us;}
 	if(textField_decaygain != nullptr){ delete textField_decaygain;}
 
-    if(listboxDevices != nullptr){delete listboxDevices;}
+    //if(listboxDevices != nullptr){delete listboxDevices;}
     Close( true ); //close window
 }
 
 
+void LCCOutputDialog::BrowseForInputFilePath(std::string inputFilePath)
+{
+	wxFileDialog fileDlg(this, _("Choose file or directory"), wxEmptyString, wxEmptyString, _(""));
+	if (fileDlg.ShowModal() == wxID_OK)
+	{
+		
+		wxString path = fileDlg.GetPath();
+		//use this path in your app
+		inputFilePath = std::string(path.mb_str());
+		
+		std::cout << "Input file path:" << inputFilePath << std::endl;
+	} 
+}
