@@ -1,5 +1,10 @@
 #include "lcc-output-dialog.h"
 
+#include <stdio.h>
+#include <iostream>
+#include <wx/string.h>
+#include <fstream>
+
 LCCOutputDialog::LCCOutputDialog(const wxString& title)
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
 {	
@@ -17,11 +22,11 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
     validatorFloat.SetRange(-100.00,100.00);     // set allowable range
     
     textField_exec = new wxTextCtrl(this,-1, " executable", 
-								wxPoint(95, 20), wxSize(80,20),
+								wxPoint(95, 20), wxSize(300,20),
 								wxTE_PROCESS_ENTER);
 								
 	textField_dataDir = new wxTextCtrl(this,-1, " data", 
-								wxPoint(95, 20), wxSize(80,20),
+								wxPoint(95, 20), wxSize(300,20),
 								wxTE_PROCESS_ENTER);
 	
 	textField_samplerate = new wxTextCtrl(this,-1, "44000", 
@@ -147,15 +152,15 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 	
 	wxBoxSizer *hBoxExecutable = new wxBoxSizer(wxHORIZONTAL);
 	hBoxExecutable->Add(execFPText);
-	hBoxExecutable->Add(textField_exec);
-	hBoxExecutable->Add(browseExecButton);
+	hBoxExecutable->Add(textField_exec,1);
+	hBoxExecutable->Add(browseExecButton,1);
 	
 	vbox->Add(hBoxExecutable,1);
 	
 	wxBoxSizer *hBoxDataDir = new wxBoxSizer(wxHORIZONTAL);
 	hBoxDataDir->Add(dataDirFPText);
-	hBoxDataDir->Add(textField_dataDir);
-	hBoxDataDir->Add(browseDataDirectoryButton);
+	hBoxDataDir->Add(textField_dataDir,1);
+	hBoxDataDir->Add(browseDataDirectoryButton,1);
 	
 	vbox->Add(hBoxDataDir,1);
 	
@@ -226,19 +231,79 @@ void LCCOutputDialog::OnStart(wxCommandEvent& event)
 {	
 	//get values from text fields
 	
+	std::string inputDeviceStr = std::string(textField_inputDevice->GetLineText(0).mb_str());
+	std::string outputDeviceStr = std::string(textField_outputDevice->GetLineText(0).mb_str());
+	std::string sampleRateStr = std::string(textField_samplerate->GetLineText(0).mb_str());
+	std::string inputgainStr = std::string(textField_inputgain->GetLineText(0).mb_str());
+	std::string centergainStr = std::string(textField_centergain->GetLineText(0).mb_str());
+	std::string endgainStr = std::string(textField_endgain->GetLineText(0).mb_str());
+	std::string decaygainStr = std::string(textField_decaygain->GetLineText(0).mb_str());
+	std::string delay_usStr = std::string(textField_delay_us->GetLineText(0).mb_str());
+	
+	std::string command_one = filePathExec + " " + inputDeviceStr + " " + outputDeviceStr + " "
+							  + sampleRateStr + " " + inputgainStr + " " + 
+							  centergainStr + " " + endgainStr + " " + 
+							  decaygainStr + " " + delay_usStr;
+	
+	std::cout << command_one << std::endl;
+	
+	char write = 'w';
+	popen(command_one.c_str(),&write);
+	
 	//set to change settings in choice.txt
+	std::ofstream choice_out;
+	std::string choice_fpStr = filePathDataDir + "/choice.txt";
+	choice_out.open(choice_fpStr.c_str(), std::ofstream::out | std::ofstream::trunc);
+	if(choice_out.is_open())
+	{
+		choice_out << "3";
+	}
 	
 	//changes values in param.txt
+	std::ofstream param_out;
+	std::string param_fpStr = filePathDataDir + "/param.txt";
+	param_out.open(param_fpStr.c_str(), std::ofstream::out | std::ofstream::trunc);
+	if(param_out.is_open())
+	{
+		param_out << inputDeviceStr << "\n";
+		param_out << outputDeviceStr << "\n";
+		param_out << sampleRateStr << "\n";
+		param_out << inputgainStr << "\n";
+		param_out << centergainStr << "\n";
+		param_out << endgainStr << "\n";
+		param_out << decaygainStr << "\n";
+		param_out << delay_usStr << "\n";
+	}
 	
 	//set lcc program to start taking in new input through rw-param-stat.txt
-	
+	std::ofstream rw_param_stat_out;
+	std::string param_status_fp = filePathDataDir + "/rw-param-status.txt";
+	rw_param_stat_out.open (param_status_fp.c_str(), std::ofstream::out | std::ofstream::trunc);
+	if(rw_param_stat_out.is_open())
+	{
+		rw_param_stat_out << "1";
+	}
 }
 
 void LCCOutputDialog::OnStop(wxCommandEvent& event )
 {
 	//set to quit program in choice.txt
-		
+	std::ofstream choice_out;
+	std::string choice_fpStr = filePathDataDir + "/choice.txt";
+	choice_out.open(choice_fpStr.c_str(), std::ofstream::out | std::ofstream::trunc);
+	if(choice_out.is_open())
+	{
+		choice_out << "4";
+	}
+	
 	//set lcc program to start taking in new input through rw-param-stat.txt
+	std::ofstream rw_param_stat_out;
+	std::string param_status_fp = filePathDataDir + "/rw-param-status.txt";
+	rw_param_stat_out.open (param_status_fp.c_str(), std::ofstream::out | std::ofstream::trunc);
+	if(rw_param_stat_out.is_open())
+	{
+		rw_param_stat_out << "1";
+	}
 }
 
 void LCCOutputDialog::OnExit(wxCommandEvent& event)
@@ -248,7 +313,13 @@ void LCCOutputDialog::OnExit(wxCommandEvent& event)
 
 void LCCOutputDialog::OnBrowseDataDir(wxCommandEvent& event)
 {
-	LCCOutputDialog::BrowseForInputFilePath(filePathDataDir);
+	std::string path = "";
+	LCCOutputDialog::BrowseForInputDirectoryPath(path);
+	
+	if(path != "")
+	{
+		filePathDataDir = path;
+	}
 	
 	if(textField_dataDir)
 	{
@@ -260,7 +331,14 @@ void LCCOutputDialog::OnBrowseDataDir(wxCommandEvent& event)
 
 void LCCOutputDialog::OnBrowseExec(wxCommandEvent& event)
 {
-	LCCOutputDialog::BrowseForInputFilePath(filePathExec);
+	std::string path = "";
+	LCCOutputDialog::BrowseForInputFilePath(path);
+	
+	if(path != "")
+	{
+		filePathExec = path;
+	}
+	
 	
 	if(textField_exec)
 	{
@@ -292,16 +370,28 @@ void LCCOutputDialog::Exit()
 }
 
 
-void LCCOutputDialog::BrowseForInputFilePath(std::string inputFilePath)
+void LCCOutputDialog::BrowseForInputFilePath(std::string& inputFilePath)
 {
-	wxFileDialog fileDlg(this, _("Choose file or directory"), wxEmptyString, wxEmptyString, _(""));
+	wxFileDialog fileDlg(this, _("Choose file"), wxEmptyString, wxEmptyString, _(""));
 	if (fileDlg.ShowModal() == wxID_OK)
 	{
 		
 		wxString path = fileDlg.GetPath();
 		//use this path in your app
 		inputFilePath = std::string(path.mb_str());
-		
-		std::cout << "Input file path:" << inputFilePath << std::endl;
 	} 
+}
+
+void LCCOutputDialog::BrowseForInputDirectoryPath(std::string& inputDirPath)
+{
+	wxDirDialog dirDlg(NULL, "Choose input directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+	
+	if (dirDlg.ShowModal() == wxID_OK)
+	{
+		
+		wxString path = dirDlg.GetPath();
+		//use this path in your app
+		inputDirPath = std::string(path.mb_str());
+	}
+	
 }
