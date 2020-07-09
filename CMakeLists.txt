@@ -34,13 +34,13 @@ set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} opena
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
-set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} src/rtaudio )
+set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} src/rtaudio src/lcc_audio)
 
 #for where to find header files for source and library
 include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
 
 set(SOURCES src/osgViewerWX.cpp
-			src/lcc-output-dialog.cpp
+			src/lcc-output-dialog.cpp src/lcc_audio/lcc-cpp-script.cpp
 			src/CreateStandardReverbZoneDialog.cpp src/EditMultipleStandardReverbZonesDialog.cpp 
 			src/CreateEAXReverbZoneDialog.cpp src/EditMultipleEAXReverbZonesDialog.cpp 
 			src/CreateEchoZoneDialog.cpp src/EditMultipleEchoZonesDialog.cpp

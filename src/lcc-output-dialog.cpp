@@ -1,9 +1,9 @@
 #include "lcc-output-dialog.h"
 
-#include <stdio.h>
+#include "lcc-cpp-script.h"
+
 #include <iostream>
 #include <wx/string.h>
-#include <fstream>
 
 LCCOutputDialog::LCCOutputDialog(const wxString& title)
        : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
@@ -29,35 +29,35 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 								wxPoint(95, 20), wxSize(300,20),
 								wxTE_PROCESS_ENTER);
 	
-	textField_samplerate = new wxTextCtrl(this,-1, "44000", 
+	textField_samplerate = new wxTextCtrl(this,-1, "48000", 
 								wxPoint(95, 60), wxSize(80,20),
 								wxTE_PROCESS_ENTER);
 	
-	textField_inputgain = new wxTextCtrl(this,-1, "0.00", 
+	textField_inputgain = new wxTextCtrl(this,-1, "-3", 
 								wxPoint(95, 80), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 								
-	textField_centergain = new wxTextCtrl(this,-1, "0.00", 
+	textField_centergain = new wxTextCtrl(this,-1, "-3", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT("")); 
 	
-	textField_endgain = new wxTextCtrl(this,-1, "2.00", 
+	textField_endgain = new wxTextCtrl(this,-1, "3", 
 								wxPoint(95, 100), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT("")); 
 								
-	textField_decaygain = new wxTextCtrl(this,-1, "1.0", 
+	textField_decaygain = new wxTextCtrl(this,-1, "-2.5", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
 								wxT(""));
 	
-	textField_delay_us = new wxTextCtrl(this,-1, "1.0", 
+	textField_delay_us = new wxTextCtrl(this,-1, "32", 
 								wxPoint(95, 20), wxSize(80,20),
 								wxTE_PROCESS_ENTER,
 								validatorFloat,          // associate the text box with the desired validator
@@ -74,6 +74,10 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 								wxTE_PROCESS_ENTER,
 								validatorInt,          // associate the text box with the desired validator
 								wxT(""));
+								
+	textField_output_msg = new wxTextCtrl(this,-1, "", 
+								wxPoint(95, 20), wxSize(500,200),
+								wxTE_READONLY);
 	
 	//initialize text to the left of text fields
     wxStaticText* execFPText = new wxStaticText(this, -1, wxT("Executable"), wxPoint(40, 120));
@@ -207,6 +211,8 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 	
 	vbox->Add(hBoxDelay,1);
 	
+	vbox->Add(textField_output_msg);
+	
 	vbox->Add(hbox5, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 2);
 
 	SetSizerAndFit(vbox);
@@ -240,70 +246,36 @@ void LCCOutputDialog::OnStart(wxCommandEvent& event)
 	std::string decaygainStr = std::string(textField_decaygain->GetLineText(0).mb_str());
 	std::string delay_usStr = std::string(textField_delay_us->GetLineText(0).mb_str());
 	
-	std::string command_one = filePathExec + " " + inputDeviceStr + " " + outputDeviceStr + " "
-							  + sampleRateStr + " " + inputgainStr + " " + 
-							  centergainStr + " " + endgainStr + " " + 
-							  decaygainStr + " " + delay_usStr;
+	Parameters param;
+	param.inputDeviceStr = inputDeviceStr;
+	param.outputDeviceStr = outputDeviceStr;
+	param.sampleRateStr = sampleRateStr;
+	param.inputgainStr = inputgainStr;
+	param.centergainStr = centergainStr;
+	param.endgainStr = endgainStr;
+	param.decaygainStr = decaygainStr;
+	param.delay_usStr = delay_usStr;
 	
-	std::cout << command_one << std::endl;
-	
-	char write = 'w';
-	popen(command_one.c_str(),&write);
+	//start lcc instance outside of program
+	StartLCCExternally(filePathExec,param);
 	
 	//set to change settings in choice.txt
-	std::ofstream choice_out;
-	std::string choice_fpStr = filePathDataDir + "/choice.txt";
-	choice_out.open(choice_fpStr.c_str(), std::ofstream::out | std::ofstream::trunc);
-	if(choice_out.is_open())
-	{
-		choice_out << "3";
-	}
+	SetChoiceToChangeSettings(filePathDataDir);
 	
 	//changes values in param.txt
-	std::ofstream param_out;
-	std::string param_fpStr = filePathDataDir + "/param.txt";
-	param_out.open(param_fpStr.c_str(), std::ofstream::out | std::ofstream::trunc);
-	if(param_out.is_open())
-	{
-		param_out << inputDeviceStr << "\n";
-		param_out << outputDeviceStr << "\n";
-		param_out << sampleRateStr << "\n";
-		param_out << inputgainStr << "\n";
-		param_out << centergainStr << "\n";
-		param_out << endgainStr << "\n";
-		param_out << decaygainStr << "\n";
-		param_out << delay_usStr << "\n";
-	}
+	ChangeParameterValues(filePathDataDir,param);
 	
-	//set lcc program to start taking in new input through rw-param-stat.txt
-	std::ofstream rw_param_stat_out;
-	std::string param_status_fp = filePathDataDir + "/rw-param-status.txt";
-	rw_param_stat_out.open (param_status_fp.c_str(), std::ofstream::out | std::ofstream::trunc);
-	if(rw_param_stat_out.is_open())
-	{
-		rw_param_stat_out << "1";
-	}
+	//set lcc program to start taking in new input
+	MakeLCCTakeInNewInput(filePathDataDir);
+	
+	(*textField_output_msg) << GetOutputSTR(filePathDataDir);
 }
 
 void LCCOutputDialog::OnStop(wxCommandEvent& event )
 {
-	//set to quit program in choice.txt
-	std::ofstream choice_out;
-	std::string choice_fpStr = filePathDataDir + "/choice.txt";
-	choice_out.open(choice_fpStr.c_str(), std::ofstream::out | std::ofstream::trunc);
-	if(choice_out.is_open())
-	{
-		choice_out << "4";
-	}
+	//quit lcc safely
+	SafelyQuitLCC(filePathDataDir);
 	
-	//set lcc program to start taking in new input through rw-param-stat.txt
-	std::ofstream rw_param_stat_out;
-	std::string param_status_fp = filePathDataDir + "/rw-param-status.txt";
-	rw_param_stat_out.open (param_status_fp.c_str(), std::ofstream::out | std::ofstream::trunc);
-	if(rw_param_stat_out.is_open())
-	{
-		rw_param_stat_out << "1";
-	}
 }
 
 void LCCOutputDialog::OnExit(wxCommandEvent& event)
@@ -350,6 +322,8 @@ void LCCOutputDialog::OnBrowseExec(wxCommandEvent& event)
 
 void LCCOutputDialog::Exit()
 {
+	SafelyQuitLCC(filePathDataDir);
+	
 	if(startButton != nullptr){ delete startButton;}
 	if(stopButton != nullptr){ delete stopButton;}
 	if(exitButton != nullptr){delete exitButton;}
@@ -364,7 +338,7 @@ void LCCOutputDialog::Exit()
 	if(textField_samplerate != nullptr){ delete textField_samplerate;}
 	if(textField_delay_us != nullptr){ delete textField_delay_us;}
 	if(textField_decaygain != nullptr){ delete textField_decaygain;}
-
+	if(textField_output_msg != nullptr){delete textField_output_msg;}
     //if(listboxDevices != nullptr){delete listboxDevices;}
     Close( true ); //close window
 }

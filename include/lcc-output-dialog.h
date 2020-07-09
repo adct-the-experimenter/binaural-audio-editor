@@ -68,6 +68,8 @@ private:
 	wxTextCtrl* textField_decaygain;
 	wxTextCtrl* textField_delay_us;
 	
+	wxTextCtrl* textField_output_msg;
+	
 	void BrowseForInputFilePath(std::string& inputFilePath);
 	void BrowseForInputDirectoryPath(std::string& inputDirPath);
 };
