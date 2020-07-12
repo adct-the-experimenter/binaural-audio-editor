@@ -13,11 +13,13 @@ class LCCOutputDialog : public wxDialog
 
 public:
 	LCCOutputDialog(const wxString& title);
-
+	~LCCOutputDialog();
 
 	void OnStart(wxCommandEvent& event );
 	
 	void OnStop(wxCommandEvent& event );
+	
+	void OnChange(wxCommandEvent& event);
 
 	void OnExit(wxCommandEvent& event);
 
@@ -34,6 +36,7 @@ private:
 	std::string filePathDataDir;
 	
 	wxButton* startButton;
+	wxButton* changeButton;
 	wxButton* stopButton;
 	wxButton* exitButton;
 	
@@ -72,6 +75,8 @@ private:
 	
 	void BrowseForInputFilePath(std::string& inputFilePath);
 	void BrowseForInputDirectoryPath(std::string& inputDirPath);
+	
+	bool lccAudioProgramIsRunning;
 };
 
 #endif
