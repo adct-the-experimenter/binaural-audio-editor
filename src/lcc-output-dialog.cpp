@@ -5,12 +5,207 @@
 #include <iostream>
 #include <wx/string.h>
 
-LCCOutputDialog::LCCOutputDialog(const wxString& title)
-       : wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(500, 250), wxRESIZE_BORDER)
+LCCOutputDialog::LCCOutputDialog(const wxString& title, wxWindow* parent)
+       : wxDialog()
 {
-	lccAudioProgramIsRunning = false;	
+	lccAudioProgramIsRunning = false;
+	
+	m_parent_window_ptr = parent;	
+	
+	CreateWindow();
 
+}
+
+LCCOutputDialog::~LCCOutputDialog()
+{
+	std::cout << "Destructor called!\n";
+	
+	DestroyWindow();
+    //if(listboxDevices != nullptr){delete listboxDevices;}
+}
+
+
+void LCCOutputDialog::ChangeAttributes()
+{
+	
+	
+}
+
+
+
+void LCCOutputDialog::OnStart(wxCommandEvent& event)
+{	
+	//get values from text fields
+	
+	std::string inputDeviceStr = std::string(textField_inputDevice->GetLineText(0).mb_str());
+	std::string outputDeviceStr = std::string(textField_outputDevice->GetLineText(0).mb_str());
+	std::string sampleRateStr = std::string(textField_samplerate->GetLineText(0).mb_str());
+	std::string inputgainStr = std::string(textField_inputgain->GetLineText(0).mb_str());
+	std::string centergainStr = std::string(textField_centergain->GetLineText(0).mb_str());
+	std::string endgainStr = std::string(textField_endgain->GetLineText(0).mb_str());
+	std::string decaygainStr = std::string(textField_decaygain->GetLineText(0).mb_str());
+	std::string delay_usStr = std::string(textField_delay_us->GetLineText(0).mb_str());
+	
+	Parameters param;
+	param.inputDeviceStr = inputDeviceStr;
+	param.outputDeviceStr = outputDeviceStr;
+	param.sampleRateStr = sampleRateStr;
+	param.inputgainStr = inputgainStr;
+	param.centergainStr = centergainStr;
+	param.endgainStr = endgainStr;
+	param.decaygainStr = decaygainStr;
+	param.delay_usStr = delay_usStr;
+	
+	//start lcc instance outside of program
+	StartLCCExternally(filePathExec,param);
+	
+	
+	(*textField_output_msg) << GetOutputSTR(filePathDataDir);
+	
+	ResetOutputMessage(filePathDataDir);
+	lccAudioProgramIsRunning = true;
+}
+
+void LCCOutputDialog::OnStop(wxCommandEvent& event )
+{
+	//quit lcc safely if it is running
+	if(lccAudioProgramIsRunning)
+	{
+		SafelyQuitLCC(filePathDataDir);
+		lccAudioProgramIsRunning = false;
+	}
+	
+	(*textField_output_msg) << GetOutputSTR(filePathDataDir);
+	ResetOutputMessage(filePathDataDir);
+}
+
+void LCCOutputDialog::OnChange(wxCommandEvent& event)
+{
+	//get values from text fields
+	
+	std::string inputDeviceStr = std::string(textField_inputDevice->GetLineText(0).mb_str());
+	std::string outputDeviceStr = std::string(textField_outputDevice->GetLineText(0).mb_str());
+	std::string sampleRateStr = std::string(textField_samplerate->GetLineText(0).mb_str());
+	std::string inputgainStr = std::string(textField_inputgain->GetLineText(0).mb_str());
+	std::string centergainStr = std::string(textField_centergain->GetLineText(0).mb_str());
+	std::string endgainStr = std::string(textField_endgain->GetLineText(0).mb_str());
+	std::string decaygainStr = std::string(textField_decaygain->GetLineText(0).mb_str());
+	std::string delay_usStr = std::string(textField_delay_us->GetLineText(0).mb_str());
+	
+	Parameters param;
+	param.inputDeviceStr = inputDeviceStr;
+	param.outputDeviceStr = outputDeviceStr;
+	param.sampleRateStr = sampleRateStr;
+	param.inputgainStr = inputgainStr;
+	param.centergainStr = centergainStr;
+	param.endgainStr = endgainStr;
+	param.decaygainStr = decaygainStr;
+	param.delay_usStr = delay_usStr;
+	
+	//set to change settings in choice.txt
+	SetChoiceToChangeSettings(filePathDataDir);
+	
+	//changes values in param.txt
+	ChangeParameterValues(filePathDataDir,param);
+	
+	//set lcc program to start taking in new input
+	MakeLCCTakeInNewInput(filePathDataDir);
+	
+	(*textField_output_msg) << GetOutputSTR(filePathDataDir);
+	ResetOutputMessage(filePathDataDir);
+	
+}
+
+void LCCOutputDialog::Close()
+{
+	
+	LCCOutputDialog::ExitProgram();
+	LCCOutputDialog::HideWindow(); //hide window
+}
+
+void LCCOutputDialog::ExitProgram()
+{
+	if(lccAudioProgramIsRunning)
+	{
+		SafelyQuitLCC(filePathDataDir);
+	}
+}
+
+void LCCOutputDialog::OnBrowseDataDir(wxCommandEvent& event)
+{
+	std::string path = "";
+	LCCOutputDialog::BrowseForInputDirectoryPath(path);
+	
+	if(path != "")
+	{
+		filePathDataDir = path;
+	}
+	
+	if(textField_dataDir)
+	{
+		textField_dataDir->Clear();
+		(*textField_dataDir) << filePathDataDir;
+	}
+	
+}
+
+void LCCOutputDialog::OnBrowseExec(wxCommandEvent& event)
+{
+	std::string path = "";
+	LCCOutputDialog::BrowseForInputFilePath(path);
+	
+	if(path != "")
+	{
+		filePathExec = path;
+	}
+	
+	
+	if(textField_exec)
+	{
+		textField_exec->Clear();
+		(*textField_exec) << filePathExec;
+	}
+	
+}
+
+
+void LCCOutputDialog::BrowseForInputFilePath(std::string& inputFilePath)
+{
+	wxFileDialog fileDlg(this, _("Choose file"), wxEmptyString, wxEmptyString, _(""));
+	if (fileDlg.ShowModal() == wxID_OK)
+	{	
+		wxString path = fileDlg.GetPath();
+		//use this path in your app
+		inputFilePath = std::string(path.mb_str());
+	} 
+}
+
+void LCCOutputDialog::BrowseForInputDirectoryPath(std::string& inputDirPath)
+{
+	wxDirDialog dirDlg(NULL, "Choose input directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+	
+	if (dirDlg.ShowModal() == wxID_OK)
+	{
+		
+		wxString path = dirDlg.GetPath();
+		//use this path in your app
+		inputDirPath = std::string(path.mb_str());
+	}
+	
+}
+
+void LCCOutputDialog::OpenWindow()
+{
+	this->Show(true);
+}
+
+void LCCOutputDialog::CreateWindow()
+{
+	
+	this->Create(m_parent_window_ptr, -1, wxT("LCC Output Window"), wxDefaultPosition, wxSize(500, 250), 
+				 wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxRESIZE_BORDER );
 	//initialize text fields
+	
 	
 	wxIntegerValidator<unsigned long> validatorInt(NULL, wxNUM_VAL_THOUSANDS_SEPARATOR);
 	validatorInt.SetRange(0,20);
@@ -128,10 +323,10 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 	
 	stopButton->Bind(wxEVT_BUTTON,&LCCOutputDialog::OnStop,this);
 	
-	exitButton = new wxButton(this, wxID_ANY, wxT("Exit"), 
-								wxDefaultPosition, wxSize(70, 30));
+	//exitButton = new wxButton(this, wxID_ANY, wxT("Exit"), 
+	//							wxDefaultPosition, wxSize(70, 30));
 	
-	exitButton->Bind(wxEVT_BUTTON,&LCCOutputDialog::OnExit,this);
+	//exitButton->Bind(wxEVT_BUTTON,&LCCOutputDialog::OnExit,this);
 	
 	changeButton = new wxButton(this, wxID_ANY, wxT("Change"), 
 								wxDefaultPosition, wxSize(70, 30));
@@ -157,7 +352,7 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 	hbox5->Add(startButton,1);
 	hbox5->Add(changeButton, 1);
 	hbox5->Add(stopButton, 1);
-	hbox5->Add(exitButton, 1, wxLEFT, 5);
+	//hbox5->Add(exitButton, 1, wxLEFT, 5);
 	
 	//add panel of text fields in vertical box
 	
@@ -224,15 +419,17 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title)
 
 	SetSizerAndFit(vbox);
 	
+	std::cout << "Sizer success!\n";
+	
 	//center and show elements in dialog
 	Centre();
-	ShowModal();
+	//Show(); //enable input in other windows with Show method instead of ShowModal
 
-	//destroy when done showing
-	Destroy(); 
 }
 
-LCCOutputDialog::~LCCOutputDialog()
+void LCCOutputDialog::HideWindow(){this->Show(false);}
+	
+void LCCOutputDialog::DestroyWindow()
 {
 	if(startButton != nullptr){ delete startButton;}
 	if(stopButton != nullptr){ delete stopButton;}
@@ -250,171 +447,4 @@ LCCOutputDialog::~LCCOutputDialog()
 	if(textField_delay_us != nullptr){ delete textField_delay_us;}
 	if(textField_decaygain != nullptr){ delete textField_decaygain;}
 	if(textField_output_msg != nullptr){delete textField_output_msg;}
-    //if(listboxDevices != nullptr){delete listboxDevices;}
-}
-
-
-void LCCOutputDialog::ChangeAttributes()
-{
-	
-	
-}
-
-
-
-void LCCOutputDialog::OnStart(wxCommandEvent& event)
-{	
-	//get values from text fields
-	
-	std::string inputDeviceStr = std::string(textField_inputDevice->GetLineText(0).mb_str());
-	std::string outputDeviceStr = std::string(textField_outputDevice->GetLineText(0).mb_str());
-	std::string sampleRateStr = std::string(textField_samplerate->GetLineText(0).mb_str());
-	std::string inputgainStr = std::string(textField_inputgain->GetLineText(0).mb_str());
-	std::string centergainStr = std::string(textField_centergain->GetLineText(0).mb_str());
-	std::string endgainStr = std::string(textField_endgain->GetLineText(0).mb_str());
-	std::string decaygainStr = std::string(textField_decaygain->GetLineText(0).mb_str());
-	std::string delay_usStr = std::string(textField_delay_us->GetLineText(0).mb_str());
-	
-	Parameters param;
-	param.inputDeviceStr = inputDeviceStr;
-	param.outputDeviceStr = outputDeviceStr;
-	param.sampleRateStr = sampleRateStr;
-	param.inputgainStr = inputgainStr;
-	param.centergainStr = centergainStr;
-	param.endgainStr = endgainStr;
-	param.decaygainStr = decaygainStr;
-	param.delay_usStr = delay_usStr;
-	
-	//start lcc instance outside of program
-	StartLCCExternally(filePathExec,param);
-	
-	
-	(*textField_output_msg) << GetOutputSTR(filePathDataDir);
-	
-	ResetOutputMessage(filePathDataDir);
-	lccAudioProgramIsRunning = true;
-}
-
-void LCCOutputDialog::OnStop(wxCommandEvent& event )
-{
-	//quit lcc safely if it is running
-	if(lccAudioProgramIsRunning)
-	{
-		SafelyQuitLCC(filePathDataDir);
-		lccAudioProgramIsRunning = false;
-	}
-	
-	(*textField_output_msg) << GetOutputSTR(filePathDataDir);
-	ResetOutputMessage(filePathDataDir);
-}
-
-void LCCOutputDialog::OnChange(wxCommandEvent& event)
-{
-	//get values from text fields
-	
-	std::string inputDeviceStr = std::string(textField_inputDevice->GetLineText(0).mb_str());
-	std::string outputDeviceStr = std::string(textField_outputDevice->GetLineText(0).mb_str());
-	std::string sampleRateStr = std::string(textField_samplerate->GetLineText(0).mb_str());
-	std::string inputgainStr = std::string(textField_inputgain->GetLineText(0).mb_str());
-	std::string centergainStr = std::string(textField_centergain->GetLineText(0).mb_str());
-	std::string endgainStr = std::string(textField_endgain->GetLineText(0).mb_str());
-	std::string decaygainStr = std::string(textField_decaygain->GetLineText(0).mb_str());
-	std::string delay_usStr = std::string(textField_delay_us->GetLineText(0).mb_str());
-	
-	Parameters param;
-	param.inputDeviceStr = inputDeviceStr;
-	param.outputDeviceStr = outputDeviceStr;
-	param.sampleRateStr = sampleRateStr;
-	param.inputgainStr = inputgainStr;
-	param.centergainStr = centergainStr;
-	param.endgainStr = endgainStr;
-	param.decaygainStr = decaygainStr;
-	param.delay_usStr = delay_usStr;
-	
-	//set to change settings in choice.txt
-	SetChoiceToChangeSettings(filePathDataDir);
-	
-	//changes values in param.txt
-	ChangeParameterValues(filePathDataDir,param);
-	
-	//set lcc program to start taking in new input
-	MakeLCCTakeInNewInput(filePathDataDir);
-	
-	(*textField_output_msg) << GetOutputSTR(filePathDataDir);
-	ResetOutputMessage(filePathDataDir);
-	
-}
-
-void LCCOutputDialog::OnExit(wxCommandEvent& event)
-{
-	SafelyQuitLCC(filePathDataDir);
-	LCCOutputDialog::Exit();
-}
-
-void LCCOutputDialog::OnBrowseDataDir(wxCommandEvent& event)
-{
-	std::string path = "";
-	LCCOutputDialog::BrowseForInputDirectoryPath(path);
-	
-	if(path != "")
-	{
-		filePathDataDir = path;
-	}
-	
-	if(textField_dataDir)
-	{
-		textField_dataDir->Clear();
-		(*textField_dataDir) << filePathDataDir;
-	}
-	
-}
-
-void LCCOutputDialog::OnBrowseExec(wxCommandEvent& event)
-{
-	std::string path = "";
-	LCCOutputDialog::BrowseForInputFilePath(path);
-	
-	if(path != "")
-	{
-		filePathExec = path;
-	}
-	
-	
-	if(textField_exec)
-	{
-		textField_exec->Clear();
-		(*textField_exec) << filePathExec;
-	}
-	
-}
-
-void LCCOutputDialog::Exit()
-{
-    Close( true ); //close window
-}
-
-
-void LCCOutputDialog::BrowseForInputFilePath(std::string& inputFilePath)
-{
-	wxFileDialog fileDlg(this, _("Choose file"), wxEmptyString, wxEmptyString, _(""));
-	if (fileDlg.ShowModal() == wxID_OK)
-	{	
-		wxString path = fileDlg.GetPath();
-		//use this path in your app
-		inputFilePath = std::string(path.mb_str());
-	} 
-}
-
-void LCCOutputDialog::BrowseForInputDirectoryPath(std::string& inputDirPath)
-{
-	wxDirDialog dirDlg(NULL, "Choose input directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-	
-	if (dirDlg.ShowModal() == wxID_OK)
-	{
-		
-		wxString path = dirDlg.GetPath();
-		//use this path in your app
-		inputDirPath = std::string(path.mb_str());
-	}
-	
 }

@@ -58,6 +58,9 @@
 
 #include <sstream> //for string stream
 
+
+#include "lcc-output-dialog.h"
+
 class GraphicsWindowWX;
 
 class OSGCanvas : public wxGLCanvas
@@ -211,6 +214,8 @@ private:
 	ListenerTrack* m_listener_track;
 	
 	TimelineFrame *timeFrame;
+	
+	LCCOutputDialog* m_lcc_dialog_ptr;
 	
 	EffectsManager* effectsManagerPtr;
 	

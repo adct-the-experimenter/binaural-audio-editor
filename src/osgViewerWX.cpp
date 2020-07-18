@@ -23,7 +23,6 @@
 #include "EditMultipleEAXReverbZonesDialog.h"
 #include "EditMultipleEchoZonesDialog.h"
 
-#include "lcc-output-dialog.h"
 
 bool init_listener_once = false;
 
@@ -362,6 +361,9 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     const wxSize& size, OpenAlSoftAudioEngine* thisAudioEngine,long style)
     : wxFrame(frame, wxID_ANY, title, pos, size, style)
 {
+	timeFrame = nullptr;
+	m_lcc_dialog_ptr = nullptr;
+	
 	MainFrame::SetAudioEngineReference(thisAudioEngine);
 
 	//create file menu item
@@ -425,7 +427,9 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     //Code to initialize timeline track editor part of GUI
 
 	timeFrame = new TimelineFrame(this);
-
+	
+	m_lcc_dialog_ptr = new LCCOutputDialog(wxT("LCC Output"),this);
+	
 
 	soundproducertrack_manager_ptr = std::unique_ptr <SoundProducerTrackManager>(new SoundProducerTrackManager("SoundProducer Track Manager",
 																		audioEnginePtr->GetReferenceToAudioDevice(),
@@ -701,6 +705,8 @@ void MainFrame::OnIdle(wxIdleEvent &event)
 
 void MainFrame::OnExit(wxCommandEvent& event)
 {
+	if(timeFrame){delete timeFrame;}
+	if(m_lcc_dialog_ptr){m_lcc_dialog_ptr->Destroy();}
     Close( true ); //close window
 }
 
@@ -941,9 +947,9 @@ void MainFrame::OnEditMultipleEchoZones(wxCommandEvent& event)
 
 void MainFrame::OnPlayLCCOutput(wxCommandEvent& event)
 {
-	std::unique_ptr <LCCOutputDialog> lccOutputDialog(new LCCOutputDialog( wxT("LCC Output")));																			
-
-    lccOutputDialog->Show(true);
+	//std::unique_ptr <LCCOutputDialog> lccOutputDialog(new LCCOutputDialog( wxT("LCC Output"), this) );																			
+	
+	m_lcc_dialog_ptr->OpenWindow();
 	
 }
 

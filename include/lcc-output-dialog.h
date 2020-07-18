@@ -12,7 +12,7 @@ class LCCOutputDialog : public wxDialog
 {
 
 public:
-	LCCOutputDialog(const wxString& title);
+	LCCOutputDialog(const wxString& title, wxWindow* parent);
 	~LCCOutputDialog();
 
 	void OnStart(wxCommandEvent& event );
@@ -20,17 +20,27 @@ public:
 	void OnStop(wxCommandEvent& event );
 	
 	void OnChange(wxCommandEvent& event);
+	
+	virtual void Close();
 
-	void OnExit(wxCommandEvent& event);
-
-	void Exit();
+	void ExitProgram();
 
 	void ChangeAttributes();
 	
 	void OnBrowseDataDir(wxCommandEvent& event);
 	void OnBrowseExec(wxCommandEvent& event);
 	
+	void OpenWindow();
+	
+	void CreateWindow();
+	
+	void DestroyWindow();
+	
+	void HideWindow();
+	
 private:
+	
+	wxWindow* m_parent_window_ptr;
 	
 	std::string filePathExec;
 	std::string filePathDataDir;
