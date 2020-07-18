@@ -99,6 +99,23 @@ OpenAL Soft should automatically convert 3d audio information into audio output 
 
 For more information, read https://github.com/kcat/openal-soft/blob/master/docs/3D7.1.txt 
 
+## To use with LCC
+
+See https://github.com/MeteorStudioASU/lcc for details on how to install lcc.
+
+In the LCC Output Window, set path to executable by clicking the browse button next to the executable text field and selecting the lcc_audio executable in /usr/bin or your custom build directory.
+
+In the LCC Output Window, set path to data directory by clicking bhe browse button and selecting  ~/.lcc_audio/data which is in your home folder.
+
+Click on the Start button, after setting parameters, to start lcc_audio.
+
+Click on the Stop button to stop lcc_audio program.
+
+Click on Change button to apply changes to parameters.
+
+Due to how lcc_audio works, Sample Rate, Input Device, and Output Device are set at the start of each program run instance and cannot be changed by Change button. 
+
+
 ## To use with Digital Audio Workstation
 
 See the import-audio-DAW-BAE plugin page about building and installing the plugin.
@@ -106,5 +123,7 @@ See the import-audio-DAW-BAE plugin page about building and installing the plugi
 https://github.com/adct-the-experimenter/import-audio-DAW-BAE
 
 This plugin will export audio from a digital audio workstation to the sound tracks of binaural audio editor so that one can use their DAW to edit audio and spatialize it in Binaural Audio Editor.
+
 ## Feedback 
+
 Please email questions or comments to this email address bringerofawesomefood @ gmail . com without spaces.
