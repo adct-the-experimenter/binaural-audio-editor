@@ -25,13 +25,19 @@ set(BOOST_LIBS date_time system)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 find_package(Threads REQUIRED)
 
+
 #FreeBSD and linux specific include and libs
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal sndfile ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
+
+if (WIN32)
+    #add -lwsock32 to library dependencies for windows
+    set (PROJECT_LINK_LIBS ${PROJECT_LINK_LIBS} -lwsock32)
+endif (WIN32)
 
 set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} )
 
