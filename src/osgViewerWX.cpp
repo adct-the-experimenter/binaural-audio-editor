@@ -13,6 +13,8 @@
 #include "wx/wx.h"
 #endif
 
+#define __GXX_ABI_VERSION 1013
+
 #include "osgViewerWX.h"
 
 #include "CreateStandardReverbZoneDialog.h"
