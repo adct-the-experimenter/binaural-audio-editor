@@ -35,7 +35,7 @@ find_library(pugixml_LIBRARIES NAMES pugixml)
 
 #For the shared library:
 
-set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal sndfile ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal sndfile ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${pugixml_LIBRARIES})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
