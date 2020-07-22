@@ -6,10 +6,9 @@ set(PROJECT_NAME binaural-audio-editor)
 project (${PROJECT_NAME} LANGUAGES C CXX)
 
 
-
 #-DCMAKE_BUILD_TYPE=Release
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -Wall -fPIE")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -fPIE")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -DDATADIR=${DATAPATH} -g -Wall -fPIE")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DDATADIR=${DATAPATH} -Wall -fPIE")
 
 #wxWidget specific stuff
 SET(wxWidgets_USE_LIBS)
@@ -26,19 +25,28 @@ set(BOOST_LIBS date_time system)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 find_package(Threads REQUIRED)
 
+<<<<<<< HEAD
 #Pugi XML parsing
 find_path(pugixml_INCLUDE_DIRS pugixml.hpp)
 find_library(pugixml_LIBRARIES NAMES pugixml)
+=======
+>>>>>>> master
 
 #FreeBSD and linux specific include and libs
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${pugixml_LIBRARIES})
+
+set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal sndfile ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
-set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} ${pugixml_INCLUDE_DIRS})
+if (WIN32)
+    #add -lwsock32 to library dependencies for windows
+    set (PROJECT_LINK_LIBS ${PROJECT_LINK_LIBS} -lwsock32)
+endif (WIN32)
+
+set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} )
 
 #for where to find header files for source and library
 include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR} )
@@ -88,3 +96,7 @@ set(SOURCES src/osgViewerWX.cpp
 add_executable(${PROJECT_NAME} ${SOURCES})
 #link libraries
 target_link_libraries(${PROJECT_NAME} ${PROJECT_LINK_LIBS})
+
+#make install ops
+install(TARGETS binaural-audio-editor DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
