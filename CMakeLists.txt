@@ -25,12 +25,10 @@ set(BOOST_LIBS date_time system)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 find_package(Threads REQUIRED)
 
-<<<<<<< HEAD
+
 #Pugi XML parsing
 find_path(pugixml_INCLUDE_DIRS pugixml.hpp)
 find_library(pugixml_LIBRARIES NAMES pugixml)
-=======
->>>>>>> master
 
 #FreeBSD and linux specific include and libs
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
