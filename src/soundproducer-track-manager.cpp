@@ -137,3 +137,11 @@ void SoundProducerTrackManager::StopThisTrackFromSoundProducerTrackVector(int& i
 {
 	soundProducerTracks_vec->at(index)->StopAudio();
 }
+
+void SoundProducerTrackManager::BrowseAudioForThisSoundProducer(SoundProducer* lastProducer)
+{
+	//get sound producer name of last sound producer created
+	soundProducerTracks_vec->back()->SelectSoundProducerByName(lastProducer->GetNameString());
+	
+	soundProducerTracks_vec->back()->GetReferenceToStereoAudioTrack()->BrowseForInputAudioFile();
+}
