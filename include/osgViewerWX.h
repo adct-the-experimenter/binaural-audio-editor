@@ -177,6 +177,8 @@ public:
 	
 	void OnKeyDown(wxKeyEvent& event); //where camera viewer gets manipulated
 	
+	friend class wxOsgApp;
+	
 private:
     
     enum
@@ -300,6 +302,8 @@ private:
     friend class CheckListenerReverbZoneThread;
     
 	osg::ref_ptr<osgGA::TrackballManipulator> cameraManipulator; //pointer to camera manipulator
+	
+	MainFrame* frame;
 };
 
 #endif // _WXSIMPLEVIEWERWX_H_

@@ -143,7 +143,7 @@ bool wxOsgApp::OnInit()
 
 		// Create the main frame window
 
-		MainFrame *frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
+		frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
 			wxDefaultPosition, wxSize(width, height),&audio_engine);
 
 		// create osg canvas
@@ -325,6 +325,12 @@ void wxOsgApp::KeyDownLogic(int& thisKey)
 		{
 			if(listener){listener->MoveUp(distanceToMove);}
 			break;
+		}
+		//if b key pressed
+		case 66:
+		{
+			std::cout << "b key pressed.";
+			frame->soundproducertrack_manager_ptr->BrowseAudioForLastSoundProducerTrack();
 		}
 		default:{break;}
 	}
