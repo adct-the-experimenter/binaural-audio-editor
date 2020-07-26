@@ -329,8 +329,11 @@ void wxOsgApp::KeyDownLogic(int& thisKey)
 		//if b key pressed
 		case 66:
 		{
-			std::cout << "b key pressed.";
-			frame->soundproducertrack_manager_ptr->BrowseAudioForLastSoundProducerTrack();
+			if(sound_producer_vector.size() > 0)
+			{
+				frame->soundproducertrack_manager_ptr->BrowseAudioForThisSoundProducer(sound_producer_vector.back().get());
+			}
+			
 		}
 		default:{break;}
 	}
