@@ -106,5 +106,12 @@ See the import-audio-DAW-BAE plugin page about building and installing the plugi
 https://github.com/adct-the-experimenter/import-audio-DAW-BAE
 
 This plugin will export audio from a digital audio workstation to the sound tracks of binaural audio editor so that one can use their DAW to edit audio and spatialize it in Binaural Audio Editor.
+
+## Shortcut Keys
+
+Press b with focus on graphical screen with 3d cubes to attach the last sound producer created to the last sound producer track and browse audio for it.
+
+
 ## Feedback 
+
 Please email questions or comments to this email address bringerofawesomefood @ gmail . com without spaces.
