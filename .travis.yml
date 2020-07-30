@@ -4,7 +4,7 @@ sudo: require
 dist: xenial
 
 install:
-  - sudo apt-get -y install build-essential dbianutils automake gcc g++ make libopenscenegraph-dev libsndfile-dev libwxgtk3.0-dev libboost-dev libasio-dev libboost-date-time-dev libboost-system-dev
+  - sudo apt-get -y install build-essential debianutils automake gcc g++ make libopenscenegraph-dev libsndfile-dev libwxgtk3.0-dev libboost-dev libasio-dev libboost-date-time-dev libboost-system-dev
 
     
 script:
