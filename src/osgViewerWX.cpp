@@ -145,7 +145,7 @@ bool wxOsgApp::OnInit()
 
 		frame = new MainFrame(NULL, wxT("Binaural Audio Editor"),
 			wxDefaultPosition, wxSize(width, height),&audio_engine);
-
+		
 		// create osg canvas
 		//    - initialize
 
@@ -656,7 +656,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	m_add_rm_box_sizer->Add(m_add_soundproducertrack_button);
 
 	timeFrame->AddBoxSizer(m_add_rm_box_sizer);
-
+	
+	timeFrame->Layout();
 	timeFrame->Show(true); //show the timeframe
 
 }
