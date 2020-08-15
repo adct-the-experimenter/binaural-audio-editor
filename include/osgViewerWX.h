@@ -219,6 +219,8 @@ private:
 	
 	std::vector <SoundProducerTrack*> m_soundproducer_track_vec;
 	
+	wxComboBox* m_sp_toolbar_combobox;
+	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
 	void OnEditMultipleSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
