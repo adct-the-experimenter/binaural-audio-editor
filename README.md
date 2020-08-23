@@ -72,7 +72,7 @@ Resize the window if unable to move timeline.
   
   Click on browse button near audio track to load sound into the track. Load only 8-bit or 16-bit audio only.
   
-  Move sound producer by selecting it in the drop-down menu tool bar and use I,J,K,L,U,O keys.
+  Move a sound producer with keyboard keys by selecting it in the drop-down menu in the tool bar and use I,J,K,L,U,O keys to move it.
 
 ### Coordinate System of Binaural Audio Editor and OpenAL Soft
   Like OpenAL, the application uses a right handed coordinate system to move listener and sound producers, where in a frontal default view X (thumb) points right,  Y points up (index finger), and Z points towards the viewer/camera (middle finger). 
