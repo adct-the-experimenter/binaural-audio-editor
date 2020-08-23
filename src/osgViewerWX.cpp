@@ -285,9 +285,7 @@ void wxOsgApp::initListener()
 
 void wxOsgApp::KeyDownLogic(int& thisKey)
 {
-	std::cout << "KeyDown Logic called in wxOsgApp.\n";
-	std::cout << "key:" << thisKey << std::endl;
-
+	
 	float distanceToMove = 1.0f;
 
 	//if a key is pressed
@@ -855,18 +853,21 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 		std::string name = soundProducerNewDialog->getNewName();
 		std::string filePath = soundProducerNewDialog->getSoundFilePath();
 		ALuint buffer = soundProducerNewDialog->getBuffer();
-		MainFrame::CreateSoundProducer(name,filePath,buffer,x,y,z);
+		bool freeRoam = soundProducerNewDialog->getFreeRoamBool();
+		MainFrame::CreateSoundProducer(name,filePath,buffer,x,y,z,freeRoam);
 	}
 
 }
 
-void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z)
+void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z, 
+									bool freeRoam)
 {
 
 	sound_producer_vector_ref->push_back( std::unique_ptr <SoundProducer>(new SoundProducer()) );
 
 	sound_producer_vector_ref->back()->InitSoundProducer(name,filePath,buffer,x,y,z);
-
+	sound_producer_vector_ref->back()->SetFreeRoamBool(freeRoam);
+	
 	//add position attitude transform to root group of nodes
 	_rootNode->addChild( sound_producer_vector_ref->back()->getTransformNode() );
 

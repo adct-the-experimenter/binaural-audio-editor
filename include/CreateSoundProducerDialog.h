@@ -6,6 +6,8 @@
 #include <wx/valnum.h> //for wxFloatingPointValidator
 #include <wx/textctrl.h> //for wxTextCtrl
 
+#include <wx/checkbox.h>
+
 #include "openalsoftaudioengine.h" //for loading buffer and creating source of sound producer
 
 class CreateSoundProducerDialog : public wxDialog
@@ -40,6 +42,8 @@ public:
 	ALuint& getBuffer();
 
 	bool OkClickedOn();
+	
+	bool getFreeRoamBool();
 
 private:
 	wxButton* okButton;
@@ -53,6 +57,9 @@ private:
 	wxTextCtrl* textFieldZ;
 
 	wxTextCtrl* textFieldSoundFilePath;
+	
+	wxCheckBox* checkBoxFreeRoam;
+	bool tempFreeRoamBool; 
 
 	OpenAlSoftAudioEngine* ptrAudioEngine;
 
@@ -63,6 +70,8 @@ private:
 
 	std::string soundFilePath;
 	ALuint buffer;
+	
+	
 
 
 	bool okClicked; //bool to indicate if ok button was clicked on

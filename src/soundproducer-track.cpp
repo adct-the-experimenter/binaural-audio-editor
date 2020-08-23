@@ -97,9 +97,13 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 	{
 		if(track_source != 0)
 		{
-			soundProducerToManipulatePtr->SetPositionX(tempX);
-			soundProducerToManipulatePtr->SetPositionY(tempY);
-			soundProducerToManipulatePtr->SetPositionZ(tempZ);
+			if(!soundProducerToManipulatePtr->GetFreeRoamBool())
+			{
+				soundProducerToManipulatePtr->SetPositionX(tempX);
+				soundProducerToManipulatePtr->SetPositionY(tempY);
+				soundProducerToManipulatePtr->SetPositionZ(tempZ);
+			}
+			
 		}
 	}
 	

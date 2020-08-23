@@ -62,6 +62,9 @@ private:
 	wxButton* browseButton;
 	std::string soundFilePath;
 	ALuint buffer;
+	
+	wxCheckBox* checkBoxFreeRoam;
+	bool tempFreeRoamBool; 
 
 	void initPrivateVariables();
 
