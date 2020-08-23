@@ -56,6 +56,9 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title, Ope
 
 	cancelButton = new wxButton(this, CreateSoundProducerDialog::ID_CANCEL, wxT("Cancel"), 
 								wxDefaultPosition, wxSize(70, 30));
+								
+	//add checkmark box to determine if sound producer can roam freely in world or is controlled by sound producer track
+	checkBoxFreeRoam = new wxCheckBox(this, wxID_ANY, wxT("Free Roam"), wxDefaultPosition, wxSize(30,30));
 
 	//Make vertical box to put horizontal boxes in
 	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
@@ -94,6 +97,8 @@ CreateSoundProducerDialog::CreateSoundProducerDialog(const wxString & title, Ope
 	
 	vbox->Add(hboxZ,1, wxEXPAND | wxALL, 10);
 	
+	vbox->Add(checkBoxFreeRoam,1, wxEXPAND | wxALL, 10);
+	
 	//wxBoxSizer *hboxSoundFile = new wxBoxSizer(wxHORIZONTAL);
 	//hboxSoundFile->Add(SoundText);
 	//hboxSoundFile->Add(textFieldSoundFilePath);
@@ -129,6 +134,7 @@ void CreateSoundProducerDialog::OnOk(wxCommandEvent& event )
 	( textFieldX->GetLineText(0) ).ToDouble(&xPosition);
 	( textFieldY->GetLineText(0) ).ToDouble(&yPosition);
 	( textFieldZ->GetLineText(0) ).ToDouble(&zPosition);
+	tempFreeRoamBool = checkBoxFreeRoam->GetValue();
 	
 	okClicked = true;
 	
@@ -197,6 +203,8 @@ void CreateSoundProducerDialog::getNewPosition(double& x, double& y, double& z)
 ALuint& CreateSoundProducerDialog::getBuffer(){return buffer;}
 
 bool CreateSoundProducerDialog::OkClickedOn(){ return okClicked;}
+
+bool CreateSoundProducerDialog::getFreeRoamBool(){return tempFreeRoamBool;}
 
 //Event table for main frame specific events
 BEGIN_EVENT_TABLE(CreateSoundProducerDialog, wxDialog)

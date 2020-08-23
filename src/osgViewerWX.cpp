@@ -25,6 +25,8 @@
 #include "EditMultipleEAXReverbZonesDialog.h"
 #include "EditMultipleEchoZonesDialog.h"
 
+#include <wx/toolbar.h>
+
 bool init_listener_once = false;
 
 wxOsgApp::wxOsgApp()
@@ -283,8 +285,7 @@ void wxOsgApp::initListener()
 
 void wxOsgApp::KeyDownLogic(int& thisKey)
 {
-	//std::cout << "KeyDown Logic called in wxOsgApp.\n";
-
+	
 	float distanceToMove = 1.0f;
 
 	//if a key is pressed
@@ -333,7 +334,91 @@ void wxOsgApp::KeyDownLogic(int& thisKey)
 			{
 				frame->soundproducertrack_manager_ptr->BrowseAudioForThisSoundProducer(sound_producer_vector.back().get());
 			}
-			
+			break;
+		}
+		//if i key pressed
+		case 73:
+		{
+			if(sound_producer_vector.size() > 0)
+			{	
+				if(frame->m_sp_toolbar_combobox->GetSelection() >= 0)
+				{
+					int selection = frame->m_sp_toolbar_combobox->GetSelection();
+					double newZ = sound_producer_vector.at(selection)->GetPositionZ() - 1.0; 
+					sound_producer_vector.at(selection)->SetPositionZ(newZ);
+				}
+			}
+			break;
+		}
+		//j key pressed
+		case 74:
+		{
+			if(sound_producer_vector.size() > 0)
+			{
+				if(frame->m_sp_toolbar_combobox->GetSelection() >= 0)
+				{
+					int selection = frame->m_sp_toolbar_combobox->GetSelection();
+					double newX = sound_producer_vector.at(selection)->GetPositionX() - 1.0; 
+					sound_producer_vector.at(selection)->SetPositionX(newX);
+				}
+			}
+			break;
+		}
+		//k key pressed
+		case 75:
+		{
+			if(sound_producer_vector.size() > 0)
+			{
+				if(frame->m_sp_toolbar_combobox->GetSelection() >= 0)
+				{
+					int selection = frame->m_sp_toolbar_combobox->GetSelection();
+					double newZ = sound_producer_vector.at(selection)->GetPositionZ() + 1.0; 
+					sound_producer_vector.at(selection)->SetPositionZ(newZ);
+				}
+			}
+			break;
+		}
+		//L key pressed
+		case 76:
+		{
+			if(sound_producer_vector.size() > 0)
+			{
+				if(frame->m_sp_toolbar_combobox->GetSelection() >= 0)
+				{
+					int selection = frame->m_sp_toolbar_combobox->GetSelection();
+					double newX = sound_producer_vector.at(selection)->GetPositionX() + 1.0; 
+					sound_producer_vector.at(selection)->SetPositionX(newX);
+				}
+			}
+			break;
+		}
+		//u key pressed
+		case 85:
+		{
+			if(sound_producer_vector.size() > 0)
+			{
+				if(frame->m_sp_toolbar_combobox->GetSelection() >= 0)
+				{
+					int selection = frame->m_sp_toolbar_combobox->GetSelection();
+					double newY = sound_producer_vector.at(selection)->GetPositionY() - 1.0; 
+					sound_producer_vector.at(selection)->SetPositionY(newY);
+				}
+			}
+			break;
+		}
+		//o key pressed
+		case 79:
+		{
+			if(sound_producer_vector.size() > 0)
+			{
+				if(frame->m_sp_toolbar_combobox->GetSelection() >= 0)
+				{
+					int selection = frame->m_sp_toolbar_combobox->GetSelection();
+					double newY = sound_producer_vector.at(selection)->GetPositionY() + 1.0; 
+					sound_producer_vector.at(selection)->SetPositionY(newY);
+				}
+			}
+			break;
 		}
 		default:{break;}
 	}
@@ -421,9 +506,16 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     menuBar->Append( menuHelp, "&Help" ); //connect help menu item  to bar
 
     SetMenuBar( menuBar );
-
+	
+	
     CreateStatusBar();
     SetStatusText( "Welcome to Binaural Audio Editor!" );
+    
+    wxToolBar* toolbar = CreateToolBar();
+    
+    m_sp_toolbar_combobox = new wxComboBox(toolbar, wxID_ANY, wxEmptyString, wxDefaultPosition, 
+											wxDefaultSize, 0, NULL, 0, wxDefaultValidator, wxT("Edit Sound Producer"));
+    toolbar->AddControl(m_sp_toolbar_combobox);
 
     //Code to initialize timeline track editor part of GUI
 
@@ -761,22 +853,27 @@ void MainFrame::OnCreateSoundProducer(wxCommandEvent& event)
 		std::string name = soundProducerNewDialog->getNewName();
 		std::string filePath = soundProducerNewDialog->getSoundFilePath();
 		ALuint buffer = soundProducerNewDialog->getBuffer();
-		MainFrame::CreateSoundProducer(name,filePath,buffer,x,y,z);
+		bool freeRoam = soundProducerNewDialog->getFreeRoamBool();
+		MainFrame::CreateSoundProducer(name,filePath,buffer,x,y,z,freeRoam);
 	}
 
 }
 
-void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z)
+void MainFrame::CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z, 
+									bool freeRoam)
 {
 
 	sound_producer_vector_ref->push_back( std::unique_ptr <SoundProducer>(new SoundProducer()) );
 
 	sound_producer_vector_ref->back()->InitSoundProducer(name,filePath,buffer,x,y,z);
-
+	sound_producer_vector_ref->back()->SetFreeRoamBool(freeRoam);
+	
 	//add position attitude transform to root group of nodes
 	_rootNode->addChild( sound_producer_vector_ref->back()->getTransformNode() );
 
 	soundproducer_registry.AddRecentSoundProducerMadeToRegistry();
+	
+	m_sp_toolbar_combobox->Append(name);
 
 	soundproducer_registry.UpdateAllComboBoxesList();
 }
@@ -961,6 +1058,7 @@ void MainFrame::OnAddSoundProducerTrack(wxCommandEvent& event)
 	timeFrame->Layout();
 
 }
+
 
 void MainFrame::CreateNewSoundProducerTrack()
 {
