@@ -8,6 +8,7 @@
 #include <wx/textctrl.h> //for wxTextCtrl
 #include <wx/listbox.h> //for list box
 
+
 class LCCOutputDialog : public wxDialog
 {
 
@@ -53,8 +54,8 @@ private:
 	wxButton* browseDataDirectoryButton;
 	wxButton* browseExecButton;
 		
-	//wxListBox* listboxDevices;
-
+	wxListBox* listboxDevices;
+	void FillListBoxDevices();
 	
 	//Inputs
 	/*

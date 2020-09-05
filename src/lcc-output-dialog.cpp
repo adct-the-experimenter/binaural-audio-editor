@@ -2,8 +2,12 @@
 
 #include "lcc-cpp-script.h"
 
+
 #include <iostream>
 #include <wx/string.h>
+
+#include <portaudio.h>
+
 
 LCCOutputDialog::LCCOutputDialog(const wxString& title, wxWindow* parent)
        : wxDialog()
@@ -13,6 +17,7 @@ LCCOutputDialog::LCCOutputDialog(const wxString& title, wxWindow* parent)
 	m_parent_window_ptr = parent;	
 	
 	CreateWindow();
+	
 
 }
 
@@ -21,7 +26,7 @@ LCCOutputDialog::~LCCOutputDialog()
 	std::cout << "Destructor called!\n";
 	
 	DestroyWindow();
-    //if(listboxDevices != nullptr){delete listboxDevices;}
+    if(listboxDevices != nullptr){delete listboxDevices;}
 }
 
 
@@ -30,8 +35,6 @@ void LCCOutputDialog::ChangeAttributes()
 	
 	
 }
-
-
 
 void LCCOutputDialog::OnStart(wxCommandEvent& event)
 {	
@@ -278,7 +281,7 @@ void LCCOutputDialog::CreateWindow()
 	//initialize text to the left of text fields
     wxStaticText* execFPText = new wxStaticText(this, -1, wxT("Executable"), wxPoint(40, 120));
     wxStaticText* dataDirFPText = new wxStaticText(this, -1, wxT("Data Directory"), wxPoint(40, 120));
-    //wxStaticText* devicesText = new wxStaticText(this, -1, wxT("Devices"), wxPoint(40, 120));
+    wxStaticText* devicesText = new wxStaticText(this, -1, wxT("Devices"), wxPoint(40, 120));
     wxStaticText* inputDeviceText = new wxStaticText(this, -1, wxT("Input Device:"), wxPoint(40, 120));
     wxStaticText* outputDeviceText = new wxStaticText(this, -1, wxT("Output Device:"), wxPoint(40, 120));
     wxStaticText* sampleRateText = new wxStaticText(this, -1, wxT("Sample Rate:"), wxPoint(40, 120));
@@ -288,29 +291,65 @@ void LCCOutputDialog::CreateWindow()
 	wxStaticText* decayGainText = new wxStaticText(this, -1, wxT("Decay Gain:"), wxPoint(40, 120));
 	wxStaticText* delayUSText = new wxStaticText(this, -1, wxT("Delay (microseconds):"), wxPoint(40, 120));
 	
+	
+    //list box to contain names of input devices
+	listboxDevices = new wxListBox(this, wxID_ANY, wxPoint(0, 0), wxSize(300, 300)); 
+	
+	int     i, numDevices, defaultDisplayed;
+    const   PaDeviceInfo *deviceInfo;
+    PaStreamParameters inputParameters, outputParameters;
+    PaError err;
+  
+	//check for errors
+    err = Pa_Initialize();
+	if( err != paNoError )
+	{
+	   printf( "ERROR: Pa_Initialize returned 0x%x\n", err );
+	   Pa_Terminate();
+	   fprintf( stderr, "Error number: %d\n", err );
+       fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+	}
+
+	// Determine the number of devices available
+	numDevices = Pa_GetDeviceCount();
+    if( numDevices < 0 )
+    {
+        printf( "ERROR: Pa_GetDeviceCount returned 0x%x\n", numDevices );
+        err = numDevices;
+        Pa_Terminate();
+		fprintf( stderr, "Error number: %d\n", err );
+        fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+    }
+    
+    for( i=0; i<numDevices; i++ )
+    {
+           deviceInfo = Pa_GetDeviceInfo( i );
+           printf( "--------------------------------------- device #%d\n", i );
+                   
+   
+       /* print device info fields */
+  #ifdef WIN32
+           {   /* Use wide char on windows, so we can show UTF-8 encoded device names */
+               wchar_t wideName[MAX_PATH];
+               MultiByteToWideChar(CP_UTF8, 0, deviceInfo->name, -1, wideName, MAX_PATH-1);
+               wprintf( L"Name                        = %s\n", wideName );
+           }
+   #else
+           printf( "Name                        = %s\n", deviceInfo->name );
+   #endif
+		   
+		   std::string name(deviceInfo->name);
+		   std::string name_and_index = name + "[" + std::to_string(i) + "]";
+		   wxString mystring( name_and_index );
+		   listboxDevices->Append(mystring);
+     }
+   
+    Pa_Terminate();
     
 	
-	//list box to contain names of input devices
-	//listboxDevices = new wxListBox(this, wxID_ANY, wxPoint(0, 0), wxSize(100, 20)); 
-	
-	/*
-	RtAudio audio;
-	RtAudio::DeviceInfo info;
-	
-	//add names
-	for (unsigned int i=0; i < audio.getDeviceCount(); i++)
-	{
-		info = audio.getDeviceInfo( i );
-		
-		std::string name_and_index = info.name + "[" + std::to_string(i) + "]";
-		wxString mystring( name_and_index );
-		listboxDevices->Append(mystring);
-	}
-	*/
-	
 	//make horizontal box to put names in
-	//wxBoxSizer* hboxDeviceNames = new wxBoxSizer(wxHORIZONTAL);
-	//hboxDeviceNames->Add(listboxDevices, 1, wxEXPAND | wxALL, 20);
+	wxBoxSizer* hboxDeviceNames = new wxBoxSizer(wxHORIZONTAL);
+	hboxDeviceNames->Add(listboxDevices, 1, wxEXPAND | wxALL, 20);
     
     //initialize Ok and Cancel buttons 
 	startButton = new wxButton(this, wxID_ANY, wxT("Start"), 
@@ -322,11 +361,6 @@ void LCCOutputDialog::CreateWindow()
 							wxDefaultPosition, wxSize(70, 30));
 	
 	stopButton->Bind(wxEVT_BUTTON,&LCCOutputDialog::OnStop,this);
-	
-	//exitButton = new wxButton(this, wxID_ANY, wxT("Exit"), 
-	//							wxDefaultPosition, wxSize(70, 30));
-	
-	//exitButton->Bind(wxEVT_BUTTON,&LCCOutputDialog::OnExit,this);
 	
 	changeButton = new wxButton(this, wxID_ANY, wxT("Change"), 
 								wxDefaultPosition, wxSize(70, 30));
@@ -352,7 +386,10 @@ void LCCOutputDialog::CreateWindow()
 	hbox5->Add(startButton,1);
 	hbox5->Add(changeButton, 1);
 	hbox5->Add(stopButton, 1);
-	//hbox5->Add(exitButton, 1, wxLEFT, 5);
+	
+	//add devices list
+	vbox->Add(devicesText);
+	vbox->Add(hboxDeviceNames,1);
 	
 	//add panel of text fields in vertical box
 	
@@ -370,8 +407,7 @@ void LCCOutputDialog::CreateWindow()
 	
 	vbox->Add(hBoxDataDir,1);
 	
-	//vbox->Add(devicesText);
-	//vbox->Add(hboxDeviceNames);
+	
 	
 	wxBoxSizer *hBoxDeviceParam = new wxBoxSizer(wxHORIZONTAL);
 	

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1.1)
 
 set (CMAKE_CXX_STANDARD 11)
 
+
+
 set(PROJECT_NAME binaural-audio-editor)
 project (${PROJECT_NAME} LANGUAGES C CXX)
 
@@ -9,6 +11,8 @@ project (${PROJECT_NAME} LANGUAGES C CXX)
 #-DCMAKE_BUILD_TYPE=Release
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -DDATADIR=${DATAPATH} -g -Wall -fPIE")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DDATADIR=${DATAPATH} -Wall -fPIE")
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 #wxWidget specific stuff
 SET(wxWidgets_USE_LIBS)
@@ -28,13 +32,17 @@ find_package(Threads REQUIRED)
 #FreeBSD and linux specific include and libs
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
+find_package(portaudio REQUIRED)
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${LIBRTAUDIO} ${LINKLIBS})
+set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${PORTAUDIO_LIBRARIES})
+
+
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
-set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} src/rtaudio src/lcc_audio)
+set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} src/lcc_audio ${PORTAUDIO_INCLUDE_DIRS})
+
 
 #for where to find header files for source and library
 include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
@@ -74,6 +82,7 @@ set(SOURCES src/osgViewerWX.cpp
 			src/timeline-track-editor/src/track.cpp
 			 )
 
+
 #get_cmake_property(_variableNames VARIABLES)
 #list (SORT _variableNames)
 #foreach (_variableName ${_variableNames})
@@ -84,6 +93,10 @@ set(SOURCES src/osgViewerWX.cpp
 add_executable(${PROJECT_NAME} ${SOURCES})
 #link libraries
 target_link_libraries(${PROJECT_NAME} ${PROJECT_LINK_LIBS})
+
+# Set compile-time definitions
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${API_DEFS})
+target_link_libraries(${PROJECT_NAME} ${LINKLIBS})
 
 #make install ops
 install(TARGETS binaural-audio-editor DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
