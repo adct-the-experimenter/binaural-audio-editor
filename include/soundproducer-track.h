@@ -82,6 +82,8 @@ public:
 	//Audio DAW 
 	void SetReferenceToImportAudioDAWButton(wxButton* thisButton);
 	
+	friend class SoundProducerTrackManager;
+	
 private:
 	SoundProducer* soundProducerToManipulatePtr;
 

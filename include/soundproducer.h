@@ -59,7 +59,10 @@ class SoundProducer
 		osg::Geode* getGeodeNode();
 
 		osg::PositionAttitudeTransform* getTransformNode();
-
+		
+		void SetFreeRoamBool(bool state);
+		bool GetFreeRoamBool();
+		
 	private:
 		//Name of Sound Producer
 		std::string name;
@@ -91,6 +94,9 @@ class SoundProducer
 
 		//moves the geode
 		osg::ref_ptr<osg::PositionAttitudeTransform> m_paTransform;
+		
+		//option for allowing sound producer to be moved by keys
+		bool freeRoam;
 };
 
 #endif

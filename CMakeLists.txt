@@ -29,19 +29,28 @@ set(BOOST_LIBS date_time system)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 find_package(Threads REQUIRED)
 
+
 #FreeBSD and linux specific include and libs
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
 find_package(portaudio REQUIRED)
 
-#For the shared library:
-set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal.so sndfile.so ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${PORTAUDIO_LIBRARIES})
 
+set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} src/lcc_audio ${PORTAUDIO_INCLUDE_DIRS})
+
+
+#For the shared library:
+
+set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal sndfile ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${PORTAUDIO_LIBRARIES})
 
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
-set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} src/lcc_audio ${PORTAUDIO_INCLUDE_DIRS})
+if (WIN32)
+    #add -lwsock32 to library dependencies for windows
+    set (PROJECT_LINK_LIBS ${PROJECT_LINK_LIBS} -lwsock32)
+endif (WIN32)
+
 
 
 #for where to find header files for source and library

@@ -59,6 +59,9 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 								wxTE_PROCESS_ENTER,
 								validator,          // associate the text box with the desired validator
 								wxT("")); 
+								
+	//add checkmark box to determine if sound producer can roam freely in world or is controlled by sound producer track
+	checkBoxFreeRoam = new wxCheckBox(this, wxID_ANY, wxT("Free Roam"), wxDefaultPosition, wxSize(30,30));
 	
 	//initialize text to the left of fields
 	wxStaticText* positionText = new wxStaticText(this, -1, wxT("Position :"), wxPoint(20, 40));
@@ -101,8 +104,9 @@ EditMultipleSoundProducersDialog::EditMultipleSoundProducersDialog(const wxStrin
 	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
 	
 	//add panel of text fields in vertical box
-	vbox->Add(hbox, 1, wxEXPAND | wxALL, 10);
-	vbox->Add(hboxBottom, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
+	vbox->Add(hbox, 1, wxEXPAND | wxALL, 1);
+	vbox->Add(checkBoxFreeRoam, 1, wxEXPAND | wxALL, 1);
+	vbox->Add(hboxBottom, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 1);
 	
 	SetSizerAndFit(vbox);
 
@@ -147,6 +151,7 @@ void EditMultipleSoundProducersDialog::ChangeSoundProducerAttributes()
 			if(buffer != 0){thisSoundProducer->setBuffer(buffer);}
 			//if(soundFilePath != " "){thisSoundProducer->setFilepathToSound(soundFilePath);}
 			
+			thisSoundProducer->SetFreeRoamBool(checkBoxFreeRoam->GetValue());
 		}
 		
 	}
@@ -210,6 +215,7 @@ void EditMultipleSoundProducersDialog::SoundProducerSelectedInListBox(wxCommandE
 		(*textFieldZ) << thisSoundProducer->GetPositionZ();
 		//wxString thisPath(thisSoundProducer->getFilepathToSound());
 		//textFieldSoundFilePath->WriteText(thisPath);
+		checkBoxFreeRoam->SetValue(thisSoundProducer->GetFreeRoamBool());
 	}
 }
 
