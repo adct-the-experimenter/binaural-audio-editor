@@ -74,6 +74,9 @@ class SoundProducer
 		
 		SoundProducerSaveData GetSoundProducerSaveData();
 		void LoadSoundProducerSaveData(SoundProducerSaveData& data);
+
+		void SetFreeRoamBool(bool state);
+		bool GetFreeRoamBool();
 		
 	private:
 		//Name of Sound Producer
@@ -107,8 +110,13 @@ class SoundProducer
 		//moves the geode
 		osg::ref_ptr<osg::PositionAttitudeTransform> m_paTransform;
 		
+
 		//save data
 		SoundProducerSaveData m_saveData;
+
+		//option for allowing sound producer to be moved by keys
+		bool freeRoam;
+
 };
 
 #endif

@@ -102,6 +102,8 @@ public:
 	void SelectSoundProducerByName(std::string name);
 	
 	void SetComboBoxToThisSelectionName(std::string name);
+
+	friend class SoundProducerTrackManager;
 	
 private:
 	SoundProducer* soundProducerToManipulatePtr;

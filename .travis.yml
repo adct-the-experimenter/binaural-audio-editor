@@ -1,13 +1,16 @@
 language: cpp
 compiler: gcc
 sudo: require
-dist: bionic
+dist: xenial
 
 install:
+
   - sudo apt-get -y install build-essential debianutils automake gcc g++ make alsoft-conf openal-info libopenal-data libopenal-dev libopenscenegraph-dev libsndfile-dev libwxgtk3.0-dev libboost-dev libasio-dev libboost-date-time-dev libboost-system-dev libpugixml-dev
 
-    
 script:
+  - wget -c "https://github.com/kcat/openal-soft/archive/openal-soft-1.20.1.tar.gz" 
+  - tar -xzf openal-soft-1.20.1.tar.gz && cd openal-soft-openal-soft-1.20.1 && cd build && cmake -DALSOFT_UTILS=OFF -DALSOFT_NO_CONFIG_UTIL=OFF .. && make && sudo make install
+  - cd ../..
   - mkdir build
   - cd build
   - mkdir AppDir

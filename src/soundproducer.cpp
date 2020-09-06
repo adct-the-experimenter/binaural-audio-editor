@@ -28,6 +28,8 @@ SoundProducer::SoundProducer()
 	producer_position_vector[POSITION_INDEX::Z] = 0;
 
 	track_source_ptr = nullptr;
+	
+	freeRoam = false;
 }
 
 SoundProducer::~SoundProducer()
@@ -204,3 +206,7 @@ void SoundProducer::LoadSoundProducerSaveData(SoundProducerSaveData& data)
 	m_saveData = data;
 	
 }
+
+void SoundProducer::SetFreeRoamBool(bool state){freeRoam = state;}
+
+bool SoundProducer::GetFreeRoamBool(){return freeRoam;}

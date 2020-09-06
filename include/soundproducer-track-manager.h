@@ -46,6 +46,9 @@ public:
     //funtion to stop a track by its index in the soundproducers vector
     void StopThisTrackFromSoundProducerTrackVector(int& index);
 	
+	//function for browsing audio for last soundproducer track created
+	void BrowseAudioForThisSoundProducer(SoundProducer* lastProducer);
+	
 	//allow effects manager to be a friend so that it can access
 	//sources to add effects to them
 	friend class EffectsManager; 

@@ -180,8 +180,11 @@ public:
 	
 	void OnKeyDown(wxKeyEvent& event); //where camera viewer gets manipulated
 	
+
 	//freees all that needs to be freed before load
 	void UnloadAll();
+
+	friend class wxOsgApp;
 	
 private:
     
@@ -224,8 +227,10 @@ private:
 	
 	std::vector <SoundProducerTrack*> m_soundproducer_track_vec;
 	
+	wxComboBox* m_sp_toolbar_combobox;
+	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
-	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z);
+	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z, bool freeRoam);
 	void OnEditMultipleSoundProducers(wxCommandEvent& event); //function for menu to edit current available sound producers
 	
 	void OnTestHRTF(wxCommandEvent& event); //function for menu to test HRTF and get results
@@ -313,6 +318,8 @@ private:
     friend class CheckListenerReverbZoneThread;
     
 	osg::ref_ptr<osgGA::TrackballManipulator> cameraManipulator; //pointer to camera manipulator
+	
+	MainFrame* frame;
 };
 
 #endif // _WXSIMPLEVIEWERWX_H_

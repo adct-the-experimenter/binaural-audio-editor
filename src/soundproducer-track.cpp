@@ -47,7 +47,15 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	
 	audioTrack->SetReferenceToSourceToManipulate(&track_source);
 	
-	std::string filepath_stream = DATADIR_STR + title.ToStdString() + ".wav";
+	std::string datadir; 
+	
+	datadir = DATADIR_STR;
+	
+	#ifdef WIN32
+	datadir = "../src/timeline-track-editor/resources/";
+	#endif
+	
+	std::string filepath_stream = datadir + title.ToStdString() + ".wav";
 	audioTrack->SetStreamAudioFilePath(filepath_stream);
 	streamSoundFilePath = filepath_stream;
 	
@@ -93,9 +101,13 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 	{
 		if(track_source != 0)
 		{
-			soundProducerToManipulatePtr->SetPositionX(tempX);
-			soundProducerToManipulatePtr->SetPositionY(tempY);
-			soundProducerToManipulatePtr->SetPositionZ(tempZ);
+			if(!soundProducerToManipulatePtr->GetFreeRoamBool())
+			{
+				soundProducerToManipulatePtr->SetPositionX(tempX);
+				soundProducerToManipulatePtr->SetPositionY(tempY);
+				soundProducerToManipulatePtr->SetPositionZ(tempZ);
+			}
+			
 		}
 	}
 	
