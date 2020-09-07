@@ -16,6 +16,15 @@ public:
 	//function to update list of audio devices
 	void UpdateListOfAudioDevices();
 	
+	//function to add reference to combo box to combo_box_ptr_vec
+	void AddReferenceToComboBox(wxComboBox* thisComboBox);
+	
+	//function to remove a combo box pointer from container, use when soundproducer track is removed
+	void RemoveLastComboBoxReference();
+	
+	//function to update all comboboxes list, used for updating list after removal of a selection that is being edited by a soundproducer track
+	void UpdateAllComboBoxesList();
+	
 private:
 	
 	//list of names for combo box

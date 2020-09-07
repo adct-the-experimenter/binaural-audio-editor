@@ -651,13 +651,16 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	m_soundproducer_track_vec[0]->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	m_soundproducer_track_vec[0]->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
 	m_soundproducer_track_vec[0]->UpdateComboBoxListFromSoundProducerRegistry();
-	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
+	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec[0]->GetReferenceToSoundProducerComboBox());
 
 	//add text to indicate it is a Sound Producer Track
 	wxBoxSizer* hboxTextSPTrack = new wxBoxSizer(wxHORIZONTAL);
-	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track(x,y,z)"),wxDefaultPosition );
+	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track(x,y,z), SP:"),wxDefaultPosition );
 	hboxTextSPTrack->Add(textSPTrack);
-	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToComboBox());
+	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToSoundProducerComboBox());
+	wxStaticText *textAD = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Audio Device Capture(optional):"),wxDefaultPosition );
+	hboxTextSPTrack->Add(textAD);
+	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToAudioDeviceComboBox() );
 	timeFrame->AddBoxSizer(hboxTextSPTrack);
 
 	sound_producer_track_count = 1;
@@ -1105,13 +1108,16 @@ void MainFrame::CreateNewSoundProducerTrack()
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->UpdateComboBoxListFromSoundProducerRegistry();
-	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToComboBox());
+	soundproducer_registry.AddReferenceToComboBox(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToSoundProducerComboBox());
 
 	//add text to indicate it is a Sound Producer Track
 	wxBoxSizer* hboxTextSPTrack = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText *textSPTrack = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Sound Producer Track(x,y,z)"),wxDefaultPosition );
 	hboxTextSPTrack->Add(textSPTrack);
-	hboxTextSPTrack->Add(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToComboBox());
+	hboxTextSPTrack->Add(m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->GetReferenceToSoundProducerComboBox());
+	wxStaticText *textAD = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Audio Device Capture(optional):"),wxDefaultPosition );
+	hboxTextSPTrack->Add(textAD);
+	hboxTextSPTrack->Add(m_soundproducer_track_vec[m_soundproducer_track_vec.size()-1]->GetReferenceToAudioDeviceComboBox() );
 	timeFrame->AddBoxSizer(hboxTextSPTrack);
 
 

@@ -20,7 +20,7 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	track_source = 0;
 	
 	soundProducerToManipulatePtr = nullptr;
-	m_combo_box = nullptr;
+	m_sp_combo_box = nullptr;
 	
 	m_importAudioDAWButton = nullptr;
 	
@@ -182,11 +182,11 @@ void SoundProducerTrack::SetReferenceToSoundProducerRegistry(SoundProducerRegist
 void SoundProducerTrack::UpdateComboBoxListFromSoundProducerRegistry()
 {
 	//get current name selected
-	std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
+	std::string thisStringName = (m_sp_combo_box->GetStringSelection()).ToStdString();
 	
 	//clear current list and append new one from sound producer registry
-	m_combo_box->Clear();
-	m_combo_box->Append(soundproducer_registry_ptr->GetSoundProducersToEditList());
+	m_sp_combo_box->Clear();
+	m_sp_combo_box->Append(soundproducer_registry_ptr->GetSoundProducersToEditList());
 	
 	if(thisStringName != "")
 	{
@@ -195,14 +195,20 @@ void SoundProducerTrack::UpdateComboBoxListFromSoundProducerRegistry()
 	
 }
 
-wxComboBox* SoundProducerTrack::GetReferenceToComboBox(){return m_combo_box;}
+wxComboBox* SoundProducerTrack::GetReferenceToSoundProducerComboBox(){return m_sp_combo_box;}
+wxComboBox* SoundProducerTrack::GetReferenceToAudioDeviceComboBox(){return m_ad_combo_box;}
+
+void SoundProducerTrack::SetReferenceToAudioDeviceRegistry(AudioDeviceRegistry* thisRegistry)
+{
+	audiodevice_registry_ptr = thisRegistry;
+}
 
 void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event)
 {
 	//std::cout << "Selected sound producer called! \n";
-	if(m_combo_box != nullptr)
+	if(m_sp_combo_box != nullptr)
 	{
-		std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
+		std::string thisStringName = (m_sp_combo_box->GetStringSelection()).ToStdString();
 	
 		SoundProducerTrack::SelectSoundProducerByName(thisStringName);
 		
@@ -225,18 +231,40 @@ void SoundProducerTrack::SelectSoundProducerByName(std::string name)
 		
 		if(soundproducer_registry_ptr == nullptr)
 		{
-			soundproducer_registry_ptr->RemoveThisNameFromAllComboBoxesExceptThisOne(name,m_combo_box);
+			soundproducer_registry_ptr->RemoveThisNameFromAllComboBoxesExceptThisOne(name,m_sp_combo_box);
 		}
 	}	
 	
 }
 
+void SoundProducerTrack::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)
+{
+	if(m_ad_combo_box != nullptr)
+	{
+		std::string thisStringName = (m_ad_combo_box->GetStringSelection()).ToStdString();
+	
+		SoundProducerTrack::SelectAudioDeviceByName(thisStringName);
+	}
+}
+	
+void SoundProducerTrack::SelectAudioDeviceByName(std::string devname)
+{
+	m_audio_device_recorder.SetAsAudioDeviceToRecord(devname);
+	
+	m_audio_device_recorder.PrepareDeviceForRecording();
+}
+
 void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
 {		
 	//Add a combo box to select soundproducers
-	m_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(20,50),wxSize(100,30));
+	m_sp_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(20,50),wxSize(100,30));
 	
-	m_combo_box->Bind (wxEVT_COMBOBOX, &SoundProducerTrack::OnSelectedSoundProducerInComboBox,this);
+	m_sp_combo_box->Bind (wxEVT_COMBOBOX, &SoundProducerTrack::OnSelectedSoundProducerInComboBox,this);
+	
+	//Add a combo box to select audio device streams
+	m_ad_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(20,50),wxSize(100,30));
+	
+	m_ad_combo_box->Bind (wxEVT_COMBOBOX, &SoundProducerTrack::OnSelectedAudioDeviceInComboBox,this);
 }	
 
 void SoundProducerTrack::SetupAxisForVariable(double& start, double& end,double& resolution, int& numTick)

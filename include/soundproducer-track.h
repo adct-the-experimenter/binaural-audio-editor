@@ -14,6 +14,9 @@
 #include "soundproducer-registry.h"
 #include "soundproducer.h"
 
+#include "audio-device-registry.h"
+#include "audio-device-recorder.h"
+
 //class to manipulate x,y z position of sound producer
 class SoundProducerTrack : public Track
 {
@@ -30,6 +33,7 @@ public:
 	void StopAudio();
 
 	//functions to set reference to audio device and audio context to use for player
+	//Note this audio device doesn't apply to audio capture device
 	void SetReferenceToAudioDevice(ALCdevice* thisAudioDevice);
 	void SetReferenceToAudioContext(ALCcontext* thisAudioContext);
 
@@ -39,8 +43,14 @@ public:
 
 	void UpdateComboBoxListFromSoundProducerRegistry();
 
-	wxComboBox* GetReferenceToComboBox();
-
+	wxComboBox* GetReferenceToSoundProducerComboBox();
+	
+	
+	//audio capture device editing
+	
+	void SetReferenceToAudioDeviceRegistry(AudioDeviceRegistry* thisRegistry);
+	wxComboBox* GetReferenceToAudioDeviceComboBox();
+	
 	//audio track related functions
 	void SetupAxisForAudio(double& start, double& end,double& resolution, int& numTick);
 	void SetReferenceToPlaybackControls(PlaybackControls* controls);
@@ -103,13 +113,24 @@ private:
 	//source to play buffer
 	ALuint track_source;
 
-	wxComboBox* m_combo_box;
-
+	//sound producer manipulation
 	SoundProducerRegistry* soundproducer_registry_ptr;
 
 	void OnSelectedSoundProducerInComboBox(wxCommandEvent& event);
 
 	void SelectSoundProducerByName(std::string name);
+	
+	wxComboBox* m_sp_combo_box;
+	
+	//audio device capture manipulation
+	AudioDeviceRecorder m_audio_device_recorder;
+	AudioDeviceRegistry* audiodevice_registry_ptr;
+	
+	void OnSelectedAudioDeviceInComboBox(wxCommandEvent& event);
+	
+	void SelectAudioDeviceByName(std::string name);
+	
+	wxComboBox* m_ad_combo_box;
 	
 	//bool to tell if reverb is applied to the source of the track
 	bool reverbApplied;
