@@ -47,7 +47,7 @@ private:
 	SF_INFO sfinfo;
 	
 	size_t bit_size;
-	ALuint frame_size;
+	size_t frame_size;
 	int buffer_time_ms;
 	size_t buffer_pack_size;
 	

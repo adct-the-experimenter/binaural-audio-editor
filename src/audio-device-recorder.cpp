@@ -1,6 +1,32 @@
 #include "audio-device-recorder.h"
 
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+
+/*
+ * OpenAL Recording Example
+ *
+ * Copyright (c) 2017 by Chris Robinson <chris.kcat@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 AudioDeviceRecorder::AudioDeviceRecorder()
 {
@@ -81,9 +107,6 @@ void AudioDeviceRecorder::StartRecordingOnDevice()
 {
 	ALCenum err;
 	
-	int sample_rate = 44100;
-	
-	
 	ALbyte* data_buffer = nullptr;
 	
 	ALuint data_buffer_size = 0;
@@ -105,7 +128,7 @@ void AudioDeviceRecorder::StartRecordingOnDevice()
         }
         if(count > buffer_pack_size)
         {
-            ALbyte *data = calloc(frame_size, (ALuint)count);
+            ALbyte *data = static_cast<ALbyte*>( calloc(frame_size, (ALuint)count) );
             free(data_buffer);
             data_buffer = data;
             data_buffer_size = count;
@@ -139,22 +162,20 @@ void AudioDeviceRecorder::StartRecordingOnDevice()
             }
         }
 #endif
-        data_buffer_size += (ALuint)fwrite(data_buffer, recorder.mFrameSize, (ALuint)count,
-                                             stream_filehandle);
+        
+        //write data to file
+
+		sf_count_t write_count = 0; 		
+		sf_seek(stream_filehandle, 0, SEEK_SET);
+		
+		write_count = sf_write_raw(stream_filehandle, data_buffer, frame_size);
+        data_buffer_size += write_count;
     }
     
     //stop audio device capture
     alcCaptureStop(m_audio_device);
-    
-    //write data to file
-	size_t readSize = frame_size;
-	sf_count_t write_count = 0; 
-	size_t count_buffer = 0;
-	
-	sf_seek(stream_filehandle, 0, SEEK_SET);
-	write_count = sf_write_double(stream_filehandle, data_buffer, readSize);
-	
-	
+    //close file
+    sf_close(stream_filehandle);
 }
 
 
