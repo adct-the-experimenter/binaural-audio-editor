@@ -52,6 +52,7 @@
 
 #include "effects-manager.h"
 
+#include "audio-device-registry.h"
 
 #include <iostream>
 #include <memory> //for unique_ptr use
@@ -240,6 +241,8 @@ private:
     void OnEditMultipleEchoZones(wxCommandEvent& event); //function for menu to edit current available echo zones
     
     SoundProducerRegistry soundproducer_registry;
+    
+    AudioDeviceRegistry audiodevice_registry;
     
     wxBoxSizer* m_add_rm_box_sizer;
     

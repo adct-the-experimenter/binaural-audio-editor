@@ -455,6 +455,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     const wxSize& size, OpenAlSoftAudioEngine* thisAudioEngine,long style)
     : wxFrame(frame, wxID_ANY, title, pos, size, style)
 {
+	audiodevice_registry.UpdateListOfAudioDevices();
+	
 	MainFrame::SetAudioEngineReference(thisAudioEngine);
 
 	//create file menu item

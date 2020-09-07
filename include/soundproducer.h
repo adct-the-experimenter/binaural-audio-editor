@@ -16,10 +16,8 @@
 #include <osg/Geode> //for object rendered to be moved on screen by matrix transform
 
 //This is a class that holds positional info on object
-//as well as source and buffer components for use with OpenALSoftAudioEngine
 
-//DOES NOT PLAY SOUND. OpenALSoftAudioEngine plays the sound.
-//It only holds information to pass to OpenALSoftAudioEngine to play sound.
+//DOES NOT PLAY SOUND.
 
 class SoundProducer
 {
