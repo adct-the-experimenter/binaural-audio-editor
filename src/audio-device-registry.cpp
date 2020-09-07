@@ -8,8 +8,7 @@
 
 AudioDeviceRegistry::AudioDeviceRegistry()
 {
-	AudioDeviceRegistry::UpdateListOfAudioDevices();
-	AudioDeviceRegistry::UpdateAllComboBoxesList();
+	
 }
 
 AudioDeviceRegistry::~AudioDeviceRegistry()
@@ -37,6 +36,7 @@ void AudioDeviceRegistry::UpdateListOfAudioDevices()
 		   pDeviceList += strlen(pDeviceList) + 1;
 		   
 		}
+		
 		
 		/*
 		 * Check contents of array

@@ -664,6 +664,8 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	hboxTextSPTrack->Add(textAD);
 	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToAudioDeviceComboBox() );
 	timeFrame->AddBoxSizer(hboxTextSPTrack);
+	
+	audiodevice_registry.UpdateAllComboBoxesList();
 
 	sound_producer_track_count = 1;
 
@@ -1124,7 +1126,7 @@ void MainFrame::CreateNewSoundProducerTrack()
 	hboxTextSPTrack->Add(m_soundproducer_track_vec[m_soundproducer_track_vec.size()-1]->GetReferenceToAudioDeviceComboBox() );
 	timeFrame->AddBoxSizer(hboxTextSPTrack);
 
-
+	audiodevice_registry.UpdateAllComboBoxesList();
 
 	double audio_start = 0.0f; //lowest value
 	double audio_end = 10.0f; //highest value
