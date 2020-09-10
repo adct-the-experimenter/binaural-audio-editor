@@ -51,6 +51,8 @@ public:
 	void SetReferenceToAudioDeviceRegistry(AudioDeviceRegistry* thisRegistry);
 	wxComboBox* GetReferenceToAudioDeviceComboBox();
 	
+	wxCheckBox* GetReferenceToAudioDeviceCheckBox();
+	
 	//audio track related functions
 	void SetupAxisForAudio(double& start, double& end,double& resolution, int& numTick);
 	void SetReferenceToPlaybackControls(PlaybackControls* controls);
@@ -141,6 +143,8 @@ private:
 	void OnImportAudioDAWButtonClick(wxCommandEvent& event);
 	
 	std::string streamSoundFilePath;
+	
+	wxCheckBox* checkBoxAudioDeviceCapture;
 };
 
 #endif

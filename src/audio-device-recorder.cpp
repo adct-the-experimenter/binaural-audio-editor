@@ -80,10 +80,10 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
     
     //formatting for .wav file
     //set to signed 16-bit PCM wav little endian
-    
+    sfinfo = {0};
     sfinfo.channels = num_channels; 
     sfinfo.samplerate = sample_rate; 
-    sfinfo.format = SF_FORMAT_WAV & SF_FORMAT_PCM_16; 
+    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; 
     
     frame_size = sfinfo.channels * bit_size;
 	buffer_time_ms = 100;
@@ -92,7 +92,7 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
     buffer_pack_size = (uint64_t)sample_rate * (double(buffer_time_ms))/1000 * frame_size;
     
 	// Open the stream file for writing
-	if (! ( stream_filehandle = sf_open (m_stream_sound_filepath.c_str(), SFM_WRITE, &sfinfo)))
+	if (! ( stream_filehandle = sf_open (m_stream_sound_filepath.c_str(), SFM_WRITE, &sfinfo) ) )
 	{	
 		std::cout << "Not able to open stream file for writing" << stream_filehandle << std::endl;
 		puts (sf_strerror (NULL)) ;
@@ -129,7 +129,7 @@ void AudioDeviceRecorder::StartRecordingOnDevice()
         if(count > buffer_pack_size)
         {
             ALbyte *data = static_cast<ALbyte*>( calloc(frame_size, (ALuint)count) );
-            free(data_buffer);
+            if(data_buffer){free(data_buffer);}
             data_buffer = data;
             data_buffer_size = count;
         }
@@ -155,8 +155,8 @@ void AudioDeviceRecorder::StartRecordingOnDevice()
             {
                 ALbyte b0 = data_buffer[i*4 + 0];
                 ALbyte b1 = data_buffer[i*4 + 1];
-                data_buffer[i*4 + 0] = recorder.mBuffer[i*4 + 3];
-                data_buffer[i*4 + 1] = recorder.mBuffer[i*4 + 2];
+                data_buffer[i*4 + 0] = data_buffer[i*4 + 3];
+                data_buffer[i*4 + 1] = data_buffer[i*4 + 2];
                 data_buffer[i*4 + 2] = b1;
                 data_buffer[i*4 + 3] = b0;
             }

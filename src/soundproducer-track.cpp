@@ -59,6 +59,8 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	audioTrack->SetStreamAudioFilePath(filepath_stream);
 	streamSoundFilePath = filepath_stream;
 	
+	m_audio_device_recorder.SetFilepathToAudioStreamBuffering(streamSoundFilePath);
+	
 	tempX=0.0; tempY=0.0; tempZ=0.0;
 	
 	xTrack->SetReferenceToVarToManipulate(&tempX);
@@ -87,6 +89,12 @@ SoundProducerTrack::~SoundProducerTrack()
 void SoundProducerTrack::FunctionToCallInPlayState()
 {
 	//std::cout << "FunctionToCall called in SoundProducerTrack \n";
+	
+	//if audio device capture is enabled
+	if(checkBoxAudioDeviceCapture->IsChecked())
+	{
+		m_audio_device_recorder.StartRecordingOnDevice();
+	}
 	
 	//change position
 	xTrack->FunctionToCallInPlayState();
@@ -265,7 +273,12 @@ void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTick
 	m_ad_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(20,50),wxSize(100,30));
 	
 	m_ad_combo_box->Bind (wxEVT_COMBOBOX, &SoundProducerTrack::OnSelectedAudioDeviceInComboBox,this);
-}	
+	
+	//Add checkbox for enabling audio device capture
+	checkBoxAudioDeviceCapture = new wxCheckBox(parent, wxID_ANY, wxT("Capture"), wxDefaultPosition, wxSize(30,30));
+}
+
+wxCheckBox* SoundProducerTrack::GetReferenceToAudioDeviceCheckBox(){return checkBoxAudioDeviceCapture;}
 
 void SoundProducerTrack::SetupAxisForVariable(double& start, double& end,double& resolution, int& numTick)
 {

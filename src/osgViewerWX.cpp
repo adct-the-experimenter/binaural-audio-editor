@@ -663,6 +663,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	wxStaticText *textAD = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Audio Device Capture(optional):"),wxDefaultPosition );
 	hboxTextSPTrack->Add(textAD);
 	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToAudioDeviceComboBox() );
+	hboxTextSPTrack->Add(m_soundproducer_track_vec[0]->GetReferenceToAudioDeviceCheckBox());
 	timeFrame->AddBoxSizer(hboxTextSPTrack);
 	
 	audiodevice_registry.UpdateAllComboBoxesList();
@@ -1124,6 +1125,7 @@ void MainFrame::CreateNewSoundProducerTrack()
 	wxStaticText *textAD = new wxStaticText(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Audio Device Capture(optional):"),wxDefaultPosition );
 	hboxTextSPTrack->Add(textAD);
 	hboxTextSPTrack->Add(m_soundproducer_track_vec[m_soundproducer_track_vec.size()-1]->GetReferenceToAudioDeviceComboBox() );
+	hboxTextSPTrack->Add(m_soundproducer_track_vec[m_soundproducer_track_vec.size()-1]->GetReferenceToAudioDeviceCheckBox(),1);
 	timeFrame->AddBoxSizer(hboxTextSPTrack);
 
 	audiodevice_registry.UpdateAllComboBoxesList();
