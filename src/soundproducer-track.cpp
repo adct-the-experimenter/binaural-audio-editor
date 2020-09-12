@@ -259,7 +259,14 @@ void SoundProducerTrack::SelectAudioDeviceByName(std::string devname)
 {
 	m_audio_device_recorder.SetAsAudioDeviceToRecord(devname);
 	
-	m_audio_device_recorder.PrepareDeviceForRecording();
+	if(!m_audio_device_recorder.PrepareDeviceForRecording())
+	{
+		std::string messageString;
+		messageString.append("Failed to prepare ");
+		messageString.append(devname);
+		messageString.append(" for recording.");
+		wxMessageBox( messageString );
+	}
 }
 
 void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
@@ -275,7 +282,7 @@ void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTick
 	m_ad_combo_box->Bind (wxEVT_COMBOBOX, &SoundProducerTrack::OnSelectedAudioDeviceInComboBox,this);
 	
 	//Add checkbox for enabling audio device capture
-	checkBoxAudioDeviceCapture = new wxCheckBox(parent, wxID_ANY, wxT("Capture"), wxDefaultPosition, wxSize(30,30));
+	checkBoxAudioDeviceCapture = new wxCheckBox(parent, wxID_ANY, wxT("Capture"), wxDefaultPosition, wxSize(100,30));
 }
 
 wxCheckBox* SoundProducerTrack::GetReferenceToAudioDeviceCheckBox(){return checkBoxAudioDeviceCapture;}

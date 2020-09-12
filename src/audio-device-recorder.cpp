@@ -77,6 +77,10 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
         return false;
     }
     
+    if (alGetError() != AL_NO_ERROR) {
+        return false;
+    }
+    
     
     //formatting for .wav file
     //set to signed 16-bit PCM wav little endian
@@ -90,15 +94,7 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
     
     bit_size = sizeof(int16_t);
     buffer_pack_size = (uint64_t)sample_rate * (double(buffer_time_ms))/1000 * frame_size;
-    
-	// Open the stream file for writing
-	if (! ( stream_filehandle = sf_open (m_stream_sound_filepath.c_str(), SFM_WRITE, &sfinfo) ) )
-	{	
-		std::cout << "Not able to open stream file for writing" << stream_filehandle << std::endl;
-		puts (sf_strerror (NULL)) ;
-		alcCaptureCloseDevice(m_audio_device);
-		return false;
-	} 
+  
     
     return true;
 }
@@ -107,73 +103,41 @@ void AudioDeviceRecorder::StartRecordingOnDevice()
 {
 	ALCenum err;
 	
-	ALbyte* data_buffer = nullptr;
+	ALuint data_buffer_size = 0;    
+    
+    ALbyte buffer[22050];
 	
-	ALuint data_buffer_size = 0;
+	ALint sample;
 	
-	alcCaptureStart(m_audio_device);
-    while(
-		  (double)data_buffer_size < buffer_pack_size 
-		   &&
-          (err=alcGetError(m_audio_device)) == ALC_NO_ERROR
-          )
-    {
-        ALCint count = 0;
-        fprintf(stderr, "\rCaptured %u samples", data_buffer_size);
-        alcGetIntegerv(m_audio_device, ALC_CAPTURE_SAMPLES, 1, &count);
-        if(count < 1)
-        {
-            al_nssleep(10000000);
-            continue;
-        }
-        if(count > buffer_pack_size)
-        {
-            ALbyte *data = static_cast<ALbyte*>( calloc(frame_size, (ALuint)count) );
-            if(data_buffer){free(data_buffer);}
-            data_buffer = data;
-            data_buffer_size = count;
-        }
-        alcCaptureSamples(m_audio_device, data_buffer, count);
-#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN
-        /* Byteswap multibyte samples on big-endian systems (wav needs little-
-         * endian, and OpenAL gives the system's native-endian).
-         */
-        if(bit_size == 16)
-        {
-            ALCint i;
-            for(i = 0;i < count*recorder.mChannels;i++)
-            {
-                ALbyte b = data_buffer[i*2 + 0];
-                data_buffer[i*2 + 0] = data_buffer[i*2 + 1];
-                data_buffer[i*2 + 1] = b;
-            }
-        }
-        else if(bit_size == 32)
-        {
-            ALCint i;
-            for(i = 0;i < count*recorder.mChannels;i++)
-            {
-                ALbyte b0 = data_buffer[i*4 + 0];
-                ALbyte b1 = data_buffer[i*4 + 1];
-                data_buffer[i*4 + 0] = data_buffer[i*4 + 3];
-                data_buffer[i*4 + 1] = data_buffer[i*4 + 2];
-                data_buffer[i*4 + 2] = b1;
-                data_buffer[i*4 + 3] = b0;
-            }
-        }
-#endif
-        
-        //write data to file
+	// Open the stream file for writing
+	if (! ( stream_filehandle = sf_open (m_stream_sound_filepath.c_str(), SFM_WRITE, &sfinfo) ) )
+	{	
+		std::cout << "Not able to open stream file for writing" << stream_filehandle << std::endl;
+		puts (sf_strerror (NULL)) ;
+		alcCaptureCloseDevice(m_audio_device);
+		return;
+	} 
+    
+    alcCaptureStart(m_audio_device);
+
+    while (data_buffer_size < buffer_pack_size) {
+        alcGetIntegerv(m_audio_device, ALC_CAPTURE_SAMPLES, (ALCsizei)sizeof(ALint), &sample);
+        alcCaptureSamples(m_audio_device, (ALCvoid *)buffer, sample);
+
+		//write buffer of data to file
 
 		sf_count_t write_count = 0; 		
 		sf_seek(stream_filehandle, 0, SEEK_SET);
 		
-		write_count = sf_write_raw(stream_filehandle, data_buffer, frame_size);
-        data_buffer_size += write_count;
+		write_count = sf_write_raw(stream_filehandle, buffer, frame_size);
+		data_buffer_size += write_count; 
     }
-    
-    //stop audio device capture
+
     alcCaptureStop(m_audio_device);
+    alcCaptureCloseDevice(m_audio_device);
+        
+	
+    
     //close file
     sf_close(stream_filehandle);
 }
