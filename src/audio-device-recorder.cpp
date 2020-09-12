@@ -89,11 +89,13 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
     sfinfo.samplerate = sample_rate; 
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; 
     
+    bit_size = sizeof(int16_t);
+    
     frame_size = sfinfo.channels * bit_size;
 	buffer_time_ms = 100;
     
-    bit_size = sizeof(int16_t);
-    buffer_pack_size = (uint64_t)sample_rate * (double(buffer_time_ms))/1000 * frame_size;
+    
+    buffer_pack_size = (uint64_t)sample_rate * ((double(buffer_time_ms))/1000) * frame_size;
   
     
     return true;
