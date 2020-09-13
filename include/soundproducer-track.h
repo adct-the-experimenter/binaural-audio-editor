@@ -53,6 +53,9 @@ public:
 	
 	wxCheckBox* GetReferenceToAudioDeviceCheckBox();
 	
+	void SetPointerToPlaybackDevice(ALCdevice* device);
+	void SetPointerToPlaybackContext(ALCcontext* context);
+	
 	//audio track related functions
 	void SetupAxisForAudio(double& start, double& end,double& resolution, int& numTick);
 	void SetReferenceToPlaybackControls(PlaybackControls* controls);
@@ -93,6 +96,7 @@ public:
 	
 	//Audio DAW 
 	void SetReferenceToImportAudioDAWButton(wxButton* thisButton);
+
 	
 	friend class SoundProducerTrackManager;
 	

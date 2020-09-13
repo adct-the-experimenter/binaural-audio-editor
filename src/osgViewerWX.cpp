@@ -635,7 +635,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
 	//initialize sound producer track stuff
 	m_soundproducer_track_vec[0]->InitTrack(timeFrame->GetTimelineWindow(),nullptr);
-
+	
 	//initialize audio track
 	wxButton* browseButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Browse"), wxDefaultPosition, wxSize(70, 30) );
 	m_soundproducer_track_vec[0]->GetReferenceToStereoAudioTrack()->SetReferenceToBrowseButton(browseButton);
@@ -645,7 +645,9 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	wxButton* importAudioDAWButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Import DAW Audio"), wxDefaultPosition, wxSize(150, 30) ); 
 	m_soundproducer_track_vec.at(0)->SetReferenceToImportAudioDAWButton(importAudioDAWButton);
 	
-	
+	//initialize audio device capture parameters
+	m_soundproducer_track_vec[0]->SetPointerToPlaybackContext(audioEnginePtr->GetReferenceToAudioContext()); 
+	m_soundproducer_track_vec[0]->SetPointerToPlaybackDevice(audioEnginePtr->GetReferenceToAudioDevice()); 
 	
 	//initialize double tracks
 	m_soundproducer_track_vec[0]->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
@@ -1101,6 +1103,10 @@ void MainFrame::CreateNewSoundProducerTrack()
 	
 	wxButton* importAudioDAWButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Import DAW Audio"), wxDefaultPosition, wxSize(150, 30) ); 
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToImportAudioDAWButton(importAudioDAWButton);
+	
+	//initialize audio device capture parameters
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetPointerToPlaybackContext(audioEnginePtr->GetReferenceToAudioContext()); 
+	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetPointerToPlaybackDevice(audioEnginePtr->GetReferenceToAudioDevice()); 
 	
 	//initialize double tracks
 

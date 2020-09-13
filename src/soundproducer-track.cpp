@@ -45,6 +45,8 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	alSourcei(track_source, AL_SOURCE_RELATIVE, AL_FALSE);
 	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source.");
 	
+	m_audio_device_recorder.SetPointerToSource(&track_source);
+	
 	audioTrack->SetReferenceToSourceToManipulate(&track_source);
 	
 	std::string datadir; 
@@ -58,9 +60,7 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	std::string filepath_stream = datadir + title.ToStdString() + ".wav";
 	audioTrack->SetStreamAudioFilePath(filepath_stream);
 	streamSoundFilePath = filepath_stream;
-	
-	m_audio_device_recorder.SetFilepathToAudioStreamBuffering(streamSoundFilePath);
-	
+		
 	tempX=0.0; tempY=0.0; tempZ=0.0;
 	
 	xTrack->SetReferenceToVarToManipulate(&tempX);
@@ -90,12 +90,6 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 {
 	//std::cout << "FunctionToCall called in SoundProducerTrack \n";
 	
-	//if audio device capture is enabled
-	if(checkBoxAudioDeviceCapture->IsChecked())
-	{
-		m_audio_device_recorder.StartRecordingOnDevice();
-	}
-	
 	//change position
 	xTrack->FunctionToCallInPlayState();
 	yTrack->FunctionToCallInPlayState();
@@ -115,8 +109,22 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 		}
 	}
 	
-	//buffer audio
-	audioTrack->FunctionToCallInPlayState();
+	//if audio device capture is enabled
+	if(checkBoxAudioDeviceCapture->IsChecked())
+	{
+		//buffer audio from recording
+		m_audio_device_recorder.RecordAudioFromDevice();
+		
+		//play audio
+		m_audio_device_recorder.PlayAudioRecordedFromDevice();
+	}
+	else
+	{
+		//buffer audio from file
+		audioTrack->FunctionToCallInPlayState();
+	}
+	
+	
 }
 
 void SoundProducerTrack::BufferAndPlayAudio(double& current_time)
@@ -445,3 +453,7 @@ void SoundProducerTrack::OnImportAudioDAWButtonClick(wxCommandEvent& event)
 	std::cout << "\nFinished importing audio from DAW!\n";
 	event.Skip();
 }
+
+void SoundProducerTrack::SetPointerToPlaybackDevice(ALCdevice* device){m_audio_device_recorder.SetPointerToPlaybackDevice(device);}
+
+void SoundProducerTrack::SetPointerToPlaybackContext(ALCcontext* context){m_audio_device_recorder.SetPointerToPlaybackContext(context);}
