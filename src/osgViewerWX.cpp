@@ -511,12 +511,18 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     CreateStatusBar();
     SetStatusText( "Welcome to Binaural Audio Editor!" );
     
-    wxToolBar* toolbar = CreateToolBar();
+    wxToolBar* toolbar = CreateToolBar(wxTB_HORIZONTAL | wxTB_TEXT);
     
+    
+   
     m_sp_toolbar_combobox = new wxComboBox(toolbar, wxID_ANY, wxEmptyString, wxDefaultPosition, 
 											wxDefaultSize, 0, NULL, 0, wxDefaultValidator, wxT("Edit Sound Producer"));
-    toolbar->AddControl(m_sp_toolbar_combobox);
-
+    
+    toolbar->AddSeparator();
+    toolbar->AddStretchableSpace();
+    toolbar->AddControl(m_sp_toolbar_combobox, wxT("Active SoundProducer"));
+	
+    
     //Code to initialize timeline track editor part of GUI
 
 	timeFrame = new TimelineFrame(this);
