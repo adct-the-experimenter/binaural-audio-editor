@@ -65,7 +65,8 @@ private:
 	//ALuint buffers[NUM_BUFFERS];
 	ALuint m_buffer;
 	
-	ALbyte data_buffer[22050];
+	//array holding data to load into buffer
+	ALbyte data_samples[22050];
 	
 	//pointer to device and context used for playback and not recording
 	ALCdevice* m_playback_device_ptr;
