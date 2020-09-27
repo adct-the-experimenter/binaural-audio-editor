@@ -41,7 +41,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	m_record_audio_device = nullptr;
 	
 	//set to default format and sample rate for now
-	int sample_rate = 44100;
+	int sample_rate = 48000;
 	format = AL_FORMAT_MONO16;
 	int num_channels = 1;
 	

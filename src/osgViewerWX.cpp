@@ -182,10 +182,7 @@ bool wxOsgApp::OnInit()
 		viewer->getCamera()->setDrawBuffer(GL_BACK);
 		viewer->getCamera()->setReadBuffer(GL_BACK);
 
-		//viewer->addEventHandler(new osgViewer::StatsHandler);
 		viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
-
-
 
 		//init geommetry node which is a leaf node of scenegraph
 		//containing geometry information
