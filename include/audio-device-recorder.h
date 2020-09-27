@@ -47,7 +47,7 @@ private:
 	std::string m_deviceName;
 	
 	//audio device to record
-	ALCdevice* m_audio_device;
+	ALCdevice* m_record_audio_device;
 	
 	//pointer to source to playback audio
 	ALuint* m_source_ptr;
