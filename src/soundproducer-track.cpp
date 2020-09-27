@@ -116,7 +116,7 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 		m_audio_device_recorder.RecordAudioFromDevice();
 		
 		//play audio
-		m_audio_device_recorder.PlayAudioRecordedFromDevice();
+		//m_audio_device_recorder.PlayAudioRecordedFromDevice();
 	}
 	else
 	{
