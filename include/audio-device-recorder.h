@@ -9,6 +9,8 @@
 
 #include <sndfile.h>
 
+#include <array>
+
 #define NUM_BUFFERS 4
 
 class AudioDeviceRecorder

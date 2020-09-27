@@ -59,7 +59,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
     
     
     buffer_pack_size = (uint64_t)sample_rate * ((double(buffer_time_ms))/1000);
-  
+    
 }
 
 
@@ -93,6 +93,12 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 		std::cout << "Set playback context for audio device recorder!\n"; 
 		return false;
 	}
+	
+	if(alcMakeContextCurrent(m_playback_context_ptr) == AL_TRUE)
+	{
+		alGenBuffers(1, &m_buffer);
+	}
+	
 	
 	//setup context for recording
 	
@@ -129,7 +135,7 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 	
 	alcCaptureSamples(m_record_audio_device, (ALCvoid *)data_samples, sample_count);
 	
-	std::cout << data_samples[100] << std::endl;
+	//std::cout << data_samples[100] << std::endl;
 
     //alcCaptureStop(m_record_audio_device);
     //alcCaptureCloseDevice(m_record_audio_device);
@@ -151,8 +157,8 @@ void AudioDeviceRecorder::PlayAudioRecordedFromDevice()
 		{
 			ALenum err;
 			
-			ALuint tempBuffer;
-			alGenBuffers(1, &tempBuffer);
+			//ALuint tempBuffer;
+			//alGenBuffers(1, &tempBuffer);
 			err = alGetError();
 			if(err != AL_NO_ERROR)
 			{
@@ -165,7 +171,7 @@ void AudioDeviceRecorder::PlayAudioRecordedFromDevice()
 			//set buffer data
 			//alBufferData(buffers[buffer_index], format, &buffer[0], slen, sfinfo.samplerate);
 			int buffer_byte_size = buffer_pack_size * bit_size;
-			alBufferData(tempBuffer, format, &data_samples[0], buffer_byte_size, sfinfo.samplerate);
+			alBufferData(m_buffer, format, &data_samples[0], buffer_byte_size, sfinfo.samplerate);
 			
 			err = alGetError();
 			if(err != AL_NO_ERROR)
@@ -191,13 +197,15 @@ void AudioDeviceRecorder::PlayAudioRecordedFromDevice()
 					{
 						fprintf(stderr, "Error in playback in PlayAudioRecordedFromDevice.\n");
 						fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
-						return;
 					}
+					
+					std::cout << "playing audio.\n";
 					
 				}
 			}
 			
-			alDeleteBuffers(1,&tempBuffer);
+			//al_nssleep(10000000);// sleep for 10M ns, 0.01s
+			//alDeleteBuffers(1,&tempBuffer);
 			
 		}
 		
