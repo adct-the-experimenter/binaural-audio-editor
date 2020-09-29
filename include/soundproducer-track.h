@@ -15,7 +15,6 @@
 #include "soundproducer.h"
 
 #include "audio-device-registry.h"
-#include "audio-device-recorder.h"
 
 //class to manipulate x,y z position of sound producer
 class SoundProducerTrack : public Track
@@ -53,8 +52,6 @@ public:
 	
 	wxCheckBox* GetReferenceToAudioDeviceCheckBox();
 	
-	void SetPointerToPlaybackDevice(ALCdevice* device);
-	void SetPointerToPlaybackContext(ALCcontext* context);
 	
 	//audio track related functions
 	void SetupAxisForAudio(double& start, double& end,double& resolution, int& numTick);
@@ -129,7 +126,6 @@ private:
 	wxComboBox* m_sp_combo_box;
 	
 	//audio device capture manipulation
-	AudioDeviceRecorder m_audio_device_recorder;
 	AudioDeviceRegistry* audiodevice_registry_ptr;
 	
 	void OnSelectedAudioDeviceInComboBox(wxCommandEvent& event);
@@ -147,6 +143,9 @@ private:
 	void OnImportAudioDAWButtonClick(wxCommandEvent& event);
 	
 	std::string streamSoundFilePath;
+	
+	std::string filepath_audio_device_capture;
+	std::string filepath_audio_file;
 	
 	wxCheckBox* checkBoxAudioDeviceCapture;
 };

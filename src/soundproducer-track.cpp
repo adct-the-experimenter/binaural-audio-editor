@@ -45,8 +45,6 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	alSourcei(track_source, AL_SOURCE_RELATIVE, AL_FALSE);
 	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source.");
 	
-	m_audio_device_recorder.SetPointerToSource(&track_source);
-	
 	audioTrack->SetReferenceToSourceToManipulate(&track_source);
 	
 	std::string datadir; 
@@ -112,18 +110,11 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 	//if audio device capture is enabled
 	if(checkBoxAudioDeviceCapture->IsChecked())
 	{
-		//buffer audio from recording
-		m_audio_device_recorder.RecordAudioFromDevice_multiplebuffers();
 		
-		//play audio
-		//m_audio_device_recorder.PlayAudioRecordedFromDevice();
-	}
-	else
-	{
-		//buffer audio from file
-		audioTrack->FunctionToCallInPlayState();
 	}
 	
+	//buffer audio from file
+	audioTrack->FunctionToCallInPlayState();
 	
 }
 
@@ -265,16 +256,7 @@ void SoundProducerTrack::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)
 	
 void SoundProducerTrack::SelectAudioDeviceByName(std::string devname)
 {
-	m_audio_device_recorder.SetAsAudioDeviceToRecord(devname);
-	
-	if(!m_audio_device_recorder.PrepareDeviceForRecording())
-	{
-		std::string messageString;
-		messageString.append("Failed to prepare ");
-		messageString.append(devname);
-		messageString.append(" for recording.");
-		wxMessageBox( messageString );
-	}
+	filepath_audio_device_capture = datadir + devname + ".wav";
 }
 
 void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)
@@ -454,6 +436,3 @@ void SoundProducerTrack::OnImportAudioDAWButtonClick(wxCommandEvent& event)
 	event.Skip();
 }
 
-void SoundProducerTrack::SetPointerToPlaybackDevice(ALCdevice* device){m_audio_device_recorder.SetPointerToPlaybackDevice(device);}
-
-void SoundProducerTrack::SetPointerToPlaybackContext(ALCcontext* context){m_audio_device_recorder.SetPointerToPlaybackContext(context);}

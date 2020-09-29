@@ -641,11 +641,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 	
 	wxButton* importAudioDAWButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Import DAW Audio"), wxDefaultPosition, wxSize(150, 30) ); 
 	m_soundproducer_track_vec.at(0)->SetReferenceToImportAudioDAWButton(importAudioDAWButton);
-	
-	//initialize audio device capture parameters
-	m_soundproducer_track_vec[0]->SetPointerToPlaybackContext(audioEnginePtr->GetReferenceToAudioContext()); 
-	m_soundproducer_track_vec[0]->SetPointerToPlaybackDevice(audioEnginePtr->GetReferenceToAudioDevice()); 
-	
+		
 	//initialize double tracks
 	m_soundproducer_track_vec[0]->SetupAxisForVariable(start,end,resolution,numTicks); //setup bounds for vertical axes
 	m_soundproducer_track_vec[0]->SetReferenceToSoundProducerRegistry(&soundproducer_registry);
@@ -1100,11 +1096,7 @@ void MainFrame::CreateNewSoundProducerTrack()
 	
 	wxButton* importAudioDAWButton = new wxButton(timeFrame->GetTimelineWindow(), wxID_ANY, wxT("Import DAW Audio"), wxDefaultPosition, wxSize(150, 30) ); 
 	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetReferenceToImportAudioDAWButton(importAudioDAWButton);
-	
-	//initialize audio device capture parameters
-	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetPointerToPlaybackContext(audioEnginePtr->GetReferenceToAudioContext()); 
-	m_soundproducer_track_vec.at(m_soundproducer_track_vec.size()-1)->SetPointerToPlaybackDevice(audioEnginePtr->GetReferenceToAudioDevice()); 
-	
+		
 	//initialize double tracks
 
 	int space = 20; //the distance,in pixels, between track and previous item(timeline or previous track)
