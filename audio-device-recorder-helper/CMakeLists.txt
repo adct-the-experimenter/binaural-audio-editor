@@ -30,7 +30,7 @@ find_package(Threads REQUIRED)
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES} openal sndfile ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} openal sndfile ${CMAKE_THREAD_LIBS_INIT})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
@@ -39,13 +39,13 @@ if (WIN32)
     set (PROJECT_LINK_LIBS ${PROJECT_LINK_LIBS} -lwsock32)
 endif (WIN32)
 
-set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} ${OPENSCENEGRAPH_INCLUDE_DIRS} )
+set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} )
 
 #for where to find header files for source and library
-include_directories(/usr/include /usr/local/include ./include ./src/timeline-track-editor/include ${PROJECT_INCLUDE_DIR})
+include_directories(/usr/include /usr/local/include ./include  ${PROJECT_INCLUDE_DIR})
 
 set(SOURCES src/osgViewerWX.cpp
-			src/audio-device-registry.cpp
+			src/audio-device-registry.cpp src/audio-device-recorder.cpp
 			src/CreateStandardReverbZoneDialog.cpp src/EditMultipleStandardReverbZonesDialog.cpp 
 			src/CreateEAXReverbZoneDialog.cpp src/EditMultipleEAXReverbZonesDialog.cpp 
 			src/CreateEchoZoneDialog.cpp src/EditMultipleEchoZonesDialog.cpp

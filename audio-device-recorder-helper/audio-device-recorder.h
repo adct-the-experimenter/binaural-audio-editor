@@ -27,7 +27,10 @@ public:
 	bool PrepareDeviceForRecording();
 	
 	//function to record audio and putting audio data into a buffer to source
-	void RecordAudioFromDevice();
+	void RecordAudioFromDevice_singlebuffer();
+	
+	//function to recrod audio and put audio data into multiple buffers 
+	void RecordAudioFromDevice_multiplebuffers();
 	
 	//function to play audio from a buffer
 	void PlayAudioRecordedFromDevice();
@@ -64,8 +67,11 @@ private:
 	ALenum format;
 	
 	//buffers
-	//ALuint buffers[NUM_BUFFERS];
-	ALuint m_buffer;
+	ALuint m_buffers[NUM_BUFFERS];
+	
+	ALuint m_single_buffer;
+	
+	size_t buffer_index; //keeps track of which buffer player is on
 	
 	
 	//pointer to device and context used for playback and not recording
