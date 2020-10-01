@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1.1)
 
 set (CMAKE_CXX_STANDARD 11)
 
-set(PROJECT_NAME binaural-audio-editor)
+set(PROJECT_NAME audio-device-recorder-helper)
 project (${PROJECT_NAME} LANGUAGES C CXX)
 
 
@@ -20,9 +20,6 @@ endif()
 #OpenSceneGraph speicific stuff
 FIND_PACKAGE (OpenSceneGraph REQUIRED COMPONENTS osgUtil osgDB osgText osgGA osgFX osgSim osgViewer )
 
-#for serial data stuff
-set(BOOST_LIBS date_time system)
-find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 find_package(Threads REQUIRED)
 
 
@@ -34,50 +31,14 @@ set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} openal sndfile ${CMAKE_THREAD_LIB
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
-if (WIN32)
-    #add -lwsock32 to library dependencies for windows
-    set (PROJECT_LINK_LIBS ${PROJECT_LINK_LIBS} -lwsock32)
-endif (WIN32)
-
 set ( PROJECT_INCLUDE_DIR ${wxWidgets_INCLUDE_DIRS} )
 
 #for where to find header files for source and library
 include_directories(/usr/include /usr/local/include ./include  ${PROJECT_INCLUDE_DIR})
 
-set(SOURCES src/osgViewerWX.cpp
-			src/audio-device-registry.cpp src/audio-device-recorder.cpp
-			src/CreateStandardReverbZoneDialog.cpp src/EditMultipleStandardReverbZonesDialog.cpp 
-			src/CreateEAXReverbZoneDialog.cpp src/EditMultipleEAXReverbZonesDialog.cpp 
-			src/CreateEchoZoneDialog.cpp src/EditMultipleEchoZonesDialog.cpp
-			src/echo-zone.cpp
-			src/reverb-zone.cpp
-			src/effect-zone.cpp
-			src/effects-manager.cpp
-			src/soundproducer-track-manager.cpp
-			src/soundproducer-track.cpp
-			src/listener-track.cpp
-			src/soundproducer-registry.cpp
-			src/CreateSoundProducerDialog.cpp src/EditMultipleSoundProducersDialog.cpp 
-			src/Change-HRTF-Dialog.cpp src/HRTF-Test-Dialog.cpp 
-			src/EditListenerDialog.cpp
-			src/setup-serial-dialog.cpp
-			src/listener-external.cpp
-			src/openalsoftaudioengine.cpp src/soundproducer.cpp src/listener.cpp
-			src/external-orientation-device-serial.cpp
-
-			src/timeline-track-editor/src/timeline-frame.cpp
-			src/timeline-track-editor/src/timeline-window.cpp
-			src/timeline-track-editor/src/playback-controls.cpp
-			src/timeline-track-editor/src/stereo-audio-track.cpp
-			src/timeline-track-editor/src/mono-audio-track.cpp
-			src/timeline-track-editor/src/audio-track.cpp
-			src/timeline-track-editor/src/audio-graph.cpp
-			src/timeline-track-editor/src/audio-stream-container.cpp
-			src/timeline-track-editor/src/openalsoft-player.cpp
-			src/timeline-track-editor/src/double-track.cpp
-			src/timeline-track-editor/src/editor-graph.cpp
-			src/timeline-track-editor/src/track.cpp
-			 )
+set(SOURCES src/main_app.cpp
+			src/audio-device-registry.cpp src/audio-device-recorder.cpp		
+	)
 
 #get_cmake_property(_variableNames VARIABLES)
 #list (SORT _variableNames)
@@ -91,5 +52,5 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${PROJECT_LINK_LIBS})
 
 #make install ops
-install(TARGETS binaural-audio-editor DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
