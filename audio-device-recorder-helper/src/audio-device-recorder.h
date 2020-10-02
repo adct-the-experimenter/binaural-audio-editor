@@ -3,15 +3,9 @@
 
 #include <string>
 
-#include "AL/al.h"
-#include "AL/alc.h"
-#include "AL/alext.h"
-
 #include <sndfile.h>
 
 #include <array>
-
-#define NUM_BUFFERS 4
 
 class AudioDeviceRecorder
 {
@@ -27,35 +21,16 @@ public:
 	bool PrepareDeviceForRecording();
 	
 	//function to record audio and putting audio data into a buffer to source
-	void RecordAudioFromDevice_singlebuffer();
-	
-	//function to recrod audio and put audio data into multiple buffers 
-	void RecordAudioFromDevice_multiplebuffers();
-	
-	//function to play audio from a buffer
-	void PlayAudioRecordedFromDevice();
-	
+	void RecordAudioFromDevice();
+		
 	//function to stop device from recording and clean up some things
 	void FreeDeviceFromRecording();
 	
-	//functions to set and get pointer to source to playback audio
-	void SetPointerToSource(ALuint* src);
-	ALuint* GetPointerToSource();
-	
-	//functions to set pointers to playback context and device
-	void SetPointerToPlaybackDevice(ALCdevice* device);
-	void SetPointerToPlaybackContext(ALCcontext* context);
 	
 private:
 	
 	//name of audio device to record
 	std::string m_deviceName;
-	
-	//audio device to record
-	ALCdevice* m_record_audio_device;
-	
-	//pointer to source to playback audio
-	ALuint* m_source_ptr;
 	
 	//formatting of audio data
 	SF_INFO sfinfo;
@@ -64,19 +39,10 @@ private:
 	size_t frame_size;
 	int buffer_time_ms;
 	size_t buffer_pack_size;
-	ALenum format;
 	
-	//buffers
-	ALuint m_buffers[NUM_BUFFERS];
-	
-	ALuint m_single_buffer;
 	
 	size_t buffer_index; //keeps track of which buffer player is on
-	
-	
-	//pointer to device and context used for playback and not recording
-	ALCdevice* m_playback_device_ptr;
-	ALCcontext* m_playback_context_ptr;
+
 	
 };
 
