@@ -22,12 +22,14 @@ FIND_PACKAGE (OpenSceneGraph REQUIRED COMPONENTS osgUtil osgDB osgText osgGA osg
 
 find_package(Threads REQUIRED)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+#find_package(portaudio REQUIRED)
 
 #FreeBSD and linux specific include and libs
 #Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} openal sndfile ${CMAKE_THREAD_LIBS_INIT})
+set ( PROJECT_LINK_LIBS ${wxWidgets_LIBRARIES} sndfile ${CMAKE_THREAD_LIBS_INIT} portaudio)
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 

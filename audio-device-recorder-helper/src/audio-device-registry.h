@@ -33,6 +33,8 @@ private:
 	//list of names for combo box
 	wxArrayString audio_devices_list_wxstring;
 	
+	int m_num_devices;
+	
 	//vector of pointers to combo boxes
 	//used to update all combo boxes
 	std::vector <wxComboBox*> combo_box_ptr_vec;

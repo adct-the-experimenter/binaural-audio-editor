@@ -1,14 +1,12 @@
 #include "audio-device-registry.h"
 
-#include "AL/al.h" //header for OpenAL Soft
-#include "AL/alc.h" //header for OpenAL Soft
-#include "AL/alext.h" //header for OpenAL Soft
-
 #include <iostream>
+
+#include "portaudio.h"
 
 AudioDeviceRegistry::AudioDeviceRegistry()
 {
-	
+	m_num_devices = 0;
 }
 
 AudioDeviceRegistry::~AudioDeviceRegistry()
@@ -19,35 +17,40 @@ AudioDeviceRegistry::~AudioDeviceRegistry()
 void AudioDeviceRegistry::UpdateListOfAudioDevices()
 {
 	
-	const ALchar *pDeviceList = alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER);
-	
-	if (pDeviceList)
-	{
-		//printf("Available Capture Devices are:-\n\n");
-
-		while (*pDeviceList)
+    const   PaDeviceInfo *deviceInfo;
+    PaStreamParameters inputParameters, outputParameters;
+    PaError err;
+   
+       
+    err = Pa_Initialize();
+    if( err != paNoError )
+    {
+		printf( "ERROR: Pa_Initialize returned 0x%x\n", err );
+    }
+       
+    printf( "PortAudio version: 0x%08X\n", Pa_GetVersion());
+    printf( "Version text: '%s'\n", Pa_GetVersionInfo()->versionText );
+   
+    int numDevices = Pa_GetDeviceCount();
+    if( numDevices < 0 )
+    {
+        printf( "ERROR: Pa_GetDeviceCount returned 0x%x\n", numDevices );
+        err = numDevices;
+    }
+    else
+    {
+		m_num_devices = numDevices;
+		
+		for(size_t i = 0; i < m_num_devices; i++)
 		{
-		   //printf("%s\n", pDeviceList);
-		   
-		   wxString thisString( pDeviceList );
+			deviceInfo = Pa_GetDeviceInfo( i );
+			
+			wxString thisString( deviceInfo->name );
 
-		   audio_devices_list_wxstring.Add(thisString);
-		   
-		   pDeviceList += strlen(pDeviceList) + 1;
-		   
+		    audio_devices_list_wxstring.Add(thisString);
 		}
 		
-		
-		/*
-		 * Check contents of array
-		std::cout << "devices in string:\n";
-		
-		for(int i = 0; i < audio_devices_list_wxstring.size(); i++)
-		{
-			std::cout << audio_devices_list_wxstring[i] << "i:" << i << std::endl;
-		}
-		*/
-	} 
+	}
 	
 }
 
