@@ -45,6 +45,7 @@ private:
 	
 	//name of audio device to record
 	std::string m_deviceName;
+	int m_device_index;
 	
 	//formatting of audio data
 	SF_INFO sfinfo;

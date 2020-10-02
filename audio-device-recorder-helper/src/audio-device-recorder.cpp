@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "portaudio.h"
 
 
 AudioDeviceRecorder::AudioDeviceRecorder()  : wxPanel()
@@ -13,6 +14,8 @@ AudioDeviceRecorder::AudioDeviceRecorder()  : wxPanel()
 	//set to default format and sample rate for now
 	int sample_rate = 48000;
 	int num_channels = 1;
+	
+	m_device_index = -1;
 	
 	 //formatting for .wav file
     //set to signed 16-bit PCM wav little endian
@@ -55,8 +58,50 @@ static void al_nssleep(unsigned long nsec)
 
 bool AudioDeviceRecorder::PrepareDeviceForRecording()
 {    
-    
-    return true;
+    if(m_ad_combo_box)
+    {
+		int devIndex = m_ad_combo_box->GetSelection() ;
+
+		PaStreamParameters inputParameters, outputParameters;
+		PaStream *stream;
+		PaError err;
+
+		err = Pa_Initialize();
+		if( err != paNoError ){}
+
+		inputParameters.device = devIndex; /* default input device */
+		if (inputParameters.device == paNoDevice) {
+		 fprintf(stderr,"Error: No default input device.\n");
+		}
+		inputParameters.channelCount = 2;       /* stereo input */
+		inputParameters.sampleFormat = PA_SAMPLE_TYPE;
+		inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowInputLatency;
+		inputParameters.hostApiSpecificStreamInfo = NULL;
+
+		outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
+		if (outputParameters.device == paNoDevice) {
+		 fprintf(stderr,"Error: No default output device.\n");
+		}
+		outputParameters.channelCount = 2;       /* stereo output */
+		outputParameters.sampleFormat = PA_SAMPLE_TYPE;
+		outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
+		outputParameters.hostApiSpecificStreamInfo = NULL;
+		
+		//err = Pa_OpenStream(
+		//		 &stream,
+		//		 &inputParameters,
+		//		 &outputParameters,
+		//		 SAMPLE_RATE,
+		//		 FRAMES_PER_BUFFER,
+		//		 0, /* paClipOff, */  /* we won't output out of range samples so don't bother clipping them */
+		//		 fuzzCallback,
+		//		 NULL );
+		if( err != paNoError )
+
+		return true;
+	}
+	
+    return false;
 }
 
 
@@ -101,4 +146,5 @@ void AudioDeviceRecorder::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)
 	{
 		wxMessageBox("Failed to prepare device for recording! \n");
 	}
+	
 }
