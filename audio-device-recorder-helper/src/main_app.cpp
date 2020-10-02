@@ -60,33 +60,26 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     m_audio_device_registry.UpdateListOfAudioDevices();
     wxArrayString adList = m_audio_device_registry.GetListofAudioDevices();
     
-    for(auto it = 0; it < adList.GetCount(); it++)
-    {
-		//make audio entity
-		AudioEntity audio_ent;
-		m_audio_entity_vec.push_back(audio_ent);
-		
-		//set up combo box
-		m_audio_entity_vec.back().ptrToComboBox = new wxComboBox(this, wxID_ANY,"", wxPoint(20,50),wxSize(320,30));
-		m_audio_device_registry.AddReferenceToComboBox(m_audio_entity_vec.back().ptrToComboBox);
-		
-		wxButton* record_button = new wxButton(this, wxID_ANY, wxT("Record"), wxDefaultPosition, wxSize(200, 30) );
-		m_audio_entity_vec.at(it).ptrToRecordButton = record_button;
-	}
+	//make audio recorder entity
+	m_audio_recorder_vec.push_back(new AudioDeviceRecorder());
+	
+	m_audio_recorder_vec.back()->InitTrack(this);
+	
+	//set up combo box
+	m_audio_device_registry.AddReferenceToComboBox(m_audio_recorder_vec.back()->GetPointerToComboBox());
+	
     
 	m_audio_device_registry.UpdateAllComboBoxesList();
 	
 	wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	
-	for(auto it = 0; it < m_audio_entity_vec.size(); it++ )
-	{
-		wxBoxSizer* hbox = new wxBoxSizer(wxHORIZONTAL);
-		
-		hbox->Add(m_audio_entity_vec.at(it).ptrToComboBox);
-		hbox->Add(m_audio_entity_vec.at(it).ptrToRecordButton);
-		
-		vbox->Add(hbox);
-	}
+	wxBoxSizer* hbox = new wxBoxSizer(wxHORIZONTAL);
+	
+	hbox->Add(m_audio_recorder_vec.at(0)->GetPointerToComboBox());
+	hbox->Add(m_audio_recorder_vec.at(0)->GetPointerToRecordButton());
+	
+	
+	vbox->Add(hbox);
 	
 	this->SetSizer(vbox);
 	this->Layout();

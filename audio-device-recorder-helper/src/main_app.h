@@ -25,12 +25,7 @@
 #include "audio-device-recorder.h"
 #include "audio-device-registry.h"
 
-
-struct AudioEntity {
-	AudioDeviceRecorder recorder;
-	wxComboBox* ptrToComboBox;
-	wxButton* ptrToRecordButton;
-};
+#include <memory> //for unique_ptr use
 
 //override wxApp to initialize program 
 class MyApp: public wxApp
@@ -57,7 +52,7 @@ private:
     
     AudioDeviceRegistry m_audio_device_registry;
     
-    std::vector <AudioEntity> m_audio_entity_vec;
+    std::vector <AudioDeviceRecorder*> m_audio_recorder_vec;
     
 };
 
