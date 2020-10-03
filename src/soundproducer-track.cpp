@@ -256,6 +256,9 @@ void SoundProducerTrack::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)
 	
 void SoundProducerTrack::SelectAudioDeviceByName(std::string devname)
 {
+	std::string datadir; 
+	
+	datadir = DATADIR_STR;
 	filepath_audio_device_capture = datadir + devname + ".wav";
 }
 
