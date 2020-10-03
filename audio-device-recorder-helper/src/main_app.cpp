@@ -77,6 +77,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	
 	hbox->Add(m_audio_recorder_vec.at(0)->GetPointerToComboBox());
 	hbox->Add(m_audio_recorder_vec.at(0)->GetPointerToRecordButton());
+	hbox->Add(m_audio_recorder_vec.at(0)->GetPointerToStopButton());
 	
 	
 	vbox->Add(hbox);

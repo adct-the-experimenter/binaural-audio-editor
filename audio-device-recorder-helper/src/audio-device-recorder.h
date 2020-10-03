@@ -11,6 +11,13 @@
 #include <wx/combobox.h>
 #include <wx/slider.h>
 #include <wx/panel.h>
+#include <cstdint>
+
+
+#include "portaudio.h"
+
+#define SAMPLE_RATE         (44100)
+#define FRAMES_PER_BUFFER   (64)
 
 class AudioDeviceRecorder : public wxPanel
 {
@@ -27,6 +34,7 @@ public:
 	
 	void OnSelectedAudioDeviceInComboBox(wxCommandEvent& event);
 	void OnRecordButtonPressed(wxCommandEvent& event);
+	void OnStopButtonPressed(wxCommandEvent& event);
 	
 	//function to record audio and putting audio data into a buffer to source
 	void RecordAudioFromDevice();
@@ -34,12 +42,16 @@ public:
 	//function to stop device from recording and clean up some things
 	void FreeDeviceFromRecording();
 	
+	//function to stop recording on device
+	void StopRecording();
+	
 	void SetReferenceToRecordButton(wxButton* recordButtonPtr);
 	
 	void InitTrack(wxWindow* parent);
 	
 	wxComboBox* GetPointerToComboBox();
 	wxButton* GetPointerToRecordButton();
+	wxButton* GetPointerToStopButton();
 	
 private:
 	
@@ -50,16 +62,21 @@ private:
 	//formatting of audio data
 	SF_INFO sfinfo;
 	
-	size_t bit_size;
-	size_t frame_size;
-	int buffer_time_ms;
-	size_t buffer_pack_size;
-	
-	
-	size_t buffer_index; //keeps track of which buffer player is on
-
 	wxButton* m_record_button_ptr;
+	wxButton* m_stop_button_ptr;
 	wxComboBox* m_ad_combo_box;
+	
+	//array to contain audio data to write to file
+	std::array <std::int16_t,FRAMES_PER_BUFFER> m_audio_data_saved;
+	
+	//portaudio stream 
+	PaStream *m_stream_src_ptr;
+    PaError err;
+    
+    bool m_stream_opened;
+    bool m_stream_closed;
+    
+    bool recording;
 };
 
 #endif
