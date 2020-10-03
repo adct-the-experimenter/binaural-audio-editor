@@ -146,7 +146,7 @@ static int writeAudioToFileCallback( const void *inputBuffer, void *outputBuffer
 		   if(audio_data_ptr != nullptr)
 		   {
 			   *audio_data_ptr = std::int16_t(*in);
-				std::cout << "audio data i:" << *audio_data_ptr << std::endl;
+				std::cout << "audio data i:" << i << ", data:" << *audio_data_ptr << std::endl;
 		   
 				audio_data_ptr++;
 		   }
@@ -182,9 +182,9 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 			fprintf(stderr,"Error:Invalid input device.\n");
 			return false;
 		}
-		inputParameters.channelCount = 2;       /* mono input */
+		inputParameters.channelCount = 1;       /* mono input */
 		inputParameters.sampleFormat = paInt16;
-		inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowInputLatency;
+		inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultHighInputLatency;
 		inputParameters.hostApiSpecificStreamInfo = NULL;
 
 		outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
@@ -194,9 +194,9 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 			fprintf(stderr,"Error: No default output device.\n");
 			return false;
 		}
-		outputParameters.channelCount = 2;       /* stereo output */
+		outputParameters.channelCount = 1;       /* stereo output */
 		outputParameters.sampleFormat = paInt16;
-		outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
+		outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultHighOutputLatency;
 		outputParameters.hostApiSpecificStreamInfo = NULL;
 		
 		
@@ -251,6 +251,19 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 
 void AudioDeviceRecorder::FreeDeviceFromRecording()
 {
+	/* -- Now we stop the stream -- */
+	err = Pa_StopStream( m_stream_src_ptr );
+	if( err != paNoError )
+	{
+		printf("Unable to stop stream!\n");
+		printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
+		return;
+	}
+	else
+	{
+		std::cout << "Successfully stopped stream!\n";
+	}
+
 	err = Pa_CloseStream( m_stream_src_ptr );
 	if( err != paNoError )
 	{
@@ -260,6 +273,7 @@ void AudioDeviceRecorder::FreeDeviceFromRecording()
 	else
 	{
 		m_stream_closed = true;
+		std::cout << "Successfully closed stream!\n";
 	}
 
 	printf("Finished. gNumNoInputs = %d\n", gNumNoInputs );

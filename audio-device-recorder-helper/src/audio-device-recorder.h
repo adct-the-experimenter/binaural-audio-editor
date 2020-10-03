@@ -16,8 +16,8 @@
 
 #include "portaudio.h"
 
-#define SAMPLE_RATE         (44100)
-#define FRAMES_PER_BUFFER   (64)
+#define SAMPLE_RATE         48000
+#define FRAMES_PER_BUFFER   64
 
 class AudioDeviceRecorder : public wxPanel
 {
