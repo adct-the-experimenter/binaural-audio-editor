@@ -72,6 +72,7 @@ private:
 	//portaudio stream 
 	PaStream *m_stream_src_ptr;
     PaError err;
+    PaStreamParameters inputParameters, outputParameters;
     
     bool m_stream_opened;
     bool m_stream_closed;

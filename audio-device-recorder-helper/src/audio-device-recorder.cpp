@@ -164,25 +164,25 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 {    
     if(m_ad_combo_box)
     {
-		int devIndex = m_ad_combo_box->GetSelection() ;
-
-		PaStreamParameters inputParameters, outputParameters;
+		int devIndex = m_ad_combo_box->GetSelection();
 
 		err = Pa_Initialize();
 		if( err != paNoError )
 		{
 			printf("Unable to initialize portaudio!\n");
 			printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
+			return false;
 		}
 
 		inputParameters.device = devIndex; /* default input device */
+		m_device_index = devIndex;
 		if (inputParameters.device == paNoDevice) 
 		{
 			printf("Unable to set input!\n");
-			fprintf(stderr,"Error: No default input device.\n");
+			fprintf(stderr,"Error:Invalid input device.\n");
 			return false;
 		}
-		inputParameters.channelCount = 1;       /* mono input */
+		inputParameters.channelCount = 2;       /* mono input */
 		inputParameters.sampleFormat = paInt16;
 		inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowInputLatency;
 		inputParameters.hostApiSpecificStreamInfo = NULL;
@@ -194,31 +194,10 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 			fprintf(stderr,"Error: No default output device.\n");
 			return false;
 		}
-		outputParameters.channelCount = 1;       /* mono output */
+		outputParameters.channelCount = 2;       /* stereo output */
 		outputParameters.sampleFormat = paInt16;
 		outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
 		outputParameters.hostApiSpecificStreamInfo = NULL;
-		
-		err = Pa_OpenStream(
-				 &m_stream_src_ptr,
-				 &inputParameters,
-				 &outputParameters,
-				 SAMPLE_RATE,
-				 FRAMES_PER_BUFFER,
-				 0, 
-				 writeAudioToFileCallback,
-				 NULL );
-				 
-		if( err != paNoError )
-		{
-			printf("Unable to open stream!\n");
-			printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
-			return false;
-		}
-		else
-		{
-			m_stream_opened = true;
-		}
 		
 		
 		return true;
@@ -229,19 +208,43 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 
 void AudioDeviceRecorder::RecordAudioFromDevice()
 {
-	if(m_stream_opened)
+	//open stream for recording
+	err = Pa_OpenStream(
+			 &m_stream_src_ptr,
+			 &inputParameters,
+			 &outputParameters,
+			 SAMPLE_RATE,
+			 FRAMES_PER_BUFFER,
+			 0, 
+			 writeAudioToFileCallback,
+			 NULL );
+			 
+	if( err != paNoError )
 	{
-		err = Pa_StartStream( m_stream_src_ptr );
-		if( err != paNoError )
-		{
-			printf("Unable to start stream!\n");
-			printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
-		}
-		else
-		{
-			recording = true;
-		}
-	}	
+		printf("Unable to open stream!\n");
+		printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
+		return;
+	}
+	else
+	{
+		m_stream_opened = true;
+		std::cout << "Sucessfully opened stream!\n";
+	}
+	
+	//start recording stream
+	
+	err = Pa_StartStream( m_stream_src_ptr );
+	if( err != paNoError )
+	{
+		printf("Unable to start stream!\n");
+		printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
+		return;
+	}
+	else
+	{
+		std::cout << "Successfully started stream for recording!\n";
+		recording = true;
+	}
 	
 }
 
@@ -275,15 +278,15 @@ void AudioDeviceRecorder::InitTrack(wxWindow* parent)
 	this->Show();
 	
 	//add record button
-	m_record_button_ptr = new wxButton(parent, wxID_ANY, wxT("Record"), wxDefaultPosition, wxSize(200, 30) );
+	m_record_button_ptr = new wxButton(parent, wxID_ANY, wxT("Record"), wxDefaultPosition, wxSize(100, 30) );
     m_record_button_ptr->Bind(wxEVT_BUTTON, &AudioDeviceRecorder::OnRecordButtonPressed,this);
     
     //Add a combo box to select audio devices
-	m_ad_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(20,50),wxSize(100,30));
+	m_ad_combo_box = new wxComboBox(parent, wxID_ANY,"", wxPoint(20,50),wxSize(300,30));
 	m_ad_combo_box->Bind (wxEVT_COMBOBOX, &AudioDeviceRecorder::OnSelectedAudioDeviceInComboBox,this);
 	
 	//stop button
-	m_stop_button_ptr = new wxButton(parent, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxSize(200, 30) );
+	m_stop_button_ptr = new wxButton(parent, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxSize(100, 30) );
     m_stop_button_ptr->Bind(wxEVT_BUTTON, &AudioDeviceRecorder::OnStopButtonPressed,this);
 }
 
