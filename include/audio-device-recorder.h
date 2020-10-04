@@ -78,7 +78,7 @@ private:
 	ALenum format;
 	
 	//buffers
-	//ALuint buffers[NUM_BUFFERS];
+	ALuint buffers[NUM_BUFFERS];
 	ALuint m_buffer;
 	
 	

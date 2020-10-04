@@ -36,6 +36,8 @@ std::int16_t* audio_data_ptr = nullptr;
 AudioDeviceRecorder::AudioDeviceRecorder()
 {
 	
+	m_audio_data_saved.fill(0);
+	
 	m_source_ptr = nullptr;
 	m_buffer = 0;
 	
@@ -62,7 +64,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
     sfinfo.samplerate = sampleRate; 
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; 
     
-    bit_size = sizeof(int16_t);
+    bit_size = sizeof(std::int16_t);
     
     frame_size = sfinfo.channels * bit_size;
 	buffer_time_ms = 50;
@@ -73,7 +75,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	//parameters.deviceId = adc.getDefaultInputDevice();
 	parameters.nChannels = num_channels;
 	parameters.firstChannel = 0;
-	bufferFrames = 256; // 256 sample frames
+	bufferFrames = BUFFER_FRAMES; // 256 sample frames
 	
 	stream_opened = false;
     
@@ -85,7 +87,9 @@ AudioDeviceRecorder::~AudioDeviceRecorder()
 	if(m_buffer != 0)
 	{
 		alDeleteBuffers(1,&m_buffer);
+		alDeleteBuffers(NUM_BUFFERS,buffers);
 	}
+	
 }
 
 static void al_nssleep(unsigned long nsec)
@@ -122,6 +126,7 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 	if(alcMakeContextCurrent(m_playback_context_ptr) == AL_TRUE)
 	{
 		alGenBuffers(1, &m_buffer);
+		alGenBuffers(NUM_BUFFERS, buffers);
 		
 		ALenum err = alGetError();
 		if(err != AL_NO_ERROR)
@@ -137,6 +142,9 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
     return true;
 }
 
+std::array <std::int16_t,BUFFER_FRAMES> tempArray;
+
+bool new_stream = false;
 
 static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
          double streamTime, RtAudioStreamStatus status, void *userData )
@@ -147,15 +155,20 @@ static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFr
 
 	// Do something with the data in the "inputBuffer" buffer.
 
-	std::int16_t* first_index_audio_data_ptr = audio_data_ptr;
+	//std::int16_t* first_index_audio_data_ptr = audio_data_ptr;
+	
 
 	for ( i=0; i < nBufferFrames; i++ ) 
 	{
-	    *audio_data_ptr++ = *(std::int16_t*)inputBuffer++;
+	    //*audio_data_ptr++ = *(std::int16_t*)inputBuffer++;
+	    tempArray[i] = *(std::int16_t*)inputBuffer++;
+	    
 	    //std::cout << "audio data i:" << i << " , " << *audio_data_ptr << std::endl;
 	}
-
-	audio_data_ptr = first_index_audio_data_ptr; 
+	
+	//m_audio_data_saved.swap(tempArray);
+	new_stream = true;
+	//audio_data_ptr = first_index_audio_data_ptr; 
 	return 0;
 }
 
@@ -183,20 +196,48 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		return;
 	}
 	
-	if(alcMakeContextCurrent(m_playback_context_ptr) == AL_TRUE)
+	if(alcMakeContextCurrent(m_playback_context_ptr) == AL_TRUE && new_stream)
 	{
 		//load data into the buffer
+		
+		//m_audio_data_saved.swap(tempArray);
 		
 		ALenum err;
 		
 		//remove buffer from source
 		alSourcei(*m_source_ptr, AL_BUFFER, 0); 
 		
+		//remove buffer from source
+		alSourcei(*m_source_ptr, AL_BUFFER, 0); 
+		
+		size_t buffer_index;
+		for(buffer_index = 0; buffer_index < NUM_BUFFERS; buffer_index++)
+		{
+			
+			//attach samples to buffer
+			//set buffer data
+			//alBufferData(buffers[buffer_index], format, &buffer[0], slen, sfinfo.samplerate);
+			int buffer_byte_size = buffer_pack_size * bit_size;
+			alBufferData(buffers[buffer_index], format, tempArray.data(), buffer_byte_size, sfinfo.samplerate);
+			
+			err = alGetError();
+			if(err != AL_NO_ERROR)
+			{
+				std::cout << "Failed to load data into buffer!\n";
+				fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
+				return;
+			}
+			
+		}
+		
+    /* Now queue buffer to source */
+    alSourceQueueBuffers(*m_source_ptr, buffer_index, buffers);	
+/*		
 		//attach samples to buffer
 		//set buffer data
 		//alBufferData(buffers[buffer_index], format, &buffer[0], slen, sfinfo.samplerate);
-		int buffer_byte_size = buffer_pack_size * bit_size;
-		alBufferData(m_buffer, format, &m_audio_data_saved[0], buffer_byte_size, sampleRate);
+		int buffer_byte_size = m_audio_data_saved.size() * sizeof(std::int16_t);
+		alBufferData(m_buffer, format, tempArrayCopy.data(), buffer_byte_size, sampleRate);
 		
 		err = alGetError();
 		if(err != AL_NO_ERROR)
@@ -211,9 +252,10 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		alSourcei(*m_source_ptr, AL_BUFFER, m_buffer);
 	}
 	
-    
+    */
+	}
     //alcCaptureCloseDevice(m_record_audio_device);
-        
+    new_stream = false; 
 
 }
 
