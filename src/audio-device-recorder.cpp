@@ -141,21 +141,22 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
          double streamTime, RtAudioStreamStatus status, void *userData )
 {
-  if ( status ){std::cout << "Stream overflow detected!" << std::endl;}
-  
-  unsigned int i;
-  
-  // Do something with the data in the "inputBuffer" buffer.
-  
-  std::int16_t* first_index_audio_data_ptr = audio_data_ptr;
-  
-  for ( i=0; i<nBufferFrames; i++ ) 
-  {
-     *audio_data_ptr++ = *(std::int16_t*)inputBuffer++;
-  }
-  
-  audio_data_ptr = first_index_audio_data_ptr; 
-  return 0;
+	if ( status ){std::cout << "Stream overflow detected!" << std::endl;}
+
+	unsigned int i;
+
+	// Do something with the data in the "inputBuffer" buffer.
+
+	std::int16_t* first_index_audio_data_ptr = audio_data_ptr;
+
+	for ( i=0; i < nBufferFrames; i++ ) 
+	{
+	    *audio_data_ptr++ = *(std::int16_t*)inputBuffer++;
+	    //std::cout << "audio data i:" << i << " , " << *audio_data_ptr << std::endl;
+	}
+
+	audio_data_ptr = first_index_audio_data_ptr; 
+	return 0;
 }
 
 
@@ -195,7 +196,7 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		//set buffer data
 		//alBufferData(buffers[buffer_index], format, &buffer[0], slen, sfinfo.samplerate);
 		int buffer_byte_size = buffer_pack_size * bit_size;
-		alBufferData(m_buffer, format, &m_audio_data_saved[0], buffer_byte_size, sfinfo.samplerate);
+		alBufferData(m_buffer, format, &m_audio_data_saved[0], buffer_byte_size, sampleRate);
 		
 		err = alGetError();
 		if(err != AL_NO_ERROR)

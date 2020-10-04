@@ -18,7 +18,7 @@
 #include <cstdint>
 
 #define NUM_BUFFERS 4
-#define BUFFER_FRAMES 256
+#define BUFFER_FRAMES 4800
 
 class AudioDeviceRecorder
 {
