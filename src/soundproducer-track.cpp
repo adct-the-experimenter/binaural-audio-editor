@@ -113,7 +113,7 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 	if(checkBoxAudioDeviceCapture->IsChecked())
 	{
 		//buffer audio from recording
-		m_audio_device_recorder.RecordAudioFromDevice_multiplebuffers();
+		m_audio_device_recorder.RecordAudioFromDevice();
 		
 		//play audio
 		//m_audio_device_recorder.PlayAudioRecordedFromDevice();
