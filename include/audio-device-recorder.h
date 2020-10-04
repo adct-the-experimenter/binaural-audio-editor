@@ -11,7 +11,14 @@
 
 #include <array>
 
+#include "RtAudio.h"
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+#include <cstdint>
+
 #define NUM_BUFFERS 4
+#define BUFFER_FRAMES 256
 
 class AudioDeviceRecorder
 {
@@ -45,6 +52,12 @@ public:
 	
 private:
 	
+	//RtAudio parameters
+	RtAudio adc;
+	RtAudio::StreamParameters parameters;
+	unsigned int sampleRate;
+	unsigned int bufferFrames; // 256 sample frames
+
 	//name of audio device to record
 	std::string m_deviceName;
 	
@@ -71,6 +84,10 @@ private:
 	//pointer to device and context used for playback and not recording
 	ALCdevice* m_playback_device_ptr;
 	ALCcontext* m_playback_context_ptr;
+	
+	std::array <std::int16_t,BUFFER_FRAMES> m_audio_data_saved;
+	
+	bool stream_opened;
 	
 };
 

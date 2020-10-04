@@ -29,6 +29,10 @@
  * THE SOFTWARE.
  */
 
+
+//local pointer used to store a sample of audio data to array
+std::int16_t* audio_data_ptr = nullptr;
+
 AudioDeviceRecorder::AudioDeviceRecorder()
 {
 	
@@ -40,8 +44,11 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	
 	m_record_audio_device = nullptr;
 	
+	//point to first index of audio data array
+	audio_data_ptr = m_audio_data_saved.data();
+	
 	//set to default format and sample rate for now
-	int sample_rate = 48000;
+	sampleRate = 48000;
 	format = AL_FORMAT_MONO16;
 	int num_channels = 1;
 	
@@ -49,7 +56,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
     //set to signed 16-bit PCM wav little endian
     sfinfo = {0};
     sfinfo.channels = num_channels; 
-    sfinfo.samplerate = sample_rate; 
+    sfinfo.samplerate = sampleRate; 
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; 
     
     bit_size = sizeof(int16_t);
@@ -58,7 +65,14 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	buffer_time_ms = 50;
     
     
-    buffer_pack_size = (uint64_t)sample_rate * ((double(buffer_time_ms))/1000);
+    buffer_pack_size = (uint64_t)sampleRate * ((double(buffer_time_ms))/1000);
+    
+	//parameters.deviceId = adc.getDefaultInputDevice();
+	parameters.nChannels = num_channels;
+	parameters.firstChannel = 0;
+	bufferFrames = 256; // 256 sample frames
+	
+	stream_opened = false;
     
 }
 
@@ -108,45 +122,50 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 		
 	}
 	
-	
-	//setup context for recording
-	
-	m_record_audio_device = alcCaptureOpenDevice(m_deviceName.c_str(), sfinfo.samplerate, format, buffer_pack_size);
-    if(!m_record_audio_device)
-    {
-		std::cout << "Failed to set up recording device!\n";
-		std::cout << alGetString(alGetError()) << std::endl;
-        return false;
-    }
     
     return true;
 }
 
+
+static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+         double streamTime, RtAudioStreamStatus status, void *userData )
+{
+  if ( status ){std::cout << "Stream overflow detected!" << std::endl;}
+  
+  unsigned int i;
+  
+  // Do something with the data in the "inputBuffer" buffer.
+  
+  std::int16_t* first_index_audio_data_ptr = audio_data_ptr;
+  
+  for ( i=0; i<nBufferFrames; i++ ) 
+  {
+     *audio_data_ptr++ = *(std::int16_t*)inputBuffer++;
+  }
+  
+  audio_data_ptr = first_index_audio_data_ptr; 
+  return 0;
+}
+
+
 void AudioDeviceRecorder::RecordAudioFromDevice()
 {
-	
-	ALbyte data_samples[22050];
-	
-	ALint sample_count = 0;
-	
-	ALenum format = AL_FORMAT_MONO16;
-    
-    alcCaptureStart(m_record_audio_device);
-    
-    int slen = 22050 * bit_size; //get size of data in bytes
 
-    //while (data_buffer_size < buffer_pack_size) {
-        
-	//get number of samples available 
-	while( sample_count < buffer_pack_size)
+	if(!stream_opened)
 	{
-		alcGetIntegerv(m_record_audio_device, ALC_CAPTURE_SAMPLES, (ALCsizei)sizeof(ALint), &sample_count);
+		try {
+		adc.openStream( NULL, &parameters, RTAUDIO_SINT16,
+						sampleRate, &bufferFrames, &record );
+		adc.startStream();
+		stream_opened = true;
+	  }
+	  catch ( RtAudioError& e ) {
+		e.printMessage();
+		return;
+	  }
 	}
-	
-	alcCaptureSamples(m_record_audio_device, (ALCvoid *)data_samples, sample_count);
-	
-	alcCaptureStop(m_record_audio_device);
-	
+  
+  
 	//std::cout << data_samples[100] << std::endl;
 	
 	if(!m_source_ptr)
@@ -168,7 +187,7 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		//set buffer data
 		//alBufferData(buffers[buffer_index], format, &buffer[0], slen, sfinfo.samplerate);
 		int buffer_byte_size = buffer_pack_size * bit_size;
-		alBufferData(m_buffer, format, &data_samples[0], buffer_byte_size, sfinfo.samplerate);
+		alBufferData(m_buffer, format, &m_audio_data_saved[0], buffer_byte_size, sfinfo.samplerate);
 		
 		err = alGetError();
 		if(err != AL_NO_ERROR)
@@ -235,15 +254,15 @@ void AudioDeviceRecorder::PlayAudioRecordedFromDevice()
 void AudioDeviceRecorder::FreeDeviceFromRecording()
 {
 	ALCenum err;
+	try {
+		// Stop the stream
+		adc.stopStream();
+	}
+	catch (RtAudioError& e) {
+		e.printMessage();
+	}
+	if ( adc.isStreamOpen() ){ adc.closeStream();}
 	
-	alcCaptureStop(m_record_audio_device);
-    //fprintf(stderr, "\rCaptured %u samples\n", recorder.mDataSize);
-	 if(err != ALC_NO_ERROR)
-        fprintf(stderr, "Got device error 0x%04x: %s\n", err, alcGetString(m_record_audio_device, err));
-
-    alcCaptureCloseDevice(m_record_audio_device);
-     if(err != ALC_NO_ERROR)
-        fprintf(stderr, "Got device error 0x%04x: %s\n", err, alcGetString(m_record_audio_device, err));  
 }
 
 void AudioDeviceRecorder::SetPointerToSource(ALuint* src)
