@@ -207,9 +207,6 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		//remove buffer from source
 		alSourcei(*m_source_ptr, AL_BUFFER, 0); 
 		
-		//remove buffer from source
-		alSourcei(*m_source_ptr, AL_BUFFER, 0); 
-		
 		size_t buffer_index;
 		for(buffer_index = 0; buffer_index < NUM_BUFFERS; buffer_index++)
 		{
