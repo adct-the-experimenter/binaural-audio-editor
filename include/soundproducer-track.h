@@ -134,7 +134,7 @@ private:
 	
 	void OnSelectedAudioDeviceInComboBox(wxCommandEvent& event);
 	
-	void SelectAudioDeviceByName(std::string name);
+	void SelectAudioDeviceByNameAndIndex(std::string name, int index);
 	
 	wxComboBox* m_ad_combo_box;
 	

@@ -258,14 +258,15 @@ void SoundProducerTrack::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)
 	if(m_ad_combo_box != nullptr)
 	{
 		std::string thisStringName = (m_ad_combo_box->GetStringSelection()).ToStdString();
-	
-		SoundProducerTrack::SelectAudioDeviceByName(thisStringName);
+		int index = m_ad_combo_box->GetSelection();
+		
+		SoundProducerTrack::SelectAudioDeviceByNameAndIndex(thisStringName,index);
 	}
 }
 	
-void SoundProducerTrack::SelectAudioDeviceByName(std::string devname)
+void SoundProducerTrack::SelectAudioDeviceByNameAndIndex(std::string devname, int dev_index)
 {
-	m_audio_device_recorder.SetAsAudioDeviceToRecord(devname);
+	m_audio_device_recorder.SetAsAudioDeviceToRecord(devname, dev_index);
 	
 	if(!m_audio_device_recorder.PrepareDeviceForRecording())
 	{

@@ -39,6 +39,9 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	m_source_ptr = nullptr;
 	m_buffer = 0;
 	
+	m_deviceIndex = 0;
+	m_deviceName = "";
+	
 	m_playback_device_ptr = nullptr;
 	m_playback_context_ptr = nullptr;
 	
@@ -93,9 +96,17 @@ static void al_nssleep(unsigned long nsec)
     while(nanosleep(&ts, &rem) == -1 && errno == EINTR){ts = rem;}
 }
 
-void AudioDeviceRecorder::SetAsAudioDeviceToRecord(std::string devname)
+void AudioDeviceRecorder::SetAsAudioDeviceToRecord(std::string devname, int devIndex)
 {
 	m_deviceName = devname;
+	m_deviceIndex = devIndex;
+	parameters.deviceId = m_deviceIndex;
+	
+	if(stream_opened)
+	{
+		AudioDeviceRecorder::FreeDeviceFromRecording();
+		stream_opened = false;
+	}
 }
 
 
@@ -164,9 +175,6 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		return;
 	  }
 	}
-  
-  
-	//std::cout << data_samples[100] << std::endl;
 	
 	if(!m_source_ptr)
 	{
@@ -253,7 +261,6 @@ void AudioDeviceRecorder::PlayAudioRecordedFromDevice()
 
 void AudioDeviceRecorder::FreeDeviceFromRecording()
 {
-	ALCenum err;
 	try {
 		// Stop the stream
 		adc.stopStream();

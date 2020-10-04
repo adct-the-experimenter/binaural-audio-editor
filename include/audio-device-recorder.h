@@ -28,7 +28,7 @@ public:
 	~AudioDeviceRecorder();
 	
 	//function to set an audio device as the audio device to record
-	void SetAsAudioDeviceToRecord(std::string devname);
+	void SetAsAudioDeviceToRecord(std::string devname, int devIndex);
 	
 	//function to prepare recording of the audio device
 	bool PrepareDeviceForRecording();
@@ -60,6 +60,7 @@ private:
 
 	//name of audio device to record
 	std::string m_deviceName;
+	int m_deviceIndex;
 	
 	//audio device to record
 	ALCdevice* m_record_audio_device;
