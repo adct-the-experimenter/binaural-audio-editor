@@ -18,7 +18,6 @@
 #include <cstdint>
 
 #define NUM_BUFFERS 4
-#define BUFFER_FRAMES 2400
 
 class AudioDeviceRecorder
 {
@@ -76,7 +75,7 @@ private:
 	int buffer_time_ms;
 	size_t buffer_pack_size;
 	ALenum format;
-	
+
 	//buffers
 	ALuint buffers[NUM_BUFFERS];
 	ALuint m_buffer;
@@ -85,8 +84,6 @@ private:
 	//pointer to device and context used for playback and not recording
 	ALCdevice* m_playback_device_ptr;
 	ALCcontext* m_playback_context_ptr;
-	
-	std::array <std::int16_t,BUFFER_FRAMES> m_audio_data_saved;
 	
 	bool stream_opened;
 	

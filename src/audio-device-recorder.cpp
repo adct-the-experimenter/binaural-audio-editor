@@ -29,14 +29,10 @@
  * THE SOFTWARE.
  */
 
-
-//local pointer used to store a sample of audio data to array
-std::int16_t* audio_data_ptr = nullptr;
+#define BUFFER_FRAMES 512
 
 AudioDeviceRecorder::AudioDeviceRecorder()
 {
-	
-	m_audio_data_saved.fill(0);
 	
 	m_source_ptr = nullptr;
 	m_buffer = 0;
@@ -48,9 +44,6 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	m_playback_context_ptr = nullptr;
 	
 	m_record_audio_device = nullptr;
-	
-	//point to first index of audio data array
-	audio_data_ptr = m_audio_data_saved.data();
 	
 	//set to default format and sample rate for now
 	sampleRate = 48000;
@@ -142,7 +135,13 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
     return true;
 }
 
-std::array <std::int16_t,BUFFER_FRAMES> tempArray;
+
+int buffer_filled = 0;
+
+std::array <std::int16_t,BUFFER_FRAMES> tempArrayOne;
+std::array <std::int16_t,BUFFER_FRAMES> tempArrayTwo;
+std::array <std::int16_t,BUFFER_FRAMES> tempArrayThree;
+std::array <std::int16_t,BUFFER_FRAMES> tempArrayFour;
 
 bool new_stream = false;
 
@@ -155,20 +154,57 @@ static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFr
 
 	// Do something with the data in the "inputBuffer" buffer.
 
-	//std::int16_t* first_index_audio_data_ptr = audio_data_ptr;
+	std::int16_t* first_index_audio_data_ptr = nullptr;
+	std::int16_t* audio_data_ptr = nullptr;
 	
-
+	int buffer_to_fill = 0;
+	
+	switch(buffer_filled)
+	{
+		case 0:
+		{
+			first_index_audio_data_ptr = tempArrayOne.data();
+			buffer_to_fill = 1;
+			break;
+		}
+		case 1:
+		{
+			first_index_audio_data_ptr = tempArrayTwo.data();
+			buffer_to_fill = 2;
+			break;
+		}
+		case 2:
+		{
+			first_index_audio_data_ptr = tempArrayThree.data();
+			buffer_to_fill = 3;
+			break;
+		}
+		case 3:
+		{
+			first_index_audio_data_ptr = tempArrayFour.data();
+			buffer_to_fill = 4;
+			break;
+		}
+		default:{break;}
+	}
+	
+	if(!first_index_audio_data_ptr){return 1;}
+	
+	audio_data_ptr = first_index_audio_data_ptr;
+	
 	for ( i=0; i < nBufferFrames; i++ ) 
 	{
-	    //*audio_data_ptr++ = *(std::int16_t*)inputBuffer++;
-	    tempArray[i] = *(std::int16_t*)inputBuffer++;
+	    *audio_data_ptr++ = *(std::int16_t*)inputBuffer++;
 	    
 	    //std::cout << "audio data i:" << i << " , " << *audio_data_ptr << std::endl;
 	}
 	
-	//m_audio_data_saved.swap(tempArray);
-	new_stream = true;
-	//audio_data_ptr = first_index_audio_data_ptr; 
+	//increment buffer filled
+	buffer_filled++;
+	
+	//reset buffer filled if more than NUM_BUFFERS
+	if(buffer_filled >= NUM_BUFFERS){buffer_filled = 0;}
+	
 	return 0;
 }
 
@@ -178,9 +214,19 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 
 	if(!stream_opened)
 	{
+		int nBuffers = NUM_BUFFERS;
+		
 		try {
+			
 		adc.openStream( NULL, &parameters, RTAUDIO_SINT16,
 						sampleRate, &bufferFrames, &record );
+		
+		
+		
+		double data[2];
+		
+		
+		//start stream
 		adc.startStream();
 		stream_opened = true;
 	  }
@@ -195,8 +241,8 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		std::cout << "pointer to source is not defined!\n";
 		return;
 	}
-	
-	if(alcMakeContextCurrent(m_playback_context_ptr) == AL_TRUE && new_stream)
+		
+	if(alcMakeContextCurrent(m_playback_context_ptr) == AL_TRUE)
 	{
 		//load data into the buffer
 		
@@ -210,12 +256,24 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		size_t buffer_index;
 		for(buffer_index = 0; buffer_index < NUM_BUFFERS; buffer_index++)
 		{
+			std::int16_t* audio_data_ptr = nullptr;
 			
+			while(buffer_index == 0 && buffer_filled != buffer_index + 1)
+			{
+				//wait until buffer index is filled in callback function record
+			}
+			
+			if(buffer_index == 0){audio_data_ptr = tempArrayOne.data(); std::cout << "Getting Buffer 1 data!\n";}
+			if(buffer_index == 1){audio_data_ptr = tempArrayTwo.data(); std::cout << "Getting Buffer 2 data!\n";}
+			if(buffer_index == 2){audio_data_ptr = tempArrayThree.data(); std::cout << "Getting Buffer 3 data!\n";}
+			if(buffer_index == 3){audio_data_ptr = tempArrayFour.data(); std::cout << "Getting Buffer 4 data!\n";}
+			
+			if(!audio_data_ptr){break;}
 			//attach samples to buffer
 			//set buffer data
 			//alBufferData(buffers[buffer_index], format, &buffer[0], slen, sfinfo.samplerate);
-			int buffer_byte_size = buffer_pack_size * bit_size;
-			alBufferData(buffers[buffer_index], format, tempArray.data(), buffer_byte_size, sfinfo.samplerate);
+			int buffer_byte_size = int(BUFFER_FRAMES) * bit_size;
+			alBufferData(buffers[buffer_index], format, audio_data_ptr, buffer_byte_size, sampleRate);
 			
 			err = alGetError();
 			if(err != AL_NO_ERROR)
@@ -227,8 +285,8 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 			
 		}
 		
-    /* Now queue buffer to source */
-    alSourceQueueBuffers(*m_source_ptr, buffer_index, buffers);	
+		/* Now queue buffer to source */
+		alSourceQueueBuffers(*m_source_ptr, buffer_index, buffers);	
 /*		
 		//attach samples to buffer
 		//set buffer data
@@ -251,8 +309,6 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 	
     */
 	}
-    //alcCaptureCloseDevice(m_record_audio_device);
-    new_stream = false; 
 
 }
 
