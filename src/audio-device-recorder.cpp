@@ -29,7 +29,11 @@
  * THE SOFTWARE.
  */
 
-#define BUFFER_FRAMES 512
+std::int16_t* data_array1_ptr = nullptr;
+std::int16_t* data_array2_ptr = nullptr;
+std::int16_t* data_array3_ptr = nullptr;
+std::int16_t* data_array4_ptr = nullptr;
+int* buffer_filled_ptr = nullptr;
 
 AudioDeviceRecorder::AudioDeviceRecorder()
 {
@@ -71,7 +75,13 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	bufferFrames = BUFFER_FRAMES; // 256 sample frames
 	
 	stream_opened = false;
+	
+	data_array1_ptr = tempArrayOne.array_data.data();
+    data_array2_ptr = tempArrayTwo.array_data.data();
+	data_array3_ptr = tempArrayThree.array_data.data();
+	data_array4_ptr = tempArrayFour.array_data.data();
     
+    buffer_filled_ptr = &buffer_filled;
 }
 
 
@@ -136,16 +146,11 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 }
 
 
-int buffer_filled = 0;
-
-std::array <std::int16_t,BUFFER_FRAMES> tempArrayOne;
-std::array <std::int16_t,BUFFER_FRAMES> tempArrayTwo;
-std::array <std::int16_t,BUFFER_FRAMES> tempArrayThree;
-std::array <std::int16_t,BUFFER_FRAMES> tempArrayFour;
 
 bool new_stream = false;
 
-static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+
+int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
          double streamTime, RtAudioStreamStatus status, void *userData )
 {
 	if ( status ){std::cout << "Stream overflow detected!" << std::endl;}
@@ -156,33 +161,27 @@ static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFr
 
 	std::int16_t* first_index_audio_data_ptr = nullptr;
 	std::int16_t* audio_data_ptr = nullptr;
-	
-	int buffer_to_fill = 0;
-	
-	switch(buffer_filled)
+		
+	switch(*buffer_filled_ptr)
 	{
 		case 0:
 		{
-			first_index_audio_data_ptr = tempArrayOne.data();
-			buffer_to_fill = 1;
+			first_index_audio_data_ptr = data_array1_ptr;
 			break;
 		}
 		case 1:
 		{
-			first_index_audio_data_ptr = tempArrayTwo.data();
-			buffer_to_fill = 2;
+			first_index_audio_data_ptr = data_array2_ptr;
 			break;
 		}
 		case 2:
 		{
-			first_index_audio_data_ptr = tempArrayThree.data();
-			buffer_to_fill = 3;
+			first_index_audio_data_ptr = data_array3_ptr;
 			break;
 		}
 		case 3:
 		{
-			first_index_audio_data_ptr = tempArrayFour.data();
-			buffer_to_fill = 4;
+			first_index_audio_data_ptr = data_array4_ptr;
 			break;
 		}
 		default:{break;}
@@ -192,18 +191,20 @@ static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFr
 	
 	audio_data_ptr = first_index_audio_data_ptr;
 	
+	std::int16_t* my_buffer = (std::int16_t*)inputBuffer;
+	
 	for ( i=0; i < nBufferFrames; i++ ) 
 	{
-	    *audio_data_ptr++ = *(std::int16_t*)inputBuffer++;
+	    *audio_data_ptr++ = *my_buffer++;
 	    
 	    //std::cout << "audio data i:" << i << " , " << *audio_data_ptr << std::endl;
 	}
 	
 	//increment buffer filled
-	buffer_filled++;
+	(*buffer_filled_ptr)++;
 	
 	//reset buffer filled if more than NUM_BUFFERS
-	if(buffer_filled >= NUM_BUFFERS){buffer_filled = 0;}
+	if(*buffer_filled_ptr >= NUM_BUFFERS){*buffer_filled_ptr = 0;}
 	
 	return 0;
 }
@@ -256,24 +257,27 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		size_t buffer_index;
 		for(buffer_index = 0; buffer_index < NUM_BUFFERS; buffer_index++)
 		{
-			std::int16_t* audio_data_ptr = nullptr;
+			DataArray* audio_data_ptr = nullptr;
 			
-			while(buffer_index == 0 && buffer_filled != buffer_index + 1)
+			while(buffer_filled != 0 && buffer_filled != buffer_index + 1)
 			{
 				//wait until buffer index is filled in callback function record
 			}
 			
-			if(buffer_index == 0){audio_data_ptr = tempArrayOne.data(); std::cout << "Getting Buffer 1 data!\n";}
-			if(buffer_index == 1){audio_data_ptr = tempArrayTwo.data(); std::cout << "Getting Buffer 2 data!\n";}
-			if(buffer_index == 2){audio_data_ptr = tempArrayThree.data(); std::cout << "Getting Buffer 3 data!\n";}
-			if(buffer_index == 3){audio_data_ptr = tempArrayFour.data(); std::cout << "Getting Buffer 4 data!\n";}
+			if(buffer_index == 0){audio_data_ptr = &tempArrayOne; /*std::cout << "Getting Buffer 1 data!\n";*/}
+			if(buffer_index == 1){audio_data_ptr = &tempArrayTwo; /*std::cout << "Getting Buffer 2 data!\n";*/}
+			if(buffer_index == 2){audio_data_ptr = &tempArrayThree; /*std::cout << "Getting Buffer 3 data!\n";*/}
+			if(buffer_index == 3){audio_data_ptr = &tempArrayFour; /*std::cout << "Getting Buffer 4 data!\n";*/}
 			
 			if(!audio_data_ptr){break;}
 			//attach samples to buffer
 			//set buffer data
 			//alBufferData(buffers[buffer_index], format, &buffer[0], slen, sfinfo.samplerate);
 			int buffer_byte_size = int(BUFFER_FRAMES) * bit_size;
-			alBufferData(buffers[buffer_index], format, audio_data_ptr, buffer_byte_size, sampleRate);
+			alBufferData(buffers[buffer_index], format, audio_data_ptr->array_data.data(), buffer_byte_size, sampleRate);
+			
+			//clear array
+			audio_data_ptr->array_data.fill(0);
 			
 			err = alGetError();
 			if(err != AL_NO_ERROR)
@@ -287,27 +291,6 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		
 		/* Now queue buffer to source */
 		alSourceQueueBuffers(*m_source_ptr, buffer_index, buffers);	
-/*		
-		//attach samples to buffer
-		//set buffer data
-		//alBufferData(buffers[buffer_index], format, &buffer[0], slen, sfinfo.samplerate);
-		int buffer_byte_size = m_audio_data_saved.size() * sizeof(std::int16_t);
-		alBufferData(m_buffer, format, tempArrayCopy.data(), buffer_byte_size, sampleRate);
-		
-		err = alGetError();
-		if(err != AL_NO_ERROR)
-		{
-			std::cout << "Failed to load data into buffer!\n";
-			fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
-			return;
-		}
-		
-		//attach buffer to source
-		
-		alSourcei(*m_source_ptr, AL_BUFFER, m_buffer);
-	}
-	
-    */
 	}
 
 }

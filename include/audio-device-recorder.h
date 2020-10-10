@@ -17,7 +17,14 @@
 #include <cstring>
 #include <cstdint>
 
+#define BUFFER_FRAMES 1200
 #define NUM_BUFFERS 4
+
+struct DataArray
+{
+	std::array <std::int16_t,BUFFER_FRAMES> array_data;
+	bool filled = false;
+};
 
 class AudioDeviceRecorder
 {
@@ -86,6 +93,13 @@ private:
 	ALCcontext* m_playback_context_ptr;
 	
 	bool stream_opened;
+	
+	int buffer_filled = 0;
+
+	DataArray tempArrayOne;
+	DataArray tempArrayTwo;
+	DataArray tempArrayThree;
+	DataArray tempArrayFour;
 	
 };
 
