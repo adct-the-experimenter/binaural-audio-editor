@@ -101,6 +101,8 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	datadir = "../../src/timeline-track-editor/resources/";
 	#endif
 	
+	if(datadir == ""){datadir = "../../src/timeline-track-editor/resources/";}
+	
 	data_dir_fp = datadir;
 	
 	//setup the array buffer filename endings
@@ -310,7 +312,7 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 	}
 		
 	std::cout << "Finished writing to file!\n";
-
+	al_nssleep(1000);
 }
 
 void AudioDeviceRecorder::PlayAudioRecordedFromDevice()
