@@ -224,7 +224,7 @@ include(GNUInstallDirs)
 
 
 set(SOURCES src/osgViewerWX.cpp
-			src/audio-device-registry.cpp src/RtAudio.cpp
+			src/audio-device-registry.cpp src/RecordingStreamer.cpp src/RtAudio.cpp
 			src/CreateStandardReverbZoneDialog.cpp src/EditMultipleStandardReverbZonesDialog.cpp 
 			src/CreateEAXReverbZoneDialog.cpp src/EditMultipleEAXReverbZonesDialog.cpp 
 			src/CreateEchoZoneDialog.cpp src/EditMultipleEchoZonesDialog.cpp
