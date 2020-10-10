@@ -29,6 +29,20 @@
  * THE SOFTWARE.
  */
 
+
+#define QUOTE(name) #name
+#define STR(macro) QUOTE(macro)
+
+
+#ifndef DATADIR
+    #define DATADIR "../../src/timeline-track-editor/resources/"
+#endif
+
+#define DATADIR_NAME STR(DATADIR)
+
+std::string DATADIR_STR = DATADIR_NAME;
+
+//pointers for record function to use
 std::int16_t* data_array1_ptr = nullptr;
 std::int16_t* data_array2_ptr = nullptr;
 std::int16_t* data_array3_ptr = nullptr;
@@ -70,12 +84,30 @@ AudioDeviceRecorder::AudioDeviceRecorder()
     
     recording = false;
 	
+	//set pointers for the stati record callback function to use
 	data_array1_ptr = tempArrayOne.array_data.data();
     data_array2_ptr = tempArrayTwo.array_data.data();
 	data_array3_ptr = tempArrayThree.array_data.data();
 	data_array4_ptr = tempArrayFour.array_data.data();
     
     buffer_filled_ptr = &buffer_filled;
+    
+    //Set up file path for the data directory
+    std::string datadir; 
+	
+	datadir = DATADIR_STR;
+	
+	#ifdef WIN32
+	datadir = "../../src/timeline-track-editor/resources/";
+	#endif
+	
+	data_dir_fp = datadir;
+	
+	//setup the array buffer filename endings
+	tempArrayOne.filename_end = "_buf1";
+	tempArrayTwo.filename_end = "_buf2";
+	tempArrayThree.filename_end = "_buf3";
+	tempArrayFour.filename_end = "_buf4";
 }
 
 
@@ -120,9 +152,9 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 	 if(m_ad_combo_box)
     {
 		int devIndex = m_ad_combo_box->GetSelection();
-		m_deviceIndex = devIndex;
+		std::string devName = m_ad_combo_box->GetStringSelection().ToStdString();
 		
-		parameters.deviceId = m_deviceIndex;
+		AudioDeviceRecorder::SetAsAudioDeviceToRecord(devName,devIndex);
 		
 		return true;
 	}
@@ -224,6 +256,7 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 	
 	
 	//write data to separate file
+	recording = true;
 	
 	size_t buffer_index;
 	for(buffer_index = 0; buffer_index < NUM_BUFFERS; buffer_index++)
@@ -244,6 +277,29 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		
 		//write to file
 		
+		SNDFILE * outFile;
+		
+		std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + audio_data_ptr->filename_end + ".wav";
+		std::cout << "Writing to file " << filename << std::endl;
+		
+		// Open the stream file
+		if (! ( outFile = sf_open (filename.c_str(), SFM_WRITE, &sfinfo)))
+		{	
+			std::cout << "Not able to open stream file for writing" << outFile << std::endl;
+			puts (sf_strerror (NULL)) ;
+			return;
+		} 
+		
+		//write data
+		size_t readSize = audio_data_ptr->array_data.size();
+		sf_count_t write_count = 0; 
+		size_t count_buffer = 0;
+		
+		sf_seek(outFile, 0, SEEK_SET);
+		write_count = sf_write_short(outFile, &audio_data_ptr->array_data.front(), readSize);
+		
+		sf_close(outFile);
+	
 		//clear array
 		audio_data_ptr->array_data.fill(0);
 		
@@ -299,7 +355,14 @@ void AudioDeviceRecorder::InitTrack(wxWindow* parent)
 
 void AudioDeviceRecorder::OnRecordButtonPressed(wxCommandEvent& event)
 {
-	AudioDeviceRecorder::RecordAudioFromDevice();
+	
+	//while(recording)
+	//{
+		AudioDeviceRecorder::RecordAudioFromDevice();
+		
+		al_nssleep(100000);
+	//}
+	
 }
 
 void AudioDeviceRecorder::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)

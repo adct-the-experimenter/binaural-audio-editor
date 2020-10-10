@@ -26,6 +26,7 @@ struct DataArray
 {
 	std::array <std::int16_t,BUFFER_FRAMES> array_data;
 	bool filled = false;
+	std::string filename_end = "";
 };
 
 class AudioDeviceRecorder : public wxPanel
@@ -106,6 +107,7 @@ private:
     
     bool recording;
 	
+	std::string data_dir_fp;
 };
 
 #endif
