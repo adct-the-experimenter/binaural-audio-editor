@@ -57,7 +57,7 @@ private:
     
     AudioDeviceRegistry m_audio_device_registry;
     
-    std::vector <AudioEntity> m_audio_entity_vec;
+    std::vector <AudioDeviceRecorder*> m_audio_recorder_vec;
     
 };
 

@@ -26,7 +26,7 @@ public:
 	void UpdateAllComboBoxesList();
 	
 	//function to return list of audio devices
-	wxArrayString& GetListofAudioDevices();
+	wxArrayString GetListofAudioDevices();
 	
 private:
 	
