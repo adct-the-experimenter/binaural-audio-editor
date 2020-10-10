@@ -29,6 +29,26 @@ struct DataArray
 	std::string filename_end = "";
 };
 
+
+#include <functional>   // std::function, std::negate
+
+
+//class to use for calling record repeatedly
+class RecorderTimer : public wxTimer
+{
+public:
+    RecorderTimer();
+    
+    void Notify(); //action to take periodically after certain amount of time defined
+    void start();
+	void AddFunctionToTimerLoop( std::function < void() > thisFunction);
+	void stop();
+	
+private:
+	//function to call everytime Notify is called
+	std::function < void() > m_function;
+};
+
 class AudioDeviceRecorder : public wxPanel
 {
 	
@@ -108,6 +128,8 @@ private:
     bool recording;
 	
 	std::string data_dir_fp;
+	
+	RecorderTimer m_rec_timer;
 };
 
 #endif

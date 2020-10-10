@@ -108,6 +108,10 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	tempArrayTwo.filename_end = "_buf2";
 	tempArrayThree.filename_end = "_buf3";
 	tempArrayFour.filename_end = "_buf4";
+	
+	//setup recorder timer
+	std::function< void() > func = std::bind(&AudioDeviceRecorder::RecordAudioFromDevice, this);
+	m_rec_timer.AddFunctionToTimerLoop(func);
 }
 
 
@@ -305,7 +309,7 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		
 	}
 		
-	
+	std::cout << "Finished writing to file!\n";
 
 }
 
@@ -355,14 +359,7 @@ void AudioDeviceRecorder::InitTrack(wxWindow* parent)
 
 void AudioDeviceRecorder::OnRecordButtonPressed(wxCommandEvent& event)
 {
-	
-	//while(recording)
-	//{
-		AudioDeviceRecorder::RecordAudioFromDevice();
-		
-		al_nssleep(100000);
-	//}
-	
+	m_rec_timer.start();
 }
 
 void AudioDeviceRecorder::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)
@@ -377,8 +374,42 @@ void AudioDeviceRecorder::OnStopButtonPressed(wxCommandEvent& event)
 {
 	if(recording)
 	{
+		m_rec_timer.stop();
+		
 		recording = false;
-	
-		AudioDeviceRecorder::FreeDeviceFromRecording();
+		
+		if(m_stream_opened)
+		{
+			AudioDeviceRecorder::FreeDeviceFromRecording();
+		}
+		
 	}
+}
+
+//Playback Timer
+
+RecorderTimer::RecorderTimer() : wxTimer()
+{
+	
+}
+
+void RecorderTimer::Notify()
+{
+	m_function();
+}
+
+void RecorderTimer::start()
+{
+	int time_repeat_interval = 20;// in milliseconds
+    wxTimer::Start(time_repeat_interval,wxTIMER_CONTINUOUS); //the timer calls Notify every TIMER_INTERVAL milliseconds
+}
+
+void RecorderTimer::stop()
+{
+	wxTimer::Stop();
+}
+
+void RecorderTimer::AddFunctionToTimerLoop( std::function < void() > thisFunction)
+{
+	m_function = thisFunction;
 }
