@@ -20,7 +20,7 @@
 #include <cstring>
 #include <cstdint>
 
-#define BUFFER_FRAMES 1200
+#define BUFFER_FRAMES 48000
 #define NUM_BUFFERS 2
 
 struct DataArray

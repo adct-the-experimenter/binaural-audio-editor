@@ -327,11 +327,6 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 			return;
 		}
 		
-		if(buffer_index == 0){AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_1_READY_READ);}
-		if(buffer_index == 1){AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_2_READY_READ);}
-		
-		AudioDeviceRecorder::WriteStateToFile();
-		
 		//write data
 		size_t readSize = audio_data_ptr->array_data.size();
 		sf_count_t write_count = 0; 
@@ -344,6 +339,13 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 	
 		//clear array
 		audio_data_ptr->array_data.fill(0);
+		
+		if(buffer_index == 0){AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_1_READY_READ);}
+		if(buffer_index == 1){AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_2_READY_READ);}
+		
+		AudioDeviceRecorder::WriteStateToFile();
+		
+		
 		
 	}
 		
@@ -443,7 +445,7 @@ void RecorderTimer::Notify()
 
 void RecorderTimer::start()
 {
-	int time_repeat_interval = 20;// in milliseconds
+	int time_repeat_interval = 1100;// in milliseconds
     wxTimer::Start(time_repeat_interval,wxTIMER_CONTINUOUS); //the timer calls Notify every TIMER_INTERVAL milliseconds
 }
 

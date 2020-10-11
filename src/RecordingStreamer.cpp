@@ -213,6 +213,7 @@ void RecordingStreamer::RecordAudioFromDevice()
 				//read audio data
 			}
 			
+			std::cout << "data" << audio_data_ptr->array_data[20] << std::endl;
 			
 			//attach samples to buffer
 			//set buffer data
