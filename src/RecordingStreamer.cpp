@@ -160,9 +160,7 @@ void RecordingStreamer::RecordAudioFromDevice()
 	if(alcMakeContextCurrent(m_playback_context_ptr) == AL_TRUE)
 	{
 		//load data into the buffer
-		
-		//m_audio_data_saved.swap(tempArray);
-		
+				
 		ALenum err;
 		
 		//remove buffer from source
@@ -183,6 +181,8 @@ void RecordingStreamer::RecordAudioFromDevice()
 			if(buffer_index == 2){audio_data_ptr = &tempArrayThree; /*std::cout << "Getting Buffer 3 data!\n";*/}
 			if(buffer_index == 3){audio_data_ptr = &tempArrayFour; /*std::cout << "Getting Buffer 4 data!\n";*/}
 			
+			if(!audio_data_ptr){break;}
+			
 			//read audio from file
 			
 			std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + audio_data_ptr->filename_end + ".wav";
@@ -191,7 +191,7 @@ void RecordingStreamer::RecordAudioFromDevice()
 			 /* Open the file and get the first stream from it */
 			if (! (infile = sf_open (filename.c_str(), SFM_READ, &sfinfo)))
 			{
-				std::cout << "Unable to open file" << filename << "\n";
+				std::cout << "Unable to open file " << filename << "\n";
 				std::string error;
 				error.append(sf_strerror(NULL));
 				std::cout << error << std::endl;
@@ -199,12 +199,13 @@ void RecordingStreamer::RecordAudioFromDevice()
 			 }
 			
 			size_t read_size = 0;
+			size_t count = 0;
 			while( (read_size = sf_read_short(infile, audio_data_ptr->array_data.data(), audio_data_ptr->array_data.size()) ) != 0)
 			{
-				
+				//read audio data
 			}
 			
-			if(!audio_data_ptr){break;}
+			
 			//attach samples to buffer
 			//set buffer data
 			int buffer_byte_size = int(BUFFER_FRAMES) * bit_size;
@@ -212,6 +213,12 @@ void RecordingStreamer::RecordAudioFromDevice()
 			
 			//clear array
 			audio_data_ptr->array_data.fill(0);
+			
+			//close file 
+			if(infile != nullptr)
+			{
+				sf_close (infile);
+			}
 			
 			err = alGetError();
 			if(err != AL_NO_ERROR)
