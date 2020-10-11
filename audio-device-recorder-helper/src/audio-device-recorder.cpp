@@ -283,7 +283,7 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		
 		//write to file
 		
-		SNDFILE * outFile;
+		SNDFILE* outFile;
 		
 		std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + audio_data_ptr->filename_end + ".wav";
 		std::cout << "Writing to file " << filename << std::endl;

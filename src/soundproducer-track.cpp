@@ -28,6 +28,8 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	audioPlayer = new OpenALSoftPlayer();
 	audioPlayer->SetReferenceToAudioContext(thisAudioContext);
 	audioPlayer->SetReferenceToAudioDevice(thisAudioDevice);
+	m_rec_streamer.SetPointerToPlaybackContext(thisAudioContext);
+	m_rec_streamer.SetPointerToPlaybackDevice(thisAudioDevice);
 	
 	audioPlayer->InitBuffersForStreaming();
 	
@@ -46,6 +48,7 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source.");
 	
 	audioTrack->SetReferenceToSourceToManipulate(&track_source);
+	m_rec_streamer.SetPointerToSource(&track_source);
 	
 	std::string datadir; 
 	
@@ -54,6 +57,10 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	#ifdef WIN32
 	datadir = "../src/timeline-track-editor/resources/";
 	#endif
+	
+	if(datadir == ""){datadir = "../src/timeline-track-editor/resources/";}
+	
+	m_rec_streamer.SetPathToDataDirectory(datadir);
 	
 	std::string filepath_stream = datadir + title.ToStdString() + ".wav";
 	audioTrack->SetStreamAudioFilePath(filepath_stream);
@@ -110,11 +117,14 @@ void SoundProducerTrack::FunctionToCallInPlayState()
 	//if audio device capture is enabled
 	if(checkBoxAudioDeviceCapture->IsChecked())
 	{
-		
+		m_rec_streamer.RecordAudioFromDevice();
+	}
+	else
+	{
+		//buffer audio from file
+		audioTrack->FunctionToCallInPlayState();
 	}
 	
-	//buffer audio from file
-	audioTrack->FunctionToCallInPlayState();
 	
 }
 
@@ -249,17 +259,28 @@ void SoundProducerTrack::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)
 	if(m_ad_combo_box != nullptr)
 	{
 		std::string thisStringName = (m_ad_combo_box->GetStringSelection()).ToStdString();
-	
-		SoundProducerTrack::SelectAudioDeviceByName(thisStringName);
+		int index = m_ad_combo_box->GetSelection();
+		
+		SoundProducerTrack::SelectAudioDeviceByNameAndIndex(thisStringName,index);
 	}
 }
 	
-void SoundProducerTrack::SelectAudioDeviceByName(std::string devname)
+void SoundProducerTrack::SelectAudioDeviceByNameAndIndex(std::string devname,int index)
 {
 	std::string datadir; 
 	
 	datadir = DATADIR_STR;
-	filepath_audio_device_capture = datadir + devname + ".wav";
+	
+	m_rec_streamer.SetAsAudioDeviceToRecord(devname,index);
+	
+	if(!m_rec_streamer.PrepareDeviceForRecording())
+	{
+		std::string messageString;
+		messageString.append("Failed to prepare ");
+		messageString.append(devname);
+		messageString.append(" for recording.");
+		wxMessageBox( messageString );
+	}
 }
 
 void SoundProducerTrack::InitTrack(wxWindow* parent, std::vector <int> *timeTickVector)

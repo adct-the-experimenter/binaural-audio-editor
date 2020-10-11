@@ -129,7 +129,7 @@ int OpenALSoftPlayer::OpenPlayerFile(const char *filename)
     /* Open the file and get the first stream from it */
 	if (! (infile = sf_open (filename, SFM_READ, &sfinfo)))
 	{
-		std::cout << "Unable to open file" << filename << "\n";
+		std::cout << "Unable to open file " << filename << "\n";
 		std::string error;
 		error.append(sf_strerror(NULL));
 		std::cout << error << std::endl;

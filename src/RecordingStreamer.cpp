@@ -29,11 +29,8 @@
  * THE SOFTWARE.
  */
 
-std::int16_t* data_array1_ptr = nullptr;
-std::int16_t* data_array2_ptr = nullptr;
-std::int16_t* data_array3_ptr = nullptr;
-std::int16_t* data_array4_ptr = nullptr;
-int* buffer_filled_ptr = nullptr;
+
+#include <unistd.h>
 
 RecordingStreamer::RecordingStreamer()
 {
@@ -74,12 +71,14 @@ RecordingStreamer::RecordingStreamer()
 	
 	stream_opened = false;
 	
-	data_array1_ptr = tempArrayOne.array_data.data();
-    data_array2_ptr = tempArrayTwo.array_data.data();
-	data_array3_ptr = tempArrayThree.array_data.data();
-	data_array4_ptr = tempArrayFour.array_data.data();
-    
-    buffer_filled_ptr = &buffer_filled;
+	
+	//setup the array buffer filename endings
+	tempArrayOne.filename_end = "_buf1";
+	tempArrayTwo.filename_end = "_buf2";
+	tempArrayThree.filename_end = "_buf3";
+	tempArrayFour.filename_end = "_buf4";
+	
+	buffers_generated = false;
 }
 
 
@@ -125,17 +124,23 @@ bool RecordingStreamer::PrepareDeviceForRecording()
 	
 	if(alcMakeContextCurrent(m_playback_context_ptr) == AL_TRUE)
 	{
-		alGenBuffers(1, &m_buffer);
-		alGenBuffers(NUM_BUFFERS, buffers);
-		
-		ALenum err = alGetError();
-		if(err != AL_NO_ERROR)
+		if(!buffers_generated)
 		{
-			std::cout << "Failed to generate buffer!\n";
-			fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
-			return false;
+			alGenBuffers(1, &m_buffer);
+			alGenBuffers(NUM_BUFFERS, buffers);
+			
+			ALenum err = alGetError();
+			if(err != AL_NO_ERROR)
+			{
+				std::cout << "Failed to generate buffer!\n";
+				fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
+				return false;
+			}
+			
 		}
 		
+		
+		buffers_generated = true;
 	}
 	
     
@@ -168,20 +173,40 @@ void RecordingStreamer::RecordAudioFromDevice()
 		{
 			DataArray* audio_data_ptr = nullptr;
 			
-			while(buffer_filled != 0 && buffer_filled != buffer_index + 1)
-			{
+			//while(buffer_filled != 0 && buffer_filled != buffer_index + 1)
+			//{
 				//wait until buffer index is filled in callback function record
-			}
+			//}
 			
 			if(buffer_index == 0){audio_data_ptr = &tempArrayOne; /*std::cout << "Getting Buffer 1 data!\n";*/}
 			if(buffer_index == 1){audio_data_ptr = &tempArrayTwo; /*std::cout << "Getting Buffer 2 data!\n";*/}
 			if(buffer_index == 2){audio_data_ptr = &tempArrayThree; /*std::cout << "Getting Buffer 3 data!\n";*/}
 			if(buffer_index == 3){audio_data_ptr = &tempArrayFour; /*std::cout << "Getting Buffer 4 data!\n";*/}
 			
+			//read audio from file
+			
+			std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + audio_data_ptr->filename_end + ".wav";
+			
+			SNDFILE * infile;
+			 /* Open the file and get the first stream from it */
+			if (! (infile = sf_open (filename.c_str(), SFM_READ, &sfinfo)))
+			{
+				std::cout << "Unable to open file" << filename << "\n";
+				std::string error;
+				error.append(sf_strerror(NULL));
+				std::cout << error << std::endl;
+				break;
+			 }
+			
+			size_t read_size = 0;
+			while( (read_size = sf_read_short(infile, audio_data_ptr->array_data.data(), audio_data_ptr->array_data.size()) ) != 0)
+			{
+				
+			}
+			
 			if(!audio_data_ptr){break;}
 			//attach samples to buffer
 			//set buffer data
-			//alBufferData(buffers[buffer_index], format, &buffer[0], slen, sfinfo.samplerate);
 			int buffer_byte_size = int(BUFFER_FRAMES) * bit_size;
 			alBufferData(buffers[buffer_index], format, audio_data_ptr->array_data.data(), buffer_byte_size, sampleRate);
 			
@@ -264,3 +289,5 @@ ALuint* RecordingStreamer::GetPointerToSource()
 
 void RecordingStreamer::SetPointerToPlaybackDevice(ALCdevice* device){m_playback_device_ptr = device;}
 void RecordingStreamer::SetPointerToPlaybackContext(ALCcontext* context){m_playback_context_ptr = context;}
+
+void RecordingStreamer::SetPathToDataDirectory(std::string path){data_dir_fp = path;}

@@ -16,6 +16,8 @@
 
 #include "audio-device-registry.h"
 
+#include "RecordingStreamer.h"
+
 //class to manipulate x,y z position of sound producer
 class SoundProducerTrack : public Track
 {
@@ -130,7 +132,7 @@ private:
 	
 	void OnSelectedAudioDeviceInComboBox(wxCommandEvent& event);
 	
-	void SelectAudioDeviceByName(std::string name);
+	void SelectAudioDeviceByNameAndIndex(std::string name, int index);
 	
 	wxComboBox* m_ad_combo_box;
 	
@@ -144,10 +146,11 @@ private:
 	
 	std::string streamSoundFilePath;
 	
-	std::string filepath_audio_device_capture;
 	std::string filepath_audio_file;
 	
 	wxCheckBox* checkBoxAudioDeviceCapture;
+	
+	RecordingStreamer m_rec_streamer;
 };
 
 #endif

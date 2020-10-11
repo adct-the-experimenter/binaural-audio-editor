@@ -26,6 +26,7 @@ struct DataArray
 {
 	std::array <std::int16_t,BUFFER_FRAMES> array_data;
 	bool filled = false;
+	std::string filename_end = "";
 };
 
 class RecordingStreamer
@@ -57,6 +58,9 @@ public:
 	//functions to set pointers to playback context and device
 	void SetPointerToPlaybackDevice(ALCdevice* device);
 	void SetPointerToPlaybackContext(ALCcontext* context);
+	
+	//function to set path to data directory
+	void SetPathToDataDirectory(std::string path);
 	
 private:
 	
@@ -100,6 +104,10 @@ private:
 	DataArray tempArrayTwo;
 	DataArray tempArrayThree;
 	DataArray tempArrayFour;
+	
+	std::string data_dir_fp;
+	
+	bool buffers_generated;
 	
 };
 
