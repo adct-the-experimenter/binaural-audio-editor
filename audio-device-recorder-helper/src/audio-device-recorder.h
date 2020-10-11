@@ -8,6 +8,7 @@
 #include <wx/slider.h>
 #include <wx/panel.h>
 #include <cstdint>
+#include <wx/checkbox.h>
 
 #include <sndfile.h>
 
@@ -20,7 +21,7 @@
 #include <cstdint>
 
 #define BUFFER_FRAMES 1200
-#define NUM_BUFFERS 4
+#define NUM_BUFFERS 2
 
 struct DataArray
 {
@@ -115,8 +116,6 @@ private:
 
 	DataArray tempArrayOne;
 	DataArray tempArrayTwo;
-	DataArray tempArrayThree;
-	DataArray tempArrayFour;
 	
 	wxButton* m_record_button_ptr;
 	wxButton* m_stop_button_ptr;

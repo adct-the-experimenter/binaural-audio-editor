@@ -357,6 +357,7 @@ void AudioDeviceRecorder::InitTrack(wxWindow* parent)
 	//stop button
 	m_stop_button_ptr = new wxButton(parent, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxSize(100, 30) );
     m_stop_button_ptr->Bind(wxEVT_BUTTON, &AudioDeviceRecorder::OnStopButtonPressed,this);
+    
 }
 
 void AudioDeviceRecorder::OnRecordButtonPressed(wxCommandEvent& event)
@@ -398,6 +399,7 @@ RecorderTimer::RecorderTimer() : wxTimer()
 void RecorderTimer::Notify()
 {
 	m_function();
+	al_nssleep(1000);
 }
 
 void RecorderTimer::start()
