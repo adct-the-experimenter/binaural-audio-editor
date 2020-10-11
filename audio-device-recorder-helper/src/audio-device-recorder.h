@@ -88,6 +88,7 @@ public:
 	wxButton* GetPointerToRecordButton();
 	wxButton* GetPointerToStopButton();
 	
+	enum class HelperProgramBufferState : std::int8_t { NONE=0, BUFFER_1_READY_READ, BUFFER_2_READY_READ};
 	
 private:
 	
@@ -116,6 +117,8 @@ private:
 
 	DataArray tempArrayOne;
 	DataArray tempArrayTwo;
+	//DataArray tempArrayThree;
+	//DataArray tempArrayFour;
 	
 	wxButton* m_record_button_ptr;
 	wxButton* m_stop_button_ptr;
@@ -129,6 +132,16 @@ private:
 	std::string data_dir_fp;
 	
 	RecorderTimer m_rec_timer;
+	
+	//state
+	
+	AudioDeviceRecorder::HelperProgramBufferState m_state;
+	void SetState(AudioDeviceRecorder::HelperProgramBufferState);
+	AudioDeviceRecorder::HelperProgramBufferState GetState();
+	void WriteStateToFile();
+	
+	std::string fp_state_file;
+	
 };
 
 #endif

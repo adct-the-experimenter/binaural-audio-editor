@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fstream>
 
 /*
  * OpenAL Recording Example
@@ -43,10 +44,10 @@
 std::string DATADIR_STR = DATADIR_NAME;
 
 //pointers for record function to use
-std::int16_t* data_array1_ptr = nullptr;
-std::int16_t* data_array2_ptr = nullptr;
-std::int16_t* data_array3_ptr = nullptr;
-std::int16_t* data_array4_ptr = nullptr;
+DataArray* data_array1_ptr = nullptr;
+DataArray* data_array2_ptr = nullptr;
+//std::int16_t* data_array3_ptr = nullptr;
+//std::int16_t* data_array4_ptr = nullptr;
 int* buffer_filled_ptr = nullptr;
 
 AudioDeviceRecorder::AudioDeviceRecorder()
@@ -54,6 +55,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	m_deviceIndex = 0;
 	m_deviceName = "";
 	
+	m_state = AudioDeviceRecorder::HelperProgramBufferState::NONE;
 	
 	//set to default format and sample rate for now
 	sampleRate = 48000;
@@ -85,10 +87,10 @@ AudioDeviceRecorder::AudioDeviceRecorder()
     recording = false;
 	
 	//set pointers for the stati record callback function to use
-	data_array1_ptr = tempArrayOne.array_data.data();
-    data_array2_ptr = tempArrayTwo.array_data.data();
-	data_array3_ptr = tempArrayThree.array_data.data();
-	data_array4_ptr = tempArrayFour.array_data.data();
+	data_array1_ptr = &tempArrayOne;
+    data_array2_ptr = &tempArrayTwo;
+	//data_array3_ptr = tempArrayThree.array_data.data();
+	//data_array4_ptr = tempArrayFour.array_data.data();
     
     buffer_filled_ptr = &buffer_filled;
     
@@ -105,11 +107,13 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	
 	data_dir_fp = datadir;
 	
+	fp_state_file = data_dir_fp + "buffer-stat.txt";
+	
 	//setup the array buffer filename endings
 	tempArrayOne.filename_end = "_buf1";
 	tempArrayTwo.filename_end = "_buf2";
-	tempArrayThree.filename_end = "_buf3";
-	tempArrayFour.filename_end = "_buf4";
+	//tempArrayThree.filename_end = "_buf3";
+	//tempArrayFour.filename_end = "_buf4";
 	
 	//setup recorder timer
 	std::function< void() > func = std::bind(&AudioDeviceRecorder::RecordAudioFromDevice, this);
@@ -181,7 +185,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 	unsigned int i;
 
 	// Do something with the data in the "inputBuffer" buffer.
-
+	
 	std::int16_t* first_index_audio_data_ptr = nullptr;
 	std::int16_t* audio_data_ptr = nullptr;
 		
@@ -189,22 +193,24 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 	{
 		case 0:
 		{
-			first_index_audio_data_ptr = data_array1_ptr;
+			first_index_audio_data_ptr = data_array1_ptr->array_data.data();
+			data_array1_ptr->filled = false;
 			break;
 		}
 		case 1:
 		{
-			first_index_audio_data_ptr = data_array2_ptr;
+			first_index_audio_data_ptr = data_array2_ptr->array_data.data();
+			data_array2_ptr->filled = false;
 			break;
 		}
 		case 2:
 		{
-			first_index_audio_data_ptr = data_array3_ptr;
+			//first_index_audio_data_ptr = data_array3_ptr;
 			break;
 		}
 		case 3:
 		{
-			first_index_audio_data_ptr = data_array4_ptr;
+			//first_index_audio_data_ptr = data_array4_ptr;
 			break;
 		}
 		default:{break;}
@@ -221,6 +227,31 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 	    *audio_data_ptr++ = *my_buffer++;
 	    
 	    //std::cout << "audio data i:" << i << " , " << *audio_data_ptr << std::endl;
+	}
+	
+	switch(*buffer_filled_ptr)
+	{
+		case 0:
+		{
+			data_array1_ptr->filled = true;
+			break;
+		}
+		case 1:
+		{
+			data_array2_ptr->filled = true;
+			break;
+		}
+		case 2:
+		{
+			//first_index_audio_data_ptr = data_array3_ptr;
+			break;
+		}
+		case 3:
+		{
+			//first_index_audio_data_ptr = data_array4_ptr;
+			break;
+		}
+		default:{break;}
 	}
 	
 	//increment buffer filled
@@ -260,7 +291,7 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 	  }
 	}
 	
-	
+	AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::NONE);
 	//write data to separate file
 	recording = true;
 	
@@ -276,8 +307,8 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		
 		if(buffer_index == 0){audio_data_ptr = &tempArrayOne; /*std::cout << "Getting Buffer 1 data!\n";*/}
 		if(buffer_index == 1){audio_data_ptr = &tempArrayTwo; /*std::cout << "Getting Buffer 2 data!\n";*/}
-		if(buffer_index == 2){audio_data_ptr = &tempArrayThree; /*std::cout << "Getting Buffer 3 data!\n";*/}
-		if(buffer_index == 3){audio_data_ptr = &tempArrayFour; /*std::cout << "Getting Buffer 4 data!\n";*/}
+		//if(buffer_index == 2){audio_data_ptr = &tempArrayThree; /*std::cout << "Getting Buffer 3 data!\n";*/}
+		//if(buffer_index == 3){audio_data_ptr = &tempArrayFour; /*std::cout << "Getting Buffer 4 data!\n";*/}
 		
 		if(!audio_data_ptr){break;}
 		
@@ -291,10 +322,15 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		// Open the stream file
 		if (! ( outFile = sf_open (filename.c_str(), SFM_WRITE, &sfinfo)))
 		{	
-			std::cout << "Not able to open stream file for writing" << outFile << std::endl;
+			std::cout << "Not able to open stream file for writing " << outFile << std::endl;
 			puts (sf_strerror (NULL)) ;
 			return;
-		} 
+		}
+		
+		if(buffer_index == 0){AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_1_READY_READ);}
+		if(buffer_index == 1){AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_2_READY_READ);}
+		
+		AudioDeviceRecorder::WriteStateToFile();
 		
 		//write data
 		size_t readSize = audio_data_ptr->array_data.size();
@@ -323,6 +359,9 @@ void AudioDeviceRecorder::PlayAudioRecordedFromDevice()
 
 void AudioDeviceRecorder::FreeDeviceFromRecording()
 {
+	AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::NONE);
+	AudioDeviceRecorder::WriteStateToFile();
+	
 	try {
 		// Stop the stream
 		adc.stopStream();
@@ -416,4 +455,28 @@ void RecorderTimer::stop()
 void RecorderTimer::AddFunctionToTimerLoop( std::function < void() > thisFunction)
 {
 	m_function = thisFunction;
+}
+
+void AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState state){m_state = state;}
+AudioDeviceRecorder::HelperProgramBufferState AudioDeviceRecorder::GetState(){return m_state;}
+
+void AudioDeviceRecorder::WriteStateToFile()
+{
+	std::ofstream state_outfile;
+	
+	state_outfile.open(fp_state_file.c_str(), std::ofstream::out | std::ofstream::trunc);
+	if(state_outfile.is_open())
+	{
+		int state = 0;
+		switch(AudioDeviceRecorder::GetState())
+		{
+			case AudioDeviceRecorder::HelperProgramBufferState::NONE:{state = 0; break;}
+			case AudioDeviceRecorder::HelperProgramBufferState::BUFFER_1_READY_READ:{state = 1; break;}
+			case AudioDeviceRecorder::HelperProgramBufferState::BUFFER_2_READY_READ:{state = 2; break;}
+		}
+		
+		state_outfile << state;
+	}
+	
+	state_outfile.close();
 }

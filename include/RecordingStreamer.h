@@ -18,7 +18,7 @@
 #include <cstdint>
 
 #define BUFFER_FRAMES 1200
-#define NUM_BUFFERS 4
+#define NUM_STREAM_BUFFERS 2
 
 //class used to periodically load new data from several files and pass it into an OpenAL buffer
 
@@ -62,6 +62,8 @@ public:
 	//function to set path to data directory
 	void SetPathToDataDirectory(std::string path);
 	
+	enum class HelperProgramBufferState : std::int8_t { NONE=0, BUFFER_1_READY_READ, BUFFER_2_READY_READ};
+	
 private:
 	
 	
@@ -88,7 +90,7 @@ private:
 	ALenum format;
 
 	//buffers
-	ALuint buffers[NUM_BUFFERS];
+	ALuint buffers[NUM_STREAM_BUFFERS];
 	ALuint m_buffer;
 	
 	
@@ -102,12 +104,16 @@ private:
 
 	DataArray tempArrayOne;
 	DataArray tempArrayTwo;
-	DataArray tempArrayThree;
-	DataArray tempArrayFour;
+	//DataArray tempArrayThree;
+	//DataArray tempArrayFour;
 	
 	std::string data_dir_fp;
 	
 	bool buffers_generated;
+	
+	//file indicating status of audio recorder helper program buffers
+	std::string file_path_buffer_stat;
+	RecordingStreamer::HelperProgramBufferState GetStatusOfHelperProgramBuffers();
 	
 };
 

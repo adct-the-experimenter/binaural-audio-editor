@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fstream>
 
 /*
  * OpenAL Recording Example
@@ -75,8 +76,8 @@ RecordingStreamer::RecordingStreamer()
 	//setup the array buffer filename endings
 	tempArrayOne.filename_end = "_buf1";
 	tempArrayTwo.filename_end = "_buf2";
-	tempArrayThree.filename_end = "_buf3";
-	tempArrayFour.filename_end = "_buf4";
+	//tempArrayThree.filename_end = "_buf3";
+	//tempArrayFour.filename_end = "_buf4";
 	
 	buffers_generated = false;
 }
@@ -87,7 +88,7 @@ RecordingStreamer::~RecordingStreamer()
 	if(m_buffer != 0)
 	{
 		alDeleteBuffers(1,&m_buffer);
-		alDeleteBuffers(NUM_BUFFERS,buffers);
+		alDeleteBuffers(NUM_STREAM_BUFFERS,buffers);
 	}
 	
 }
@@ -115,6 +116,7 @@ void RecordingStreamer::SetAsAudioDeviceToRecord(std::string devname, int devInd
 
 bool RecordingStreamer::PrepareDeviceForRecording()
 {    
+	file_path_buffer_stat = data_dir_fp + "buffer-stat.txt";
 	
     if(!m_playback_context_ptr)
     {
@@ -127,7 +129,7 @@ bool RecordingStreamer::PrepareDeviceForRecording()
 		if(!buffers_generated)
 		{
 			alGenBuffers(1, &m_buffer);
-			alGenBuffers(NUM_BUFFERS, buffers);
+			alGenBuffers(NUM_STREAM_BUFFERS, buffers);
 			
 			ALenum err = alGetError();
 			if(err != AL_NO_ERROR)
@@ -166,20 +168,26 @@ void RecordingStreamer::RecordAudioFromDevice()
 		//remove buffer from source
 		alSourcei(*m_source_ptr, AL_BUFFER, 0); 
 		
+		bool exitFunction = false;
+		
+		switch(RecordingStreamer::GetStatusOfHelperProgramBuffers())
+		{
+			case RecordingStreamer::HelperProgramBufferState::NONE:{std::cout << "No state.\n"; exitFunction = true; break;}
+			case RecordingStreamer::HelperProgramBufferState::BUFFER_1_READY_READ:{std::cout << "Buffer 1 ready.\n"; break;}
+			case RecordingStreamer::HelperProgramBufferState::BUFFER_2_READY_READ:{std::cout << "Buffer 2 ready.\n"; break;}
+		}
+		
+		if(exitFunction){return;}
+		
 		size_t buffer_index;
-		for(buffer_index = 0; buffer_index < NUM_BUFFERS; buffer_index++)
+		for(buffer_index = 0; buffer_index < NUM_STREAM_BUFFERS; buffer_index++)
 		{
 			DataArray* audio_data_ptr = nullptr;
 			
-			//while(buffer_filled != 0 && buffer_filled != buffer_index + 1)
-			//{
-				//wait until buffer index is filled in callback function record
-			//}
-			
 			if(buffer_index == 0){audio_data_ptr = &tempArrayOne; /*std::cout << "Getting Buffer 1 data!\n";*/}
 			if(buffer_index == 1){audio_data_ptr = &tempArrayTwo; /*std::cout << "Getting Buffer 2 data!\n";*/}
-			if(buffer_index == 2){audio_data_ptr = &tempArrayThree; /*std::cout << "Getting Buffer 3 data!\n";*/}
-			if(buffer_index == 3){audio_data_ptr = &tempArrayFour; /*std::cout << "Getting Buffer 4 data!\n";*/}
+			//if(buffer_index == 2){audio_data_ptr = &tempArrayThree; /*std::cout << "Getting Buffer 3 data!\n";*/}
+			//if(buffer_index == 3){audio_data_ptr = &tempArrayFour; /*std::cout << "Getting Buffer 4 data!\n";*/}
 			
 			if(!audio_data_ptr){break;}
 			
@@ -298,3 +306,41 @@ void RecordingStreamer::SetPointerToPlaybackDevice(ALCdevice* device){m_playback
 void RecordingStreamer::SetPointerToPlaybackContext(ALCcontext* context){m_playback_context_ptr = context;}
 
 void RecordingStreamer::SetPathToDataDirectory(std::string path){data_dir_fp = path;}
+
+RecordingStreamer::HelperProgramBufferState RecordingStreamer::GetStatusOfHelperProgramBuffers()
+{
+	 std::ifstream rw_stat_file (file_path_buffer_stat.c_str(), std::ifstream::in);
+	 std::string line;
+	 
+	 RecordingStreamer::HelperProgramBufferState state;
+	 
+	 if (rw_stat_file.is_open())
+	 {
+		while ( std::getline (rw_stat_file,line) )
+		{
+		  if(line == "1")
+		  {
+			  std::cout << "buffer 1 is ready for read.";
+			  state = RecordingStreamer::HelperProgramBufferState::BUFFER_1_READY_READ;
+		  }
+		  else if(line == "2")
+		  {
+			  std::cout << "buffer 2 is ready for read.";
+			  state = RecordingStreamer::HelperProgramBufferState::BUFFER_2_READY_READ;
+		  }
+		 
+		}
+	
+		rw_stat_file.close();
+		
+	 }
+	 else
+	 {
+		 std::cout << "Failed to open " << file_path_buffer_stat << std::endl;
+		 state = RecordingStreamer::HelperProgramBufferState::NONE;
+	 }
+	 
+	 
+	 
+	 return state;
+}
