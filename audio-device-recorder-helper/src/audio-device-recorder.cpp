@@ -43,6 +43,120 @@
 
 std::string DATADIR_STR = DATADIR_NAME;
 
+
+AudioDataArray::AudioDataArray()
+{
+	//start current position at zero
+	m_main_current_pos = 0;
+	
+	//set full bool to false
+	m_full = false;
+	
+	m_data_in_backup_copy = false;
+	
+	 //formatting for .wav file
+    //set to signed 16-bit PCM wav little endian
+    
+    int sampleRate = 48000;
+	int num_channels = 1;
+	
+    sfinfo = {0};
+    sfinfo.channels = num_channels; 
+    sfinfo.samplerate = sampleRate; 
+    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; 
+    
+    
+}
+
+AudioDataArray::~AudioDataArray()
+{
+	
+}
+
+void AudioDataArray::WriteArrayDataToFile(std::string filename)
+{
+	//write to file
+		
+	SNDFILE* outFile;
+	
+	std::cout << "Writing to file " << filename << std::endl;
+	
+	// Open the stream file
+	if (! ( outFile = sf_open (filename.c_str(), SFM_WRITE, &sfinfo)))
+	{	
+		std::cout << "Not able to open stream file for writing " << outFile << std::endl;
+		puts (sf_strerror (NULL)) ;
+		return;
+	}
+	
+	//write data to file
+	size_t readSize = m_main_array.size();
+	sf_count_t write_count = 0; 
+	size_t count_buffer = 0;
+	
+	sf_seek(outFile, 0, SEEK_SET);
+	write_count = sf_write_short(outFile, &m_main_array.front(), readSize);
+	
+	sf_close(outFile);
+	
+	//reset main current position
+	m_main_current_pos = 0;
+	
+	//reset main array full bool
+	AudioDataArray::SetMainArrayFullBool(false);
+}
+
+//function to copy data from an array to the main array
+void AudioDataArray::CopyDataToMainArray(std::array <std::int16_t,BUFFER_FRAMES> &this_array)
+{
+	
+	//if there is data in the backup copy array
+	if(m_data_in_backup_copy)
+	{
+		
+		size_t input_size = this_array.size();
+	
+		size_t start = m_main_current_pos;
+	
+		size_t endIndex = this_array.size();
+	
+		for(size_t i = 0; i < endIndex; i++)
+		{
+			m_main_array[start + i] = this_array[i];
+		}
+		
+		m_data_in_backup_copy = false;
+	}
+	
+	size_t input_size = this_array.size();
+	
+	size_t start = m_main_current_pos;
+	
+	size_t endIndex = this_array.size();
+	
+	//if there is more data left over than can be filled in array
+	if(m_main_current_pos + input_size >= m_main_array.size())
+	{
+		//set end based on what can be read to main array
+		endIndex = input_size - (m_main_array.size() - m_main_current_pos);
+		
+		AudioDataArray::SetMainArrayFullBool(true);
+		m_data_in_backup_copy = true;
+	}
+	
+	//increment main array current reading position
+	m_main_current_pos = m_main_current_pos + input_size;
+	
+	for(size_t i = 0; i < endIndex; i++)
+	{
+		m_main_array[start + i] = this_array[i];
+	} 
+	
+}
+
+void AudioDataArray::SetMainArrayFullBool(bool state){m_full = state;}
+bool AudioDataArray::IsMainArrayFull(){return m_full;}
+
 //pointers for record function to use
 DataArray* data_array1_ptr = nullptr;
 DataArray* data_array2_ptr = nullptr;
@@ -61,16 +175,11 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	sampleRate = 48000;
 	int num_channels = 1;
 	
-	 //formatting for .wav file
-    //set to signed 16-bit PCM wav little endian
-    sfinfo = {0};
-    sfinfo.channels = num_channels; 
-    sfinfo.samplerate = sampleRate; 
-    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; 
+	
     
     bit_size = sizeof(std::int16_t);
     
-    frame_size = sfinfo.channels * bit_size;
+    frame_size = num_channels * bit_size;
 	buffer_time_ms = 50;
     
     
@@ -108,6 +217,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	data_dir_fp = datadir;
 	
 	fp_state_file = data_dir_fp + "buffer-stat.txt";
+	
 	
 	//setup the array buffer filename endings
 	tempArrayOne.filename_end = "_buf1";
@@ -263,6 +373,19 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 	return 0;
 }
 
+static void CopyFile(std::string inputFile, std::string outputFile)
+{
+	std::ifstream src;
+	std::ofstream dst;
+
+	src.open(inputFile.c_str(), std::ios::in | std::ios::binary);
+	dst.open(outputFile.c_str(), std::ios::out | std::ios::binary);
+	dst << src.rdbuf();
+
+	src.close();
+	dst.close();
+}
+
 
 void AudioDeviceRecorder::RecordAudioFromDevice()
 {
@@ -295,11 +418,11 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 	//write data to separate file
 	recording = true;
 	
+	DataArray* audio_data_ptr = nullptr;
+	
 	size_t buffer_index;
 	for(buffer_index = 0; buffer_index < NUM_BUFFERS; buffer_index++)
 	{
-		DataArray* audio_data_ptr = nullptr;
-		
 		while(buffer_filled != 0 && buffer_filled != buffer_index + 1)
 		{
 			//wait until buffer index is filled in callback function record
@@ -312,45 +435,33 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		
 		if(!audio_data_ptr){break;}
 		
-		//write to file
+		//copy temporary array data to main audio data array
+		m_main_audio_array.CopyDataToMainArray(audio_data_ptr->array_data);
 		
-		SNDFILE* outFile;
 		
-		std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + audio_data_ptr->filename_end + ".wav";
-		std::cout << "Writing to file " << filename << std::endl;
-		
-		// Open the stream file
-		if (! ( outFile = sf_open (filename.c_str(), SFM_WRITE, &sfinfo)))
-		{	
-			std::cout << "Not able to open stream file for writing " << outFile << std::endl;
-			puts (sf_strerror (NULL)) ;
-			return;
+		//if main audio data array is full
+		if(m_main_audio_array.IsMainArrayFull())
+		{
+			std::cout << "main array is full.\n";
+			
+			std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + ".wav";
+			
+			//write data to file
+			m_main_audio_array.WriteArrayDataToFile(filename);
+			
+			AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_1_READY_READ);
+			AudioDeviceRecorder::WriteStateToFile();
+			
+			std::cout << "State is buffer ready read.\n";
 		}
-		
-		//write data
-		size_t readSize = audio_data_ptr->array_data.size();
-		sf_count_t write_count = 0; 
-		size_t count_buffer = 0;
-		
-		sf_seek(outFile, 0, SEEK_SET);
-		write_count = sf_write_short(outFile, &audio_data_ptr->array_data.front(), readSize);
-		
-		sf_close(outFile);
-	
-		//clear array
-		audio_data_ptr->array_data.fill(0);
-		
-		if(buffer_index == 0){AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_1_READY_READ);}
-		if(buffer_index == 1){AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_2_READY_READ);}
-		
-		AudioDeviceRecorder::WriteStateToFile();
-		
-		
+		else
+		{
+			AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::NONE);
+			std::cout << "State is null.\n";
+		}
 		
 	}
 		
-	std::cout << "Finished writing to file!\n";
-	al_nssleep(1000);
 }
 
 void AudioDeviceRecorder::PlayAudioRecordedFromDevice()
@@ -445,7 +556,7 @@ void RecorderTimer::Notify()
 
 void RecorderTimer::start()
 {
-	int time_repeat_interval = 1100;// in milliseconds
+	int time_repeat_interval = 400;// in milliseconds
     wxTimer::Start(time_repeat_interval,wxTIMER_CONTINUOUS); //the timer calls Notify every TIMER_INTERVAL milliseconds
 }
 

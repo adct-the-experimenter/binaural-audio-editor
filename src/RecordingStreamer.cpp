@@ -74,8 +74,8 @@ RecordingStreamer::RecordingStreamer()
 	
 	
 	//setup the array buffer filename endings
-	tempArrayOne.filename_end = "_buf1";
-	tempArrayTwo.filename_end = "_buf2";
+	//tempArrayOne.filename_end = "_buf1";
+	//tempArrayTwo.filename_end = "_buf2";
 	//tempArrayThree.filename_end = "_buf3";
 	//tempArrayFour.filename_end = "_buf4";
 	
@@ -163,10 +163,7 @@ void RecordingStreamer::RecordAudioFromDevice()
 	{
 		//load data into the buffer
 				
-		ALenum err;
 		
-		//remove buffer from source
-		alSourcei(*m_source_ptr, AL_BUFFER, 0); 
 		
 		bool exitFunction = false;
 		
@@ -179,55 +176,46 @@ void RecordingStreamer::RecordAudioFromDevice()
 		
 		if(exitFunction){return;}
 		
+		ALenum err;
+		
+		//remove buffer from source
+		alSourcei(*m_source_ptr, AL_BUFFER, 0); 
+		
+		SNDFILE * infile;
+		/* Open the file and get the first stream from it */
+		std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + ".wav";
+		
+		if (! (infile = sf_open (filename.c_str(), SFM_READ, &sfinfo)))
+		{
+			std::cout << "Unable to open file " << filename << "\n";
+			std::string error;
+			error.append(sf_strerror(NULL));
+			std::cout << error << std::endl;
+			return;
+		 }
+		
 		size_t buffer_index;
 		for(buffer_index = 0; buffer_index < NUM_STREAM_BUFFERS; buffer_index++)
 		{
-			DataArray* audio_data_ptr = nullptr;
-			
-			if(buffer_index == 0){audio_data_ptr = &tempArrayOne; /*std::cout << "Getting Buffer 1 data!\n";*/}
-			if(buffer_index == 1){audio_data_ptr = &tempArrayTwo; /*std::cout << "Getting Buffer 2 data!\n";*/}
-			//if(buffer_index == 2){audio_data_ptr = &tempArrayThree; /*std::cout << "Getting Buffer 3 data!\n";*/}
-			//if(buffer_index == 3){audio_data_ptr = &tempArrayFour; /*std::cout << "Getting Buffer 4 data!\n";*/}
-			
-			if(!audio_data_ptr){break;}
+			std::array <std::int16_t,BUFFER_FRAMES> data_array;
 			
 			//read audio from file
-			
-			std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + audio_data_ptr->filename_end + ".wav";
-			
-			SNDFILE * infile;
-			 /* Open the file and get the first stream from it */
-			if (! (infile = sf_open (filename.c_str(), SFM_READ, &sfinfo)))
-			{
-				std::cout << "Unable to open file " << filename << "\n";
-				std::string error;
-				error.append(sf_strerror(NULL));
-				std::cout << error << std::endl;
-				break;
-			 }
-			
+						
 			size_t read_size = 0;
 			size_t count = 0;
-			while( (read_size = sf_read_short(infile, audio_data_ptr->array_data.data(), audio_data_ptr->array_data.size()) ) != 0)
+			
+			size_t read_position = buffer_index * int(BUFFER_FRAMES);
+			sf_seek(infile, read_position, SEEK_SET);
+			while( (read_size = sf_read_short(infile, data_array.data(), data_array.size()) ) != 0)
 			{
 				//read audio data
 			}
 			
-			std::cout << "data" << audio_data_ptr->array_data[20] << std::endl;
 			
 			//attach samples to buffer
 			//set buffer data
 			int buffer_byte_size = int(BUFFER_FRAMES) * bit_size;
-			alBufferData(buffers[buffer_index], format, audio_data_ptr->array_data.data(), buffer_byte_size, sampleRate);
-			
-			//clear array
-			audio_data_ptr->array_data.fill(0);
-			
-			//close file 
-			if(infile != nullptr)
-			{
-				sf_close (infile);
-			}
+			alBufferData(buffers[buffer_index], format, data_array.data(), buffer_byte_size, sampleRate);
 			
 			err = alGetError();
 			if(err != AL_NO_ERROR)
@@ -240,7 +228,13 @@ void RecordingStreamer::RecordAudioFromDevice()
 		}
 		
 		/* Now queue buffer to source */
-		alSourceQueueBuffers(*m_source_ptr, buffer_index, buffers);	
+		alSourceQueueBuffers(*m_source_ptr, buffer_index, buffers);
+		
+		//close file 
+		if(infile != nullptr)
+		{
+			sf_close (infile);
+		}	
 	}
 
 }

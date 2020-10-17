@@ -20,7 +20,7 @@
 #include <cstring>
 #include <cstdint>
 
-#define BUFFER_FRAMES 48000
+#define BUFFER_FRAMES 2400
 #define NUM_BUFFERS 2
 
 struct DataArray
@@ -28,6 +28,49 @@ struct DataArray
 	std::array <std::int16_t,BUFFER_FRAMES> array_data;
 	bool filled = false;
 	std::string filename_end = "";
+};
+
+class AudioDataArray
+{
+public:
+	
+	AudioDataArray();
+	~AudioDataArray();
+	
+	//function to write data in main array to file
+	void WriteArrayDataToFile(std::string filename);
+	
+	//function to copy data from an array to the main array
+	void CopyDataToMainArray(std::array <std::int16_t,BUFFER_FRAMES> &this_array);
+	
+	void SetMainArrayFullBool(bool state);
+	bool IsMainArrayFull();
+	
+private:
+
+	//assuming sample rate 48 kHz, 1 second of audio
+	
+	//main array that has data written to it
+	std::array <std::int16_t,48000> m_main_array;
+	
+	//current read position of m_main array
+	size_t m_main_current_pos;
+	
+	//backup array used to save data from recording when data is being written to file
+	std::array <std::int16_t,12000> m_backup_write_array;
+	
+	//backup array used to copy data when main array is full
+	std::array <std::int16_t,12000> m_backup_copy_array;
+	
+	//bool to indicate if main array is full
+	bool m_full;
+	
+	//bool to indicate if there is data written to backup copy array
+	bool m_data_in_backup_copy;
+	
+	//formatting of audio data
+	SF_INFO sfinfo;
+	
 };
 
 
@@ -102,18 +145,16 @@ private:
 	std::string m_deviceName;
 	int m_deviceIndex;
 	
-	//formatting of audio data
-	SF_INFO sfinfo;
-	
 	size_t bit_size;
 	size_t frame_size;
 	int buffer_time_ms;
 	size_t buffer_pack_size;
-
 	
 	bool stream_opened;
 	
 	int buffer_filled = 0;
+	
+	AudioDataArray m_main_audio_array;
 
 	DataArray tempArrayOne;
 	DataArray tempArrayTwo;

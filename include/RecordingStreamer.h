@@ -17,8 +17,8 @@
 #include <cstring>
 #include <cstdint>
 
-#define BUFFER_FRAMES 1200
-#define NUM_STREAM_BUFFERS 2
+#define BUFFER_FRAMES 12000
+#define NUM_STREAM_BUFFERS 4
 
 //class used to periodically load new data from several files and pass it into an OpenAL buffer
 
@@ -100,13 +100,6 @@ private:
 	
 	bool stream_opened;
 	
-	int buffer_filled = 0;
-
-	DataArray tempArrayOne;
-	DataArray tempArrayTwo;
-	//DataArray tempArrayThree;
-	//DataArray tempArrayFour;
-	
 	std::string data_dir_fp;
 	
 	bool buffers_generated;
@@ -114,6 +107,7 @@ private:
 	//file indicating status of audio recorder helper program buffers
 	std::string file_path_buffer_stat;
 	RecordingStreamer::HelperProgramBufferState GetStatusOfHelperProgramBuffers();
+	
 	
 };
 
