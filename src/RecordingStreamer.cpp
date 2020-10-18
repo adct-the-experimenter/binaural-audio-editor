@@ -6,6 +6,8 @@
 #include <time.h>
 #include <fstream>
 
+#include <vector>
+
 /*
  * OpenAL Recording Example
  *
@@ -197,13 +199,11 @@ void RecordingStreamer::RecordAudioFromDevice()
 		size_t buffer_index;
 		for(buffer_index = 0; buffer_index < NUM_STREAM_BUFFERS; buffer_index++)
 		{
+						
+			//read audio from file
 			std::array <std::int16_t,BUFFER_FRAMES> data_array;
 			
-			//read audio from file
-						
 			size_t read_size = 0;
-			size_t count = 0;
-			
 			size_t read_position = buffer_index * int(BUFFER_FRAMES);
 			sf_seek(infile, read_position, SEEK_SET);
 			while( (read_size = sf_read_short(infile, data_array.data(), data_array.size()) ) != 0)
@@ -211,11 +211,12 @@ void RecordingStreamer::RecordAudioFromDevice()
 				//read audio data
 			}
 			
+			std::cout << "data array sample:" << data_array[50] << std::endl;
 			
 			//attach samples to buffer
 			//set buffer data
 			int buffer_byte_size = int(BUFFER_FRAMES) * bit_size;
-			alBufferData(buffers[buffer_index], format, data_array.data(), buffer_byte_size, sampleRate);
+			alBufferData(buffers[buffer_index], format, &data_array.front(), buffer_byte_size, sampleRate);
 			
 			err = alGetError();
 			if(err != AL_NO_ERROR)
@@ -225,10 +226,20 @@ void RecordingStreamer::RecordAudioFromDevice()
 				return;
 			}
 			
+			data_array.fill(0);
+			
 		}
 		
 		/* Now queue buffer to source */
 		alSourceQueueBuffers(*m_source_ptr, buffer_index, buffers);
+		
+		err = alGetError();
+		if(err != AL_NO_ERROR)
+		{
+			std::cout << "Failed to put buffers into queue!\n";
+			fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
+			return;
+		}
 		
 		//close file 
 		if(infile != nullptr)

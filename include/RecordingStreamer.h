@@ -17,7 +17,8 @@
 #include <cstring>
 #include <cstdint>
 
-#define BUFFER_FRAMES 12000
+//sample rate * time
+#define BUFFER_FRAMES 600
 #define NUM_STREAM_BUFFERS 4
 
 //class used to periodically load new data from several files and pass it into an OpenAL buffer
