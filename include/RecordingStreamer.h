@@ -17,8 +17,11 @@
 #include <cstring>
 #include <cstdint>
 
-//sample rate * time
-#define BUFFER_FRAMES 600
+// time is 200 ms in openalsoft player
+//sample rate * time , 48000 * 0.2 = 9600
+// sample_rate * time / number_buffers = 9600 / 4 = 2400
+
+#define BUFFER_FRAMES 2400
 #define NUM_STREAM_BUFFERS 4
 
 //class used to periodically load new data from several files and pass it into an OpenAL buffer

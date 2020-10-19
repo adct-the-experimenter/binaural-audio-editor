@@ -20,22 +20,15 @@
 #include <cstring>
 #include <cstdint>
 
-#define BUFFER_FRAMES 2400
-#define NUM_BUFFERS 2
+#define BUFFER_FRAMES 48000
 
-struct DataArray
-{
-	std::array <std::int16_t,BUFFER_FRAMES> array_data;
-	bool filled = false;
-	std::string filename_end = "";
-};
 
-class AudioDataArray
+class AudioDataQueue
 {
 public:
 	
-	AudioDataArray();
-	~AudioDataArray();
+	AudioDataQueue();
+	~AudioDataQueue();
 	
 	//function to write data in main array to file
 	void WriteArrayDataToFile(std::string filename);
@@ -45,6 +38,15 @@ public:
 	
 	void SetMainArrayFullBool(bool state);
 	bool IsMainArrayFull();
+	
+	std::int16_t* GetPointerToCurrentReadPosition();
+	
+	void SetWritingLockState(bool state);
+	bool GetWritingLockState();
+	
+	void IncrementReadPosition();
+	
+	void CheckIfMainArrayFilled();
 	
 private:
 
@@ -71,6 +73,7 @@ private:
 	//formatting of audio data
 	SF_INFO sfinfo;
 	
+	bool m_write_lock;
 };
 
 
@@ -152,14 +155,10 @@ private:
 	
 	bool stream_opened;
 	
-	int buffer_filled = 0;
+	int buffer_filled;
 	
-	AudioDataArray m_main_audio_array;
+	AudioDataQueue m_main_audio_queue;
 
-	DataArray tempArrayOne;
-	DataArray tempArrayTwo;
-	//DataArray tempArrayThree;
-	//DataArray tempArrayFour;
 	
 	wxButton* m_record_button_ptr;
 	wxButton* m_stop_button_ptr;

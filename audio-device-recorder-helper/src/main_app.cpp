@@ -17,7 +17,7 @@ bool MyApp::OnInit()
 	//window title: hello world
 	//size: wxSize(450, 340)
 	//location: wxPoint(50, 50)
-    MyFrame *frame = new MyFrame( "The Name of the Application here", wxPoint(50, 50), wxSize(450, 340) );
+    MyFrame *frame = new MyFrame( "Audio Device Recorder Helper", wxPoint(50, 50), wxSize(450, 340) );
     frame->Show( true );
     
     return true;
@@ -54,7 +54,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     SetMenuBar( menuBar );
     
     CreateStatusBar();
-    SetStatusText( "Welcome to the app!" );
+    SetStatusText( "Welcome to the audio device recorder helper for binaural audio editor!" );
     
     //Initialize recorder 
     

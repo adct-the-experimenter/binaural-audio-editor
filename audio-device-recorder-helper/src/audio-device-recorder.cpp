@@ -44,7 +44,7 @@
 std::string DATADIR_STR = DATADIR_NAME;
 
 
-AudioDataArray::AudioDataArray()
+AudioDataQueue::AudioDataQueue()
 {
 	//start current position at zero
 	m_main_current_pos = 0;
@@ -65,18 +65,18 @@ AudioDataArray::AudioDataArray()
     sfinfo.samplerate = sampleRate; 
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; 
     
-    
 }
 
-AudioDataArray::~AudioDataArray()
+AudioDataQueue::~AudioDataQueue()
 {
 	
 }
 
-void AudioDataArray::WriteArrayDataToFile(std::string filename)
+void AudioDataQueue::WriteArrayDataToFile(std::string filename)
 {
 	//write to file
-		
+	AudioDataQueue::SetWritingLockState(true);
+	
 	SNDFILE* outFile;
 	
 	std::cout << "Writing to file " << filename << std::endl;
@@ -103,11 +103,13 @@ void AudioDataArray::WriteArrayDataToFile(std::string filename)
 	m_main_current_pos = 0;
 	
 	//reset main array full bool
-	AudioDataArray::SetMainArrayFullBool(false);
+	AudioDataQueue::SetMainArrayFullBool(false);
+	
+	AudioDataQueue::SetWritingLockState(false);
 }
 
 //function to copy data from an array to the main array
-void AudioDataArray::CopyDataToMainArray(std::array <std::int16_t,BUFFER_FRAMES> &this_array)
+void AudioDataQueue::CopyDataToMainArray(std::array <std::int16_t,BUFFER_FRAMES> &this_array)
 {
 	
 	//if there is data in the backup copy array
@@ -140,7 +142,7 @@ void AudioDataArray::CopyDataToMainArray(std::array <std::int16_t,BUFFER_FRAMES>
 		//set end based on what can be read to main array
 		endIndex = input_size - (m_main_array.size() - m_main_current_pos);
 		
-		AudioDataArray::SetMainArrayFullBool(true);
+		AudioDataQueue::SetMainArrayFullBool(true);
 		m_data_in_backup_copy = true;
 	}
 	
@@ -154,15 +156,25 @@ void AudioDataArray::CopyDataToMainArray(std::array <std::int16_t,BUFFER_FRAMES>
 	
 }
 
-void AudioDataArray::SetMainArrayFullBool(bool state){m_full = state;}
-bool AudioDataArray::IsMainArrayFull(){return m_full;}
+void AudioDataQueue::SetMainArrayFullBool(bool state){m_full = state;}
+bool AudioDataQueue::IsMainArrayFull(){return m_full;}
 
-//pointers for record function to use
-DataArray* data_array1_ptr = nullptr;
-DataArray* data_array2_ptr = nullptr;
-//std::int16_t* data_array3_ptr = nullptr;
-//std::int16_t* data_array4_ptr = nullptr;
-int* buffer_filled_ptr = nullptr;
+std::int16_t* AudioDataQueue::GetPointerToCurrentReadPosition(){return &m_main_array[m_main_current_pos];}
+
+void AudioDataQueue::SetWritingLockState(bool state){m_write_lock = state;}
+bool AudioDataQueue::GetWritingLockState(){return m_write_lock;}
+
+void AudioDataQueue::IncrementReadPosition(){m_main_current_pos++;}
+
+AudioDataQueue* ptrToAudioDataQueue = nullptr;
+
+void AudioDataQueue::CheckIfMainArrayFilled()
+{
+	if(m_main_current_pos >= m_main_array.size() - 1)
+	{
+		AudioDataQueue::SetMainArrayFullBool(true);
+	}
+}
 
 AudioDeviceRecorder::AudioDeviceRecorder()
 {	
@@ -175,8 +187,6 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	sampleRate = 48000;
 	int num_channels = 1;
 	
-	
-    
     bit_size = sizeof(std::int16_t);
     
     frame_size = num_channels * bit_size;
@@ -194,15 +204,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
     m_stream_closed = false;
     
     recording = false;
-	
-	//set pointers for the stati record callback function to use
-	data_array1_ptr = &tempArrayOne;
-    data_array2_ptr = &tempArrayTwo;
-	//data_array3_ptr = tempArrayThree.array_data.data();
-	//data_array4_ptr = tempArrayFour.array_data.data();
-    
-    buffer_filled_ptr = &buffer_filled;
-    
+	    
     //Set up file path for the data directory
     std::string datadir; 
 	
@@ -219,15 +221,11 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	fp_state_file = data_dir_fp + "buffer-stat.txt";
 	
 	
-	//setup the array buffer filename endings
-	tempArrayOne.filename_end = "_buf1";
-	tempArrayTwo.filename_end = "_buf2";
-	//tempArrayThree.filename_end = "_buf3";
-	//tempArrayFour.filename_end = "_buf4";
-	
 	//setup recorder timer
 	std::function< void() > func = std::bind(&AudioDeviceRecorder::RecordAudioFromDevice, this);
 	m_rec_timer.AddFunctionToTimerLoop(func);
+	
+	ptrToAudioDataQueue = &m_main_audio_queue;
 }
 
 
@@ -283,92 +281,37 @@ bool AudioDeviceRecorder::PrepareDeviceForRecording()
 }
 
 
-
-bool new_stream = false;
-
-
 int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
          double streamTime, RtAudioStreamStatus status, void *userData )
 {
 	if ( status ){std::cout << "Stream overflow detected!" << std::endl;}
 
-	unsigned int i;
+	if(ptrToAudioDataQueue->GetWritingLockState())
+	{
+		return 0;
+	}
 
 	// Do something with the data in the "inputBuffer" buffer.
 	
-	std::int16_t* first_index_audio_data_ptr = nullptr;
-	std::int16_t* audio_data_ptr = nullptr;
-		
-	switch(*buffer_filled_ptr)
-	{
-		case 0:
-		{
-			first_index_audio_data_ptr = data_array1_ptr->array_data.data();
-			data_array1_ptr->filled = false;
-			break;
-		}
-		case 1:
-		{
-			first_index_audio_data_ptr = data_array2_ptr->array_data.data();
-			data_array2_ptr->filled = false;
-			break;
-		}
-		case 2:
-		{
-			//first_index_audio_data_ptr = data_array3_ptr;
-			break;
-		}
-		case 3:
-		{
-			//first_index_audio_data_ptr = data_array4_ptr;
-			break;
-		}
-		default:{break;}
-	}
+	std::int16_t* audio_data_ptr = nullptr;	
 	
-	if(!first_index_audio_data_ptr){return 1;}
+	audio_data_ptr = ptrToAudioDataQueue->GetPointerToCurrentReadPosition();
 	
-	audio_data_ptr = first_index_audio_data_ptr;
+	if(!audio_data_ptr){return 1;}
 	
 	std::int16_t* my_buffer = (std::int16_t*)inputBuffer;
-	
+		
+	unsigned int i = 0;
 	for ( i=0; i < nBufferFrames; i++ ) 
 	{
+		ptrToAudioDataQueue->IncrementReadPosition();
+		ptrToAudioDataQueue->CheckIfMainArrayFilled();
+		
+		if(ptrToAudioDataQueue->IsMainArrayFull()){std::cout << "Main array filled!\n"; break;}
 	    *audio_data_ptr++ = *my_buffer++;
 	    
 	    //std::cout << "audio data i:" << i << " , " << *audio_data_ptr << std::endl;
 	}
-	
-	switch(*buffer_filled_ptr)
-	{
-		case 0:
-		{
-			data_array1_ptr->filled = true;
-			break;
-		}
-		case 1:
-		{
-			data_array2_ptr->filled = true;
-			break;
-		}
-		case 2:
-		{
-			//first_index_audio_data_ptr = data_array3_ptr;
-			break;
-		}
-		case 3:
-		{
-			//first_index_audio_data_ptr = data_array4_ptr;
-			break;
-		}
-		default:{break;}
-	}
-	
-	//increment buffer filled
-	(*buffer_filled_ptr)++;
-	
-	//reset buffer filled if more than NUM_BUFFERS
-	if(*buffer_filled_ptr >= NUM_BUFFERS){*buffer_filled_ptr = 0;}
 	
 	return 0;
 }
@@ -392,7 +335,6 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 
 	if(!m_stream_opened)
 	{
-		int nBuffers = NUM_BUFFERS;
 		
 		try {
 			
@@ -415,52 +357,29 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 	}
 	
 	AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::NONE);
-	//write data to separate file
+	
 	recording = true;
 	
-	DataArray* audio_data_ptr = nullptr;
-	
-	size_t buffer_index;
-	for(buffer_index = 0; buffer_index < NUM_BUFFERS; buffer_index++)
+	//if main audio data array is full
+	if(ptrToAudioDataQueue->IsMainArrayFull())
 	{
-		while(buffer_filled != 0 && buffer_filled != buffer_index + 1)
-		{
-			//wait until buffer index is filled in callback function record
-		}
+		//std::cout << "main array is full.\n";
 		
-		if(buffer_index == 0){audio_data_ptr = &tempArrayOne; /*std::cout << "Getting Buffer 1 data!\n";*/}
-		if(buffer_index == 1){audio_data_ptr = &tempArrayTwo; /*std::cout << "Getting Buffer 2 data!\n";*/}
-		//if(buffer_index == 2){audio_data_ptr = &tempArrayThree; /*std::cout << "Getting Buffer 3 data!\n";*/}
-		//if(buffer_index == 3){audio_data_ptr = &tempArrayFour; /*std::cout << "Getting Buffer 4 data!\n";*/}
+		std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + ".wav";
 		
-		if(!audio_data_ptr){break;}
+		//write data to file
+		m_main_audio_queue.WriteArrayDataToFile(filename);
 		
-		//copy temporary array data to main audio data array
-		m_main_audio_array.CopyDataToMainArray(audio_data_ptr->array_data);
+		AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_1_READY_READ);
+		AudioDeviceRecorder::WriteStateToFile();
 		
-		
-		//if main audio data array is full
-		if(m_main_audio_array.IsMainArrayFull())
-		{
-			std::cout << "main array is full.\n";
-			
-			std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + ".wav";
-			
-			//write data to file
-			m_main_audio_array.WriteArrayDataToFile(filename);
-			
-			AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_1_READY_READ);
-			AudioDeviceRecorder::WriteStateToFile();
-			
-			std::cout << "State is buffer ready read.\n";
-		}
-		else
-		{
-			AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::NONE);
-			std::cout << "State is null.\n";
-		}
-		
+		std::cout << "State is buffer ready read.\n";
 	}
+	else
+	{
+		AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::NONE);
+	}
+		
 		
 }
 
@@ -514,7 +433,12 @@ void AudioDeviceRecorder::InitTrack(wxWindow* parent)
 
 void AudioDeviceRecorder::OnRecordButtonPressed(wxCommandEvent& event)
 {
-	m_rec_timer.start();
+	if(!recording)
+	{
+		recording = true;
+		m_rec_timer.start();
+	}
+	
 }
 
 void AudioDeviceRecorder::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)
@@ -541,35 +465,6 @@ void AudioDeviceRecorder::OnStopButtonPressed(wxCommandEvent& event)
 	}
 }
 
-//Playback Timer
-
-RecorderTimer::RecorderTimer() : wxTimer()
-{
-	
-}
-
-void RecorderTimer::Notify()
-{
-	m_function();
-	al_nssleep(1000);
-}
-
-void RecorderTimer::start()
-{
-	int time_repeat_interval = 400;// in milliseconds
-    wxTimer::Start(time_repeat_interval,wxTIMER_CONTINUOUS); //the timer calls Notify every TIMER_INTERVAL milliseconds
-}
-
-void RecorderTimer::stop()
-{
-	wxTimer::Stop();
-}
-
-void RecorderTimer::AddFunctionToTimerLoop( std::function < void() > thisFunction)
-{
-	m_function = thisFunction;
-}
-
 void AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState state){m_state = state;}
 AudioDeviceRecorder::HelperProgramBufferState AudioDeviceRecorder::GetState(){return m_state;}
 
@@ -593,3 +488,34 @@ void AudioDeviceRecorder::WriteStateToFile()
 	
 	state_outfile.close();
 }
+
+
+//Recording Timer
+
+RecorderTimer::RecorderTimer() : wxTimer()
+{
+	
+}
+
+void RecorderTimer::Notify()
+{
+	m_function();
+	al_nssleep(1000);
+}
+
+void RecorderTimer::start()
+{
+	int time_repeat_interval = 1100;// in milliseconds
+    wxTimer::Start(time_repeat_interval,wxTIMER_CONTINUOUS); //the timer calls Notify every TIMER_INTERVAL milliseconds
+}
+
+void RecorderTimer::stop()
+{
+	wxTimer::Stop();
+}
+
+void RecorderTimer::AddFunctionToTimerLoop( std::function < void() > thisFunction)
+{
+	m_function = thisFunction;
+}
+
