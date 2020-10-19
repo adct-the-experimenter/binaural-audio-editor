@@ -112,6 +112,12 @@ private:
 	std::string file_path_buffer_stat;
 	RecordingStreamer::HelperProgramBufferState GetStatusOfHelperProgramBuffers();
 	
+	//function to indicate to helper program to not write over file since read is being done.
+	void LockBufferFileForReading();
+	//function to indicate to helper program that it can now write over the file
+	void UnlockBufferFile();
+	
+	std::string file_helper_comm_file;
 	
 };
 

@@ -181,6 +181,9 @@ private:
 	void WriteStateToFile();
 	
 	std::string fp_state_file;
+	std::string fp_rlock_file;
+	
+	bool IsFileInReadLock();
 	
 };
 

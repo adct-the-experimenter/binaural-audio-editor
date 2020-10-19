@@ -79,7 +79,7 @@ void AudioDataQueue::WriteArrayDataToFile(std::string filename)
 	
 	SNDFILE* outFile;
 	
-	std::cout << "Writing to file " << filename << std::endl;
+	//std::cout << "Writing to file " << filename << std::endl;
 	
 	// Open the stream file
 	if (! ( outFile = sf_open (filename.c_str(), SFM_WRITE, &sfinfo)))
@@ -219,7 +219,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	data_dir_fp = datadir;
 	
 	fp_state_file = data_dir_fp + "buffer-stat.txt";
-	
+	fp_rlock_file = data_dir_fp + "to-helper-msg.txt";
 	
 	//setup recorder timer
 	std::function< void() > func = std::bind(&AudioDeviceRecorder::RecordAudioFromDevice, this);
@@ -360,12 +360,15 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 	
 	recording = true;
 	
+	if(AudioDeviceRecorder::IsFileInReadLock()){std::cout << "File is locked for reading.\n"; return;}
+	
 	//if main audio data array is full
 	if(ptrToAudioDataQueue->IsMainArrayFull())
 	{
-		//std::cout << "main array is full.\n";
 		
 		std::string filename = data_dir_fp + "device_" + std::to_string(m_deviceIndex) + ".wav";
+		
+		if(AudioDeviceRecorder::IsFileInReadLock()){std::cout << "File is locked for reading.\n"; return;}
 		
 		//write data to file
 		m_main_audio_queue.WriteArrayDataToFile(filename);
@@ -489,6 +492,32 @@ void AudioDeviceRecorder::WriteStateToFile()
 	state_outfile.close();
 }
 
+bool AudioDeviceRecorder::IsFileInReadLock()
+{
+	std::string line;
+	std::ifstream lock_file (fp_rlock_file.c_str(), std::ifstream::in);
+			 
+	int inputchoice = 0;
+	 
+	if (lock_file.is_open())
+	{
+		while ( std::getline (lock_file,line) )
+		{
+			inputchoice = std::stoi(line);
+		}
+		
+		lock_file.close();
+	}
+	
+	if(inputchoice == 0)
+	{
+		return false;
+	}
+	else if(inputchoice == 1)
+	{
+		return true;
+	}
+}
 
 //Recording Timer
 

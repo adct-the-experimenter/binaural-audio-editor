@@ -75,12 +75,6 @@ RecordingStreamer::RecordingStreamer()
 	stream_opened = false;
 	
 	
-	//setup the array buffer filename endings
-	//tempArrayOne.filename_end = "_buf1";
-	//tempArrayTwo.filename_end = "_buf2";
-	//tempArrayThree.filename_end = "_buf3";
-	//tempArrayFour.filename_end = "_buf4";
-	
 	buffers_generated = false;
 }
 
@@ -119,6 +113,7 @@ void RecordingStreamer::SetAsAudioDeviceToRecord(std::string devname, int devInd
 bool RecordingStreamer::PrepareDeviceForRecording()
 {    
 	file_path_buffer_stat = data_dir_fp + "buffer-stat.txt";
+	file_helper_comm_file = data_dir_fp + "to-helper-msg.txt";
 	
     if(!m_playback_context_ptr)
     {
@@ -172,7 +167,11 @@ void RecordingStreamer::RecordAudioFromDevice()
 		switch(RecordingStreamer::GetStatusOfHelperProgramBuffers())
 		{
 			case RecordingStreamer::HelperProgramBufferState::NONE:{std::cout << "No state.\n"; exitFunction = true; break;}
-			case RecordingStreamer::HelperProgramBufferState::BUFFER_1_READY_READ:{std::cout << "Buffer 1 ready.\n"; break;}
+			case RecordingStreamer::HelperProgramBufferState::BUFFER_1_READY_READ:
+			{
+				std::cout << "Buffer 1 ready.\n"; break;
+				RecordingStreamer::LockBufferFileForReading();
+			}
 			case RecordingStreamer::HelperProgramBufferState::BUFFER_2_READY_READ:{std::cout << "Buffer 2 ready.\n"; break;}
 		}
 		
@@ -210,9 +209,7 @@ void RecordingStreamer::RecordAudioFromDevice()
 			{
 				//read audio data
 			}
-			
-			std::cout << "data array sample:" << data_array[4] << std::endl;
-			
+						
 			//attach samples to buffer
 			//set buffer data
 			int buffer_byte_size = int(BUFFER_FRAMES) * bit_size;
@@ -226,9 +223,9 @@ void RecordingStreamer::RecordAudioFromDevice()
 				return;
 			}
 			
-			data_array.fill(0);
-			
 		}
+		
+		RecordingStreamer::UnlockBufferFile();
 		
 		/* Now queue buffer to source */
 		alSourceQueueBuffers(*m_source_ptr, buffer_index, buffers);
@@ -349,4 +346,32 @@ RecordingStreamer::HelperProgramBufferState RecordingStreamer::GetStatusOfHelper
 	 
 	 
 	 return state;
+}
+
+void RecordingStreamer::LockBufferFileForReading()
+{
+	std::ofstream state_outfile;
+	
+	state_outfile.open(file_helper_comm_file.c_str(), std::ofstream::out | std::ofstream::trunc);
+	if(state_outfile.is_open())
+	{
+		
+		state_outfile << 1;
+	}
+	
+	state_outfile.close();
+}
+
+void RecordingStreamer::UnlockBufferFile()
+{
+	std::ofstream state_outfile;
+	
+	state_outfile.open(file_helper_comm_file.c_str(), std::ofstream::out | std::ofstream::trunc);
+	if(state_outfile.is_open())
+	{
+		
+		state_outfile << 0;
+	}
+	
+	state_outfile.close();
 }
