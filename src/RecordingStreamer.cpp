@@ -35,6 +35,12 @@
 
 #include <unistd.h>
 
+// time is 200 ms in openalsoft player
+//sample rate * time , 48000 * 0.2 = 9600
+// sample_rate * time / number_buffers = 9600 / 4 = 2400
+
+#define BUFFER_FRAMES 1200
+
 RecordingStreamer::RecordingStreamer()
 {
 	
@@ -147,6 +153,7 @@ bool RecordingStreamer::PrepareDeviceForRecording()
 }
 
 
+
 void RecordingStreamer::RecordAudioFromDevice()
 {
 	
@@ -193,27 +200,35 @@ void RecordingStreamer::RecordAudioFromDevice()
 			error.append(sf_strerror(NULL));
 			std::cout << error << std::endl;
 			return;
-		 }
+		}
 		
 		size_t buffer_index;
 		for(buffer_index = 0; buffer_index < NUM_STREAM_BUFFERS; buffer_index++)
 		{
 						
 			//read audio from file
-			std::array <std::int16_t,BUFFER_FRAMES> data_array;
+			std::array <std::int16_t,BUFFER_FRAMES> read_buf;
+			
+			std::vector <std::int16_t> data_vec;
 			
 			size_t read_size = 0;
 			size_t read_position = buffer_index * int(BUFFER_FRAMES);
 			sf_seek(infile, read_position, SEEK_SET);
-			while( (read_size = sf_read_short(infile, data_array.data(), data_array.size()) ) != 0)
-			{
+			
+			//while( (read_size = sf_read_short(infile, data_array.data(), data_array.size()) ) != 0)
+			//{
 				//read audio data
+			//}
+			
+			while( (read_size = sf_read_short(infile, read_buf.data(), read_buf.size()) ) != 0)
+			{
+				data_vec.insert(data_vec.end(), read_buf.begin(), read_buf.begin() + read_size);
 			}
 						
 			//attach samples to buffer
 			//set buffer data
 			int buffer_byte_size = int(BUFFER_FRAMES) * bit_size;
-			alBufferData(buffers[buffer_index], format, &data_array.front(), buffer_byte_size, sampleRate);
+			alBufferData(buffers[buffer_index], format, &data_vec.front(), buffer_byte_size, sampleRate);
 			
 			err = alGetError();
 			if(err != AL_NO_ERROR)
@@ -225,7 +240,11 @@ void RecordingStreamer::RecordAudioFromDevice()
 			
 		}
 		
+		//close file 
+		sf_close (infile);
+		
 		RecordingStreamer::UnlockBufferFile();
+		
 		
 		/* Now queue buffer to source */
 		alSourceQueueBuffers(*m_source_ptr, buffer_index, buffers);
@@ -238,11 +257,7 @@ void RecordingStreamer::RecordAudioFromDevice()
 			return;
 		}
 		
-		//close file 
-		if(infile != nullptr)
-		{
-			sf_close (infile);
-		}	
+			
 	}
 
 }
