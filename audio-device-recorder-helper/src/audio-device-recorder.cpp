@@ -308,7 +308,20 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 		ptrToAudioDataQueue->CheckIfMainArrayFilled();
 		
 		if(ptrToAudioDataQueue->IsMainArrayFull()){break;}
-	    *audio_data_ptr++ = *my_buffer++;
+	    
+	    
+	    std::int16_t prevValue = 0;
+	    
+	    if(i > 0)
+	    {
+			if( i % 2 == 0)
+			{
+				prevValue = *my_buffer;
+			}
+			
+		}
+	    
+	    *audio_data_ptr++ = 0.5*(prevValue + *my_buffer++);
 	    
 	    //std::cout << "audio data i:" << i << " , " << *audio_data_ptr << std::endl;
 	}
@@ -531,12 +544,12 @@ RecorderTimer::RecorderTimer() : wxTimer()
 void RecorderTimer::Notify()
 {
 	m_function();
-	al_nssleep(1000);
+	al_nssleep(100);
 }
 
 void RecorderTimer::start()
 {
-	int time_repeat_interval = 1100;// in milliseconds
+	int time_repeat_interval = 600;// in milliseconds
     wxTimer::Start(time_repeat_interval,wxTIMER_CONTINUOUS); //the timer calls Notify every TIMER_INTERVAL milliseconds
 }
 

@@ -20,7 +20,10 @@
 #include <cstring>
 #include <cstdint>
 
-#define BUFFER_FRAMES 48000
+//48000 samples per second sample rate
+// 4000 buffer frames in recording streamer, 4 stream buffers
+// 4000 buffer frames * 4 stream buffers = 16000 buffer frames total.
+#define BUFFER_FRAMES 16000
 
 
 class AudioDataQueue

@@ -36,10 +36,10 @@
 #include <unistd.h>
 
 // time is 200 ms in openalsoft player
-//sample rate * time , 48000 * 0.2 = 9600
-// sample_rate * time / number_buffers = 9600 / 4 = 2400
+//sample rate * time , 48000 * 0.5 = 24000
+// sample_rate * time / number_buffers = 24000 / 4 = 6000
 
-#define BUFFER_FRAMES 1200
+#define BUFFER_FRAMES 4000
 
 RecordingStreamer::RecordingStreamer()
 {
@@ -166,8 +166,6 @@ void RecordingStreamer::RecordAudioFromDevice()
 	if(alcMakeContextCurrent(m_playback_context_ptr) == AL_TRUE)
 	{
 		//load data into the buffer
-				
-		
 		
 		bool exitFunction = false;
 		
@@ -176,10 +174,13 @@ void RecordingStreamer::RecordAudioFromDevice()
 			case RecordingStreamer::HelperProgramBufferState::NONE:{std::cout << "No state.\n"; exitFunction = true; break;}
 			case RecordingStreamer::HelperProgramBufferState::BUFFER_1_READY_READ:
 			{
-				std::cout << "Buffer 1 ready.\n"; break;
-				RecordingStreamer::LockBufferFileForReading();
+				break;
 			}
-			case RecordingStreamer::HelperProgramBufferState::BUFFER_2_READY_READ:{std::cout << "Buffer 2 ready.\n"; break;}
+			case RecordingStreamer::HelperProgramBufferState::BUFFER_2_READY_READ:
+			{
+				break;
+			}
+			default:{std::cout << "Unhandled case in recording streamer!\n"; break;}
 		}
 		
 		if(exitFunction){return;}
@@ -214,11 +215,6 @@ void RecordingStreamer::RecordAudioFromDevice()
 			size_t read_size = 0;
 			size_t read_position = buffer_index * int(BUFFER_FRAMES);
 			sf_seek(infile, read_position, SEEK_SET);
-			
-			//while( (read_size = sf_read_short(infile, data_array.data(), data_array.size()) ) != 0)
-			//{
-				//read audio data
-			//}
 			
 			while( (read_size = sf_read_short(infile, read_buf.data(), read_buf.size()) ) != 0)
 			{
@@ -338,12 +334,12 @@ RecordingStreamer::HelperProgramBufferState RecordingStreamer::GetStatusOfHelper
 		{
 		  if(line == "1")
 		  {
-			  std::cout << "buffer 1 is ready for read.";
+			  //std::cout << "buffer 1 is ready for read.";
 			  state = RecordingStreamer::HelperProgramBufferState::BUFFER_1_READY_READ;
 		  }
 		  else if(line == "2")
 		  {
-			  std::cout << "buffer 2 is ready for read.";
+			  //std::cout << "buffer 2 is ready for read.";
 			  state = RecordingStreamer::HelperProgramBufferState::BUFFER_2_READY_READ;
 		  }
 		 
