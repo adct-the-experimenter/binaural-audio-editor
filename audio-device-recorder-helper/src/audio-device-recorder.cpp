@@ -267,7 +267,7 @@ void AudioDeviceRecorder::SetAsAudioDeviceToRecord(std::string devname, int devI
 
 bool AudioDeviceRecorder::PrepareDeviceForRecording()
 {
-	 if(m_ad_combo_box)
+	if(m_ad_combo_box)
     {
 		int devIndex = m_ad_combo_box->GetSelection();
 		std::string devName = m_ad_combo_box->GetStringSelection().ToStdString();
@@ -307,7 +307,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 		ptrToAudioDataQueue->IncrementReadPosition();
 		ptrToAudioDataQueue->CheckIfMainArrayFilled();
 		
-		if(ptrToAudioDataQueue->IsMainArrayFull()){std::cout << "Main array filled!\n"; break;}
+		if(ptrToAudioDataQueue->IsMainArrayFull()){break;}
 	    *audio_data_ptr++ = *my_buffer++;
 	    
 	    //std::cout << "audio data i:" << i << " , " << *audio_data_ptr << std::endl;
@@ -376,7 +376,6 @@ void AudioDeviceRecorder::RecordAudioFromDevice()
 		AudioDeviceRecorder::SetState(AudioDeviceRecorder::HelperProgramBufferState::BUFFER_1_READY_READ);
 		AudioDeviceRecorder::WriteStateToFile();
 		
-		std::cout << "State is buffer ready read.\n";
 	}
 	else
 	{
@@ -439,6 +438,12 @@ void AudioDeviceRecorder::OnRecordButtonPressed(wxCommandEvent& event)
 	if(!recording)
 	{
 		recording = true;
+		
+		if(!AudioDeviceRecorder::PrepareDeviceForRecording())
+		{
+			wxMessageBox("Failed to prepare device for recording! \n");
+		}
+		
 		m_rec_timer.start();
 	}
 	
@@ -446,10 +451,7 @@ void AudioDeviceRecorder::OnRecordButtonPressed(wxCommandEvent& event)
 
 void AudioDeviceRecorder::OnSelectedAudioDeviceInComboBox(wxCommandEvent& event)
 {
-	if(!AudioDeviceRecorder::PrepareDeviceForRecording())
-	{
-		wxMessageBox("Failed to prepare device for recording! \n");
-	}	
+		
 }
 
 void AudioDeviceRecorder::OnStopButtonPressed(wxCommandEvent& event)
