@@ -94,9 +94,12 @@ public:
 	void AddFunctionToTimerLoop( std::function < void() > thisFunction);
 	void stop();
 	
+	void SetRepeatInterval(int interval);
+	
 private:
 	//function to call everytime Notify is called
 	std::function < void() > m_function;
+	int m_repeat_interval;
 };
 
 class AudioDeviceRecorder : public wxPanel
@@ -187,6 +190,7 @@ private:
 	std::string fp_rlock_file;
 	
 	bool IsFileInReadLock();
+	
 	
 };
 

@@ -39,13 +39,14 @@
 //sample rate * time , 48000 * 0.5 = 24000
 // sample_rate * time / number_buffers = 24000 / 4 = 6000
 
-#define BUFFER_FRAMES 4000
+#define BUFFER_FRAMES 8000
 
 RecordingStreamer::RecordingStreamer()
 {
 	
 	m_source_ptr = nullptr;
-	m_buffer = 0;
+	
+	buffers[0] = 0;
 	
 	m_deviceIndex = 0;
 	m_deviceName = "";
@@ -56,7 +57,7 @@ RecordingStreamer::RecordingStreamer()
 	m_record_audio_device = nullptr;
 	
 	//set to default format and sample rate for now
-	sampleRate = 48000;
+	sampleRate = 96000;
 	format = AL_FORMAT_MONO16;
 	int num_channels = 1;
 	
@@ -87,9 +88,8 @@ RecordingStreamer::RecordingStreamer()
 
 RecordingStreamer::~RecordingStreamer()
 {
-	if(m_buffer != 0)
+	if(buffers[0] != 0)
 	{
-		alDeleteBuffers(1,&m_buffer);
 		alDeleteBuffers(NUM_STREAM_BUFFERS,buffers);
 	}
 	
@@ -131,7 +131,6 @@ bool RecordingStreamer::PrepareDeviceForRecording()
 	{
 		if(!buffers_generated)
 		{
-			alGenBuffers(1, &m_buffer);
 			alGenBuffers(NUM_STREAM_BUFFERS, buffers);
 			
 			ALenum err = alGetError();
@@ -169,6 +168,7 @@ void RecordingStreamer::RecordAudioFromDevice()
 		
 		bool exitFunction = false;
 		
+		
 		switch(RecordingStreamer::GetStatusOfHelperProgramBuffers())
 		{
 			case RecordingStreamer::HelperProgramBufferState::NONE:{std::cout << "No state.\n"; exitFunction = true; break;}
@@ -180,7 +180,12 @@ void RecordingStreamer::RecordAudioFromDevice()
 			{
 				break;
 			}
-			default:{std::cout << "Unhandled case in recording streamer!\n"; break;}
+			default:
+			{ 
+				std::cout << "Unhandled case in recording streamer!\n"; 
+				exitFunction = true;
+			    break;
+			}
 		}
 		
 		if(exitFunction){return;}
@@ -189,6 +194,11 @@ void RecordingStreamer::RecordAudioFromDevice()
 		
 		//remove buffer from source
 		alSourcei(*m_source_ptr, AL_BUFFER, 0); 
+		
+		while(RecordingStreamer::GetStatusOfHelperProgramBuffers() != RecordingStreamer::HelperProgramBufferState::BUFFER_1_READY_READ)
+		{
+			//wait
+		}
 		
 		SNDFILE * infile;
 		/* Open the file and get the first stream from it */
@@ -203,9 +213,10 @@ void RecordingStreamer::RecordAudioFromDevice()
 			return;
 		}
 		
-		size_t buffer_index;
+		size_t buffer_index = 0;
 		for(buffer_index = 0; buffer_index < NUM_STREAM_BUFFERS; buffer_index++)
 		{
+			
 						
 			//read audio from file
 			std::array <std::int16_t,BUFFER_FRAMES> read_buf;
@@ -218,13 +229,28 @@ void RecordingStreamer::RecordAudioFromDevice()
 			
 			while( (read_size = sf_read_short(infile, read_buf.data(), read_buf.size()) ) != 0)
 			{
-				data_vec.insert(data_vec.end(), read_buf.begin(), read_buf.begin() + read_size);
+				data_vec.insert(data_vec.begin(), read_buf.begin(), read_buf.begin() + read_size);
 			}
-						
+			
+			std::vector <std::int16_t> mono_vec;
+			
+			size_t count = 0;
+			
+			//convert to mono
+			for(size_t i = 1; i < data_vec.size(); i = i + 2)
+			{
+				std::int16_t left_sample = data_vec[i-1];
+				std::int16_t right_sample = data_vec[i];
+				std::int16_t avg_sample = 0.5*(int(left_sample) + right_sample);
+			    
+				mono_vec.push_back(avg_sample);
+				count++;
+			}
+
 			//attach samples to buffer
 			//set buffer data
 			int buffer_byte_size = int(BUFFER_FRAMES) * bit_size;
-			alBufferData(buffers[buffer_index], format, &data_vec.front(), buffer_byte_size, sampleRate);
+			alBufferData(buffers[buffer_index], format, &mono_vec.front(), buffer_byte_size, sampleRate);
 			
 			err = alGetError();
 			if(err != AL_NO_ERROR)

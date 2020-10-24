@@ -84,7 +84,6 @@ private:
 
 	//buffers
 	ALuint buffers[NUM_STREAM_BUFFERS];
-	ALuint m_buffer;
 	
 	
 	//pointer to device and context used for playback and not recording

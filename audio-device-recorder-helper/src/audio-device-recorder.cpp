@@ -184,7 +184,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	m_state = AudioDeviceRecorder::HelperProgramBufferState::NONE;
 	
 	//set to default format and sample rate for now
-	sampleRate = 48000;
+	sampleRate = 96000;
 	int num_channels = 1;
 	
     bit_size = sizeof(std::int16_t);
@@ -198,7 +198,7 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	//parameters.deviceId = adc.getDefaultInputDevice();
 	parameters.nChannels = num_channels;
 	parameters.firstChannel = 0;
-	bufferFrames = BUFFER_FRAMES; // 256 sample frames
+	bufferFrames = BUFFER_FRAMES;
 	
 	m_stream_opened = false;
     m_stream_closed = false;
@@ -226,6 +226,11 @@ AudioDeviceRecorder::AudioDeviceRecorder()
 	m_rec_timer.AddFunctionToTimerLoop(func);
 	
 	ptrToAudioDataQueue = &m_main_audio_queue;
+	
+	//time repeat interval (number of buffer frames / sample rate)*(1000 milliseconds / seconds) + 10 milliseconds
+	int repeat_interval = ((double(BUFFER_FRAMES) / sampleRate) * 1000) + 10;
+	
+	m_rec_timer.SetRepeatInterval(repeat_interval);
 }
 
 
@@ -309,19 +314,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 		
 		if(ptrToAudioDataQueue->IsMainArrayFull()){break;}
 	    
-	    
-	    std::int16_t prevValue = 0;
-	    
-	    if(i > 0)
-	    {
-			if( i % 2 == 0)
-			{
-				prevValue = *my_buffer;
-			}
-			
-		}
-	    
-	    *audio_data_ptr++ = 0.5*(prevValue + *my_buffer++);
+	    *audio_data_ptr++ = *my_buffer++;
 	    
 	    //std::cout << "audio data i:" << i << " , " << *audio_data_ptr << std::endl;
 	}
@@ -549,8 +542,9 @@ void RecorderTimer::Notify()
 
 void RecorderTimer::start()
 {
-	int time_repeat_interval = 600;// in milliseconds
-    wxTimer::Start(time_repeat_interval,wxTIMER_CONTINUOUS); //the timer calls Notify every TIMER_INTERVAL milliseconds
+	//time repeat interval (number of buffer frames / sample rate) + 10 milliseconds
+	
+    wxTimer::Start(m_repeat_interval,wxTIMER_CONTINUOUS); //the timer calls Notify every TIMER_INTERVAL milliseconds
 }
 
 void RecorderTimer::stop()
@@ -563,3 +557,4 @@ void RecorderTimer::AddFunctionToTimerLoop( std::function < void() > thisFunctio
 	m_function = thisFunction;
 }
 
+void RecorderTimer::SetRepeatInterval(int interval){m_repeat_interval = interval;}
