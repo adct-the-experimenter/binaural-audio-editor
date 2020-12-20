@@ -6,7 +6,7 @@
 #include <iostream>
 #include <wx/string.h>
 
-#include <portaudio.h>
+#include "RtAudio.h"
 
 
 LCCOutputDialog::LCCOutputDialog(const wxString& title, wxWindow* parent)
@@ -291,60 +291,29 @@ void LCCOutputDialog::CreateWindow()
 	wxStaticText* decayGainText = new wxStaticText(this, -1, wxT("Decay Gain:"), wxPoint(40, 120));
 	wxStaticText* delayUSText = new wxStaticText(this, -1, wxT("Delay (microseconds):"), wxPoint(40, 120));
 	
-	
+	//get rtaudio devices
     //list box to contain names of input devices
 	listboxDevices = new wxListBox(this, wxID_ANY, wxPoint(0, 0), wxSize(300, 300)); 
 	
-	int     i, numDevices, defaultDisplayed;
-    const   PaDeviceInfo *deviceInfo;
-    PaStreamParameters inputParameters, outputParameters;
-    PaError err;
-  
-	//check for errors
-    err = Pa_Initialize();
-	if( err != paNoError )
+	RtAudio audio;
+	RtAudio::DeviceInfo info;
+	
+	if ( audio.getDeviceCount() < 1 ) 
 	{
-	   printf( "ERROR: Pa_Initialize returned 0x%x\n", err );
-	   Pa_Terminate();
-	   fprintf( stderr, "Error number: %d\n", err );
-       fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+		std::cout << "\nNo audio devices.\n";
 	}
-
-	// Determine the number of devices available
-	numDevices = Pa_GetDeviceCount();
-    if( numDevices < 0 )
-    {
-        printf( "ERROR: Pa_GetDeviceCount returned 0x%x\n", numDevices );
-        err = numDevices;
-        Pa_Terminate();
-		fprintf( stderr, "Error number: %d\n", err );
-        fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-    }
-    
-    for( i=0; i<numDevices; i++ )
-    {
-           deviceInfo = Pa_GetDeviceInfo( i );
-           printf( "--------------------------------------- device #%d\n", i );
-                   
-   
-       /* print device info fields */
-  #ifdef WIN32
-           {   /* Use wide char on windows, so we can show UTF-8 encoded device names */
-               wchar_t wideName[MAX_PATH];
-               MultiByteToWideChar(CP_UTF8, 0, deviceInfo->name, -1, wideName, MAX_PATH-1);
-               wprintf( L"Name                        = %s\n", wideName );
-           }
-   #else
-           printf( "Name                        = %s\n", deviceInfo->name );
-   #endif
-		   
-		   std::string name(deviceInfo->name);
-		   std::string name_and_index = name + "[" + std::to_string(i) + "]";
-		   wxString mystring( name_and_index );
-		   listboxDevices->Append(mystring);
-     }
-   
-    Pa_Terminate();
+	else
+	{
+		for (unsigned int i=0;i < audio.getDeviceCount();i++)
+		{
+			info = audio.getDeviceInfo( i );
+			
+			std::string name_and_index = info.name + "  Index:" + std::to_string(i);
+			wxString thisString(name_and_index);
+			
+		    listboxDevices->Append(thisString);	
+		}
+	}
     
 	
 	//make horizontal box to put names in

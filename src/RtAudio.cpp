@@ -735,7 +735,7 @@ RtAudio::DeviceInfo RtApiCore :: getDeviceInfo( unsigned int device )
   free(name);
 
   // Get the output stream "configuration".
-  AudioBufferList *bufferList = nil;
+  AudioBufferList	*bufferList = nil;
   property.mSelector = kAudioDevicePropertyStreamConfiguration;
   property.mScope = kAudioDevicePropertyScopeOutput;
   //  property.mElement = kAudioObjectPropertyElementWildcard;
@@ -986,7 +986,7 @@ bool RtApiCore :: probeDeviceOpen( unsigned int device, StreamMode mode, unsigne
     property.mScope = kAudioDevicePropertyScopeOutput;
 
   // Get the stream "configuration".
-  AudioBufferList *bufferList = nil;
+  AudioBufferList	*bufferList = nil;
   dataSize = 0;
   property.mSelector = kAudioDevicePropertyStreamConfiguration;
   result = AudioObjectGetPropertyDataSize( id, &property, 0, NULL, &dataSize );
@@ -1078,7 +1078,7 @@ bool RtApiCore :: probeDeviceOpen( unsigned int device, StreamMode mode, unsigne
   free( bufferList );
 
   // Determine the buffer size.
-  AudioValueRange bufferRange;
+  AudioValueRange	bufferRange;
   dataSize = sizeof( AudioValueRange );
   property.mSelector = kAudioDevicePropertyBufferFrameSizeRange;
   result = AudioObjectGetPropertyData( id, &property, 0, NULL, &dataSize, &bufferRange );
@@ -1194,7 +1194,7 @@ bool RtApiCore :: probeDeviceOpen( unsigned int device, StreamMode mode, unsigne
 
   // Now set the stream format for all streams.  Also, check the
   // physical format of the device and change that if necessary.
-  AudioStreamBasicDescription description;
+  AudioStreamBasicDescription	description;
   dataSize = sizeof( AudioStreamBasicDescription );
   property.mSelector = kAudioStreamPropertyVirtualFormat;
   result = AudioObjectGetPropertyData( id, &property, 0, NULL, &dataSize, &description );
@@ -1245,7 +1245,7 @@ bool RtApiCore :: probeDeviceOpen( unsigned int device, StreamMode mode, unsigne
   if ( description.mFormatID != kAudioFormatLinearPCM || description.mBitsPerChannel < 16 ) {
     description.mFormatID = kAudioFormatLinearPCM;
     //description.mSampleRate = (Float64) sampleRate;
-    AudioStreamBasicDescription testDescription = description;
+    AudioStreamBasicDescription	testDescription = description;
     UInt32 formatFlags;
 
     // We'll try higher bit rates first and then work our way down.
@@ -10889,3 +10889,4 @@ void RtApi :: byteSwapBuffer( char *buffer, unsigned int samples, RtAudioFormat 
   // End:
   //
   // vim: et sts=2 sw=2
+
