@@ -175,6 +175,7 @@ public:
 	void OnListRightClick(wxListEvent &evt);
 	void OnPopupClick(wxCommandEvent &evt);
 	
+	void OnNewProject(wxCommandEvent& WXUNUSED(event));
 	void OnSaveProject(wxCommandEvent& WXUNUSED(event));
 	void OnLoadProject(wxCommandEvent& WXUNUSED(event));
 	
@@ -203,6 +204,7 @@ private:
 		ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,
 		ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,
 		ID_EDIT_MULTIPLE_ECHO_ZONES,
+		ID_NEW_PROJECT,
 		ID_SAVE_PROJECT,
 		ID_LOAD_PROJECT
 	};
@@ -251,6 +253,10 @@ private:
     
     wxBoxSizer* m_add_rm_box_sizer;
     
+    void CreateListenerTrack();
+    
+    void CreateFirstSoundProducerTrack();
+    
     wxButton* m_add_soundproducertrack_button;
     void OnAddSoundProducerTrack(wxCommandEvent& event);
    
@@ -264,6 +270,12 @@ private:
     
     //Load System
     std::unique_ptr <LoadSystem> load_system_ptr;
+    
+    void CreateNewProject();
+    
+    void SaveProject();
+    
+    void LoadProject();
     
     DECLARE_EVENT_TABLE()
 };

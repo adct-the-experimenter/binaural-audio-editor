@@ -164,4 +164,14 @@ void SoundProducerRegistry::RemoveThisNameFromAllComboBoxesExceptThisOne(std::st
 	}
 }
 
+void SoundProducerRegistry::ClearAllSoundproducerNames()
+{
+	soundproducers_to_edit_wxstring.clear();
+	
+}
 
+void SoundProducerRegistry::ClearAll()
+{
+	soundproducers_to_edit_wxstring.clear();
+	combo_box_ptr_vec.clear();
+}
