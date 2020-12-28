@@ -52,6 +52,8 @@
 
 #include "effects-manager.h"
 
+#include "SaveSystem.h"
+#include "LoadSystem.h"
 
 #include <iostream>
 #include <memory> //for unique_ptr use
@@ -164,19 +166,25 @@ public:
     
     // Mainframe menu operations
     
+    
     void OnOpen(wxCommandEvent& WXUNUSED(event));
     void OnIdle(wxIdleEvent& event);
 	void OnExit(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
-	void OnPlayAudio(wxCommandEvent& event);
 	
 	void OnListRightClick(wxListEvent &evt);
 	void OnPopupClick(wxCommandEvent &evt);
 	
-	
+	void OnNewProject(wxCommandEvent& WXUNUSED(event));
+	void OnSaveProject(wxCommandEvent& WXUNUSED(event));
+	void OnLoadProject(wxCommandEvent& WXUNUSED(event));
 	
 	void OnKeyDown(wxKeyEvent& event); //where camera viewer gets manipulated
 	
+
+	//freees all that needs to be freed before load
+	void UnloadAll();
+
 	friend class wxOsgApp;
 	
 private:
@@ -195,8 +203,10 @@ private:
 		ID_CREATE_ECHO_ZONE,
 		ID_EDIT_MULTIPLE_STANDARD_REVERB_ZONES,
 		ID_EDIT_MULTIPLE_EAX_REVERB_ZONES,
-		ID_EDIT_MULTIPLE_ECHO_ZONES
-		
+		ID_EDIT_MULTIPLE_ECHO_ZONES,
+		ID_NEW_PROJECT,
+		ID_SAVE_PROJECT,
+		ID_LOAD_PROJECT
 	};
     
     osg::ref_ptr<osgViewer::Viewer> _viewer;
@@ -243,6 +253,10 @@ private:
     
     wxBoxSizer* m_add_rm_box_sizer;
     
+    void CreateListenerTrack();
+    
+    void CreateFirstSoundProducerTrack();
+    
     wxButton* m_add_soundproducertrack_button;
     void OnAddSoundProducerTrack(wxCommandEvent& event);
    
@@ -250,6 +264,18 @@ private:
     int sound_producer_track_count;
     wxButton* m_remove_soundproducertrack_button;
     void OnRemoveSoundProducerTrack(wxCommandEvent& event);
+    
+    //Save System
+    std::unique_ptr <SaveSystem> save_system_ptr;
+    
+    //Load System
+    std::unique_ptr <LoadSystem> load_system_ptr;
+    
+    void CreateNewProject();
+    
+    void SaveProject();
+    
+    void LoadProject();
     
     DECLARE_EVENT_TABLE()
 };

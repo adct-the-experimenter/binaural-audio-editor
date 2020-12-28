@@ -17,7 +17,6 @@ void EffectsManager::CreateStandardReverbZone(std::string& name, double& x, doub
 {
 	ReverbZone r_zone;
 	
-
 	standard_reverb_zones_vector.push_back(r_zone);
 	
 	standard_reverb_zones_vector.back().InitStandardReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
@@ -31,13 +30,11 @@ void EffectsManager::CreateEAXReverbZone(std::string& name, double& x, double& y
 {
 	ReverbZone r_zone;
 	
-	
 	eax_reverb_zones_vector.push_back(r_zone);
 	
 	eax_reverb_zones_vector.back().InitEAXReverbZoneWithGraphicalObject(name,x,y,z,width,properties);
 	
 	effect_zones_vector.push_back(&eax_reverb_zones_vector.back());
-	
 	
 }
 
@@ -211,13 +208,11 @@ void EffectsManager::FreeEffects()
 	for(size_t i=0; i < standard_reverb_zones_vector.size(); i++)
 	{
 		standard_reverb_zones_vector[i].FreeEffects();
-		
 	}
 	
 	for(size_t i=0; i < eax_reverb_zones_vector.size(); i++)
 	{
-		eax_reverb_zones_vector[i].FreeEffects();
-		
+		eax_reverb_zones_vector[i].FreeEffects();	
 	}
 	
 	for(size_t i=0; i < echo_zones_vector.size(); i++)
@@ -225,3 +220,4 @@ void EffectsManager::FreeEffects()
 		echo_zones_vector[i].FreeEffects();
 	}
 }
+

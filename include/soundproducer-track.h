@@ -14,6 +14,20 @@
 #include "soundproducer-registry.h"
 #include "soundproducer.h"
 
+struct SoundProducerTrackSaveData
+{
+	//name of sound producer
+	std::string soundproducer_name;
+	
+	//double track save data
+	DDMap* time_value_map_x_ptr;
+	DDMap* time_value_map_y_ptr;
+	DDMap* time_value_map_z_ptr;
+	
+	//file name of sound file
+	std::string soundfilepath;
+};
+
 //class to manipulate x,y z position of sound producer
 class SoundProducerTrack : public Track
 {
@@ -82,6 +96,13 @@ public:
 	//Audio DAW 
 	void SetReferenceToImportAudioDAWButton(wxButton* thisButton);
 	
+	SoundProducerTrackSaveData GetSoundProducerTrackSaveData();
+	void LoadSoundProducerTrackSaveData(SoundProducerTrackSaveData& data);
+	
+	void SelectSoundProducerByName(std::string name);
+	
+	void SetComboBoxToThisSelectionName(std::string name);
+
 	friend class SoundProducerTrackManager;
 	
 private:
@@ -109,7 +130,6 @@ private:
 
 	void OnSelectedSoundProducerInComboBox(wxCommandEvent& event);
 
-	void SelectSoundProducerByName(std::string name);
 	
 	//bool to tell if reverb is applied to the source of the track
 	bool reverbApplied;
@@ -120,6 +140,8 @@ private:
 	void OnImportAudioDAWButtonClick(wxCommandEvent& event);
 	
 	std::string streamSoundFilePath;
+	
+	SoundProducerTrackSaveData m_saveData;
 };
 
 #endif

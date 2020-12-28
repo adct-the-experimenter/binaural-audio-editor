@@ -7,6 +7,7 @@
 #include <functional>   // std::function, std::negate
 #include "playback-controls.h"
 
+typedef std::unordered_map<double, double> DDMap;
 
 class DoubleTrack : public Track
 {
@@ -53,6 +54,10 @@ public:
     void logic_left_click();
     void logic_right_click();
     
+    DDMap* GetPointerToTimeValueMap();
+    
+    void LoadDataFromThisTimeValueMap(DDMap& map);
+    
 private:
 
 	double* varToManipulatePtr;
@@ -69,7 +74,7 @@ private:
     EditorGraph* graphEditor;
     
     //2d map to hold output at certain time, for quick reading
-    std::unordered_map <double, double> map_time_output;
+    DDMap map_time_output;
     
     std::function < void() > func_after_var_change;
     

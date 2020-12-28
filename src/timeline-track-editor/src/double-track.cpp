@@ -7,8 +7,6 @@ DoubleTrack::DoubleTrack(const wxString& title)  : Track (title)
 	
 	playbackControlsPtr = nullptr;
 	
-	//Connect(wxEVT_PAINT, wxPaintEventHandler(DoubleTrack::OnPaint));
-	//Connect(wxEVT_SIZE, wxSizeEventHandler(DoubleTrack::OnSize));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(DoubleTrack::OnLeftMouseClick));
 	Connect(wxEVT_CONTEXT_MENU, wxCommandEventHandler(DoubleTrack::OnRightMouseClick));
 		
@@ -211,3 +209,12 @@ void DoubleTrack::SetFunctionToCallAfterVariableChange(std::function < void() > 
 
 void DoubleTrack::SetReferenceToPlaybackControls(PlaybackControls* controls){playbackControlsPtr = controls;}
 PlaybackControls* DoubleTrack::GetReferenceToPlaybackControls(){return playbackControlsPtr;}
+
+DDMap* DoubleTrack::GetPointerToTimeValueMap(){return &map_time_output;}
+
+void DoubleTrack::LoadDataFromThisTimeValueMap(DDMap& map)
+{
+	map_time_output = map;
+	
+	graphEditor->PlacePointsFromThisMap(map_time_output,verticalStart,verticalEnd,verticalResolution);
+}

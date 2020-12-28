@@ -9,6 +9,8 @@
 
 #include <wx/dcbuffer.h>
 
+typedef std::unordered_map<double, double> DDMap;
+
 class EditorGraph : public wxPanel
 {
 
@@ -29,6 +31,9 @@ public:
 	//function to return vertical graph value at some time
 	//if no value is at that time, then legitValue is false and 0 is returned
 	int GetVerticalGraphValueAtThisTime(double& thisTime,bool& legitValue);
+	
+	template <typename T>
+	void PlacePointsFromThisMap(DDMap& thisMap,T& vertStart, T& vertEnd, T& vertRes);
 	
 private:
 

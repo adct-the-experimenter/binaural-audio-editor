@@ -16,10 +16,22 @@
 #include <osg/Geode> //for object rendered to be moved on screen by matrix transform
 
 //This is a class that holds positional info on object
-//as well as source and buffer components for use with OpenALSoftAudioEngine
+//as well as source and buffer components for use with sound producer track
 
-//DOES NOT PLAY SOUND. OpenALSoftAudioEngine plays the sound.
-//It only holds information to pass to OpenALSoftAudioEngine to play sound.
+struct SoundProducerSaveData
+{
+	//name
+	std::string name;
+	
+	//position
+	double x;
+	double y;
+	double z;
+	
+	//filepath
+	std::string file_path;
+};
+
 
 class SoundProducer
 {
@@ -60,6 +72,9 @@ class SoundProducer
 
 		osg::PositionAttitudeTransform* getTransformNode();
 		
+		SoundProducerSaveData GetSoundProducerSaveData();
+		void LoadSoundProducerSaveData(SoundProducerSaveData& data);
+
 		void SetFreeRoamBool(bool state);
 		bool GetFreeRoamBool();
 		
@@ -95,8 +110,13 @@ class SoundProducer
 		//moves the geode
 		osg::ref_ptr<osg::PositionAttitudeTransform> m_paTransform;
 		
+
+		//save data
+		SoundProducerSaveData m_saveData;
+
 		//option for allowing sound producer to be moved by keys
 		bool freeRoam;
+
 };
 
 #endif

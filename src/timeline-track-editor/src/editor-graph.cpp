@@ -185,13 +185,34 @@ void EditorGraph::DrawCurrentPointsOnGraph(wxDC& dc)
 {
 	// draw a circle
     dc.SetBrush(*wxBLACK_BRUSH);
-    //for(size_t i=0; i < graph_points.size(); i++)
-    //{
-	//	dc.DrawCircle( graph_points.at(i), 2 );
-	//}
+    
+    
 	for ( auto it = map_time.begin(); it != map_time.end(); ++it )
 	{
 		dc.DrawCircle( it->second, 2 );
 	}
     
 }
+
+template <typename T>
+void EditorGraph::PlacePointsFromThisMap(DDMap& thisMap,T& vertStart, T& vertEnd, T& vertRes)
+{
+	for (DDMap::iterator it = thisMap.begin(); it!= thisMap.end(); ++it)
+	{
+		
+		double thisTime = it->first; 
+		thisTime = round (thisTime / (double(TIME_RESOLUTION) / 1000)) * (double(TIME_RESOLUTION) / 1000);
+		
+		double xPoint = thisTime * ( (double)TRACK_WIDTH / (double)TIME_END_VALUE );
+		//std::cout << "x point:" << xPoint << std::endl;
+		
+		double out = it->second;
+		double yPoint = round( (vertEnd - out) * ( double(TRACK_HEIGHT) / (vertEnd - vertStart) ) *  vertRes ) * (1 / vertRes) ;
+		//std::cout << "y point:" << yPoint << std::endl;
+		
+		map_time.emplace(thisTime, wxPoint(xPoint,yPoint));
+		
+	}
+}
+
+template void EditorGraph::PlacePointsFromThisMap<double>( DDMap& thisMap,double& vertStart, double& vertEnd, double& vertRes);

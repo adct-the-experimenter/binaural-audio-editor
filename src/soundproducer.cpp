@@ -88,6 +88,12 @@ void SoundProducer::InitSoundProducer(std::string& thisName,std::string& filepat
 	m_paTransform->addChild(m_geode);
 
 	moveSource();
+	
+	//init save data
+	m_saveData.name = thisName;
+	m_saveData.x = x;
+	m_saveData.y = y;
+	m_saveData.z = z;
 }
 
 void SoundProducer::SetNameString(std::string& thisName){ name = thisName;}
@@ -124,6 +130,8 @@ void SoundProducer::SetPositionX(double& x)
 								producer_position_vector[POSITION_INDEX::Y],
 								producer_position_vector[POSITION_INDEX::Z]));
 	moveSource();
+	
+	m_saveData.x = x;
 }
 
 double SoundProducer::GetPositionX(){return producer_position_vector[POSITION_INDEX::X];}
@@ -136,6 +144,8 @@ void SoundProducer::SetPositionY(double& y)
 								y,
 								producer_position_vector[POSITION_INDEX::Z]));
 	moveSource();
+	
+	m_saveData.y = y;
 }
 
 double SoundProducer::GetPositionY(){return producer_position_vector[POSITION_INDEX::Y];}
@@ -148,6 +158,8 @@ void SoundProducer::SetPositionZ(double& z)
 								producer_position_vector[POSITION_INDEX::Y],
 								z));
 	moveSource();
+	
+	m_saveData.z = z;
 }
 
 double SoundProducer::GetPositionZ(){return producer_position_vector[POSITION_INDEX::Z];}
@@ -174,7 +186,6 @@ void SoundProducer::CreateSource()
 	alGenSources(1, &m_source);
 	alSourcei(m_source, AL_SOURCE_RELATIVE, AL_FALSE);
 	assert(alGetError()==AL_NO_ERROR && "Failed to setup sound source.");
-
 }
 
 void SoundProducer::setSource(ALuint& thisSource){m_source = thisSource;}
@@ -186,9 +197,14 @@ osg::Geode* SoundProducer::getGeodeNode(){return m_geode;}
 
 osg::PositionAttitudeTransform* SoundProducer::getTransformNode(){return m_paTransform;}
 
-void SoundProducer::SetReferenceToTrackSource(ALuint* thisSource)
+void SoundProducer::SetReferenceToTrackSource(ALuint* thisSource){track_source_ptr = thisSource;}
+
+SoundProducerSaveData SoundProducer::GetSoundProducerSaveData(){return m_saveData;}
+
+void SoundProducer::LoadSoundProducerSaveData(SoundProducerSaveData& data)
 {
-	track_source_ptr = thisSource;
+	m_saveData = data;
+	
 }
 
 void SoundProducer::SetFreeRoamBool(bool state){freeRoam = state;}

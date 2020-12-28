@@ -300,68 +300,19 @@ void StereoAudioTrack::OnBrowse(wxCommandEvent& event)
 
 void StereoAudioTrack::BrowseForInputAudioFile()
 {
-	//object to hold audio data for streaming
-	AudioStreamContainer audio_data_stream;
 	
-	//Hold data for left channel and right channel
-	std::vector <double> audio_data_input_copy;
-	
-	//audio format info
-	SF_INFO input_sfinfo;
-	
-	if(audio_data_stream.GetSize() == 0)
+	wxFileDialog fileDlg(this, _("Choose the WAV,FLAC,OGG file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|FLAC file|*.flac|OGG file|*.ogg|All files|*.*"));
+	if (fileDlg.ShowModal() == wxID_OK)
 	{
-		wxFileDialog fileDlg(this, _("Choose the WAV,FLAC,OGG file"), wxEmptyString, wxEmptyString, _("WAV file|*.wav|FLAC file|*.flac|OGG file|*.ogg|All files|*.*"));
-		if (fileDlg.ShowModal() == wxID_OK)
-		{
-			//clear and free any current data 
-			
-			m_left_channel_track->ClearGraph();
-			m_right_channel_track->ClearGraph();
-			
-			wxString path = fileDlg.GetPath();
-			//use this path in your app
-			inputSoundFilePath = std::string(path.mb_str());
-			
-			std::cout << "Input Sound file path:" << inputSoundFilePath << std::endl;
-			
-			std::cout << "Stream sound file path: " << streamSoundFilePath << std::endl;
-			
-			int channels = m_left_channel_track->GetNumberOfChannelsInAudioFile(inputSoundFilePath,input_sfinfo);
-			std::cout << "channels:" << channels << std::endl;
-			
-			
-			if(channels == 1)
-			{
-				//create a copy of file to reference for editing
-				//also put data into stream
-				m_left_channel_track->ReadAndCopyDataFromInputFile(&audio_data_input_copy,inputSoundFilePath,input_sfinfo);
-				m_left_channel_track->CopyInputDataIntoAudioDataStream(&audio_data_input_copy,&audio_data_stream,streamSoundFilePath,input_sfinfo);
-				//graph all data in channel to one graph
-				m_left_channel_track->PlotOneChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
-			}
-			else if(channels == 2)
-			{
-				//create a copy of file to reference for editing
-				//also put data into stream
-				m_left_channel_track->ReadAndCopyDataFromInputFile(&audio_data_input_copy,inputSoundFilePath,input_sfinfo);
-				m_left_channel_track->CopyInputDataIntoAudioDataStream(&audio_data_input_copy,&audio_data_stream,streamSoundFilePath,input_sfinfo);
-					
-				//plot left channel data to one graph 
-				m_left_channel_track->PlotLeftChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
-				//plot right channel data to other graph
-				m_right_channel_track->PlotRightChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
-				
-			}
-			
-			//open file to play during streaming
-			audioPlayerPtr->OpenPlayerFile(streamSoundFilePath.c_str());
-			
-			//clear data stored
-			audio_data_stream.ClearStreamDataStored();
-			audio_data_input_copy.clear();
-		} 
-	}
+	
+		wxString path = fileDlg.GetPath();
+		
+		//use this path in your app
+		inputSoundFilePath = std::string(path.mb_str());
+		
+		StereoAudioTrack::LoadAudioFromFileToTrack(inputSoundFilePath);
+		
+	} 
 }
 	
 void StereoAudioTrack::OnSize(wxSizeEvent& event)
@@ -425,3 +376,60 @@ PlaybackControls* StereoAudioTrack::GetReferenceToPlaybackControls(){return play
 
 void StereoAudioTrack::SetTrackOption(int thisOption){track_options = thisOption;}
 int StereoAudioTrack::GetTrackOption(){return track_options;}
+
+std::string StereoAudioTrack::GetInputSoundFilePath(){return inputSoundFilePath;}
+
+void StereoAudioTrack::LoadAudioFromFileToTrack(std::string path)
+{
+	//object to hold audio data for streaming
+	AudioStreamContainer audio_data_stream;
+	
+	//Hold data for left channel and right channel
+	std::vector <double> audio_data_input_copy;
+	
+	//audio format info
+	SF_INFO input_sfinfo;
+	
+	//clear and free any current data 
+	
+	m_left_channel_track->ClearGraph();
+	m_right_channel_track->ClearGraph();
+		
+	std::cout << "Input Sound file path:" << path << std::endl;
+	
+	std::cout << "Stream sound file path: " << streamSoundFilePath << std::endl;
+	
+	int channels = m_left_channel_track->GetNumberOfChannelsInAudioFile(path,input_sfinfo);
+	std::cout << "channels:" << channels << std::endl;
+	
+	
+	if(channels == 1)
+	{
+		//create a copy of file to reference for editing
+		//also put data into stream
+		m_left_channel_track->ReadAndCopyDataFromInputFile(&audio_data_input_copy,path,input_sfinfo);
+		m_left_channel_track->CopyInputDataIntoAudioDataStream(&audio_data_input_copy,&audio_data_stream,streamSoundFilePath,input_sfinfo);
+		//graph all data in channel to one graph
+		m_left_channel_track->PlotOneChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
+	}
+	else if(channels == 2)
+	{
+		//create a copy of file to reference for editing
+		//also put data into stream
+		m_left_channel_track->ReadAndCopyDataFromInputFile(&audio_data_input_copy,path,input_sfinfo);
+		m_left_channel_track->CopyInputDataIntoAudioDataStream(&audio_data_input_copy,&audio_data_stream,streamSoundFilePath,input_sfinfo);
+			
+		//plot left channel data to one graph 
+		m_left_channel_track->PlotLeftChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
+		//plot right channel data to other graph
+		m_right_channel_track->PlotRightChannelStreamAudioDataToGraph(&audio_data_stream,input_sfinfo);
+		
+	}
+	
+	//open file to play during streaming
+	audioPlayerPtr->OpenPlayerFile(streamSoundFilePath.c_str());
+	
+	//clear data stored
+	audio_data_stream.ClearStreamDataStored();
+	audio_data_input_copy.clear(); 
+}

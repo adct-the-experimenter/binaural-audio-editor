@@ -68,6 +68,10 @@ SoundProducerTrack::SoundProducerTrack(const wxString& title,ALCdevice* thisAudi
 	//initialize reverb applied status
 	SoundProducerTrack::SetStatusReverbApplied(false);
 	
+	m_saveData.time_value_map_x_ptr = xTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_y_ptr = yTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_z_ptr = zTrack->GetPointerToTimeValueMap();
+	
 	
 	Connect(wxEVT_PAINT, wxPaintEventHandler(Track::OnPaint));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(Track::OnSize));
@@ -170,6 +174,7 @@ void SoundProducerTrack::FunctionToCallInNullState()
 void SoundProducerTrack::SetReferenceToSoundProducerToManipulate(SoundProducer* thisSoundProducer)
 {
 	soundProducerToManipulatePtr = thisSoundProducer;
+	m_saveData.soundproducer_name = soundProducerToManipulatePtr->GetNameString();
 }
 
 StereoAudioTrack* SoundProducerTrack::GetReferenceToStereoAudioTrack(){return audioTrack;}
@@ -183,7 +188,7 @@ void SoundProducerTrack::UpdateComboBoxListFromSoundProducerRegistry()
 {
 	//get current name selected
 	std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
-	
+		
 	//clear current list and append new one from sound producer registry
 	m_combo_box->Clear();
 	m_combo_box->Append(soundproducer_registry_ptr->GetSoundProducersToEditList());
@@ -203,7 +208,7 @@ void SoundProducerTrack::OnSelectedSoundProducerInComboBox(wxCommandEvent& event
 	if(m_combo_box != nullptr)
 	{
 		std::string thisStringName = (m_combo_box->GetStringSelection()).ToStdString();
-	
+		
 		SoundProducerTrack::SelectSoundProducerByName(thisStringName);
 		
 	}
@@ -216,6 +221,8 @@ void SoundProducerTrack::SelectSoundProducerByName(std::string name)
 	
 	if(thisSoundProducer)
 	{
+		m_saveData.soundproducer_name = name;
+		
 		thisSoundProducer->SetReferenceToTrackSource(&track_source);
 		SoundProducerTrack::SetReferenceToSoundProducerToManipulate(thisSoundProducer);
 		
@@ -223,7 +230,7 @@ void SoundProducerTrack::SelectSoundProducerByName(std::string name)
 		tempY = thisSoundProducer->GetPositionY();
 		tempZ = thisSoundProducer->GetPositionZ();
 		
-		if(soundproducer_registry_ptr == nullptr)
+		if(soundproducer_registry_ptr != nullptr)
 		{
 			soundproducer_registry_ptr->RemoveThisNameFromAllComboBoxesExceptThisOne(name,m_combo_box);
 		}
@@ -396,4 +403,49 @@ void SoundProducerTrack::OnImportAudioDAWButtonClick(wxCommandEvent& event)
 	
 	std::cout << "\nFinished importing audio from DAW!\n";
 	event.Skip();
+}
+
+SoundProducerTrackSaveData SoundProducerTrack::GetSoundProducerTrackSaveData()
+{
+	//work around for getting file path info from stereo track for saving
+	m_saveData.soundfilepath = audioTrack->GetInputSoundFilePath();
+	
+	return m_saveData;
+}
+
+void SoundProducerTrack::LoadSoundProducerTrackSaveData(SoundProducerTrackSaveData& data)
+{
+	m_saveData = data;
+	
+	m_saveData.time_value_map_x_ptr = xTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_y_ptr = yTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_z_ptr = zTrack->GetPointerToTimeValueMap();
+	
+	if(data.time_value_map_x_ptr)
+	{
+		xTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_x_ptr);
+		delete data.time_value_map_x_ptr;
+		data.time_value_map_x_ptr = nullptr;
+	}
+	
+	if(data.time_value_map_y_ptr)
+	{
+		yTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_y_ptr);
+		delete data.time_value_map_y_ptr;
+		data.time_value_map_y_ptr = nullptr;
+	}
+	
+	if(data.time_value_map_z_ptr)
+	{
+		zTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_z_ptr);
+		delete data.time_value_map_z_ptr;
+		data.time_value_map_z_ptr = nullptr;
+	}
+	
+}
+
+void SoundProducerTrack::SetComboBoxToThisSelectionName(std::string name)
+{
+	int select_index = m_combo_box->FindString(name,true); //case sensitive = true
+	m_combo_box->SetSelection(select_index);
 }

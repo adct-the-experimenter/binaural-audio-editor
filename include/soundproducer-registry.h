@@ -50,7 +50,11 @@ public:
 	//function to remove a string name from all combo boxes except for one
 	void RemoveThisNameFromAllComboBoxesExceptThisOne(std::string thisName, wxComboBox* thisCombobox);
 	
+	//function to clear all names from registry
+	void ClearAllSoundproducerNames();
 	
+	//function to clear all
+	void ClearAll();
 	
 private:
 

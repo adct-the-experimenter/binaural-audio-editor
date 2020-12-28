@@ -91,6 +91,13 @@ public:
     void render(wxDC& dc);
     void logic_left_click();
     void logic_right_click();
+    
+    
+    //function to return input file path
+    std::string GetInputSoundFilePath();
+    
+    //function to load audio from a given path
+    void LoadAudioFromFileToTrack(std::string path);
 	
 private:
 	
