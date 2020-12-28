@@ -16,6 +16,7 @@ void LoadSystem::LoadProject(std::vector <SoundProducerSaveData> *sound_producer
 							   std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData,
 							   std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData,
 							   ListenerTrackSaveData& listener_track_data,
+							   ListenerSaveData& listener_save_data,
 							   std::string path
 							 )
 {
@@ -28,6 +29,7 @@ void LoadSystem::LoadProject(std::vector <SoundProducerSaveData> *sound_producer
 							   standardRevZonesSaveData,
 							   eaxRevZonesSaveData,
 							   listener_track_data,
+							   listener_save_data,
 							   path);
 	
 }

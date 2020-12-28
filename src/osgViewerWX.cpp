@@ -605,7 +605,7 @@ void MainFrame::OnAbout(wxCommandEvent& event)
 	//show message box with ok icon,
 	//window title:About Binaural Audio Editor
 	//message:
-    wxMessageBox( "Version 1.4 of Binaural Audio Editor. \n This program is for producing and editing binaural audio from mono samples of audio.",
+    wxMessageBox( "Version 1.5 of Binaural Audio Editor. \n This program is for producing and editing binaural audio from mono samples of audio.",
                   "About Binaural Audio Editor", wxOK | wxICON_INFORMATION );
 }
 
@@ -686,7 +686,7 @@ void MainFrame::SaveProject()
 		std::cout << "Input save file path:" << saveFilePath << std::endl;
 		
 		save_system_ptr->SetSaveFilePath(saveFilePath);
-		save_system_ptr->SaveProjectToSetFile(sound_producer_vector_ref,effectsManagerPtr,m_listener_track);
+		save_system_ptr->SaveProjectToSetFile(sound_producer_vector_ref,effectsManagerPtr,m_listener_track,listenerPtr);
 	}
 }
     
@@ -714,6 +714,7 @@ void MainFrame::LoadProject()
 		std::vector <StandardReverbZoneSaveData> standardRevZonesSaveData;
 		std::vector <EAXReverbZoneSaveData> eaxRevZonesSaveData;
 		ListenerTrackSaveData lt_save_data;
+		ListenerSaveData listener_data;
 		
 		load_system_ptr->LoadProject(&sound_producer_save_data,
 							   &ptrSPTracksSaveDataVec,
@@ -721,6 +722,7 @@ void MainFrame::LoadProject()
 							   &standardRevZonesSaveData,
 							   &eaxRevZonesSaveData,
 							   lt_save_data,
+							   listener_data,
 							   loadFilePath);
 							   
 		
@@ -833,9 +835,13 @@ void MainFrame::LoadProject()
 		//initialize listener track from save data
 		if(m_listener_track)
 		{
-			
 			m_listener_track->LoadListenerTrackSaveData(lt_save_data);
-			
+		}
+		
+		//initialize listener from save data
+		if(listenerPtr)
+		{
+			listenerPtr->LoadListenerSaveData(listener_data);
 		}
 		
 	}

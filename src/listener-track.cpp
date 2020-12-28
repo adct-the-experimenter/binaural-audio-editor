@@ -87,12 +87,9 @@ void ListenerTrack::FunctionToCallInPlayState()
 
 	if(listenerToManipulatePtr != nullptr)
 	{
-		std::cout << "Listener is not null in track!\n";
 		
 		if(!listenerToManipulatePtr->GetListenerFreeRoamBool())
-		{
-			std::cout << "Trying to move listener.\n";
-			
+		{			
 			if(listenerToManipulatePtr->getPositionX() != thisX){listenerToManipulatePtr->setPositionX(thisX);}
 
 			if(listenerToManipulatePtr->getPositionY() != thisY){listenerToManipulatePtr->setPositionY(thisY);}

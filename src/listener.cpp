@@ -8,7 +8,11 @@ Listener::Listener()
     //initialize listener orientation
     listener_orientation_vector.resize(6);
     
+    //initialize 3d object for listener
     Listener::initListener();   
+    
+    m_saveData.freeRoam = true;
+    m_saveData.externalOrientation = false;
 }
 
 Listener::~Listener()
@@ -230,11 +234,28 @@ void Listener::MoveRight(float& distance)
 	Listener::setPositionX(newX);
 }
 
-void Listener::SetListenerFreeRoamBool(bool thisBool){freeRoamByUser = thisBool;}
+void Listener::SetListenerFreeRoamBool(bool thisBool)
+{
+	freeRoamByUser = thisBool;
+	m_saveData.freeRoam = thisBool;
+}
+
 bool Listener::GetListenerFreeRoamBool(){return freeRoamByUser;}
 
-void Listener::SetListenerExternalDeviceOrientationBool(bool thisBool){orientationByExternalDevice = thisBool;}
+void Listener::SetListenerExternalDeviceOrientationBool(bool thisBool)
+{
+	orientationByExternalDevice = thisBool;
+	m_saveData.externalOrientation = thisBool;
+}
+
 bool Listener::GetListenerExternalDeviceOrientationBool(){return orientationByExternalDevice;}
 
+ListenerSaveData Listener::GetListenerSaveData(){return m_saveData;}
 
-
+void Listener::LoadListenerSaveData(ListenerSaveData& data)
+{
+	m_saveData = data;
+	
+	Listener::SetListenerFreeRoamBool(data.freeRoam);
+	Listener::SetListenerExternalDeviceOrientationBool(data.externalOrientation);
+}

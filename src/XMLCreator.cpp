@@ -18,6 +18,7 @@ void XMLCreator::SaveDataToXMLFile(std::vector < std::unique_ptr <SoundProducer>
 						   std::vector <ReverbZone> *standardRevZones,
 						   std::vector <ReverbZone> *eaxRevZones,
 						   ListenerTrack* listener_track,
+						   Listener* listener_ptr, 
 						   std::string path)
 {
 	
@@ -46,6 +47,8 @@ void XMLCreator::SaveDataToXMLFile(std::vector < std::unique_ptr <SoundProducer>
 	
 	
 	XMLCreator::SaveDataXML_ListenerTrack(root,listener_track);
+	
+	XMLCreator::SaveDataXML_Listener(root,listener_ptr);
 	
 	//write to file
 	
@@ -430,4 +433,37 @@ void XMLCreator::SaveDataXML_ListenerTrack(pugi::xml_node& root, ListenerTrack* 
 		
 	}
 		
+}
+
+void XMLCreator::SaveDataXML_Listener(pugi::xml_node& root, Listener* listener_ptr)
+{
+	pugi::xml_node listenerNode = root.append_child("Listener");
+	
+	std::string value;
+	
+	pugi::xml_node roamNodeChild = listenerNode.append_child("FreeRoam");
+	
+	if(listener_ptr->GetListenerSaveData().freeRoam)
+	{
+		value = "true";
+	}
+	else
+	{
+		value = "false";
+	}
+	
+	roamNodeChild.append_attribute("status") = value.c_str();
+	
+	pugi::xml_node extOrientNodeChild = listenerNode.append_child("ExternalOrientation");
+	
+	if(listener_ptr->GetListenerSaveData().externalOrientation)
+	{
+		value = "true";
+	}
+	else
+	{
+		value = "false";
+	}
+	
+	extOrientNodeChild.append_attribute("status") = value.c_str();
 }

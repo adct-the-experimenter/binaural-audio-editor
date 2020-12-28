@@ -18,6 +18,7 @@ void XMLReader::LoadDataFromXMLFile(std::vector <SoundProducerSaveData> *sound_p
 							   std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData,
 							   std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData,
 							   ListenerTrackSaveData& listener_track_data,
+							   ListenerSaveData& listener_data,
 							   std::string path)
 {
 	// Create empty XML document within memory
@@ -44,7 +45,7 @@ void XMLReader::LoadDataFromXMLFile(std::vector <SoundProducerSaveData> *sound_p
 	XMLReader::LoadData_EAXRevZones(root,eaxRevZonesSaveData);
 	
 	XMLReader::LoadData_ListenerTrack(root,listener_track_data);
-	
+	XMLReader::LoadData_Listener(root,listener_data);
 }
 
 void XMLReader::LoadData_SoundProducers(pugi::xml_node& root, std::vector <SoundProducerSaveData> *sound_producer_save_data)
@@ -512,4 +513,31 @@ void XMLReader::LoadData_ListenerTrack(pugi::xml_node& root, ListenerTrackSaveDa
 	data.time_value_map_orientz_ptr = ddMapQuatZ;
 	
 	listener_track_data = data;
+}
+
+void XMLReader::LoadData_Listener(pugi::xml_node& root, ListenerSaveData& listener_save_data)
+{
+	ListenerSaveData data;
+	
+	pugi::xml_node listenerNodeRoot = root.child("Listener");
+			
+	std::string valString = "";
+	bool status = false;
+	
+	valString = listenerNodeRoot.child("FreeRoam").attribute("status").value();
+	
+	if(valString == "true"){status = true;}
+	else{status = false;}
+	
+	data.freeRoam = status;
+	
+	valString = "";
+	valString = listenerNodeRoot.child("ExternalOrientation").attribute("status").value();
+	
+	if(valString == "true"){status = true;}
+	else{status = false;}
+	
+	data.externalOrientation = status;
+	
+	listener_save_data = data;
 }

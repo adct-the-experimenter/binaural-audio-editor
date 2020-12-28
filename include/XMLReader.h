@@ -12,6 +12,7 @@
 #include "echo-zone.h"
 #include "reverb-zone.h"
 
+#include "listener.h"
 #include "listener-track.h"
 
 //class used to save data in binaural audio editor into a xml file
@@ -29,6 +30,7 @@ public:
 							   std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData,
 							   std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData,
 							   ListenerTrackSaveData& listener_track_ptr,
+							   ListenerSaveData& listener_data,
 							   std::string path);
 	
 private:
@@ -41,6 +43,8 @@ private:
 	void LoadData_EAXRevZones(pugi::xml_node& root,std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData);
 	
 	void LoadData_ListenerTrack(pugi::xml_node& root, ListenerTrackSaveData& listener_track_data);
+	
+	void LoadData_Listener(pugi::xml_node& root, ListenerSaveData& listener_data);
 };
 
 #endif

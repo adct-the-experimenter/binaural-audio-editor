@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 
+#include "listener.h"
 #include "listener-track.h"
 #include "soundproducer.h"
 #include "soundproducer-track.h"
@@ -29,6 +30,7 @@ public:
 						   std::vector <ReverbZone> *standardRevZones,
 						   std::vector <ReverbZone> *eaxRevZones,
 						   ListenerTrack* listener_track,
+						   Listener* listener_ptr, 
 						   std::string path);
 	
 private:
@@ -49,6 +51,10 @@ private:
 									
 	//function to save data from listener track to xml file
 	void SaveDataXML_ListenerTrack(pugi::xml_node& root, ListenerTrack* listener_track_ptr);
+	
+	//function to save data from listener to xml file
+	void SaveDataXML_Listener(pugi::xml_node& root, Listener* listener_ptr);
+	
 									
 };
 
