@@ -17,6 +17,7 @@ void XMLCreator::SaveDataToXMLFile(std::vector < std::unique_ptr <SoundProducer>
 						   std::vector <EchoZone> *echoZones,
 						   std::vector <ReverbZone> *standardRevZones,
 						   std::vector <ReverbZone> *eaxRevZones,
+						   ListenerTrack* listener_track,
 						   std::string path)
 {
 	
@@ -42,6 +43,9 @@ void XMLCreator::SaveDataToXMLFile(std::vector < std::unique_ptr <SoundProducer>
 	
 	XMLCreator::SaveDataXML_SoundProducers(root,
 											sound_producer_vector_ptr);				
+	
+	
+	XMLCreator::SaveDataXML_ListenerTrack(root,listener_track);
 	
 	//write to file
 	
@@ -282,5 +286,148 @@ void XMLCreator::SaveDataXML_SoundProducers(pugi::xml_node& root,
 				
 	}
 	
+}
+
+void XMLCreator::SaveDataXML_ListenerTrack(pugi::xml_node& root, ListenerTrack* listener_track_ptr)
+{
+	pugi::xml_node listenerTrackNode = root.append_child("ListenerTrack");
 	
+
+	pugi::xml_node nodeChild = listenerTrackNode.append_child("ListenerTrackChild");
+	
+	
+	//Get position x time map
+	
+	DDMap* mapXTime = listener_track_ptr->GetListenerTrackSaveData().time_value_map_posx_ptr;
+	
+	if(mapXTime)
+	{
+		pugi::xml_node positionXTimeNodeChild = nodeChild.append_child("PositionXTimes");
+	
+		//for each position x time pair
+		for (DDMap::iterator it = mapXTime->begin(); it!= mapXTime->end(); ++it)
+		{
+			 //std::cout << it->first << " => " << it->second << '\n';
+			 pugi::xml_node pTNodeChild = positionXTimeNodeChild.append_child("PT");
+			 pTNodeChild.append_attribute("time") = it->first;
+			 pTNodeChild.append_attribute("x") = it->second;
+		}
+		
+	}
+	
+		
+	//Get position y time map
+	
+	DDMap* mapYTime = listener_track_ptr->GetListenerTrackSaveData().time_value_map_posy_ptr;
+	
+	if(mapYTime)
+	{
+		pugi::xml_node positionYTimeNodeChild = nodeChild.append_child("PositionYTimes");
+	
+		//for each position y time pair
+		for (DDMap::iterator it = mapYTime->begin(); it!= mapYTime->end(); ++it)
+		{
+			 //std::cout << it->first << " => " << it->second << '\n';
+			 pugi::xml_node pTNodeChild = positionYTimeNodeChild.append_child("PT");
+			 pTNodeChild.append_attribute("time") = it->first;
+			 pTNodeChild.append_attribute("y") = it->second;
+		}
+		
+	}
+	
+	//Get position z time map
+	
+	DDMap* mapZTime = listener_track_ptr->GetListenerTrackSaveData().time_value_map_posz_ptr;
+	
+	if(mapZTime)
+	{
+		pugi::xml_node positionZTimeNodeChild = nodeChild.append_child("PositionZTimes");
+	
+		//for each position z time pair
+		for (DDMap::iterator it = mapZTime->begin(); it!= mapZTime->end(); ++it)
+		{
+			 //std::cout << it->first << " => " << it->second << '\n';
+			 pugi::xml_node pTNodeChild = positionZTimeNodeChild.append_child("PT");
+			 pTNodeChild.append_attribute("time") = it->first;
+			 pTNodeChild.append_attribute("z") = it->second;
+		}
+		
+	}
+	
+	//Get orientation w time map
+	
+	DDMap* mapQuatWTime = listener_track_ptr->GetListenerTrackSaveData().time_value_map_orientw_ptr;
+	
+	if(mapQuatWTime)
+	{
+		pugi::xml_node orientationQuatWTimeNodeChild = nodeChild.append_child("OrientationWTimes");
+	
+		//for each position z time pair
+		for (DDMap::iterator it = mapQuatWTime->begin(); it!= mapQuatWTime->end(); ++it)
+		{
+			 //std::cout << it->first << " => " << it->second << '\n';
+			 pugi::xml_node pTNodeChild = orientationQuatWTimeNodeChild.append_child("OT");
+			 pTNodeChild.append_attribute("time") = it->first;
+			 pTNodeChild.append_attribute("qw") = it->second;
+		}
+		
+	}
+	
+	//Get orientation x time map
+	
+	DDMap* mapQuatXTime = listener_track_ptr->GetListenerTrackSaveData().time_value_map_orientx_ptr;
+	
+	if(mapQuatXTime)
+	{
+		pugi::xml_node orientationQuatXTimeNodeChild = nodeChild.append_child("OrientationXTimes");
+	
+		//for each position z time pair
+		for (DDMap::iterator it = mapQuatXTime->begin(); it!= mapQuatXTime->end(); ++it)
+		{
+			 //std::cout << it->first << " => " << it->second << '\n';
+			 pugi::xml_node pTNodeChild = orientationQuatXTimeNodeChild.append_child("OT");
+			 pTNodeChild.append_attribute("time") = it->first;
+			 pTNodeChild.append_attribute("qx") = it->second;
+		}
+		
+	}
+	
+	//Get orientation y time map
+	
+	DDMap* mapQuatYTime = listener_track_ptr->GetListenerTrackSaveData().time_value_map_orienty_ptr;
+	
+	if(mapQuatYTime)
+	{
+		pugi::xml_node orientationQuatYTimeNodeChild = nodeChild.append_child("OrientationYTimes");
+	
+		//for each position z time pair
+		for (DDMap::iterator it = mapQuatYTime->begin(); it!= mapQuatYTime->end(); ++it)
+		{
+			 //std::cout << it->first << " => " << it->second << '\n';
+			 pugi::xml_node pTNodeChild = orientationQuatYTimeNodeChild.append_child("OT");
+			 pTNodeChild.append_attribute("time") = it->first;
+			 pTNodeChild.append_attribute("qy") = it->second;
+		}
+		
+	}
+	
+	//Get orientation z time map
+	
+	DDMap* mapQuatZTime = listener_track_ptr->GetListenerTrackSaveData().time_value_map_orientz_ptr;
+	
+	if(mapQuatZTime)
+	{
+		pugi::xml_node orientationQuatZTimeNodeChild = nodeChild.append_child("OrientationZTimes");
+	
+		//for each position z time pair
+		for (DDMap::iterator it = mapQuatZTime->begin(); it!= mapQuatZTime->end(); ++it)
+		{
+			 //std::cout << it->first << " => " << it->second << '\n';
+			 pugi::xml_node pTNodeChild = orientationQuatZTimeNodeChild.append_child("OT");
+			 pTNodeChild.append_attribute("time") = it->first;
+			 pTNodeChild.append_attribute("qz") = it->second;
+		}
+		
+	}
+		
 }

@@ -14,12 +14,14 @@ public:
 	
 	//function used to save project data to already established save file
 	void SaveProjectToSetFile(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr,
-							  EffectsManager* effectsManagerPtr);
+							  EffectsManager* effectsManagerPtr,
+							  ListenerTrack* listener_track_ptr);
 	
 	//function to save project data to new file
 	//overwrites member save file path
 	void SaveAsNewProject(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr,
 						  EffectsManager* effectsManagerPtr,
+						  ListenerTrack* listener_track_ptr, 
 						  std::string path);
 	
 	//function to set svae file path
@@ -33,7 +35,8 @@ private:
 	std::string m_saveFilePath;
 	
 	void SaveProject(std::vector < std::unique_ptr <SoundProducer> > *sound_producer_vector_ptr,
-					 EffectsManager* effectsManagerPtr, 
+					 EffectsManager* effectsManagerPtr,
+					 ListenerTrack* listener_track_ptr,  
 					 std::string path);
 };
 

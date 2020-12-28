@@ -13,6 +13,24 @@
 #include <boost/math/quaternion.hpp> //for using quaternion to change orientation
 #include <boost/algorithm/string.hpp> //for splitting string
 
+struct ListenerTrackSaveData
+{
+	
+	//double track save data
+	
+	//position
+	DDMap* time_value_map_posx_ptr;
+	DDMap* time_value_map_posy_ptr;
+	DDMap* time_value_map_posz_ptr;
+	
+	//orientation
+	DDMap* time_value_map_orientw_ptr;
+	DDMap* time_value_map_orientx_ptr;
+	DDMap* time_value_map_orienty_ptr;
+	DDMap* time_value_map_orientz_ptr;
+	
+};
+
 //class to manipulate x,y z position of sound producer
 class ListenerTrack : public Track
 {
@@ -60,6 +78,10 @@ public:
     virtual void FunctionToCallInRewindState();
     virtual void FunctionToCallInFastForwardState();
     virtual void FunctionToCallInNullState();
+    
+    //save data
+    ListenerTrackSaveData GetListenerTrackSaveData();
+	void LoadListenerTrackSaveData(ListenerTrackSaveData& data);
 
 private:
 	Listener* listenerToManipulatePtr;
@@ -81,6 +103,9 @@ private:
 	//quaternions for intial forward vector and up vector directions
 	boost::math::quaternion <float> forward_vector_quaternion;
 	boost::math::quaternion <float> up_vector_quaternion;
+	
+	//listener track save data
+	ListenerTrackSaveData m_saveData;
 };
 
 #endif

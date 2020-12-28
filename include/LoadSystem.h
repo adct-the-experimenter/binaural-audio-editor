@@ -7,6 +7,8 @@
 
 #include "effects-manager.h"
 
+#include "listener-track.h"
+
 class LoadSystem
 {
 public:
@@ -19,6 +21,7 @@ public:
 							   std::vector <EchoZoneSaveData> *echoZonesSaveData,
 							   std::vector <StandardReverbZoneSaveData> *standardRevZonesSaveData,
 							   std::vector <EAXReverbZoneSaveData> *eaxRevZonesSaveData,
+							   ListenerTrackSaveData& listener_track_data,
 							   std::string path);
 	
 private:

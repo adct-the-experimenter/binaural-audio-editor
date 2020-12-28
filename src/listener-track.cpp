@@ -47,6 +47,16 @@ ListenerTrack::ListenerTrack(const wxString& title) : Track(title)
 
 	forward_vector_quaternion = boost::math::quaternion <float>(0,0,0,-1);
 	up_vector_quaternion = boost::math::quaternion <float>(0,0,1,0);
+	
+	//set save data
+	m_saveData.time_value_map_posx_ptr = xTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_posy_ptr = yTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_posz_ptr = zTrack->GetPointerToTimeValueMap();
+	
+	m_saveData.time_value_map_orientw_ptr = wQuatTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_orientx_ptr = xQuatTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_orienty_ptr = yQuatTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_orientz_ptr = zQuatTrack->GetPointerToTimeValueMap();
 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(Track::OnPaint));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(Track::OnSize));
@@ -77,8 +87,12 @@ void ListenerTrack::FunctionToCallInPlayState()
 
 	if(listenerToManipulatePtr != nullptr)
 	{
+		std::cout << "Listener is not null in track!\n";
+		
 		if(!listenerToManipulatePtr->GetListenerFreeRoamBool())
 		{
+			std::cout << "Trying to move listener.\n";
+			
 			if(listenerToManipulatePtr->getPositionX() != thisX){listenerToManipulatePtr->setPositionX(thisX);}
 
 			if(listenerToManipulatePtr->getPositionY() != thisY){listenerToManipulatePtr->setPositionY(thisY);}
@@ -290,3 +304,76 @@ void ListenerTrack::OnRightMouseClick(wxCommandEvent& event)
 	event.Skip();
 }
 
+ListenerTrackSaveData ListenerTrack::GetListenerTrackSaveData()
+{
+	return m_saveData;
+}
+
+void ListenerTrack::LoadListenerTrackSaveData(ListenerTrackSaveData& data)
+{
+	m_saveData = data;
+	
+	//set position based on save data
+	
+	m_saveData.time_value_map_posx_ptr = xTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_posy_ptr = yTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_posz_ptr = zTrack->GetPointerToTimeValueMap();
+	
+	
+	if(data.time_value_map_posx_ptr)
+	{
+		xTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_posx_ptr);
+		delete data.time_value_map_posx_ptr;
+		data.time_value_map_posx_ptr = nullptr;
+	}
+	
+	if(data.time_value_map_posy_ptr)
+	{
+		yTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_posy_ptr);
+		delete data.time_value_map_posy_ptr;
+		data.time_value_map_posy_ptr = nullptr;
+	}
+	
+	if(data.time_value_map_posz_ptr)
+	{
+		zTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_posz_ptr);
+		delete data.time_value_map_posz_ptr;
+		data.time_value_map_posz_ptr = nullptr;
+	}
+	
+	//set orientation based on save data
+	
+	m_saveData.time_value_map_orientw_ptr = wQuatTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_orientx_ptr = xQuatTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_orienty_ptr = yQuatTrack->GetPointerToTimeValueMap();
+	m_saveData.time_value_map_orientz_ptr = zQuatTrack->GetPointerToTimeValueMap();
+	
+	if(data.time_value_map_orientw_ptr)
+	{
+		wQuatTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_orientw_ptr);
+		delete data.time_value_map_orientw_ptr;
+		data.time_value_map_orientw_ptr = nullptr;
+	}
+	
+	if(data.time_value_map_orientx_ptr)
+	{
+		xQuatTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_orientx_ptr);
+		delete data.time_value_map_orientx_ptr;
+		data.time_value_map_orientx_ptr = nullptr;
+	}
+	
+	if(data.time_value_map_orienty_ptr)
+	{
+		yQuatTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_orienty_ptr);
+		delete data.time_value_map_orienty_ptr;
+		data.time_value_map_orienty_ptr = nullptr;
+	}
+	
+	if(data.time_value_map_orientz_ptr)
+	{
+		zQuatTrack->LoadDataFromThisTimeValueMap(*data.time_value_map_orientz_ptr);
+		delete data.time_value_map_orientz_ptr;
+		data.time_value_map_orientz_ptr = nullptr;
+	}
+	
+}

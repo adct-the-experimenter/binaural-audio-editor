@@ -571,7 +571,7 @@ void MainFrame::SetListenerReference(Listener* thisListener)
 void MainFrame::SetListenerExternalReference(ListenerExternal* thisListenerExternal)
 {
 	listenerExternalPtr = thisListenerExternal;
-	m_listener_track->SetReferenceToExternalListener(thisListenerExternal);
+	m_listener_track->SetReferenceToExternalListener(listenerExternalPtr);
 }
 
 void MainFrame::SetAudioEngineReference(OpenAlSoftAudioEngine* audioEngine){ audioEnginePtr = audioEngine;}
@@ -650,6 +650,9 @@ void MainFrame::CreateNewProject()
 	
 	//Initialize listener track
 	MainFrame::CreateListenerTrack();
+	
+	m_listener_track->SetReferenceToListenerToManipulate(listenerPtr);
+	m_listener_track->SetReferenceToExternalListener(listenerExternalPtr);
 
 //Initialize SoundProducer Track
 	
@@ -680,7 +683,7 @@ void MainFrame::SaveProject()
 		std::cout << "Input save file path:" << saveFilePath << std::endl;
 		
 		save_system_ptr->SetSaveFilePath(saveFilePath);
-		save_system_ptr->SaveProjectToSetFile(sound_producer_vector_ref,effectsManagerPtr);
+		save_system_ptr->SaveProjectToSetFile(sound_producer_vector_ref,effectsManagerPtr,m_listener_track);
 	}
 }
     
@@ -707,13 +710,16 @@ void MainFrame::LoadProject()
 		std::vector <EchoZoneSaveData> echoZonesSaveData;
 		std::vector <StandardReverbZoneSaveData> standardRevZonesSaveData;
 		std::vector <EAXReverbZoneSaveData> eaxRevZonesSaveData;
+		ListenerTrackSaveData lt_save_data;
 		
 		load_system_ptr->LoadProject(&sound_producer_save_data,
 							   &ptrSPTracksSaveDataVec,
 							   &echoZonesSaveData,
 							   &standardRevZonesSaveData,
 							   &eaxRevZonesSaveData,
+							   lt_save_data,
 							   loadFilePath);
+							   
 		
 		//initialize sound producers from save data
 		if(sound_producer_save_data.size() > 0)
@@ -779,7 +785,7 @@ void MainFrame::LoadProject()
 			}
 		}
 		
-		//
+		//initialize sound producer tracks based on save data
 		
 		if(ptrSPTracksSaveDataVec.size() > 0)
 		{
@@ -819,6 +825,14 @@ void MainFrame::LoadProject()
 				}
 				
 			}
+		}
+		
+		//initialize listener track from save data
+		if(m_listener_track)
+		{
+			
+			m_listener_track->LoadListenerTrackSaveData(lt_save_data);
+			
 		}
 		
 	}
