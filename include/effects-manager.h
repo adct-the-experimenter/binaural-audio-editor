@@ -1,15 +1,12 @@
 #ifndef EFFECTS_MANAGER_H
 #define EFFECTS_MANAGER_H
 
-#include "listener.h"
+
 #include "soundproducer-track-manager.h"
 #include "reverb-zone.h"
 #include "echo-zone.h"
 
-#include <wx/wx.h>
-
-
-
+#include "listener.h"
 
 //class to manipulate x,y z position of sound producer
 class EffectsManager

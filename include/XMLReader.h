@@ -7,13 +7,13 @@
 #include <string>
 #include <vector>
 
+#include "listener-track.h"
 #include "soundproducer.h"
 #include "soundproducer-track.h"
 #include "echo-zone.h"
 #include "reverb-zone.h"
 
-#include "listener.h"
-#include "listener-track.h"
+
 
 //class used to save data in binaural audio editor into a xml file
 

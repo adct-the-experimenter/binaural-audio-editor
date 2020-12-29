@@ -4,7 +4,6 @@
 #include <string>
 #include <memory>
 
-#include "listener.h"
 #include "listener-track.h"
 #include "soundproducer.h"
 #include "soundproducer-track.h"

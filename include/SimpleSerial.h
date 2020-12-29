@@ -9,6 +9,8 @@
 #ifndef _SIMPLESERIAL_H
 #define	_SIMPLESERIAL_H
 
+#define UNICODE
+
 #include <boost/asio.hpp>
 
 class SimpleSerial

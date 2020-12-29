@@ -1,9 +1,10 @@
 #ifndef EXTERNAL_ORIENTATION_DEVICE_SERIAL_H
 #define EXTERNAL_ORIENTATION_DEVICE_SERIAL_H
 
-#include <boost/math/quaternion.hpp> //for using quaternion to change orientation
+
 #include "SimpleSerial.h" //for getting serial data
 #include <boost/algorithm/string.hpp> //for splitting string
+#include <boost/math/quaternion.hpp> //for using quaternion to change orientation
 
 #include <iostream>
 

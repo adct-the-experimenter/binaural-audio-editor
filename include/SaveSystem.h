@@ -3,11 +3,9 @@
 
 #include <memory>
 
-
-#include "listener.h"
-#include "soundproducer.h"
-#include "effects-manager.h"
 #include "XMLCreator.h"
+#include "effects-manager.h"
+
 
 class SaveSystem
 {

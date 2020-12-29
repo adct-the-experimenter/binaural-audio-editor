@@ -13,7 +13,7 @@
 #include "wx/wx.h"
 #endif
 
-#define __GXX_ABI_VERSION 1013
+//#define __GXX_ABI_VERSION 1000
 
 #include "osgViewerWX.h"
 
@@ -524,13 +524,15 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     wxToolBar* toolbar = CreateToolBar(wxTB_HORZ_TEXT | wxTB_NOICONS );
     
     
-   
     m_sp_toolbar_combobox = new wxComboBox(toolbar, wxID_ANY, wxEmptyString, wxDefaultPosition, 
-											wxDefaultSize, 0, NULL, 0, wxDefaultValidator, wxT("Active SoundProducer"));
+											wxDefaultSize, 0, NULL, 0, wxDefaultValidator, wxT(""));
     
-    toolbar->AddControl( new wxStaticText(toolbar, wxID_ANY, wxT("Active SoundProducer:"), wxDefaultPosition,wxDefaultSize,
-											0, wxEmptyString) );
-    toolbar->AddControl(m_sp_toolbar_combobox, wxT("SP toolbar item"));
+    toolbar->AddTool(toolbar->AddControl( new wxStaticText(toolbar, wxID_ANY, wxT("Active SoundProducer:"), wxDefaultPosition,wxDefaultSize,
+											0, wxEmptyString)) );
+	
+    toolbar->AddTool( toolbar->AddControl(m_sp_toolbar_combobox, wxT("")) );
+    
+    toolbar->Realize();
     
     //Code to initialize timeline track editor part of GUI
 

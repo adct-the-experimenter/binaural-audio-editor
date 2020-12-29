@@ -4,12 +4,8 @@
 #include <string>
 
 #include "XMLReader.h"
-
 #include "effects-manager.h"
 
-#include "listener-track.h"
-
-#include "listener.h"
 
 class LoadSystem
 {
