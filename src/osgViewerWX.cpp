@@ -799,7 +799,7 @@ void MainFrame::LoadProject()
 			for(size_t i = 0; i < ptrSPTracksSaveDataVec.size(); i++)
 			{
 				
-				if(i > 1)
+				if(i >= 1)
 				{
 					//detach sizer containing add/rm soundproducertrack buttons from window, add it back later
 					timeFrame->GetTimelineWindow()->GetSizer()->Detach(m_add_rm_box_sizer);
