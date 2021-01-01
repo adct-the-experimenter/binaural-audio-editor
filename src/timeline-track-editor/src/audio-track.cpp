@@ -107,10 +107,10 @@ void AudioTrack::ReadAndCopyDataFromInputFile(std::vector<double> *audio_data_in
 	/* Close input and stream files. */
 	sf_close(inputFile);
 	
-	std::string messageString;
-	messageString.append("Successfully loaded and saved a copy of audio data of");
-	messageString.append(inputSoundFilePath);
-	wxMessageBox( messageString );
+	//std::string messageString;
+	//messageString.append("Successfully loaded and saved a copy of audio data of");
+	//messageString.append(inputSoundFilePath);
+	//wxMessageBox( messageString );
 }
 
 void AudioTrack::CopyInputDataIntoAudioDataStream(std::vector<double> *audio_data_input_copy_ptr, AudioStreamContainer* audio_data_stream_ptr,std::string streamSoundFilePath,SF_INFO& input_sfinfo)

@@ -531,7 +531,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
 											0, wxEmptyString);
 	
 	//if using MS Windows OS
-	#ifdef _WIN32
+	#ifdef WIN32
     toolbar->AddTool(toolbar->AddControl( sp_toolbar_text ) );
 	
     toolbar->AddTool( toolbar->AddControl(m_sp_toolbar_combobox, wxEmptyString) );
@@ -540,7 +540,7 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     #endif
     
     //if not using MS Windows OS
-    #ifndef _WIN32
+    #ifndef WIN32
     toolbar->AddControl( sp_toolbar_text );
     toolbar->AddControl(m_sp_toolbar_combobox);
     #endif
@@ -829,11 +829,6 @@ void MainFrame::LoadProject()
 				
 				
 				m_soundproducer_track_vec.at(i)->LoadSoundProducerTrackSaveData(ptrSPTracksSaveDataVec.at(i));
-				
-				if(ptrSPTracksSaveDataVec.at(i).soundfilepath != "")
-				{
-					m_soundproducer_track_vec.at(i)->GetReferenceToStereoAudioTrack()->LoadAudioFromFileToTrack(ptrSPTracksSaveDataVec.at(i).soundfilepath);
-				}
 				
 				
 				if(ptrSPTracksSaveDataVec.at(i).soundproducer_name != "")
