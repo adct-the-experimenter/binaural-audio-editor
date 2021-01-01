@@ -146,7 +146,7 @@ class MainFrame : public wxFrame
 public:
     MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
         const wxSize& size, OpenAlSoftAudioEngine* thisAudioEngine, long style = wxDEFAULT_FRAME_STYLE);
-	
+		
 	//for connecting mainframe to wxOsgApp
 	
     void SetViewer(osgViewer::Viewer *viewer);
@@ -230,6 +230,7 @@ private:
 	std::vector <SoundProducerTrack*> m_soundproducer_track_vec;
 	
 	wxComboBox* m_sp_toolbar_combobox;
+	wxStaticText* sp_toolbar_text;
 	
 	void OnCreateSoundProducer(wxCommandEvent& event); //function for menu to create and place sound producer
 	void CreateSoundProducer(std::string& name, std::string& filePath, ALuint& buffer,double& x, double& y, double& z, bool freeRoam);

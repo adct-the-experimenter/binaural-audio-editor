@@ -359,6 +359,8 @@ void SoundProducerTrack::OnImportAudioDAWButtonClick(wxCommandEvent& event)
 	//use this path in your app
 	std::string inputSoundFilePath = std::string("../src/timeline-track-editor/resources/") + std::string("imported_audio_DAW.wav");
 	
+	m_saveData.soundfilepath = inputSoundFilePath;
+	
 	SF_INFO input_sfinfo;
 	
 	int channels = audioTrack->GetReferenceToLeftChannelTrack()->GetNumberOfChannelsInAudioFile(inputSoundFilePath,input_sfinfo);
@@ -442,6 +444,11 @@ void SoundProducerTrack::LoadSoundProducerTrackSaveData(SoundProducerTrackSaveDa
 		data.time_value_map_z_ptr = nullptr;
 	}
 	
+	//load from sound file path
+	if(m_saveData.soundfilepath != "")
+	{
+		audioTrack->LoadAudioFromFileToTrack(m_saveData.soundfilepath);
+	}
 }
 
 void SoundProducerTrack::SetComboBoxToThisSelectionName(std::string name)

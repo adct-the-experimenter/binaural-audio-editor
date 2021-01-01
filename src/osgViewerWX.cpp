@@ -521,18 +521,29 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     //initliaze save system
     save_system_ptr = std::unique_ptr <SaveSystem> (new SaveSystem());
 	
-    wxToolBar* toolbar = CreateToolBar(wxTB_HORZ_TEXT | wxTB_NOICONS );
+    wxToolBar* toolbar = this->CreateToolBar(wxTB_HORZ_TEXT | wxTB_NOICONS );
     
     
     m_sp_toolbar_combobox = new wxComboBox(toolbar, wxID_ANY, wxEmptyString, wxDefaultPosition, 
 											wxDefaultSize, 0, NULL, 0, wxDefaultValidator, wxT(""));
     
-    toolbar->AddTool(toolbar->AddControl( new wxStaticText(toolbar, wxID_ANY, wxT("Active SoundProducer:"), wxDefaultPosition,wxDefaultSize,
-											0, wxEmptyString)) );
+    sp_toolbar_text = new wxStaticText(toolbar, wxID_ANY, wxT("Active SoundProducer:"), wxDefaultPosition,wxDefaultSize,
+											0, wxEmptyString);
 	
-    toolbar->AddTool( toolbar->AddControl(m_sp_toolbar_combobox, wxT("")) );
+	//if using MS Windows OS
+	#ifdef _WIN32
+    toolbar->AddTool(toolbar->AddControl( sp_toolbar_text ) );
+	
+    toolbar->AddTool( toolbar->AddControl(m_sp_toolbar_combobox, wxEmptyString) );
     
     toolbar->Realize();
+    #endif
+    
+    //if not using MS Windows OS
+    #ifndef _WIN32
+    toolbar->AddControl( sp_toolbar_text );
+    toolbar->AddControl(m_sp_toolbar_combobox);
+    #endif
     
     //Code to initialize timeline track editor part of GUI
 
