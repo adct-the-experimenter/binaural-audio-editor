@@ -359,7 +359,7 @@ CreateEAXReverbZoneDialog::CreateEAXReverbZoneDialog(const wxString& title,Effec
 	vbox->Add(hboxReverbRow6,1, wxEXPAND | wxALL, 10);
 	
 	vbox->Add(spPreviewText);
-	vbox->Add(hboxSoundProducers,1, wxEXPAND | wxALL, 10);
+	vbox->Add(hboxSoundProducers,0, wxEXPAND | wxALL, 10);
 	
 	vbox->Add(hbox5, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
 
