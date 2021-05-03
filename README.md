@@ -2,6 +2,10 @@
 # binaural-audio-editor
 This is an audio application that produces binaural audio from 2D mono audio samples and positional information given through the graphical user interface. Listen to 3D audio through stereo headphones.
 
+## Moving on to a new project that will replace this one. 3d Audio Producer. 
+## https://github.com/adct-the-experimenter/3d-audio-producer
+## Keeping this here active on Github for anyone who wants to fork this.
+
 Resize the window if unable to move timeline.
 
 [![Open Source Helpers](https://www.codetriage.com/adct-the-experimenter/binaural-audio-editor/badges/users.svg)](https://www.codetriage.com/adct-the-experimenter/binaural-audio-editor)
